@@ -621,7 +621,7 @@ class PysolMenubarTkCommon:
             label=n_("&Slow"), variable=self.tkopt.animations, value=3,
             command=self.mOptAnimations)
         menu.add_checkbutton(
-            label=n_("&Point-and-click (no dragging)"),
+            label=n_("&Click to move"),
             variable=self.tkopt.mouse_type,
             onvalue='point-n-click', offvalue='drag-n-drop',
             command=self.mOptMouseType)
