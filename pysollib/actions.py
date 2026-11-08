@@ -29,7 +29,7 @@ from pysollib.mfxutil import Struct, openURL
 from pysollib.mfxutil import USE_PIL, print_err
 from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
-from pysollib.pysoltk import AllGames_StatsDialog, SingleGame_StatsDialog
+from pysollib.pysoltk import SingleGame_StatsDialog
 from pysollib.pysoltk import ColorsDialog
 from pysollib.pysoltk import EditTextDialog
 from pysollib.pysoltk import FontsDialog
@@ -594,11 +594,7 @@ class PysolMenubar(PysolMenubarTk):
     #
 
     def _mStatsSave(self, player, filename, write_method):
-        if player is None:
-            text = _("Demo statistics were appended to\n\n%(filename)s")
-            filename = filename + "_demo"
-        else:
-            text = _("Your statistics were appended to\n\n%(filename)s")
+        text = _("Your statistics were appended to\n\n%(filename)s")
         filename = os.path.join(self.app.dn.config, filename + ".txt")
         filename = os.path.normpath(filename)
         try:
@@ -618,19 +614,11 @@ class PysolMenubar(PysolMenubarTk):
             self.game.doPause()
             wasPaused = True
         mode = kw.get("mode", 101)
-        demo = 0
         gameid = None
         gamenum = None
         while mode > 0:
-            if mode > 1000:
-                demo = not demo
-                mode = mode % 1000
-            #
             d = Struct(status=-1, button=-1)
-            if demo:
-                player = None
-            else:
-                player = self.app.opt.player
+            player = self.app.opt.player
             n = self.game.gameinfo.name
             # translation keywords
             transkw = {'app': TITLE,
@@ -641,34 +629,25 @@ class PysolMenubar(PysolMenubarTk):
             if mode == 100:
                 d = Status_StatsDialog(self.top, game=self.game)
             elif mode == 101:
-                header = (_("%(app)s Demo Statistics for %(game)s") if demo
-                          else _("Statistics for %(game)s")) % transkw
+                header = _("Statistics for %(game)s") % transkw
                 d = SingleGame_StatsDialog(
                    self.top, header, self.app, player, gameid=self.game.id)
                 gameid = d.selected_game
-            elif mode == 102:
-                header = (_("%(app)s Demo Statistics") if demo
-                          else _("Statistics for %(player)s")) % transkw
-                d = AllGames_StatsDialog(self.top, header, self.app, player)
-                gameid = d.selected_game
             elif mode == 103:
-                header = (_("%(app)s Demo Full log") if demo
-                          else _("Full log for %(player)s")) % transkw
+                header = _("Full log for %(player)s") % transkw
                 d = FullLog_StatsDialog(self.top, header, self.app, player,
                                         resizable=True)
                 gameid = d.selected_game
                 gamenum = d.selected_game_num
             elif mode == 104:
-                header = (_("%(app)s Demo Session log") if demo
-                          else _("Session log for %(player)s")) % transkw
+                header = _("Session log for %(player)s") % transkw
                 d = SessionLog_StatsDialog(self.top, header, self.app, player,
                                            resizable=True)
                 gameid = d.selected_game
                 gamenum = d.selected_game_num
             elif mode == 105:
                 # TRANSLATORS: eg. top 10 or top 5 results for a certain game
-                header = (_("%(app)s Demo Top %(tops)d for %(game)s") if demo
-                          else _("Top %(tops)d for %(game)s")) % transkw
+                header = _("Top %(tops)d for %(game)s") % transkw
                 d = Top_StatsDialog(
                     self.top, header, self.app, player, gameid=self.game.id)
             elif mode == 106:
@@ -726,7 +705,7 @@ class PysolMenubar(PysolMenubarTk):
                     self.game.quitGame(gameid,
                                        random=construct_random(gamenum))
             else:
-                print_err("stats problem: %s %s %s" % (mode, demo, player))
+                print_err("stats problem: %s %s" % (mode, player))
             if d.status != 0:
                 break
             mode = d.button

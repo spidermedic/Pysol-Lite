@@ -50,8 +50,6 @@ class StatsDialog(MfxDialog):
 
         kw = self.initKw(kw)
         title = _('Statistics')
-        if player is None:
-            title = _('Demo Statistics')
         MfxDialog.__init__(self, parent, title, kw.resizable, kw.default)
 
         self.font = app.getFont('default')
@@ -141,8 +139,7 @@ class StatsDialog(MfxDialog):
         MfxDialog.mDone(self, button)
 
 
-SingleGame_StatsDialog = AllGames_StatsDialog = Top_StatsDialog = \
-        ProgressionDialog = StatsDialog
+SingleGame_StatsDialog = Top_StatsDialog = ProgressionDialog = StatsDialog
 
 
 # ************************************************************************
@@ -164,7 +161,7 @@ class SingleGameFrame(ttk.Frame):
         self.dialog = dialog
         self.app = app
         self.parent = parent
-        self.player = player or _("Demo games")
+        self.player = player
         #
         self._calc_tabs()
         #
@@ -559,8 +556,6 @@ class LogDialog(MfxDialog):
 
         kw = self.initKw(kw)
         title = _('Log')
-        if player is None:
-            title = _('Demo Log')
         MfxDialog.__init__(self, parent, title, kw.resizable, kw.default)
 
         self.top.wm_minsize(400, 200)
