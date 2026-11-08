@@ -545,3 +545,16 @@ Commit "Remove stale leftovers: manifest, man page, readmes, tile folders". Not 
 - **Left alone on purpose:** `po/*.po`, `po/*.pot` and `locale/*/pysol.mo`. They still contain removed strings and lack the new labels ("Click to move cards", "Visible buttons", "Layout", Settings window and so on), so those show in English. Fixing that means `make pot` (needs xgettext) plus real translations in five languages; `docs/README` (the 2002 PySol readme); the name "PySolFC" in README prose, `scripts/create_iss.py` and `scripts/linux-install.py`; `pysolfc.6` file name and its sound-mod option text.
 - **Verification (light):** `setup.py`'s cardset parsing finds all 18 folders and none is missing; `mandoc -Tlint` shows only the warnings that were already there; unit tests unchanged (19, the one known `--version` error); a source run with a fresh home stayed up 15 s.
 - **Still open:** the unreachable solver, wizard, comment and layout import/export code, and the dead `auto_scale` branches (section 46); translations of the new labels.
+
+## 51. Update: translations removed (2026-11-08)
+
+Commit "Remove the translations and their build steps" (`6713d6ac`). Not rebuilt or installed yet; the installed app still ships `locale/` until the next build.
+
+- **Asked by the user:** get rid of the translations, revisit them once the app is where they want it.
+- **Deleted:** `po/` (the per-language `*_pysol.po` and `*_games.po`, `pysol.pot`, `games.pot`) and `locale/` (compiled `pysol.mo` for de, fr, it, pl, pt_BR, ru). They were already stale: they lacked the new Settings, View, Layout and other labels and still held removed strings.
+- **Build and packaging:** the `pot` and `mo` Makefile targets are gone and `dist`/`rpm` no longer depend on `mo`; `setup.py` and `setup_osx.py` no longer ship `locale`; `MANIFEST.in` lost `po/*` and `graft locale`; the macOS workflow runs `make rules` instead of `make rules mo`; the README build steps and the `.gitignore` `po/*.po` lines were updated. `gettext` (the Homebrew package) is no longer needed to build.
+- **Kept on purpose:** the `_()` and `n_()` markers throughout the code, `pysollib/mygettext.py`, the gettext binding in `init.py` and the unused `language` option. With no catalogs the lookups fall back to the English text. This keeps a later restore cheap. Side effect worth knowing: every `_()` call still tries to find a catalog on disk before falling back, so making `mygettext` a plain pass-through would be a small startup speed-up; not done.
+- **Not touched:** `contrib/help-pages-translation-to-french` (a separate help-page translation tool), `data/pysolfc.glade`.
+- **To bring translations back:** the old files are in git history: `git checkout 0c597444 -- po locale Makefile` restores the catalogs and the `pot`/`mo` targets (then re-add `locale` to the `DATA_FILES` list in `setup_osx.py`, the data files in `setup.py` and `MANIFEST.in`). Expect to run `make pot`, translate the new labels, then `make mo`; needs `gettext` from Homebrew.
+- **Verification (light):** unit tests unchanged (19, the one known `--version` error); `setup.py --version` works; source runs with a fresh home under `en_US.UTF-8` and `de_DE.UTF-8` stayed up 15 s with no traceback (German now shows English); `_()` and `ungettext` return the English text.
+- **Still open:** as in section 50.
