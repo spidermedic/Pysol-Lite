@@ -23,16 +23,6 @@ from pysollib.ui.tktile.tkutil import after_idle, bind
 
 def createToolbarMenu(menubar, menu):
     tearoff = menu.cget('tearoff')
-    data_dir = os.path.join(menubar.app.dataloader.dir, 'images', 'toolbar')
-    submenu = MfxMenu(menu, label=n_('Icon style'), tearoff=tearoff)
-    for f in sorted(os.listdir(data_dir)):
-        d = os.path.join(data_dir, f)
-        if os.path.isdir(d) and os.path.exists(os.path.join(d, 'small')):
-            name = f.replace('_', ' ').capitalize()
-            submenu.add_radiobutton(
-              label=name,
-              variable=menubar.tkopt.toolbar_style,
-              value=f, command=menubar.mOptToolbarStyle)
     submenu = MfxMenu(menu, label=n_('Icon size'), tearoff=tearoff)
     submenu.add_radiobutton(label=n_("Small icons"),
                             variable=menubar.tkopt.toolbar_size, value=0,
@@ -198,7 +188,6 @@ class PysolMenubarTkCommon:
             shrink_face_down=tkinter.BooleanVar(),
             randomize_place=tkinter.BooleanVar(),
             toolbar=tkinter.IntVar(),
-            toolbar_style=tkinter.StringVar(),
             toolbar_relief=tkinter.StringVar(),
             toolbar_compound=tkinter.StringVar(),
             toolbar_size=tkinter.IntVar(),
@@ -255,7 +244,6 @@ class PysolMenubarTkCommon:
         tkopt.shadow.set(opt.shadow)
         tkopt.shade.set(opt.shade)
         tkopt.toolbar.set(opt.toolbar)
-        tkopt.toolbar_style.set(opt.toolbar_style)
         tkopt.toolbar_relief.set(opt.toolbar_relief)
         tkopt.toolbar_compound.set(opt.toolbar_compound)
         tkopt.toolbar_size.set(opt.toolbar_size)
@@ -1697,10 +1685,6 @@ Unsupported game for import.
         # if self._cancelDrag(break_pause=False): return
         self.setToolbarSide(self.tkopt.toolbar.get())
 
-    def mOptToolbarStyle(self, *event):
-        # if self._cancelDrag(break_pause=False): return
-        self.setToolbarStyle(self.tkopt.toolbar_style.get())
-
     def mOptToolbarCompound(self, *event):
         # if self._cancelDrag(break_pause=False): return
         self.setToolbarCompound(self.tkopt.toolbar_compound.get())
@@ -1797,17 +1781,6 @@ Unsupported game for import.
         dir = self.app.getToolbarImagesDir()
         if self.app.toolbar.updateImages(dir, size):
             self.game.updateStatus(player=self.app.opt.player)
-            self.top.update_idletasks()
-
-    def setToolbarStyle(self, style):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.toolbar_style = style
-        self.tkopt.toolbar_style.set(style)                # update radiobutton
-        dir = self.app.getToolbarImagesDir()
-        size = self.app.opt.toolbar_size
-        if self.app.toolbar.updateImages(dir, size):
-            # self.game.updateStatus(player=self.app.opt.player)
             self.top.update_idletasks()
 
     def setToolbarCompound(self, compound):

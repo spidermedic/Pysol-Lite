@@ -29,6 +29,7 @@ import traceback
 from pickle import UnpicklingError
 
 import pysollib.app_stat
+import pysollib.settings
 from pysollib.actions import PysolMenubar
 from pysollib.actions import PysolToolbar
 from pysollib.app_stat_result import GameStatResult
@@ -44,7 +45,6 @@ from pysollib.mfxutil import getprefdir, getusername
 from pysollib.mfxutil import latin1_normalize, print_err
 from pysollib.mfxutil import pickle, unpickle
 from pysollib.mygettext import _
-from pysollib.options import DEFAULT_TOOLBAR_STYLE
 from pysollib.options import Options
 from pysollib.pysolrandom import PysolRandom, construct_random
 from pysollib.pysoltk import HTMLViewer
@@ -72,6 +72,9 @@ from pysollib.speech import Speech
 from pysollib.util import IMAGE_EXTENSIONS
 from pysollib.winsystems import TkSettings
 from pysollib.ui.tktile.solverdialog import destroy_solver_dialog
+
+# Toolbar icons used off macOS (macOS uses the SF Symbols set).
+DEFAULT_TOOLBAR_STYLE = 'bluecurve'
 
 # Luminance below this counts as a dark theme background.
 _DARK_LUMINANCE = 0.4
@@ -655,31 +658,15 @@ class Application:
             return 'large'
         return 'small'
 
-    def _syncImageStyleMenu(self, attr):
-        menubar = getattr(self, 'menubar', None)
-        if menubar is None:
-            return
-        var = getattr(getattr(menubar, 'tkopt', None), attr, None)
-        if var is None:
-            return
-        style = getattr(self.opt, attr)
-        if hasattr(var, 'value'):
-            var.value = style
-        elif hasattr(var, 'set'):
-            var.set(style)
-
-    def _syncToolbarStyleMenu(self):
-        self._syncImageStyleMenu('toolbar_style')
-
     def getToolbarImagesDir(self):
         size = self._toolbarIconSizeName()
         images_root = os.path.join(self.dataloader.dir, 'images')
+        # SF Symbols on macOS; the bluecurve set everywhere else.
+        style = ('sfsymbols' if pysollib.settings.WIN_SYSTEM == 'aqua'
+                 else DEFAULT_TOOLBAR_STYLE)
         style, dirname = resolve_toolbar_images_dir(
-            images_root, self.opt.toolbar_style, size,
-            DEFAULT_TOOLBAR_STYLE, interface_is_dark(self.top))
-        if style != self.opt.toolbar_style:
-            self.opt.toolbar_style = style
-            self._syncToolbarStyleMenu()
+            images_root, style, size, DEFAULT_TOOLBAR_STYLE,
+            interface_is_dark(self.top))
         return dirname
 
     def refreshToolbarImages(self):

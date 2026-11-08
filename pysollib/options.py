@@ -92,7 +92,6 @@ shade_filled_stacks = boolean
 toolbar = integer(0, 4)
 toolbar_land = integer(0, 4)
 toolbar_port = integer(0, 4)
-toolbar_style = string
 toolbar_relief = string
 toolbar_compound = string
 toolbar_size = integer(0, 2)
@@ -189,7 +188,6 @@ spread_stacks = boolean
 
 
 # A saved image set whose directory is missing is replaced with these.
-DEFAULT_TOOLBAR_STYLE = 'material'
 
 
 class Options:
@@ -229,7 +227,6 @@ class Options:
         ('toolbar', 'int'),
         ('toolbar_land', 'int'),
         ('toolbar_port', 'int'),
-        ('toolbar_style', 'str'),
         ('toolbar_relief', 'str'),
         ('toolbar_compound', 'str'),
         ('toolbar_size', 'int'),
@@ -324,8 +321,6 @@ class Options:
         self.toolbar_port = 2  # (portrait)
         # 0 == hide,
         # 1,2,3,4 == top, bottom, left, right
-        # self.toolbar_style = 'default'
-        self.toolbar_style = DEFAULT_TOOLBAR_STYLE
         self.toolbar_relief = 'flat'
         self.toolbar_compound = 'none'  # icons only
         self.toolbar_size = 0
@@ -452,9 +447,6 @@ class Options:
 
     def setDefaults(self, top=None):
         WIN_SYSTEM = pysollib.settings.WIN_SYSTEM
-        # toolbar
-        # if WIN_SYSTEM == 'win32':
-        #    self.toolbar_style = 'crystal'
         # fonts
         if WIN_SYSTEM == 'win32':
             self.fonts["sans"] = ("times new roman", 12)
