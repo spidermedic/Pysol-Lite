@@ -409,3 +409,12 @@ Installed app rebuilt after commit "Toolbar: add Set bookmark and Go to bookmark
 - **Verification (light):** pyflakes and the unit tests (19) pass; real-app source runs showed the new menu bar, the Play menu states, the bookmark flow (set at move 1, played to move 3, Go to bookmark returned to move 1 from both the menu path and the toolbar button) and the toolbar button order and states. The installed app was checked with `--version` and `codesign -v` (both new icons are in the bundle); the pre-bundle `data/html N` cleanup removed one stray folder. Nothing was checked by eye; the 24 px bookmark icons are the ones to look at.
 - **Push state:** pushed through section 37 earlier; sections 38 and the commits since go out with this entry.
 - **Still open:** as in sections 25, 29, 33, 35 and 37.
+
+## 39. Update: Help menu slimmed; stale help pages deleted (2026-11-08)
+
+Installed app rebuilt after commit "Help menu: remove How to use PySol, What's new and Report a bug; delete stale help pages" (120 MB, arm64, ad-hoc signed).
+
+- **Help menu** is now PySolFC Help (on macOS Tk adds this item itself and calls `mHelp`; Windows and Linux show Contents, Cmd/Ctrl-F1), Rules for this game (F1), a divider, License terms; Windows and Linux still add About. Removed `mHelpHowToPlay`, `mHelpNews` and `mHelpReportBug`.
+- **Deleted pages:** `html-src/install.html`, `news.html`, `news_old.html`, `plugins.html`, `report_bug.html`. They are gone from `gen-html.py`, the help index and the Settings page. `howtoplay.html` stays and is linked from the index. `credits_old.html` stays (linked from Credits).
+- **Verification (light):** AST parse of the changed files; `make rules` output has none of the deleted pages; installed bundle has none; `--version` and `codesign -v` pass. Not launched or checked by eye.
+- **Still open:** as in sections 25, 29, 33, 35 and 37; plus `howtoplay.html` scoring notes and the `help.py` credits line about music; `docs/`, `po` and `MANIFEST.in` may still name the deleted pages.
