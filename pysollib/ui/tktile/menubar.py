@@ -293,13 +293,13 @@ class PysolMenubarTkCommon:
             label=n_("&Clear bookmarks"),
             command=self.mClearBookmarks)
 
-        menu = MfxMenu(self.menubar, label=n_("&Select"))
+        menu = MfxMenu(self.menubar, label=n_("&Games"))
         self._addSelectGameMenu(menu)
 
         if self.progress:
             self.progress.update(step=1)
 
-        menu = MfxMenu(self.menubar, label=n_("&Game"))
+        menu = MfxMenu(self.menubar, label=n_("&Play"))
         menu.add_command(
             label=n_("&Deal cards"),
             command=self.mDeal, accelerator="D")
@@ -683,8 +683,6 @@ class PysolMenubarTkCommon:
                                    self.mSelectGame, self.tkopt.gameid)
 
     def _addSelectAllGameSubMenu(self, games, menu, command, variable):
-        if menu.name == "select":
-            menu = MfxMenu(menu, label=n_("&All games by name"))
         n, d = 0, self.cb_max
         i = 0
         while True:
@@ -816,7 +814,7 @@ class PysolMenubarTkCommon:
 
     def updateFavoriteGamesMenu(self):
         gameids = self.app.opt.favorite_gameid
-        menu, index, submenu = self.menupath[".menubar.select.favoritegames"]
+        menu, index, submenu = self.menupath[".menubar.games.favoritegames"]
         games = []
         for id in gameids:
             gi = self.app.getGameInfo(id)
@@ -834,14 +832,14 @@ class PysolMenubarTkCommon:
         else:
             menu.entryconfig(index, state=state(False))
         in_favor = self.app.game.id in gameids
-        menu, index, submenu = self.menupath[".menubar.select.addtofavorites"]
+        menu, index, submenu = self.menupath[".menubar.games.addtofavorites"]
         menu.entryconfig(index, state=state(not in_favor))
         menu, index, submenu = \
-            self.menupath[".menubar.select.removefromfavorites"]
+            self.menupath[".menubar.games.removefromfavorites"]
         menu.entryconfig(index, state=state(in_favor))
 
     def updateRecentGamesMenu(self, gameids):
-        submenu = self.menupath[".menubar.select.recentgames"][2]
+        submenu = self.menupath[".menubar.games.recentgames"][2]
         games = []
         for id in gameids:
             gi = self.app.getGameInfo(id)

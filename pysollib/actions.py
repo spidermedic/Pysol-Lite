@@ -166,18 +166,18 @@ class PysolMenubar(PysolMenubarTk):
         self.setMenuState(ms.undo, "edit.undo")
         self.setMenuState(ms.redo, "edit.redo")
         self.updateBookmarkMenuState()
-        self.setMenuState(ms.restart, "game.restart")
+        self.setMenuState(ms.restart, "play.restart")
         # Game menu
-        self.setMenuState(ms.deal, "game.dealcards")
-        self.setMenuState(ms.autodrop, "game.autodrop")
-        self.setMenuState(ms.shuffle, "game.shuffletiles")
-        self.setMenuState(ms.pause, "game.pause")
+        self.setMenuState(ms.deal, "play.dealcards")
+        self.setMenuState(ms.autodrop, "play.autodrop")
+        self.setMenuState(ms.shuffle, "play.shuffletiles")
+        self.setMenuState(ms.pause, "play.pause")
         # Assist menu
-        self.setMenuState(ms.hint, "game.hint")
-        self.setMenuState(ms.highlight_piles, "game.highlightpiles")
-        self.setMenuState(ms.find_card, "game.findcard")
-        self.setMenuState(ms.full_picture, "game.showfullpicture")
-        self.setMenuState(ms.demo, "game.demo")
+        self.setMenuState(ms.hint, "play.hint")
+        self.setMenuState(ms.highlight_piles, "play.highlightpiles")
+        self.setMenuState(ms.find_card, "play.findcard")
+        self.setMenuState(ms.full_picture, "play.showfullpicture")
+        self.setMenuState(ms.demo, "play.demo")
         # Options menu
         self._autoplay_usable = {
             'autofaceup': bool(ms.autofaceup), 'autodrop': bool(ms.autodrop),
