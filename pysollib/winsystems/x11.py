@@ -24,7 +24,7 @@
 import os
 import traceback
 
-from pysollib.settings import TITLE
+from pysollib.settings import TITLE_CLASS
 from pysollib.winsystems.common import \
         BaseTkSettings, \
         base_init_root_window, \
@@ -97,7 +97,7 @@ def init_root_window(root, app):
 
     root.option_add('*selectBorderWidth', 0, 60)
 
-    font = root.option_get('font', TITLE)
+    font = root.option_get('font', TITLE_CLASS)
     if font:
         # use font from xrdb
         fn = get_font_name(font)
@@ -140,7 +140,7 @@ def init_root_window(root, app):
         root.option_add('*Menu.activeBorderWidth', 1, 60)
         # root.option_add('*Button.HighlightBackground', '#595d59')
         # root.option_add('*Button.HighlightThickness', '1')
-        font = root.option_get('font', TITLE)
+        font = root.option_get('font', TITLE_CLASS)
         if font:
             fn = get_font_name(font)
             app.opt.fonts['default'] = fn

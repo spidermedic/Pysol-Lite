@@ -41,7 +41,7 @@ from pysollib.pysoltk import MfxRoot
 from pysollib.pysoltk import PysolProgressBar
 from pysollib.pysoltk import loadImage
 from pysollib.resource import Tile
-from pysollib.settings import SOUND_MOD, TITLE
+from pysollib.settings import SOUND_MOD, TITLE, TITLE_CLASS
 from pysollib.util import DataLoader
 from pysollib.winsystems import init_root_window
 
@@ -192,7 +192,7 @@ def pysol_init(app, args):
     app.dataloader = DataLoader(args[0], f)
 
     # init toolkit 1)
-    top = MfxRoot(className=TITLE)
+    top = MfxRoot(className=TITLE_CLASS)
     app.top = top
     app.top_bg = top.cget("bg")
     app.top_cursor = top.cget("cursor")

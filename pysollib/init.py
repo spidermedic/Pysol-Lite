@@ -96,12 +96,13 @@ def init():
         print(('PySol debugging: set DEBUG to', pysollib.settings.DEBUG))
 
     if '--version' in sys.argv:
-        print("PySol FC version {}".format(pysollib.settings.VERSION))
+        print("{} version {}".format(pysollib.settings.TITLE,
+                                      pysollib.settings.VERSION))
         sys.exit(0)
 
     # init Tk
     import tkinter
-    root = tkinter.Tk(className=pysollib.settings.TITLE)
+    root = tkinter.Tk(className=pysollib.settings.TITLE_CLASS)
     root.withdraw()
     if tkinter.TkVersion < 8.4:
         # we need unicode support

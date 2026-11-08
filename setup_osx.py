@@ -8,7 +8,11 @@ import shutil
 import sys
 from subprocess import CalledProcessError, call, check_output
 
-from pysollib.settings import PACKAGE, VERSION
+from pysollib.settings import TITLE, VERSION
+
+# The bundle (PySol.app) and its executable keep the same name every year;
+# only the display name carries the year.
+BUNDLE = 'PySol'
 
 from setuptools import setup
 
@@ -54,16 +58,16 @@ try:
 except (OSError, CalledProcessError):
     pass
 
-GETINFO_STRING = "PySol Fan Club Edition \
-                %s %s, (C) 1998-2003 Markus F.X.J Oberhumer \
-                (C) 2006-2007 Skomoroh" % (PACKAGE, VERSION)
+GETINFO_STRING = "%s %s, a reimagining of PySolFC. \
+                (C) 1998-2003 Markus F.X.J Oberhumer \
+                (C) 2005-2009 Skomoroh" % (TITLE, VERSION)
 PLIST = dict(
     CFBundleDevelopmentRegion='en_US',
-    CFBundleExecutable=PACKAGE,
-    CFBundleDisplayName=PACKAGE,
+    CFBundleExecutable=BUNDLE,
+    CFBundleDisplayName=TITLE,
     CFBundleGetInfoString=GETINFO_STRING,
     CFBundleIdentifier='net.sourceforge.pysolfc',
-    CFBundleName=PACKAGE,
+    CFBundleName=BUNDLE,
     CFBundleVersion='%s' % VERSION,
     CFBundleShortVersionString='%s' % VERSION,
     NSHumanReadableCopyright="Copyright (C) 1998-2003 Markus F.X.J. Oberhumer",
@@ -97,7 +101,7 @@ top = os.getcwd()
 # Modify the fc-solve binary with install_name_tool to use the dependent
 # libfreecell-solver dynamic library in the app bundle.
 if SOLVER and "py2app" in sys.argv:
-    os.chdir('dist/%s.app/Contents/Resources' % PACKAGE)
+    os.chdir('dist/%s.app/Contents/Resources' % BUNDLE)
     call("install_name_tool -change \
          /usr/local/lib/libfreecell-solver.0.dylib \
          @executable_path/../Frameworks/libfreecell-solver.0.dylib fc-solve",
@@ -109,7 +113,7 @@ if SOLVER and "py2app" in sys.argv:
 # original rpath.
 if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
     frameworks_dir = os.path.join(
-        top, 'dist', '%s.app' % PACKAGE, 'Contents', 'Frameworks')
+        top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Frameworks')
     for name in os.listdir(frameworks_dir):
         if name.startswith('libwebp'):
             call([
@@ -125,5 +129,5 @@ if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
 if (SOLVER or SHARPYUV_LIB_PATH) and "py2app" in sys.argv:
     call([
         'codesign', '--force', '--deep', '--sign', '-',
-        os.path.join(top, 'dist', '%s.app' % PACKAGE),
+        os.path.join(top, 'dist', '%s.app' % BUNDLE),
         ])

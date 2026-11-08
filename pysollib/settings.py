@@ -28,12 +28,18 @@ def n_(x):                        # for gettext
     return x
 
 
+# PACKAGE names the settings folder and data directories; keep it stable.
 PACKAGE = 'PySolFC'
-TITLE = 'PySol'
-PACKAGE_URL = 'http://pysolfc.sourceforge.io/'
-
-VERSION_TUPLE = (3, 7, 0)
-VERSION = '.'.join(map(str, VERSION_TUPLE))
+# The release is named after its year: PySol 26 is version 26.MM[.DD].
+# VERSION_TUPLE is (YY, MM) for a monthly release and (YY, MM, DD) for an
+# interim update in the same month.
+VERSION_TUPLE = (26, 11)
+VERSION = '.'.join(['%d' % VERSION_TUPLE[0]] +
+                   ['%02d' % x for x in VERSION_TUPLE[1:]])
+# Class name for the Tk windows and the X11 resource database (no year).
+TITLE_CLASS = 'PySol'
+TITLE = 'PySol %d' % VERSION_TUPLE[0]
+PACKAGE_URL = 'https://github.com/spidermedic/pysol'
 
 # Tk windowing system (auto set up in init.py)
 WIN_SYSTEM = 'x11'                      # win32, x11, aqua, classic

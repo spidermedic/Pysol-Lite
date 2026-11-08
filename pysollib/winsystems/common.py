@@ -27,7 +27,6 @@ from pysollib.mfxutil import print_err
 from pysollib.mygettext import _
 from pysollib.settings import DEBUG
 from pysollib.settings import TITLE
-from pysollib.settings import VERSION
 
 from pysollib.ui.tktile.tkutil import loadImage, restore_window_geometry
 import tkinter.ttk as ttk
@@ -66,8 +65,8 @@ def get_font_name(font):
 
 def base_init_root_window(root, app):
     # root.wm_group(root)
-    root.wm_title(TITLE + ' ' + VERSION)
-    root.wm_iconname(TITLE + ' ' + VERSION)
+    root.wm_title(TITLE)
+    root.wm_iconname(TITLE)
 
     icons = sorted(
         (loadImage(img) for img in app.dataloader.findAllIconSizes()),

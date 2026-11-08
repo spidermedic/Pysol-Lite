@@ -40,30 +40,31 @@ from pysollib.settings import PACKAGE_URL, TITLE, VERSION
 def help_about(app, timeout=0, sound=True):
     if sound:
         app.audio.playSample("about")
-    t = _("A Python Solitaire Game Collection")
-    if app.miscrandom.random() < 0.8:
-        t = _("A World Domination Project")
+    t = _("A reimagining of PySolFC")
     strings = (_("&Nice"), _("&Credits"))
     if timeout:
         strings = (_("&Enjoy"),)
     version = _("Version %s") % VERSION
     d = PysolAboutDialog(app, app.top, title=_("About %s") % TITLE,
                          timeout=timeout,
-                         text=_('''PySol Fan Club edition
+                         text=_('''%(title)s
 %(description)s
 %(versioninfo)s
 
+Based on PySol, PySol Fan Club edition and PySolFC.
 Copyright (C) 1998 - 2003 Markus F.X.J. Oberhumer.
 Copyright (C) 2003 Mt. Hood Playing Card Co.
 Copyright (C) 2005 - 2009 Skomoroh.
-Copyright (C) 2020 - 2026 PySolFC.
+Copyright (C) 2020 - 2026 PySolFC contributors.
+Modifications Copyright (C) 2026 the PySol 26 authors.
 All Rights Reserved.
 
 PySol is free software distributed under the terms
 of the GNU General Public License.
 
 For more information about this application visit''') %
-                         {'description': t, 'versioninfo': version},
+                         {'title': TITLE, 'description': t,
+                          'versioninfo': version},
                          url=PACKAGE_URL,
                          image=app.gimages.logos[2],
                          strings=strings, default=0,

@@ -19,4 +19,4 @@ class CliFlagsTests(unittest.TestCase):
         o = subprocess.check_output(["./pysol.py", "--version", ])
         assert o
         string = o.decode('utf-8')
-        self.assertTrue(re.match("\\APySol FC version [0-9]+\\.", string))
+        self.assertTrue(re.match("\\APySol [0-9]+ version [0-9]+\\.", string))
