@@ -1758,8 +1758,11 @@ Unsupported game for import.
         # self.game.updateMenus()
 
     def mOptAnimations(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
+        self._cancelDrag(break_pause=False)
+        # Always apply the new speed, even when the game is busy (for
+        # example during a slow deal animation). Returning early here made
+        # the radio button change while the option silently stayed the same,
+        # so after choosing "Very slow" it could not be changed back.
         self.app.opt.animations = self.tkopt.animations.get()
 
     def mRedealAnimation(self, *args):
