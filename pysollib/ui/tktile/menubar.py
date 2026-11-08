@@ -37,7 +37,7 @@ def createToolbarMenu(menubar, menu):
         submenu.add_radiobutton(
             label=label, variable=menubar.tkopt.toolbar_compound,
             value=comp, command=menubar.mOptToolbarCompound)
-    menu.add_command(label=n_('Visible buttons...'),
+    menu.add_command(label=n_('Visible buttons'),
                      command=menubar.mOptToolbarButtons)
     submenu = MfxMenu(menu, label=n_('Position'), tearoff=tearoff)
     for label, value in ((n_("Top"), 1), (n_("Bottom"), 2),
@@ -294,7 +294,7 @@ class PysolMenubarTkCommon:
             label=n_("Games not &played"),
             command=lambda: self.mSelectRandomGame('not played'))
         menu.add_command(
-            label=n_("Select game by nu&mber..."),
+            label=n_("Select game by nu&mber"),
             command=self.mSelectGameById, accelerator=m+"M")
         menu.add_command(
             label=n_("Next game by num&ber"),
@@ -307,17 +307,17 @@ class PysolMenubarTkCommon:
             command=self.mDelFavor)
         menu.add_separator()
         menu.add_command(
-            label=n_("&Open..."),
+            label=n_("&Open"),
             command=self.mOpen, accelerator=m+"O")
         menu.add_command(
             label=n_("&Save"),
             command=self.mSave, accelerator=m+"S")
-        menu.add_command(label=n_("Save &as..."), command=self.mSaveAs)
+        menu.add_command(label=n_("Save &as"), command=self.mSaveAs)
         menu.add_command(
-            label=n_("E&xport current layout..."),
+            label=n_("E&xport current layout"),
             command=self.mExportCurrentLayout)
         menu.add_command(
-            label=n_("&Import starting layout..."),
+            label=n_("&Import starting layout"),
             command=self.mImportStartingLayout)
         menu.add_separator()
         menu.add_command(
@@ -374,10 +374,10 @@ class PysolMenubarTkCommon:
 
         menu.add_separator()
         menu.add_command(
-            label=n_("Solitaire &Wizard..."),
+            label=n_("Solitaire &Wizard"),
             command=self.mWizard)
         menu.add_command(
-            label=n_("&Edit current game..."),
+            label=n_("&Edit current game"),
             command=self.mWizardEdit)
         menu.add_command(
             label=n_("&Delete current game"),
@@ -400,17 +400,17 @@ class PysolMenubarTkCommon:
         #    label=n_("&Pause"), command=self.mPause, accelerator="P")
         menu.add_separator()
         menu.add_command(
-            label=n_("S&tatus..."),
+            label=n_("S&tatus"),
             command=lambda: self.mPlayerStats(mode=100), accelerator=m+"Y")
         menu.add_command(
-            label=n_("&Statistics..."),
+            label=n_("&Statistics"),
             command=self.mPlayerStats, accelerator=m+"T")
         menu.add_command(
-            label=n_("Log..."),
+            label=n_("Log"),
             command=lambda: self.mPlayerStats(mode=103))
         menu.add_separator()
         menu.add_command(
-            label=n_("&Comments..."),
+            label=n_("&Comments"),
             command=self.mEditGameComment)
 
         menu = MfxMenu(self.menubar, label=n_("&Assist"))
@@ -421,10 +421,10 @@ class PysolMenubarTkCommon:
             label=n_("Highlight p&iles"),
             command=self.mHighlightPiles, accelerator="I")
         menu.add_command(
-            label=n_("&Find card..."),
+            label=n_("&Find card"),
             command=self.mFindCard, accelerator="F3")
         menu.add_command(
-            label=n_("Sh&ow full picture..."),
+            label=n_("Sh&ow full picture"),
             command=self.mFullPicture)
         menu.add_separator()
         menu.add_command(
@@ -434,9 +434,9 @@ class PysolMenubarTkCommon:
             label=n_("Demo (&all games)"),
             command=self.mMixedDemo)
         if USE_FREECELL_SOLVER:
-            menu.add_command(label=n_("&Solver..."), command=self.mSolver)
+            menu.add_command(label=n_("&Solver"), command=self.mSolver)
         else:
-            menu.add_command(label=n_("&Solver..."), state='disabled')
+            menu.add_command(label=n_("&Solver"), state='disabled')
         menu.add_separator()
         menu.add_command(
             label=n_("&Piles description"),
@@ -447,11 +447,11 @@ class PysolMenubarTkCommon:
 
         menu = MfxMenu(self.menubar, label=n_("&Options"))
         menu.add_command(
-            label=n_("&Player options..."),
+            label=n_("&Player options"),
             command=self.mOptPlayerOptions, accelerator=m+'P')
-        menu.add_command(label=n_("&Automatic play..."),
+        menu.add_command(label=n_("&Automatic play"),
                          command=self.mOptAutomaticPlay)
-        menu.add_command(label=n_("Assist &level..."),
+        menu.add_command(label=n_("Assist &level"),
                          command=self.mOptAssistLevel)
         menu.add_separator()
         menu.add_checkbutton(
@@ -460,7 +460,7 @@ class PysolMenubarTkCommon:
         # cardsets
         submenu = MfxMenu(menu, label=n_("&Layout"))
         submenu.add_command(
-            label=n_("&Background color..."),
+            label=n_("&Background color"),
             command=self.mSelectTableColor)
         if USE_PIL:
             submenu.add_checkbutton(
@@ -468,7 +468,7 @@ class PysolMenubarTkCommon:
                 command=self.mOptSpreadStacks)
         submenu = MfxMenu(menu, label=n_("C&ards"))
         submenu.add_command(
-            label=n_("&Decks..."),
+            label=n_("&Decks"),
             command=self.mSelectCardsetDialog, accelerator=m+"E")
         # this submenu will get set by updateBackgroundImagesMenu()
         MfxMenu(submenu, label=n_("&Backs"))
@@ -491,9 +491,9 @@ class PysolMenubarTkCommon:
             onvalue='point-n-click', offvalue='drag-n-drop',
             command=self.mOptMouseType)
         menu.add_separator()
-        menu.add_command(label=n_("&Fonts..."), command=self.mOptFonts)
-        menu.add_command(label=n_("&Colors..."), command=self.mOptColors)
-        menu.add_command(label=n_("Time&outs..."), command=self.mOptTimeouts)
+        menu.add_command(label=n_("&Fonts"), command=self.mOptFonts)
+        menu.add_command(label=n_("&Colors"), command=self.mOptColors)
+        menu.add_command(label=n_("Time&outs"), command=self.mOptTimeouts)
         menu.add_separator()
         submenu = MfxMenu(menu, label=n_("&Toolbar"))
         createToolbarMenu(self, submenu)
@@ -544,7 +544,7 @@ class PysolMenubarTkCommon:
         if WIN_SYSTEM != "aqua":
             menu.add_separator()
             menu.add_command(
-                label=_("&About %s...") % TITLE,
+                label=_("&About %s") % TITLE,
                 command=self.mHelpAbout)
 
         MfxMenubar.addPath = None
@@ -690,7 +690,7 @@ class PysolMenubarTkCommon:
         m = "Ctrl-"
         if sys.platform == "darwin":
             m = "Cmd-"
-        menu.add_command(label=n_("All &games..."), accelerator=m+"V",
+        menu.add_command(label=n_("All &games"), accelerator=m+"V",
                          command=self.mSelectGameDialogWithPreview)
         if not SELECT_GAME_MENU:
             return
