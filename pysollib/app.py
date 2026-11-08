@@ -44,13 +44,7 @@ from pysollib.mfxutil import getprefdir, getusername
 from pysollib.mfxutil import latin1_normalize, print_err
 from pysollib.mfxutil import pickle, unpickle
 from pysollib.mygettext import _
-from pysollib.options import DEFAULT_BUTTON_ICON_STYLE
-from pysollib.options import DEFAULT_DEMO_LOGO_STYLE
-from pysollib.options import DEFAULT_DIALOG_ICON_STYLE
-from pysollib.options import DEFAULT_PAUSE_TEXT_STYLE
-from pysollib.options import DEFAULT_REDEAL_ICON_STYLE
 from pysollib.options import DEFAULT_TOOLBAR_STYLE
-from pysollib.options import DEFAULT_TREE_ICON_STYLE
 from pysollib.options import Options
 from pysollib.pysolrandom import PysolRandom, construct_random
 from pysollib.pysoltk import HTMLViewer
@@ -115,23 +109,6 @@ def resolve_toolbar_images_dir(images_root, style, size, default_style,
             return default_style, found
     return default_style, os.path.join(
         images_root, 'toolbar', default_style, size)
-
-
-def resolve_image_style(data_dir, category, style, default_style):
-    """Return the style name to load for an other-images category.
-
-    ``none`` means no images. Any other name whose directory is missing is
-    replaced with ``default_style``.
-    """
-    def present(name):
-        if name == 'none':
-            return True
-        return os.path.isdir(
-            os.path.join(data_dir, 'images', category, name))
-
-    if present(style):
-        return style
-    return default_style
 
 
 def interface_is_dark(root):
@@ -603,68 +580,22 @@ class Application:
                   "joker11_100_774",
                   "joker10_100",):
             self.gimages.logos.append(self.dataloader.findImage(f, dirname))
-        style = self._selectImageStyle(
-            'dialog_icon_style', 'dialog', DEFAULT_DIALOG_ICON_STYLE)
-        dirname = os.path.join('images', 'dialog', style)
+        dirname = os.path.join('images', 'dialog', 'material')
         for f in ('error', 'info', 'question', 'warning'):
             fn = self.dataloader.findImage(f, dirname)
             im = loadImage(fn)
             MfxMessageDialog.img[f] = im
 
-        # load button images
         MfxDialog.button_img = {}
-        style = self._selectImageStyle(
-            'button_icon_style', 'buttons', DEFAULT_BUTTON_ICON_STYLE)
-        if style != 'none':
-            dirname = os.path.join('images', 'buttons', style)
-            for f, labels in (
-                ('ok', (_('&OK'), _('&Select'), _('&Nice'), _('&Enjoy'),
-                        _('&Great'), _('&Cool'), _('&Yeah'), _('&Wow'),
-                        _('&Oh well'), _("&That's life"), _('&Hmm'))),
-                ('cancel', (_('&Cancel'), _('&Close'), _('&Quit'))),
-                ('apply', (_('&Apply'), _('&Start'))),
-                ('new', (_('&New'), _('&New game'))),
-                ('back', (_('&Back to game'),)),
-                ('reset', (_('&Reset...'), _('&Restart'))),
-                ('help', (_('&Rules'), _('&Info...'), _('&Credits'))),
-                ('next', (_('&Next number'), _('&Play'),
-                          _('&Play this game'))),
-                ('clear', (_('C&lear'),)),
-                ('color', (_('&Solid color...'),)),
-                ('save', (_('&Save to file'),)),
-                ('statistics', (_('&Statistics...'),)),
-            ):
-                im = loadImage(self.dataloader.findImage(f, dirname))
-                for n in labels:
-                    MfxDialog.button_img[n] = im
 
     def loadImages2(self):
         # load canvas images
-        style = self._selectImageStyle(
-            'redeal_icon_style', 'redealicons', DEFAULT_REDEAL_ICON_STYLE)
-        dirname = os.path.join("images", "redealicons", style)
+        dirname = os.path.join("images", "redealicons", "modern")
         # for f in ("noredeal", "redeal",):
         self.gimages.redeal = []
         for f in ("stopsign", "redeal",):
             self.gimages.redeal.append(self.dataloader.findImage(f, dirname))
-        style = self._selectImageStyle(
-            'demo_logo_style', 'demo', DEFAULT_DEMO_LOGO_STYLE)
-        dirname = os.path.join("images", "demo", style)
-        self.gimages.demo = []
-        foundall = False
-        count = 0
-        while not foundall:
-            count += 1
-            try:
-                self.gimages.demo.append(self.dataloader.findImage("demo" +
-                                                                   ("%02d" %
-                                                                    (count,)),
-                                                                   dirname))
-            except OSError:
-                foundall = True
-        style = self._selectImageStyle(
-            'pause_text_style', 'pause', DEFAULT_PAUSE_TEXT_STYLE)
-        dirname = os.path.join("images", "pause", style)
+        dirname = os.path.join("images", "pause", "komika")
         self.gimages.pause = []
         foundall = False
         count = 0
@@ -684,9 +615,7 @@ class Application:
     def loadImages3(self):
         # load treeview images
         SelectDialogTreeData.img = []
-        style = self._selectImageStyle(
-            'tree_icon_style', 'tree', DEFAULT_TREE_ICON_STYLE)
-        dirname = os.path.join('images', 'tree', style)
+        dirname = os.path.join('images', 'tree', 'material')
         for f in ('folder', 'openfolder', 'node', 'emptynode'):
             fn = self.dataloader.findImage(f, dirname)
             im = loadImage(fn)
@@ -740,15 +669,6 @@ class Application:
             var.value = style
         elif hasattr(var, 'set'):
             var.set(style)
-
-    def _selectImageStyle(self, attr, category, default_style):
-        style = resolve_image_style(
-            self.dataloader.dir, category, getattr(self.opt, attr),
-            default_style)
-        if style != getattr(self.opt, attr):
-            setattr(self.opt, attr, style)
-            self._syncImageStyleMenu(attr)
-        return style
 
     def _syncToolbarStyleMenu(self):
         self._syncImageStyleMenu('toolbar_style')

@@ -529,7 +529,6 @@ class Game:
         self.keyboard_selected_stack = None
         self.keyboard_select_count = 1
         self.keyboard_selector = None
-        self.demo_logo = None
         self.pause_logo = None
         self.s = GameStacks()
         self.sg = StackGroups()
@@ -2602,14 +2601,12 @@ class Game:
         )
         self.hints.list = None
         self.createDemoInfoText()
-        self.createDemoLogo()
         after_idle(self.top, self.demoEvent)  # schedule first move
 
     def stopDemo(self, event=None):
         if not self.demo:
             return
         self.canvas.setTopImage(None)
-        self.demo_logo = None
         self.demo = None
         self.busy = False
         self.updateMenus()
@@ -2650,7 +2647,6 @@ class Game:
         )
         self.hints.list = None
         self.createDemoInfoText()
-        self.createDemoLogo()
         after_idle(self.top, self.replayEvent)
 
     def replayEvent(self):
@@ -2968,18 +2964,6 @@ class Game:
             if mm:
                 return mm
         return -1
-
-    def createDemoLogo(self):
-        if not self.app.gimages.demo:
-            return
-        if self.demo_logo or not self.app.opt.demo_logo:
-            return
-        if self.width <= 100 or self.height <= 100:
-            return
-        # self.demo_logo = self.app.miscrandom.choice(self.app.gimages.demo)
-        n = self.random.initial_seed % len(self.app.gimages.demo)
-        self.demo_logo = self.app.gimages.demo[int(n)]
-        self.canvas.setTopImage(self.demo_logo)
 
     def _iterMovablePiles(self, stack):
         # Yield every face-up suffix pile the stack may move (longest first).

@@ -89,13 +89,6 @@ shadow = boolean
 shade = boolean
 shrink_face_down = boolean
 shade_filled_stacks = boolean
-demo_logo = boolean
-demo_logo_style = string
-pause_text_style = string
-redeal_icon_style = string
-dialog_icon_style = string
-tree_icon_style = string
-button_icon_style = string
 toolbar = integer(0, 4)
 toolbar_land = integer(0, 4)
 toolbar_port = integer(0, 4)
@@ -204,12 +197,6 @@ resampling = integer(0, 10)
 
 # A saved image set whose directory is missing is replaced with these.
 DEFAULT_TOOLBAR_STYLE = 'material'
-DEFAULT_DIALOG_ICON_STYLE = 'material'
-DEFAULT_TREE_ICON_STYLE = 'material'
-DEFAULT_BUTTON_ICON_STYLE = 'none'
-DEFAULT_REDEAL_ICON_STYLE = 'modern'
-DEFAULT_DEMO_LOGO_STYLE = 'komika'
-DEFAULT_PAUSE_TEXT_STYLE = 'komika'
 
 
 class Options:
@@ -246,13 +233,6 @@ class Options:
         ('shade', 'bool'),
         ('shrink_face_down', 'bool'),
         ('shade_filled_stacks', 'bool'),
-        ('demo_logo', 'bool'),
-        ('demo_logo_style', 'str'),
-        ('pause_text_style', 'str'),
-        ('redeal_icon_style', 'str'),
-        ('dialog_icon_style', 'str'),
-        ('tree_icon_style', 'str'),
-        ('button_icon_style', 'str'),
         ('toolbar', 'int'),
         ('toolbar_land', 'int'),
         ('toolbar_port', 'int'),
@@ -346,13 +326,6 @@ class Options:
         self.shade = True
         self.shrink_face_down = True
         self.shade_filled_stacks = True
-        self.demo_logo = True
-        self.demo_logo_style = DEFAULT_DEMO_LOGO_STYLE
-        self.pause_text_style = DEFAULT_PAUSE_TEXT_STYLE
-        self.redeal_icon_style = DEFAULT_REDEAL_ICON_STYLE
-        self.dialog_icon_style = DEFAULT_DIALOG_ICON_STYLE
-        self.tree_icon_style = DEFAULT_TREE_ICON_STYLE
-        self.button_icon_style = DEFAULT_BUTTON_ICON_STYLE
         self.tile_theme = 'default'
         self.default_tile_theme = 'default'
         self.toolbar = 1       # 0 == hide, 1,2,3,4 == top, bottom, left, right
