@@ -247,6 +247,10 @@ class PysolMenubarTkCommon:
             applemenu = MfxMenu(self.menubar, "apple")
             applemenu.add_command(
                 label=_("&About %s") % TITLE, command=self.mHelpAbout)
+            applemenu.add_separator()
+            applemenu.add_command(
+                label=_("&Settings"), command=self.mOptSettings,
+                accelerator=m+",")
 
         menu = MfxMenu(self.menubar, n_("&File"))
         menu.add_command(
@@ -347,13 +351,10 @@ class PysolMenubarTkCommon:
         if self.progress:
             self.progress.update(step=1)
 
-        # All settings are in one window. macOS opens it from the app menu
-        # ("Settings", Cmd-comma); the other platforms get an Options menu
-        # with the one item.
-        if WIN_SYSTEM == "aqua":
-            self.top.createcommand('tk::mac::ShowPreferences',
-                                   self.mOptSettings)
-        else:
+        # All settings are in one window. macOS has it in the app menu (made
+        # above, Cmd-comma); the other platforms get an Options menu with the
+        # one item.
+        if WIN_SYSTEM != "aqua":
             menu = MfxMenu(self.menubar, label=n_("&Options"))
             menu.add_command(
                 label=n_("&Settings"), command=self.mOptSettings,
@@ -409,8 +410,7 @@ class PysolMenubarTkCommon:
                           initial_tab='search'))
         self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
-        if WIN_SYSTEM != "aqua":
-            self._bindKey(ctrl, "comma", self.mOptSettings)
+        self._bindKey(ctrl, "comma", self.mOptSettings)
         if sys.platform != "darwin":
             bind(self.top, "<KeyPress-F11>", self._toggleFullscreen)
         self._bindKey(ctrl, "s", self.mSave)
