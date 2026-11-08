@@ -407,9 +407,6 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "n", self.mNewGame)
         self._bindKey(ctrl, "w", self.mSelectGameDialog)
         self._bindKey(ctrl, "v", self.mSelectGameDialogWithPreview)
-        self._bindKey(ctrl + "Shift-", "v",
-                      lambda e: self.mSelectGameDialogWithPreview(
-                          initial_tab='search'))
         self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
         self._bindKey(ctrl, "comma", self.mOptSettings)

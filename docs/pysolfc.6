@@ -21,7 +21,7 @@ hexadecimal-based deck.
 .PP
 Its features include modern look and feel (uses Ttk widget set),
 multiple cardsets and tableau backgrounds, sound, unlimited undo,
-player statistics, a hint system, demo games, a solitaire wizard,
+a hint system, demo games,
 support for user written plug-ins, an integrated HTML help browser,
 and lots of documentation.
 .PP
@@ -75,10 +75,6 @@ the current directory
 .PP
 Options are saved in \fB~/.PySolFC/options.cfg\fR
 .PP
-Statistics and logs are saved in \fB~/.PySolFC/statistics.dat\fR
-.PP
-Comments are indexed in \fB~/.PySolFC/comments.dat\fR
-.PP
 Savegames are searched in \fB~/.PySolFC/savegames/\fR
 .PP
 Additional plugins are searched in \fB~/.PySolFC/plugins/\fR
@@ -86,22 +82,15 @@ Additional plugins are searched in \fB~/.PySolFC/plugins/\fR
 Additional cardsets are searched in \fB~/.PySolFC/cardsets/\fR
 .PP
 Additional table tiles are searched in \fB~/.PySolFC/tiles/\fR
-.PP
-Additional music songs are searched in \fB~/.PySolFC/music/\fR
 .SH "ENVIRONMENT"
 .IX Header "ENVIRONMENT"
 \&\fB\s-1HOME\s0\fR is used for finding the users home directory.
-.PP
-\&\fB\s-1USER\s0\fR and \fB\s-1LOGNAME\s0\fR are used for getting the initial name of the player.
 .PP
 Additional cardsets are searched according to the path variable
 \&\fB\s-1PYSOL_CARDSETS\s0\fR. You can specify multiple directories.
 .PP
 Additional table tiles are searched according to the path variable
 \&\fB\s-1PYSOL_TILES\s0\fR. You can specify multiple directories.
-.PP
-Additional music songs are searched according to the path variable
-\&\fB\s-1PYSOL_MUSIC\s0\fR. You can specify multiple directories.
 .SH "DIAGNOSTICS"
 .IX Header "DIAGNOSTICS"
 Exit status is normally 0.

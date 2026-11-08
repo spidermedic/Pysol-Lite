@@ -35,7 +35,8 @@ call([sys.executable, './scripts/prune_card_backs.py', 'data'])
 # build the HTML list of games
 # (run with this interpreter so its packages are available)
 with open('docs/all_games.html', 'w') as _f:
-    call([sys.executable, './scripts/all_games.py'], stdout=_f)
+    call([sys.executable, './scripts/all_games.py'], stdout=_f,
+         env=dict(os.environ, PYTHONPATH=os.getcwd()))
 
 # Use Freecell Solver, if it is installed.
 # http://fc-solve.berlios.de/

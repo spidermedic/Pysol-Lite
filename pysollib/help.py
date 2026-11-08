@@ -87,7 +87,6 @@ def help_credits(app, timeout=0, sound=True):
 Volker Weidner for getting me into Solitaire
 Guido van Rossum for the initial example program
 T. Kirk for lots of contributed games and cardsets
-Carl Larsson for the background music
 The Gnome AisleRiot team for parts of the documentation
 Natascha
 
