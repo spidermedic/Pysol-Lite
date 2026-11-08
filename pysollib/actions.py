@@ -28,9 +28,7 @@ from pysollib.help import help_about, help_html
 from pysollib.mfxutil import Struct, openURL
 from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
-from pysollib.pysoltk import EditTextDialog
 from pysollib.pysoltk import GameInfoDialog
-from pysollib.pysoltk import MfxExceptionDialog
 from pysollib.pysoltk import MfxMessageDialog, MfxSimpleEntry
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import ASSIST_GAME_OPTIONS, ASSIST_OPTIONS
@@ -39,10 +37,8 @@ from pysollib.pysoltk import ChecklistDialog
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
 from pysollib.pysoltk import create_full_picture_dialog
-from pysollib.pysoltk import create_solver_dialog
 from pysollib.pysoltk import raise_find_card_dialog
 from pysollib.pysoltk import raise_full_picture_dialog
-from pysollib.pysoltk import raise_solver_dialog
 from pysollib.settings import PACKAGE_URL, TITLE
 
 
@@ -187,12 +183,11 @@ class PysolMenubar(PysolMenubarTk):
         self.setMenuState(ms.shuffle, "game.shuffletiles")
         self.setMenuState(ms.pause, "game.pause")
         # Assist menu
-        self.setMenuState(ms.hint, "assist.hint")
-        self.setMenuState(ms.highlight_piles, "assist.highlightpiles")
-        self.setMenuState(ms.find_card, "assist.findcard")
-        self.setMenuState(ms.full_picture, "assist.showfullpicture")
-        self.setMenuState(ms.demo, "assist.demo")
-        self.setMenuState(ms.demo, "assist.demoallgames")
+        self.setMenuState(ms.hint, "game.hint")
+        self.setMenuState(ms.highlight_piles, "game.highlightpiles")
+        self.setMenuState(ms.find_card, "game.findcard")
+        self.setMenuState(ms.full_picture, "game.showfullpicture")
+        self.setMenuState(ms.demo, "game.demo")
         # Options menu
         self._autoplay_usable = {
             'autofaceup': bool(ms.autofaceup), 'autodrop': bool(ms.autodrop),
@@ -496,47 +491,6 @@ class PysolMenubar(PysolMenubarTk):
             create_full_picture_dialog(self.game.top, self.game)
             raise_full_picture_dialog(self.game)
 
-    def mSolver(self, *args):
-        create_solver_dialog(self.game.top, self.app)
-        raise_solver_dialog(self.game)
-
-    def mEditGameComment(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        game, gi = self.game, self.game.gameinfo
-        kw = {'game': gi.name,
-              'id': game.getGameNumber(format=1)}
-        cc = _("Comments for %(game)s %(id)s:\n\n") % kw
-        c = game.gsaveinfo.comment or cc
-        d = EditTextDialog(game.top, _("Comments for %(id)s") % kw, text=c,
-                           resizable=True)
-        if d.status == 0 and d.button == 0:
-            text = d.text
-            if text.strip() == cc.strip():
-                game.gsaveinfo.comment = ""
-            else:
-                game.gsaveinfo.comment = d.text
-                # save to file
-                fn = os.path.join(self.app.dn.config, "comments.txt")
-                fn = os.path.normpath(fn)
-                if not text.endswith(os.linesep):
-                    text += os.linesep
-                try:
-                    with open(fn, 'at') as fh:
-                        fh.write(d.text)
-                except Exception as err:
-                    MfxExceptionDialog(
-                        self.top, err, text=_("Error while writing to file"))
-                else:
-                    MfxMessageDialog(
-                        self.top, title=_("%s Info") % TITLE, bitmap="info",
-                        text=_("Comments were appended to\n\n%(filename)s")
-                        % {'filename': fn})
-
-    #
-    # Game info
-    #
-
     def mGameInfo(self, *args):
         wasPaused = False
         if not self.game.pause:
@@ -579,11 +533,6 @@ class PysolMenubar(PysolMenubarTk):
             return
         if self.game.getHintClass() is not None:
             self._mDemo(mixed=0)
-
-    def mMixedDemo(self, *args):
-        if self._cancelDrag():
-            return
-        self._mDemo(mixed=1)
 
     def _mDemo(self, mixed):
         if self.changed():

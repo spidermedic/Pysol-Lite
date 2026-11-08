@@ -13,7 +13,6 @@ from pysollib.mfxutil import Struct, kwdefault
 from pysollib.mygettext import _, n_
 from pysollib.settings import SELECT_GAME_MENU
 from pysollib.settings import TITLE, WIN_SYSTEM
-from pysollib.settings import USE_FREECELL_SOLVER
 from pysollib.ui.tktile.tkconst import COMPOUNDS, CURSOR_WATCH, EVENT_HANDLED
 from pysollib.ui.tktile.tkconst import EVENT_PROPAGATE
 from pysollib.ui.tktile.tkutil import after_idle, bind
@@ -333,17 +332,7 @@ class PysolMenubarTkCommon:
         menu.add_checkbutton(
             label=n_("&Pause"), variable=self.tkopt.pause,
             command=self.mPause, accelerator="P")
-        # menu.add_command(
-        #    label=n_("&Pause"), command=self.mPause, accelerator="P")
         menu.add_separator()
-        menu.add_command(
-            label=n_("Select game by nu&mber"),
-            command=self.mSelectGameById, accelerator=m+"M")
-        menu.add_command(
-            label=n_("&Comments"),
-            command=self.mEditGameComment)
-
-        menu = MfxMenu(self.menubar, label=n_("&Assist"))
         menu.add_command(
             label=n_("&Hint"),
             command=self.mHint, accelerator="H")
@@ -356,21 +345,16 @@ class PysolMenubarTkCommon:
         menu.add_command(
             label=n_("Sh&ow full picture"),
             command=self.mFullPicture)
+        menu.add_command(
+            label=n_("Piles &description"),
+            command=self.mStackDesk, accelerator="F2")
         menu.add_separator()
         menu.add_command(
-            label=n_("&Demo"),
+            label=n_("De&mo"),
             command=self.mDemo, accelerator=m+"D")
         menu.add_command(
-            label=n_("Demo (&all games)"),
-            command=self.mMixedDemo)
-        if USE_FREECELL_SOLVER:
-            menu.add_command(label=n_("&Solver"), command=self.mSolver)
-        else:
-            menu.add_command(label=n_("&Solver"), state='disabled')
-        menu.add_separator()
-        menu.add_command(
-            label=n_("&Piles description"),
-            command=self.mStackDesk, accelerator="F2")
+            label=n_("Select game by nu&mber"),
+            command=self.mSelectGameById, accelerator=m+"M")
 
         if self.progress:
             self.progress.update(step=1)
