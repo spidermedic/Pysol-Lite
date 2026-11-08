@@ -290,14 +290,13 @@ class PysolMenubarTkCommon:
         menu.add_checkbutton(
             label=n_("Show stat&us bar"), variable=self.tkopt.statusbar,
             command=self.mOptStatusbar)
-        menu.add_separator()
-        if sys.platform == "darwin":
-            fs_accel = "Ctrl-Cmd-F"
-        else:
-            fs_accel = "F11"
-        menu.add_checkbutton(
-            label=n_("Enter &full screenFull screen"), variable=self.tkopt.fullscreen,
-            command=self.mViewFullscreen, accelerator=fs_accel)
+        # macOS adds its own "Enter Full Screen" item to a menu named View,
+        # so only the other platforms get one here.
+        if sys.platform != "darwin":
+            menu.add_separator()
+            menu.add_checkbutton(
+                label=n_("&Full screen"), variable=self.tkopt.fullscreen,
+                command=self.mViewFullscreen, accelerator="F11")
 
         menu = MfxMenu(self.menubar, label=n_("&Games"))
         self._addSelectGameMenu(menu)
@@ -437,9 +436,7 @@ class PysolMenubarTkCommon:
                           initial_tab='search'))
         self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
-        if sys.platform == "darwin":
-            self._bindKey("Control-Command-", "f", self._toggleFullscreen)
-        else:
+        if sys.platform != "darwin":
             bind(self.top, "<KeyPress-F11>", self._toggleFullscreen)
         self._bindKey(ctrl, "s", self.mSave)
         self._bindKey(ctrl, "q", self.mQuit)
