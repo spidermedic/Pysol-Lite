@@ -473,3 +473,11 @@ Installed app rebuilt after commit "macOS: put Settings in the app menu" (120 MB
 - **Mistake and fix:** the first build had no Settings item on macOS because the custom app menu hid Tk's built-in one; fixed by adding the item to that menu. A stray empty `data/html 3` (iCloud) was in the first installed bundle and was removed from it.
 - **Verification (light):** a scripted source run opened the window and changed animation speed, toolbar side, icon size and button style and set sound, all applied; the installed app passes `--version` and `codesign -v`. The window and the app menu were not looked at by eye; Deck, Background color and Visible buttons buttons and the autoplay greying were not exercised.
 - **Still open:** as in section 42, plus the unused option tables if the Play options dialog is never coming back.
+
+## 45. Update: About only in the app menu on macOS (2026-11-08)
+
+Installed app rebuilt after commit "Help menu: About only in the app menu on macOS" (120 MB, arm64, ad-hoc signed).
+
+- **Help menu on macOS** is now PySolFC Help, Rules for this game (F1), a divider, License terms. About PySol 26 is in the app menu only (macOS convention). Windows and Linux still show About at the bottom of Help. This reverses the macOS part of section 43.
+- **Verification (light):** py_compile; the installed app passes `--version` and `codesign -v`; no stray `html N` folder in the bundle. The menus were not looked at by eye.
+- **Still open:** as in sections 42 and 44.
