@@ -96,20 +96,16 @@ num_recent_games = integer(10, 100)
 last_gameid = integer
 game_holded = integer
 wm_maximized = boolean
-wm_fullscreen = boolean
 splashscreen = boolean
 date_format = string
 mouse_type = string
 use_cardset_bottoms = boolean
-save_games_geometry = boolean
 game_geometry = int_list(min=2, max=2)
 window_geometry = int_list(min=4, max=4)
-topmost_dialogs = boolean
 sound = boolean
 sound_sample_buffer_size = integer(1, 4)
 tabletile_name = string
 tabletile_scale_method = integer
-center_layout = boolean
 recent_gameid = int_list
 favorite_gameid = int_list
 visible_buttons = string_list
@@ -225,19 +221,15 @@ class Options:
         ('last_gameid', 'int'),
         ('game_holded', 'int'),
         ('wm_maximized', 'bool'),
-        ('wm_fullscreen', 'bool'),
         ('splashscreen', 'bool'),
         ('date_format', 'str'),
         ('mouse_type', 'str'),
         ('use_cardset_bottoms', 'bool'),
         # ('save_cardsets', 'bool'),
-        ('save_games_geometry', 'bool'),
-        ('topmost_dialogs', 'bool'),
         ('sound', 'bool'),
         ('sound_sample_buffer_size', 'int'),
         ('tabletile_name', 'str'),
         ('tabletile_scale_method', 'int'),
-        ('center_layout', 'bool'),
         ('translate_game_names', 'bool'),
         ('solver_presets', 'list'),
         ('solver_show_progress', 'bool'),
@@ -369,9 +361,6 @@ class Options:
         self.last_gameid = 0            # last game played
         self.game_holded = 0            # gameid or 0
         self.wm_maximized = 1
-        self.wm_fullscreen = 0
-        self.save_games_geometry = False
-        self.topmost_dialogs = True
         # saved games geometry (gameid: (width, height))
         self.games_geometry = {}
         self.game_geometry = (0, 0)  # game geometry before exit
@@ -382,6 +371,11 @@ class Options:
         #
         # Card scaling is fixed: always scale to the window, keep the aspect
         # ratio, and use the best resampling filter. Not saved or loaded.
+        # Window and layout settings that are fixed (not saved or loaded).
+        self.wm_fullscreen = 0
+        self.save_games_geometry = True
+        self.topmost_dialogs = True
+        self.center_layout = True
         # Card view settings that are fixed (not saved or loaded).
         self.compact_stacks = True
         self.shrink_face_down = True
@@ -394,7 +388,6 @@ class Options:
         self.auto_scale = True
         self.preview_scale = True
         self.spread_stacks = False
-        self.center_layout = True
         self.preserve_aspect_ratio = True
         self.tabletile_scale_method = 0
         self.resampling = 0

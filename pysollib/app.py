@@ -550,13 +550,6 @@ class Application:
             wm_withdraw(self.top)
             self.top.busyUpdate()
 
-    def wm_toggle_fullscreen(self):
-        self.opt.wm_fullscreen = not self.opt.wm_fullscreen
-        self.top.attributes("-fullscreen", self.opt.wm_fullscreen)
-        # Topmost dialogs need to be reset when toggling fullscreen.
-        self.raiseAll()
-        self.top.attributes('-topmost', False)
-
     def raiseAll(self):
         raise_find_card_dialog(self.game)
         raise_full_picture_dialog(self.game)

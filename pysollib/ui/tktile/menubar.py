@@ -162,11 +162,7 @@ class PysolMenubarTkCommon:
             accordion_deal_all=tkinter.BooleanVar(),
             pegged_auto_remove=tkinter.BooleanVar(),
             sound=tkinter.BooleanVar(),
-            fullscreen=tkinter.BooleanVar(),
             spread_stacks=tkinter.BooleanVar(),
-            center_layout=tkinter.BooleanVar(),
-            save_games_geometry=tkinter.BooleanVar(),
-            topmost_dialogs=tkinter.BooleanVar(),
             cardback=tkinter.IntVar(),
             tabletile=tkinter.IntVar(),
             animations=tkinter.IntVar(),
@@ -207,11 +203,7 @@ class PysolMenubarTkCommon:
         tkopt.accordion_deal_all.set(opt.accordion_deal_all)
         tkopt.pegged_auto_remove.set(opt.pegged_auto_remove)
         tkopt.sound.set(opt.sound)
-        tkopt.fullscreen.set(opt.wm_fullscreen)
         tkopt.spread_stacks.set(opt.spread_stacks)
-        tkopt.center_layout.set(opt.center_layout)
-        tkopt.save_games_geometry.set(opt.save_games_geometry)
-        tkopt.topmost_dialogs.set(opt.topmost_dialogs)
         tkopt.cardback.set(self.app.cardset.backindex)
         tkopt.tabletile.set(self.app.tabletile_index)
         tkopt.animations.set(opt.animations)
@@ -466,38 +458,20 @@ class PysolMenubarTkCommon:
             label=n_("&Sound"), variable=self.tkopt.sound,
             command=self.mOptSound)
         # cardsets
-        submenu = MfxMenu(menu, label=n_("Game la&yout"))
-        submenu.add_checkbutton(
-            label=n_("&Fullscreen"),
-            variable=self.tkopt.fullscreen,
-            command=self.togglefullscreen, accelerator='F11')
-        submenu.add_separator()
+        submenu = MfxMenu(menu, label=n_("&Layout"))
+        submenu.add_command(
+            label=n_("Table c&olor..."),
+            command=self.mSelectTableColor)
         if USE_PIL:
             submenu.add_checkbutton(
                 label=n_("&Spread stacks"), variable=self.tkopt.spread_stacks,
                 command=self.mOptSpreadStacks)
-            submenu.add_checkbutton(
-                label=n_("&Center layout"), variable=self.tkopt.center_layout,
-                command=self.mOptCenterLayout)
-        submenu.add_checkbutton(
-            label=n_("Save games &geometry"),
-            variable=self.tkopt.save_games_geometry,
-            command=self.mOptSaveGamesGeometry)
-        submenu.add_checkbutton(
-            label=n_("&Keep dialogs on top"),
-            variable=self.tkopt.topmost_dialogs,
-            command=self.mOptTopmostDialogs)
-        # manager = self.app.cardset_manager
-        # n = manager.len()
         submenu = MfxMenu(menu, label=n_("C&ards"))
         submenu.add_command(
             label=n_("&Decks..."),
             command=self.mSelectCardsetDialog, accelerator=m+"E")
         # this submenu will get set by updateBackgroundImagesMenu()
         MfxMenu(submenu, label=n_("&Backs"))
-        menu.add_command(
-            label=n_("Table c&olor..."),
-            command=self.mSelectTableColor)
         submenu = MfxMenu(menu, label=n_("A&nimations"))
         submenu.add_radiobutton(
             label=n_("&Off"), variable=self.tkopt.animations, value=0,
@@ -671,7 +645,6 @@ class PysolMenubarTkCommon:
         self._bindKey(ctrl, "Down", self.mSelectNextGameById)
 
         self._bindKey("", "F5", self.refresh)
-        self._bindKey("", "F11", self.togglefullscreen)
 
         if os.name == 'posix' and platform.system() != 'Darwin':
             self._bindKey('Alt-', 'F4', self.mQuit)
@@ -1442,23 +1415,6 @@ Unsupported game for import.
         self.tkopt.spread_stacks.set(spread_stacks)
         self._updateCardSize()
 
-    def mOptCenterLayout(self, *event):
-        if self._cancelDrag(break_pause=True):
-            return
-        self.app.opt.center_layout = not self.app.opt.center_layout
-        self._updateCardSize()
-
-    def mOptSaveGamesGeometry(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.save_games_geometry = self.tkopt.save_games_geometry.get()
-
-    def mOptTopmostDialogs(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.topmost_dialogs = self.tkopt.topmost_dialogs.get()
-        self.app.raiseAll()
-
     def _mOptCardback(self, index):
         if self._cancelDrag(break_pause=False):
             return
@@ -1553,10 +1509,6 @@ Unsupported game for import.
         self.app.updateCardset()
         self.game.endGame(bookmark=1)
         self.game.quitGame(bookmark=1)
-
-    def togglefullscreen(self, *event):
-        self.app.wm_toggle_fullscreen()
-        self.tkopt.fullscreen.set(self.app.opt.wm_fullscreen)
 
     #
     # toolbar support
