@@ -170,7 +170,6 @@ class PysolMenubarTkCommon:
             cardback=tkinter.IntVar(),
             tabletile=tkinter.IntVar(),
             animations=tkinter.IntVar(),
-            shadow=tkinter.BooleanVar(),
             shade=tkinter.BooleanVar(),
             toolbar=tkinter.IntVar(),
             toolbar_relief=tkinter.StringVar(),
@@ -216,7 +215,6 @@ class PysolMenubarTkCommon:
         tkopt.cardback.set(self.app.cardset.backindex)
         tkopt.tabletile.set(self.app.tabletile_index)
         tkopt.animations.set(opt.animations)
-        tkopt.shadow.set(opt.shadow)
         tkopt.shade.set(opt.shade)
         tkopt.toolbar.set(opt.toolbar)
         tkopt.toolbar_relief.set(opt.toolbar_relief)
@@ -570,9 +568,6 @@ class PysolMenubarTkCommon:
             command=self.mSelectTableColor)
         # this submenu will get set by updateBackgroundImagesMenu()
         submenu = MfxMenu(menu, label=n_("Card &background"))
-        menu.add_checkbutton(
-            label=n_("Card shado&w"), variable=self.tkopt.shadow,
-            command=self.mOptShadow)
         menu.add_checkbutton(
             label=n_("Shade &legal moves"), variable=self.tkopt.shade,
             command=self.mOptShade)
@@ -1454,11 +1449,6 @@ Unsupported game for import.
         # the radio button change while the option silently stayed the same,
         # so a slow speed could not be changed back.
         self.app.opt.animations = self.tkopt.animations.get()
-
-    def mOptShadow(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.shadow = self.tkopt.shadow.get()
 
     def mOptShade(self, *args):
         if self._cancelDrag(break_pause=False):

@@ -84,7 +84,6 @@ shisen_show_hint = boolean
 shisen_show_matching = boolean
 match_three_cascade = boolean
 animations = integer(0, 5)
-shadow = boolean
 shade = boolean
 toolbar = integer(0, 4)
 toolbar_land = integer(0, 4)
@@ -212,7 +211,6 @@ class Options:
         ('accordion_deal_all', 'bool'),
         ('pegged_auto_remove', 'bool'),
         ('animations', 'int'),
-        ('shadow', 'bool'),
         ('shade', 'bool'),
         ('toolbar', 'int'),
         ('toolbar_land', 'int'),
@@ -295,7 +293,7 @@ class Options:
         self.match_three_cascade = True
         # 0 none, 1 fast, 2 medium, 3 slow
         self.animations = 2             # default to Medium
-        self.shadow = True
+        self.shadow = True              # fixed: not saved or loaded
         self.shade = True
         self.tile_theme = 'default'
         self.default_tile_theme = 'default'
