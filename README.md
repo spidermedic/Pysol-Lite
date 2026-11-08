@@ -35,8 +35,8 @@ can be implemented.
 - Tkinter (Tcl/Tk 8.4 or later)
 
 - For sound support (optional)
-  - PySol-Sound-Server fork: https://github.com/shlomif/pysol-sound-server (mp3, wav, tracker music)
-  - (or: ) PyGame (or PyGame CE): https://www.pygame.org/ (mp3, ogg, wav, midi, tracker music)
+  - PySol-Sound-Server fork: https://github.com/shlomif/pysol-sound-server (wav)
+  - (or: ) PyGame (or PyGame CE): https://www.pygame.org/ (wav)
 
 - Other packages (optional):
   - Pillow (Python Imaging Library): https://pillow.readthedocs.io/
@@ -197,12 +197,6 @@ ad-hoc sign it (copy it out of iCloud-synced folders first). See
 `pysolfc-handoff.md` for the complete, tested procedure.
 
 ## Install Extras.
-
-- Music
- - Copy some music files (in mp3 format for example) to ~/.PySolFC/music/
-
- - Original PySol music can be downloaded from:
-     https://sourceforge.net/projects/pysolfc/files/PySol-Music/
 
 - Cardsets
  - Copy cardsets to ~/.PySolFC/cardsets

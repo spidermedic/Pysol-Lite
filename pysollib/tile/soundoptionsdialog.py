@@ -51,10 +51,6 @@ class SoundOptionsDialog(MfxDialog):
         self.sound_mode.set(app.opt.sound_mode != 0)
         self.sample_volume = tkinter.IntVar()
         self.sample_volume.set(app.opt.sound_sample_volume)
-        self.music = tkinter.BooleanVar()
-        self.music.set(app.opt.music != 0)
-        self.music_volume = tkinter.IntVar()
-        self.music_volume.set(app.opt.sound_music_volume)
         self.samples = [
             ('areyousure',    _('Are You Sure'),   tkinter.BooleanVar()),
 
@@ -106,7 +102,7 @@ class SoundOptionsDialog(MfxDialog):
                                  command=self.mOptSoundDirectX)
             w.grid(row=row, column=0, columnspan=2, sticky='ew')
         #
-        if app.audio.CAN_PLAY_MUSIC:  # and app.startup_opt.sound_mode > 0:
+        if app.audio.CAN_SET_VOLUME:
             row += 1
             ttk.Label(frame, text=_('Sample volume:'), anchor='w'
                       ).grid(row=row, column=0, sticky='ew')
@@ -115,20 +111,6 @@ class SoundOptionsDialog(MfxDialog):
                            length="3i", fieldname=_('Sample volume'),
                            variable=self.sample_volume)
             w.grid(row=row, column=1, sticky='w', padx=5)
-            row += 1
-            w = PysolCheckbutton(frame, variable=self.music,
-                                 text=_("Music enabled"))
-            w.grid(row=row, column=0, columnspan=2, sticky='ew')
-
-            row += 1
-            ttk.Label(frame, text=_('Music volume:'), anchor='w'
-                      ).grid(row=row, column=0, sticky='ew')
-            w = PysolScale(frame, from_=0, to=128, resolution=1,
-                           orient='horizontal',
-                           length="3i", fieldname=_('Music volume'),
-                           variable=self.music_volume)
-            w.grid(row=row, column=1, sticky='w', padx=5)
-
         else:
             # remove "Apply" button
             kw.strings[1] = None
@@ -164,57 +146,17 @@ class SoundOptionsDialog(MfxDialog):
                       )
         return MfxDialog.initKw(self, kw)
 
-    def _musicAudible(self, opt):
-        return bool(
-            opt.sound and opt.music and opt.sound_music_volume > 0)
-
-    def _warnNoMusic(self):
-        dirs = self.app.music_manager.getSearchDirs(
-            self.app, "music-*", "PYSOL_MUSIC")
-        if not dirs:
-            dirs = [os.path.join(self.app.dn.config, "music")]
-        MfxMessageDialog(
-            self.top, title=_("No music found"),
-            bitmap="warning",
-            text=_("""\
-No music files were found, so background music cannot play.
-
-PySol looks for music files here:
-
-%(dirs)s
-
-Copy music files into that location, then apply the sound
-settings again.
-""") % {"dirs": "\n".join(dirs)},
-            strings=(_("&OK"),),
-            default=0,
-        )
-
     def mDone(self, button):
         if button == 0 or button == 1:
             self.app.opt.sound = self.sound.get()
             self.app.opt.sound_mode = int(self.sound_mode.get())
             self.app.opt.sound_sample_volume = self.sample_volume.get()
-            self.app.opt.sound_music_volume = self.music_volume.get()
-            self.app.opt.music = self.music.get()
             for n, t, v in self.samples:
                 self.app.opt.sound_samples[n] = v.get()
         elif button == 2:
             self.app.opt = self.saved_opt
         if self.app.audio:
-            warn_no_music = False
-            audible = (
-                button in (0, 1) and
-                self.app.audio.CAN_PLAY_MUSIC and
-                self._musicAudible(self.app.opt))
-            if audible and not self.app.refreshMusicPlaylist():
-                # Only when they just asked for music. Leaving the
-                # box checked with no files should not nag on every
-                # visit to this dialog.
-                warn_no_music = not self._musicAudible(self.saved_opt)
             self.app.audio.updateSettings()
-            if warn_no_music:
-                self._warnNoMusic()
             if button == 1:
                 self.app.audio.playSample("drop", priority=1000)
         if button == 1:

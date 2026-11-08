@@ -172,7 +172,6 @@ def pysol_init(app, args):
         app.dn.config,
         app.dn.savegames,
         app.dn.boards,
-        os.path.join(app.dn.config, "music"),
         # os.path.join(app.dn.config, "screenshots"),
         os.path.join(app.dn.config, "tiles"),
         os.path.join(app.dn.config, "tiles", "stretch"),
@@ -352,31 +351,13 @@ Cardsets package is up to date.
     tile.filename = None
     manager.register(tile)
 
-    # init samples and music resources
+    # init samples
     app.initSamples()
-    app.initMusic()
 
     # init audio 2)
     if not app.audio.CAN_PLAY_SOUND:
         app.opt.sound = 0
     app.audio.updateSettings()
-    # start up the background music
-    if app.audio.CAN_PLAY_MUSIC:
-        music = app.music_manager.getAll()
-        if music:
-            app.music_playlist = list(music)[:]
-            app.miscrandom.shuffle(app.music_playlist)
-            # Cancelling because otherwise people complain
-            # that the music order is not random.
-            SHOULD_PUT_bye_for_now_FIRST = False
-            if SHOULD_PUT_bye_for_now_FIRST:
-                for m in app.music_playlist:
-                    if m.name.lower() == "bye_for_now":
-                        app.music_playlist.remove(m)
-                        app.music_playlist.insert(0, m)
-                        break
-            app.audio.playContinuousMusic(app.music_playlist)
-
     # prepare other images
     app.loadImages2()
     app.loadImages3()

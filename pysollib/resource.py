@@ -726,15 +726,3 @@ class Sample(Resource):
 
 class SampleManager(ResourceManager):
     pass
-
-
-# ************************************************************************
-# * Music
-# ************************************************************************
-
-class Music(Sample):
-    pass
-
-
-class MusicManager(SampleManager):
-    pass

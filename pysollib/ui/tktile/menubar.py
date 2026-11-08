@@ -989,7 +989,6 @@ class PysolMenubarTkCommon:
         self._bindKey(ctrl, "F1", self.mHelp)
         self._bindKey("",   "F1", self.mHelpRules)
         self._bindKey("",   "Print", self.mScreenshot)
-        self._bindKey(ctrl, "u", self.mPlayNextMusic)   # undocumented
         self._bindKey("",   "p", self.mPause)
         self._bindKey("",   "Pause", self.mPause)       # undocumented
         self._bindKey("",   "Escape", self.mIconify)    # undocumented
@@ -1041,7 +1040,6 @@ class PysolMenubarTkCommon:
         self._bindKey("Shift-", "Return", self.mKeyboardAction2)
 
         # undocumented, devel
-        self._bindKey(ctrl, "End", self.mPlayNextMusic)
         self._bindKey(ctrl, "Prior", self.mSelectPrevGameByName)
         self._bindKey(ctrl, "Next", self.mSelectNextGameByName)
         self._bindKey(ctrl, "Up", self.mSelectPrevGameById)

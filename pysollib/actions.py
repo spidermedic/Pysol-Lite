@@ -48,7 +48,6 @@ from pysollib.pysoltk import create_solver_dialog
 from pysollib.pysoltk import raise_find_card_dialog
 from pysollib.pysoltk import raise_full_picture_dialog
 from pysollib.pysoltk import raise_solver_dialog
-from pysollib.settings import DEBUG
 from pysollib.settings import PACKAGE_URL, TITLE
 from pysollib.settings import TOP_SIZE
 from pysollib.stats import FileStatsFormatter
@@ -936,18 +935,6 @@ class PysolMenubar(PysolMenubarTk):
             if i >= 10000:      # give up
                 return
         self.top.screenshot(fn)
-
-    def mPlayNextMusic(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        if (self.app.audio and self.app.opt.music and
-                self.app.opt.sound_music_volume > 0):
-            self.app.audio.playNextMusic()
-            if DEBUG:
-                index = self.app.audio.getMusicInfo()
-                music = self.app.music_manager.get(index)
-                if music:
-                    print("playing music:", music.filename)
 
     def mIconify(self, *args):
         if self._cancelDrag(break_pause=False):

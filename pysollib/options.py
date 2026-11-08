@@ -130,7 +130,6 @@ sound = boolean
 sound_mode = integer(0, 1)
 sound_sample_volume = integer(0, 128)
 sound_sample_buffer_size = integer(1, 4)
-music = boolean
 tabletile_name = string
 tabletile_scale_method = integer
 center_layout = boolean
@@ -321,9 +320,7 @@ class Options:
         ('sound', 'bool'),
         ('sound_mode', 'int'),
         ('sound_sample_volume', 'int'),
-        ('sound_music_volume', 'int'),
         ('sound_sample_buffer_size', 'int'),
-        ('music', 'bool'),
         ('tabletile_name', 'str'),
         ('tabletile_scale_method', 'int'),
         ('center_layout', 'bool'),
@@ -438,9 +435,7 @@ class Options:
         self.sound = True
         self.sound_mode = 1
         self.sound_sample_volume = 75
-        self.sound_music_volume = 100
         self.sound_sample_buffer_size = 1  # 1 - 4 (1024 - 4096 bytes)
-        self.music = True
         self.sound_samples = {
             'areyousure': True,
             'autodrop': True,

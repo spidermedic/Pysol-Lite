@@ -70,7 +70,6 @@ from pysollib.pysoltk import unraise_find_card_dialog
 from pysollib.pysoltk import unraise_full_picture_dialog
 from pysollib.pysoltk import unraise_solver_dialog
 from pysollib.resource import CSI, CardsetManager
-from pysollib.resource import Music, MusicManager
 from pysollib.resource import Sample, SampleManager
 from pysollib.resource import TileManager
 from pysollib.settings import DEBUG
@@ -217,8 +216,6 @@ class Application:
         self.tabletile_manager = TileManager()
         self.tabletile_index = 0        # current table tile
         self.sample_manager = SampleManager()
-        self.music_manager = MusicManager()
-        self.music_playlist = []
         self.intro = Struct(
             progress=None,            # progress bar
         )
@@ -1415,7 +1412,7 @@ class Application:
         return []
 
     #
-    # init samples / music
+    # init samples
     #
 
     def initResource(self, manager, dirs, ext_re, Resource_Class):
@@ -1459,28 +1456,3 @@ class Application:
         # print dirs
         ext_re = re.compile(r"\.((wav))$", re.I)
         self.initResource(manager, dirs, ext_re, Sample)
-
-    def initMusic(self):
-        music_manager = self.music_manager
-        # find all available music songs
-        dirs = music_manager.getSearchDirs(self, "music-*", "PYSOL_MUSIC")
-        # print('dirs =', dirs)
-        ext_re = re.compile(self.audio.EXTENSIONS)
-        self.initResource(music_manager, dirs, ext_re, Music)
-
-    def refreshMusicPlaylist(self):
-        # The music folder is scanned at startup. An empty or missing
-        # music folder stays empty until we look again.
-        audio = self.audio
-        if audio is None or not audio.CAN_PLAY_MUSIC:
-            return False
-        if getattr(audio, 'music_list', None) or self.music_playlist:
-            return True
-        self.initMusic()
-        music = self.music_manager.getAll()
-        if not music:
-            return False
-        self.music_playlist = list(music)[:]
-        self.miscrandom.shuffle(self.music_playlist)
-        audio.playContinuousMusic(self.music_playlist)
-        return True
