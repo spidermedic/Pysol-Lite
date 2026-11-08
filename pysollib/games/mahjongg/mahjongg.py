@@ -244,7 +244,6 @@ class Mahjongg_RowStack(OpenStack):
         self.keyboard_card = None
 
     def __defaultClickEventHandler(self, event, handler):
-        self.game.event_handled = True  # for Game.undoHandler
         if self.game.demo:
             self.game.stopDemo(event)
         if self.game.busy:

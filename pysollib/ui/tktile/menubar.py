@@ -185,7 +185,6 @@ class PysolMenubarTkCommon:
             helpbar=tkinter.BooleanVar(),
             splashscreen=tkinter.BooleanVar(),
             mouse_type=tkinter.StringVar(),
-            mouse_undo=tkinter.BooleanVar(),
             negative_bottom=tkinter.BooleanVar(),
             pause=tkinter.BooleanVar(),
         )
@@ -238,7 +237,6 @@ class PysolMenubarTkCommon:
         # tkopt.helpbar.set(opt.helpbar)
         tkopt.splashscreen.set(opt.splashscreen)
         tkopt.mouse_type.set(opt.mouse_type)
-        tkopt.mouse_undo.set(opt.mouse_undo)
         tkopt.negative_bottom.set(opt.negative_bottom)
 
     def connectGame(self, game):
@@ -622,24 +620,11 @@ class PysolMenubarTkCommon:
         submenu.add_radiobutton(
             label=n_("&Slow"), variable=self.tkopt.animations, value=3,
             command=self.mOptAnimations)
-        submenu = MfxMenu(menu, label=n_("&Mouse"))
-        submenu.add_radiobutton(
-            label=n_("&Drag-and-Drop"), variable=self.tkopt.mouse_type,
-            value='drag-n-drop',
+        menu.add_checkbutton(
+            label=n_("&Point-and-click (no dragging)"),
+            variable=self.tkopt.mouse_type,
+            onvalue='point-n-click', offvalue='drag-n-drop',
             command=self.mOptMouseType)
-        submenu.add_radiobutton(
-            label=n_("&Point-and-Click"), variable=self.tkopt.mouse_type,
-            value='point-n-click',
-            command=self.mOptMouseType)
-        submenu.add_radiobutton(
-            label=n_("&Sticky mouse"), variable=self.tkopt.mouse_type,
-            value='sticky-mouse',
-            command=self.mOptMouseType)
-        submenu.add_separator()
-        submenu.add_checkbutton(
-            label=n_("Use mouse for undo/redo"),
-            variable=self.tkopt.mouse_undo,
-            command=self.mOptMouseUndo)
         menu.add_separator()
         menu.add_command(label=n_("&Fonts..."), command=self.mOptFonts)
         menu.add_command(label=n_("&Colors..."), command=self.mOptColors)
@@ -1707,11 +1692,6 @@ Unsupported game for import.
         if self._cancelDrag(break_pause=False):
             return
         self.app.opt.mouse_type = self.tkopt.mouse_type.get()
-
-    def mOptMouseUndo(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.mouse_undo = self.tkopt.mouse_undo.get()
 
     def mOptNegativeBottom(self, *event):
         if self._cancelDrag():

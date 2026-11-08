@@ -58,7 +58,7 @@ from pysollib.mygettext import ungettext
 from pysollib.pysolrandom import LCRandom31, PysolRandom, construct_random
 from pysollib.pysoltk import CURSOR_WATCH
 from pysollib.pysoltk import Card
-from pysollib.pysoltk import EVENT_HANDLED, EVENT_PROPAGATE
+from pysollib.pysoltk import EVENT_HANDLED
 from pysollib.pysoltk import MfxCanvasLine, MfxCanvasRectangle, MfxCanvasText
 from pysollib.pysoltk import MfxExceptionDialog, MfxMessageDialog
 from pysollib.pysoltk import after, after_cancel, after_idle
@@ -522,7 +522,6 @@ class Game:
         self.regions = StackRegions()
         self.init_size = (0, 0)
         self.center_offset = (0, 0)
-        self.event_handled = False      # if click event handled by Stack (???)
         self.reset()
 
     # main constructor
@@ -671,13 +670,6 @@ class Game:
 
     def initBindings(self):
         # note: a Game is only allowed to bind self.canvas and not to self.top
-        # bind(self.canvas, "<Double-1>", self.undoHandler)
-        bind(self.canvas,
-             self._calcMouseBind("<{mouse_button1}>"), self.undoHandler)
-        bind(self.canvas,
-             self._calcMouseBind("<{mouse_button2}>"), self.dropHandler)
-        bind(self.canvas,
-             self._calcMouseBind("<{mouse_button3}>"), self.redoHandler)
         bind(self.canvas, '<Unmap>', self._unmapHandler)
         bind(self.canvas, '<Map>', self._mapHandler)
         bind(self.canvas, '<Configure>', self._configureHandler, add=True)
@@ -1461,44 +1453,6 @@ class Game:
     def disableMenus(self):
         if not self.preview:
             self.app.menubar.disableMenus()
-
-    def _defaultHandler(self, event):
-        if not self.app:
-            return True                 # FIXME (GTK)
-        if not self.app.opt.mouse_undo:
-            return True
-        if self.pause:
-            self.app.menubar.mPause()
-            return True
-        self.interruptSleep()
-        if self.deleteStackDesc():
-            # delete piles descriptions
-            return True
-        if self.demo:
-            self.stopDemo()
-            return True
-        if not self.event_handled and self.drag.stack:
-            self.drag.stack.cancelDrag(event)
-            return True
-        return False                    # continue this event
-
-    def dropHandler(self, event):
-        if not self._defaultHandler(event) and not self.event_handled:
-            self.app.menubar.mDrop()
-        self.event_handled = False
-        return EVENT_PROPAGATE
-
-    def undoHandler(self, event):
-        if not self._defaultHandler(event) and not self.event_handled:
-            self.app.menubar.mUndo()
-        self.event_handled = False
-        return EVENT_PROPAGATE
-
-    def redoHandler(self, event):
-        if not self._defaultHandler(event) and not self.event_handled:
-            self.app.menubar.mRedo()
-        self.event_handled = False
-        return EVENT_PROPAGATE
 
     def updateStatus(self, **kw):
         if self.preview:

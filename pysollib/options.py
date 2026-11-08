@@ -104,7 +104,6 @@ wm_fullscreen = boolean
 splashscreen = boolean
 date_format = string
 mouse_type = string
-mouse_undo = boolean
 negative_bottom = boolean
 randomize_place = boolean
 use_cardset_bottoms = boolean
@@ -240,7 +239,6 @@ class Options:
         ('splashscreen', 'bool'),
         ('date_format', 'str'),
         ('mouse_type', 'str'),
-        ('mouse_undo', 'bool'),
         ('negative_bottom', 'bool'),
         ('randomize_place', 'bool'),
         ('use_cardset_bottoms', 'bool'),
@@ -333,9 +331,8 @@ class Options:
         self.mouse_button1 = 1
         self.mouse_button2 = 2
         self.mouse_button3 = 3
-        # mouse_type:  'drag-n-drop' or 'sticky-mouse' or 'point-n-click'
+        # mouse_type:  'drag-n-drop' or 'point-n-click'
         self.mouse_type = 'drag-n-drop'
-        self.mouse_undo = False         # use mouse for undo/redo
         self.negative_bottom = True
         self.translate_game_names = True
         self.display_win_message = True
@@ -680,6 +677,10 @@ class Options:
 
         # The two slowest speeds were removed; older files may hold 4 or 5.
         self.animations = min(self.animations, 3)
+
+        # The sticky mouse mode was removed.
+        if self.mouse_type not in ('drag-n-drop', 'point-n-click'):
+            self.mouse_type = 'drag-n-drop'
 
         # The text above/beside icon placements were removed.
         if self.toolbar_compound not in ('none', 'top', 'text'):

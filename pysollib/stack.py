@@ -1142,7 +1142,6 @@ class Stack:
             for r in self.game.keyboard_selector:
                 r.delete()
             self.game.keyboard_selector = None
-        self.game.event_handled = True  # for Game.undoHandler
         if self.game.demo:
             self.game.stopDemo(event)
             return EVENT_HANDLED
@@ -1177,7 +1176,7 @@ class Stack:
             cancel_drag = 1
             start_drag = 1
             handler = self.clickHandler
-        else:  # sticky-mouse or point-n-click
+        else:  # point-n-click
             cancel_drag = 0
             start_drag = not self.game.drag.stack
             if start_drag:
@@ -1295,7 +1294,6 @@ class Stack:
             return
         if self.is_filled and self.items.shade_item:
             self.items.shade_item.hide()
-        x_offset, y_offset = self.cards[i].x, self.cards[i].y
         if sound:
             self.game.playSample("startdrag")
         self.lastx = event.x
@@ -1319,12 +1317,6 @@ class Stack:
         sx, sy = -images.SHADOW_XOFFSET, -images.SHADOW_YOFFSET
         dx, dy = 0, 0
         cw, ch = images.getSize()
-        if game.app.opt.mouse_type == 'sticky-mouse':
-            # return cards under mouse
-            dx = event.x - (x_offset+cw+sx) - game.canvas.xmargin
-            dy = event.y - (y_offset+ch+sy) - game.canvas.ymargin
-            dx = max(dx, 0)
-            dy = max(dy, 0)
         for s in drag.shadows:
             if dx > 0 or dy > 0:
                 s.move(dx, dy)
