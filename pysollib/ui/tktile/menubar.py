@@ -17,7 +17,7 @@ from pysollib.settings import TITLE, WIN_SYSTEM
 from pysollib.settings import USE_FREECELL_SOLVER
 from pysollib.ui.tktile.tkconst import COMPOUNDS, CURSOR_WATCH, EVENT_HANDLED
 from pysollib.ui.tktile.tkconst import EVENT_PROPAGATE
-from pysollib.ui.tktile.tkconst import STATUSBAR_ITEMS, TOOLBAR_BUTTONS
+from pysollib.ui.tktile.tkconst import TOOLBAR_BUTTONS
 from pysollib.ui.tktile.tkutil import after_idle, bind
 
 
@@ -70,18 +70,6 @@ def createToolbarMenu(menubar, menu):
     menu.add_radiobutton(label=n_("Right"),
                          variable=menubar.tkopt.toolbar, value=4,
                          command=menubar.mOptToolbar)
-
-
-def createStatusbarMenu(menubar, menu):
-    menu.add_checkbutton(
-        label=n_("Show &statusbar"), variable=menubar.tkopt.statusbar,
-        command=menubar.mOptStatusbar)
-    menu.add_separator()
-    for comp, label in STATUSBAR_ITEMS:
-        menu.add_checkbutton(
-            label=label,
-            variable=menubar.tkopt.statusbar_vars[comp],
-            command=lambda m=menubar, w=comp: m.mOptStatusbarConfig(w))
 
 
 def createResamplingMenu(menubar, menu):
@@ -268,12 +256,9 @@ class PysolMenubarTkCommon:
             negative_bottom=tkinter.BooleanVar(),
             pause=tkinter.BooleanVar(),
             toolbar_vars={},
-            statusbar_vars={},
         )
         for w in TOOLBAR_BUTTONS:
             self.tkopt.toolbar_vars[w] = tkinter.BooleanVar()
-        for w, x in STATUSBAR_ITEMS:
-            self.tkopt.statusbar_vars[w] = tkinter.BooleanVar()
 
     def _setOptions(self):
         tkopt, opt = self.tkopt, self.app.opt
@@ -333,8 +318,6 @@ class PysolMenubarTkCommon:
         tkopt.negative_bottom.set(opt.negative_bottom)
         for w in TOOLBAR_BUTTONS:
             tkopt.toolbar_vars[w].set(opt.toolbar_vars.get(w, False))
-        for w, x in STATUSBAR_ITEMS:
-            tkopt.statusbar_vars[w].set(opt.statusbar_vars.get(w, False))
 
     def connectGame(self, game):
         self.game = game
@@ -771,8 +754,9 @@ class PysolMenubarTkCommon:
         menu.add_separator()
         submenu = MfxMenu(menu, label=n_("&Toolbar"))
         createToolbarMenu(self, submenu)
-        submenu = MfxMenu(menu, label=n_("Stat&usbar"))
-        createStatusbarMenu(self, submenu)
+        menu.add_checkbutton(
+            label=n_("Stat&usbar"), variable=self.tkopt.statusbar,
+            command=self.mOptStatusbar)
 
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
@@ -1892,9 +1876,6 @@ Unsupported game for import.
         if self.app.statusbar.show(side, resize=resize):
             self.top.update_idletasks()
 
-    def mOptStatusbarConfig(self, w):
-        self.statusbarConfig(w, self.tkopt.statusbar_vars[w].get())
-
     def mOptNumCards(self, *event):
         if self._cancelDrag(break_pause=False):
             return
@@ -2062,13 +2043,6 @@ Error while saving game.
             return
         self.app.opt.toolbar_vars[w] = v
         self.app.toolbar.config(w, v)
-        self.top.update_idletasks()
-
-    def statusbarConfig(self, w, v):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.statusbar_vars[w] = v
-        self.app.statusbar.config(w, v)
         self.top.update_idletasks()
 
     #

@@ -32,7 +32,7 @@ from pysollib.mfxutil import USE_PIL, \
     get_default_resampling, print_err
 from pysollib.mygettext import _
 from pysollib.mygettext import myGettext
-from pysollib.pysoltk import STATUSBAR_ITEMS, TOOLBAR_BUTTONS
+from pysollib.pysoltk import TOOLBAR_BUTTONS
 from pysollib.resource import CSI
 
 import validate
@@ -241,8 +241,6 @@ class Options:
         ('toolbar_compound', 'str'),
         ('toolbar_size', 'int'),
         ('statusbar', 'bool'),
-        # ('statusbar_game_number', 'bool'),
-        # ('statusbar_stuck', 'bool'),
         # ('num_cards', 'bool'),
         # ('helpbar', 'bool'),
         ('num_recent_games', 'int'),
@@ -341,12 +339,7 @@ class Options:
         self.toolbar_vars = {}
         for w in TOOLBAR_BUTTONS:
             self.toolbar_vars[w] = True  # show all buttons
-        self.statusbar_vars = {}
-        for w, x in STATUSBAR_ITEMS:
-            self.statusbar_vars[w] = True
         self.statusbar = True
-        # self.statusbar_game_number = False  # show game number in statusbar
-        # self.statusbar_stuck = False        # show stuck indicator
         # self.num_cards = False
         # self.helpbar = False
         self.splashscreen = True
@@ -584,9 +577,6 @@ class Options:
         config['general']['visible_buttons'] = [
             b for b, is_visible in self.toolbar_vars.items() if is_visible
         ]
-        config['general']['visible_status'] = [
-            s for s, is_visible in self.statusbar_vars.items() if is_visible
-        ]
         if 'none' in config['general']['solver_presets']:
             config['general']['solver_presets'].remove('none')
 
@@ -737,10 +727,6 @@ class Options:
         if visible_buttons is not None:
             for key in TOOLBAR_BUTTONS:
                 self.toolbar_vars[key] = (key in visible_buttons)
-        visible_status = self._getOption('general', 'visible_status', 'list')
-        if visible_status is not None:
-            for key, label in STATUSBAR_ITEMS:
-                self.statusbar_vars[key] = (key in visible_status)
 
         myGettext.language = self.language
 

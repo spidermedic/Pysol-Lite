@@ -409,8 +409,6 @@ class Application:
         # create the statusbar(s)
         self.statusbar = PysolStatusbar(self.top)
         self.statusbar.show(self.opt.statusbar)
-        for w, v in self.opt.statusbar_vars.items():
-            self.statusbar.config(w, v)
         # create the canvas
         self.scrolled_canvas = MfxScrolledCanvas(self.top, propagate=True)
         self.canvas = self.scrolled_canvas.canvas

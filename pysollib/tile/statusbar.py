@@ -152,7 +152,6 @@ class PysolStatusbar(MfxStatusbar):
             ('stuck',       _("'You Are Stuck' indicator"), 3),
             ('time',        _('Playing time'),            10),
             ('moves',       _('Moves/Total moves'),       10),
-            ('gamenumber',  _('Game number'),             26),
             ('stats',       _('Games played: won/lost'),  12),
             ('info',        _('Number of cards'),         12),
                 ):
@@ -188,7 +187,7 @@ class TestStatusbar(PysolStatusbar):
     def __init__(self, top, args):
         PysolStatusbar.__init__(self, top)
         # test some settings
-        self.updateText(moves=999, gamenumber='#0123456789ABCDEF0123')
+        self.updateText(moves=999)
         self.updateText(info='Some info text.')
 
 

@@ -91,19 +91,6 @@ S_PLAY = 0x40
 
 
 def _updateStatus_process_key_val(tb, sb, k, v):
-    if k == "gamenumber":
-        if v is None:
-            if sb:
-                sb.updateText(gamenumber="")
-            # self.top.wm_title("%s - %s"
-            # % (TITLE, self.getTitleName()))
-            return
-        if isinstance(v, str):
-            if sb:
-                sb.updateText(gamenumber=v)
-            # self.top.wm_title("%s - %s %s" % (TITLE,
-            # self.getTitleName(), v))
-            return
     if k == "info":
         # print 'updateStatus info:', v
         if v is None:
@@ -801,7 +788,6 @@ class Game:
         self.updateText()
         self.updateStatus(
             player=self.app.opt.player,
-            gamenumber=self.getGameNumber(format=1),
             moves=(0, 0),
             stats=self.app.stats.getStats(
                 self.app.opt.player,
@@ -886,7 +872,6 @@ class Game:
         self.updateText()
         self.updateStatus(
             player=self.app.opt.player,
-            gamenumber=self.getGameNumber(format=1),
             moves=(self.moves.index, self.stats.total_moves),
             stats=self.app.stats.getStats(self.app.opt.player, self.id))
         if not self.preview:
@@ -949,7 +934,7 @@ class Game:
         self.app.nextgame.loadedgame = loadedgame
         self.app.nextgame.startdemo = startdemo
         self.app.nextgame.holdgame = holdgame
-        self.updateStatus(time=None, moves=None, gamenumber=None, stats=None)
+        self.updateStatus(time=None, moves=None, stats=None)
         self.top.mainquit()
 
     # This should be called directly before newGame(),

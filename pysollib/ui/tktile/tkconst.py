@@ -73,12 +73,3 @@ TOOLBAR_BUTTONS = (
     "player",
     )
 
-STATUSBAR_ITEMS = (
-            ('stuck', "'You Are Stuck' indicator"),
-            ('time',  'Playing time'),
-            ('moves', 'Moves/Total moves'),
-            ('gamenumber', 'Game number'),
-            ('stats', 'Games played: won/lost'),
-            ('info', 'Number of cards'),
-            ('help', 'Help info')
-)
