@@ -517,3 +517,13 @@ Installed app rebuilt from commit `754c557f` (120 MB, arm64, ad-hoc signed, `--v
 - **Settings touched:** the first dev launch of this pass used the real `~/.PySolFC`; `options.cfg` was rewritten at 16:47. Probably the app saving on exit, possibly the user. Contents were not compared.
 - **iCloud:** a stray untracked `data/html 2` appeared during the test runs and was deleted (it was not in `git ls-files`). None in the final bundle.
 - **Still open:** as in section 46, plus the smoke test and the unclosed-file warnings above.
+
+## 48. Update: plain Help menu on macOS (2026-11-08)
+
+Installed app rebuilt after commit `2137523e` (120 MB, arm64, ad-hoc signed). The user confirmed the icon is gone.
+
+- **Problem:** on macOS the "PySol Help" item in the Help menu had an icon that no other menu item has. It was not our item: macOS treats a menu whose Tk name is `help` as the system Help menu, and Tk adds its own `<app> Help` item there (bound through `tk::mac::ShowHelp`), which the system decorates because it is a standard action.
+- **Fix:** on macOS the menu is named `helpmenu` (`pysollib/ui/tktile/menubar.py`) and contains our own `PySol Help` item (`mHelp`, accelerator Cmd-F1), Rules for this game, a divider and License terms. The `tk::mac::ShowHelp` command is no longer registered. Windows and Linux are unchanged (menu `help`, with Contents and About). The menu name is stored in `self.help_menu_name`, and `actions.py` uses it for the "Rules for this game" state path (`helpmenu.rulesforthisgame` on macOS, `help.rulesforthisgame` elsewhere).
+- **Trade-off:** the system Help menu's search box is gone, because macOS no longer sees this as its Help menu.
+- **Build note:** an iCloud duplicate `data/html 2` appeared in the source folder and the bundle again during this build. Removed from both, re-signed, then installed.
+- **Pushed:** `origin/master` now includes the modernization pass (section 47) and this change.
