@@ -374,3 +374,13 @@ Installed app rebuilt after commit "Merge the Assist menu into Game; remove Comm
 - **Verification (proportionate):** pyflakes and the unit tests (19) pass; a real-app source run printed the full menu bar and the Game menu in the order above. The installed app was checked with `--version` and `codesign -v`; the pre-bundle `data/html N` cleanup found nothing. Nothing was checked by eye.
 - **Push state:** `origin/master` is at the Hold and quit handoff (section 34, `0895eba1`). Sections 35 and the commits since are local.
 - **Still open:** as in sections 25, 29 and 33, plus the unreachable solver and comment code above.
+
+## 36. Update: Select menu simplified; Edit moved next to File (2026-11-08)
+
+Installed app rebuilt after commit "Menu bar order: File, Edit, Select, Game, Options, Help" (120 MB, arm64, ad-hoc signed).
+
+- **Select menu** (commit "Select menu: remove All games by name and Select random game"): it is now Recent games, Favorite games, Add to favorites, Remove from favorites, a divider, All games (Cmd-V), Popular games, French games, Mahjongg games, Oriental games, Special games, Custom games. Removed: the "All games by name" A to Z submenu (its builder `_addSelectAllGameSubMenu` stays because `updateGamesMenu` still uses it to split a long list; its menu path `.menubar.select.allgamesbyname` and the `menu2` update in `updateCustomGamesMenu` are gone), Select random game (`mSelectRandomGame`, `_mGetPossibleRandomGames`, `Application.chooseRandomOutOfGames` and the Cmd-R binding). `Application.getRandomGameId` and the `--random-game` command-line option are separate and still work.
+- **Menu bar order** (commit above): File, Edit, Select, Game, Options, Help. This follows the macOS convention of Edit directly after File, with the app's own menus after it. It only reorders the creation of the menus in `ui/tktile/menubar.py`; contents and shortcuts are unchanged.
+- **Decision recorded:** Recent games stays in Select, not File. It lists recently played game types, not files, and "Open Recent" in File would suggest saved game files. If saved-file history is wanted later, it needs new code (the app does not track recently opened files).
+- **Verification (light):** pyflakes and the unit tests (19) pass; real-app source runs printed the Select menu and the menu bar order, and added and removed a favorite. The installed app was checked with `--version` and `codesign -v`; the pre-bundle `data/html N` cleanup removed one stray `data/html 2`. Nothing was checked by eye.
+- **Still open:** as in sections 25, 29, 33 and 35.
