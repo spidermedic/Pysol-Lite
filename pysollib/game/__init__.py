@@ -1635,10 +1635,6 @@ class Game:
         if self.app.audio and self.app.opt.sound:
             if a in (1, 2, 3, 10):
                 self.playSample("deal01", priority=100, loop=loop)
-            elif a == 4:
-                self.playSample("deal04", priority=100, loop=loop)
-            elif a == 5:
-                self.playSample("deal08", priority=100, loop=loop)
 
     def getStackSpeech(self, stack, cardindex):
         if len(stack.cards) > 0:
@@ -1723,11 +1719,9 @@ class Game:
                        tkraise=1, frames=-1, shadow=-1):
         # available values of app.opt.animations:
         # 0 - without animations
-        # 1 - very fast (half the frames, half the time of fast)
-        # 2 - fast (default)
-        # 3 - medium (2/3 of fast speed)
-        # 4 - slow (1/4 of fast speed)
-        # 5 - very slow (1/8 of fast speed)
+        # 1 - fast (half the frames, half the time of medium)
+        # 2 - medium (default)
+        # 3 - slow (2/3 of medium speed)
         # 10 - used internally in game preview
         if self.app.opt.animations == 0 or frames == 0:
             return
@@ -1740,22 +1734,16 @@ class Game:
         if frames < 0:
             frames = 8
         assert frames >= 2
-        if self.app.opt.animations == 1:        # very fast
+        if self.app.opt.animations == 1:        # fast
             # Previously this mode had no timer and always drew every
             # frame. When each canvas.update() is slow (e.g. on macOS) that
-            # made it slower than "fast", which skips frames to keep to its
-            # time budget. Use the timer too, with fewer frames and a
-            # shorter budget so it is always faster than "fast".
+            # made it slower than "medium", which skips frames to keep to
+            # its time budget. Use the timer too, with fewer frames and a
+            # shorter budget so it is always faster than "medium".
             frames = max(2, frames // 4)
             SPF /= 2
-        elif self.app.opt.animations == 3:        # medium
+        elif self.app.opt.animations == 3:        # slow
             frames *= 3
-            SPF /= 2
-        elif self.app.opt.animations == 4:      # slow
-            frames *= 8
-            SPF /= 2
-        elif self.app.opt.animations == 5:      # very slow
-            frames *= 16
             SPF /= 2
         elif self.app.opt.animations == 10:
             # this is used internally in game preview to speed up
@@ -1859,15 +1847,9 @@ class Game:
 
         SPF = 0.1/8                     # animation speed - seconds per frame
         frames = 4.0                    # num frames for each step
-        if self.app.opt.animations == 3:  # medium
+        if self.app.opt.animations == 3:  # slow
             SPF = 0.1/8
             frames = 7.0
-        elif self.app.opt.animations == 4:  # slow
-            SPF = 0.1/8
-            frames = 12.0
-        elif self.app.opt.animations == 5:  # very slow
-            SPF = 0.1/8
-            frames = 24.0
 
         if to_stack is None:
             x0, y0 = from_stack.getPositionFor(card)
@@ -2116,11 +2098,9 @@ class Game:
         self.canvas.update_idletasks()
         old_a = self.app.opt.animations
         if old_a == 0:
-            self.app.opt.animations = 1     # very fast
-        elif old_a == 3:                    # medium
-            self.app.opt.animations = 2     # fast
-        elif old_a == 4:                    # very slow
-            self.app.opt.animations = 3     # slow
+            self.app.opt.animations = 1     # fast
+        elif old_a == 3:                    # slow
+            self.app.opt.animations = 2     # medium
         # select some random cards
         acards = []
         scards = cards[:]
@@ -2589,8 +2569,8 @@ class Game:
 
     def autoDrop(self, autofaceup=-1):
         old_a = self.app.opt.animations
-        if old_a == 3:                   # medium
-            self.app.opt.animations = 2  # fast
+        if old_a == 3:                   # slow
+            self.app.opt.animations = 2  # medium
         self.autoPlay(autofaceup=autofaceup, autodrop=1)
         self.app.opt.animations = old_a
 

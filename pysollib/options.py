@@ -349,7 +349,8 @@ class Options:
         self.shisen_show_hint = True
         self.shisen_show_matching = False
         self.match_three_cascade = True
-        self.animations = 3             # default to Medium
+        # 0 none, 1 fast, 2 medium, 3 slow
+        self.animations = 2             # default to Medium
         self.redeal_animation = True
         self.win_animation = True
         self.flip_animation = True
@@ -745,6 +746,9 @@ class Options:
                 setattr(self, key, None)
             elif val is not None:
                 setattr(self, key, val)
+
+        # The two slowest speeds were removed; older files may hold 4 or 5.
+        self.animations = min(self.animations, 3)
 
         pysollib.settings.TRANSLATE_GAME_NAMES = self.translate_game_names
 

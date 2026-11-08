@@ -831,19 +831,13 @@ class PysolMenubarTkCommon:
             label=n_("&None"), variable=self.tkopt.animations, value=0,
             command=self.mOptAnimations)
         submenu.add_radiobutton(
-            label=n_("&Very fast"), variable=self.tkopt.animations, value=1,
+            label=n_("&Fast"), variable=self.tkopt.animations, value=1,
             command=self.mOptAnimations)
         submenu.add_radiobutton(
-            label=n_("&Fast"), variable=self.tkopt.animations, value=2,
+            label=n_("&Medium"), variable=self.tkopt.animations, value=2,
             command=self.mOptAnimations)
         submenu.add_radiobutton(
-            label=n_("&Medium"), variable=self.tkopt.animations, value=3,
-            command=self.mOptAnimations)
-        submenu.add_radiobutton(
-            label=n_("&Slow"), variable=self.tkopt.animations, value=4,
-            command=self.mOptAnimations)
-        submenu.add_radiobutton(
-            label=n_("V&ery slow"), variable=self.tkopt.animations, value=5,
+            label=n_("&Slow"), variable=self.tkopt.animations, value=3,
             command=self.mOptAnimations)
         submenu.add_separator()
         submenu.add_checkbutton(
@@ -1746,7 +1740,7 @@ Unsupported game for import.
         # Always apply the new speed, even when the game is busy (for
         # example during a slow deal animation). Returning early here made
         # the radio button change while the option silently stayed the same,
-        # so after choosing "Very slow" it could not be changed back.
+        # so a slow speed could not be changed back.
         self.app.opt.animations = self.tkopt.animations.get()
 
     def mRedealAnimation(self, *args):
