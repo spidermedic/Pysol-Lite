@@ -618,21 +618,18 @@ class PysolMenubar(PysolMenubarTk):
     # Options menu
     #
 
-    def mOptAssistLevel(self, *args):
+    def mOptPlayOptions(self, *args):
         if self._cancelDrag(break_pause=False):
             return
-        self._applyChecklist(
-            _("Assist level"), (ASSIST_OPTIONS, ASSIST_GAME_OPTIONS))
-
-    def mOptAutomaticPlay(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        # Options that do not apply to the current game are greyed out.
+        # Automatic play options that do not apply to the current game are
+        # greyed out.
         usable = getattr(self, '_autoplay_usable', {})
         disabled = [key for key, label, handler in AUTOMATIC_PLAY_OPTIONS
                     if not usable.get(key, True)]
         self._applyChecklist(
-            _("Automatic play"), (AUTOMATIC_PLAY_OPTIONS,), disabled)
+            _("Play options"),
+            (AUTOMATIC_PLAY_OPTIONS, ASSIST_OPTIONS, ASSIST_GAME_OPTIONS),
+            disabled)
 
     def _applyChecklist(self, title, groups, disabled=()):
         # Show the options as check boxes and apply the changed ones with

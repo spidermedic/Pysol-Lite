@@ -145,16 +145,6 @@ class PysolMenubarTkCommon:
             autodrop=tkinter.BooleanVar(),
             autodeal=tkinter.BooleanVar(),
             quickplay=tkinter.BooleanVar(),
-            undo=tkinter.BooleanVar(),
-            bookmarks=tkinter.BooleanVar(),
-            hint=tkinter.BooleanVar(),
-            free_hint=tkinter.BooleanVar(),
-            shuffle=tkinter.BooleanVar(),
-            highlight_piles=tkinter.BooleanVar(),
-            highlight_cards=tkinter.BooleanVar(),
-            highlight_samerank=tkinter.BooleanVar(),
-            highlight_not_matching=tkinter.BooleanVar(),
-            peek_facedown=tkinter.BooleanVar(),
             stuck_notification=tkinter.BooleanVar(),
             mahjongg_show_removed=tkinter.BooleanVar(),
             shisen_show_hint=tkinter.BooleanVar(),
@@ -187,16 +177,6 @@ class PysolMenubarTkCommon:
         tkopt.autodrop.set(opt.autodrop)
         tkopt.autodeal.set(opt.autodeal)
         tkopt.quickplay.set(opt.quickplay)
-        tkopt.undo.set(opt.undo)
-        tkopt.hint.set(opt.hint)
-        tkopt.free_hint.set(opt.free_hint)
-        tkopt.shuffle.set(opt.shuffle)
-        tkopt.bookmarks.set(opt.bookmarks)
-        tkopt.highlight_piles.set(opt.highlight_piles)
-        tkopt.highlight_cards.set(opt.highlight_cards)
-        tkopt.highlight_samerank.set(opt.highlight_samerank)
-        tkopt.highlight_not_matching.set(opt.highlight_not_matching)
-        tkopt.peek_facedown.set(opt.peek_facedown)
         tkopt.stuck_notification.set(opt.stuck_notification)
         tkopt.mahjongg_show_removed.set(opt.mahjongg_show_removed)
         tkopt.shisen_show_hint.set(opt.shisen_show_hint)
@@ -424,10 +404,8 @@ class PysolMenubarTkCommon:
             self.progress.update(step=1)
 
         menu = MfxMenu(self.menubar, label=n_("&Options"))
-        menu.add_command(label=n_("&Automatic play"),
-                         command=self.mOptAutomaticPlay)
-        menu.add_command(label=n_("Assist &level"),
-                         command=self.mOptAssistLevel)
+        menu.add_command(label=n_("&Play options"),
+                         command=self.mOptPlayOptions)
         menu.add_separator()
         menu.add_checkbutton(
             label=n_("&Sound"), variable=self.tkopt.sound,
@@ -1245,67 +1223,6 @@ Unsupported game for import.
         if self._cancelDrag(break_pause=False):
             return
         self.app.opt.quickplay = self.tkopt.quickplay.get()
-
-    def mOptEnableUndo(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.undo = self.tkopt.undo.get()
-        self.game.updateMenus()
-
-    def mOptEnableBookmarks(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.bookmarks = self.tkopt.bookmarks.get()
-        self.game.updateMenus()
-
-    def mOptEnableHint(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.hint = self.tkopt.hint.get()
-        self.game.updateMenus()
-
-    def mOptFreeHints(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.free_hint = self.tkopt.free_hint.get()
-        self.game.updateMenus()
-
-    def mOptEnableShuffle(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.shuffle = self.tkopt.shuffle.get()
-        self.game.updateMenus()
-
-    def mOptEnableHighlightPiles(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.highlight_piles = self.tkopt.highlight_piles.get()
-        self.game.updateMenus()
-
-    def mOptEnableHighlightCards(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.highlight_cards = self.tkopt.highlight_cards.get()
-        self.game.updateMenus()
-
-    def mOptEnableHighlightSameRank(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.highlight_samerank = self.tkopt.highlight_samerank.get()
-        # self.game.updateMenus()
-
-    def mOptEnablePeekFacedown(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.peek_facedown = self.tkopt.peek_facedown.get()
-        # self.game.updateMenus()
-
-    def mOptEnableHighlightNotMatching(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.highlight_not_matching = \
-            self.tkopt.highlight_not_matching.get()
-        # self.game.updateMenus()
 
     def mOptEnableStuckNotification(self, *args):
         if self._cancelDrag(break_pause=False):

@@ -65,16 +65,6 @@ autofaceup = boolean
 autodrop = boolean
 autodeal = boolean
 quickplay = boolean
-shuffle = boolean
-undo = boolean
-bookmarks = boolean
-hint = boolean
-free_hint = boolean
-highlight_piles = boolean
-highlight_cards = boolean
-highlight_samerank = boolean
-highlight_not_matching = boolean
-peek_facedown = boolean
 stuck_notification = boolean
 mahjongg_show_removed = boolean
 mahjongg_create_solvable = integer(0, 2)
@@ -167,16 +157,6 @@ class Options:
         ('autodrop', 'bool'),
         ('autodeal', 'bool'),
         ('quickplay', 'bool'),
-        ('shuffle', 'bool'),
-        ('undo', 'bool'),
-        ('bookmarks', 'bool'),
-        ('hint', 'bool'),
-        ('free_hint', 'bool'),
-        ('highlight_piles', 'bool'),
-        ('highlight_cards', 'bool'),
-        ('highlight_samerank', 'bool'),
-        ('highlight_not_matching', 'bool'),
-        ('peek_facedown', 'bool'),
         ('stuck_notification', 'bool'),
         ('mahjongg_show_removed', 'bool'),
         ('mahjongg_create_solvable', 'int'),
@@ -244,6 +224,7 @@ class Options:
         self.autodrop = False
         self.autodeal = True
         self.quickplay = True
+        # Assist features that are fixed (not saved or loaded)
         self.shuffle = True
         self.undo = True
         self.bookmarks = True

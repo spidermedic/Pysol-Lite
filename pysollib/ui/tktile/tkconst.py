@@ -52,7 +52,7 @@ COMPOUNDS = (
     (tkinter.TOP,    n_('Icons and text')),     # text below the icon
     )
 
-# The Automatic play choices (same layout as ASSIST_OPTIONS below).
+# The Automatic play choices (same layout as ASSIST_OPTIONS).
 AUTOMATIC_PLAY_OPTIONS = (
     ('autofaceup', n_('Auto face-up'), 'mOptAutoFaceUp'),
     ('autodrop', n_('Auto drop'), 'mOptAutoDrop'),
@@ -60,23 +60,8 @@ AUTOMATIC_PLAY_OPTIONS = (
     ('quickplay', n_('Quick play'), 'mOptQuickPlay'),
 )
 
-# The Assist level choices: (option and tkopt name, label, menubar handler).
+# The Assist choices: (option and tkopt name, label, menubar handler).
 ASSIST_OPTIONS = (
-    ('undo', n_('Enable undo'), 'mOptEnableUndo'),
-    ('bookmarks', n_('Enable bookmarks'), 'mOptEnableBookmarks'),
-    ('hint', n_('Enable hint'), 'mOptEnableHint'),
-    ('shuffle', n_('Enable shuffle'), 'mOptEnableShuffle'),
-    ('free_hint', n_('Free hints'), 'mOptFreeHints'),
-    ('highlight_piles', n_('Enable highlight piles'),
-     'mOptEnableHighlightPiles'),
-    ('highlight_cards', n_('Enable highlight cards'),
-     'mOptEnableHighlightCards'),
-    ('highlight_samerank', n_('Enable highlight same rank/suit'),
-     'mOptEnableHighlightSameRank'),
-    ('peek_facedown', n_('Enable face-down peek'),
-     'mOptEnablePeekFacedown'),
-    ('highlight_not_matching', n_('Highlight no matching'),
-     'mOptEnableHighlightNotMatching'),
     ('shade', n_('Shade legal moves'), 'mOptShade'),
     ('stuck_notification', n_('Stuck notification'),
      'mOptEnableStuckNotification'),
