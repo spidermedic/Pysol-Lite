@@ -5,6 +5,7 @@ import re
 import sys
 import tkinter
 import tkinter.filedialog
+from tkinter.colorchooser import askcolor
 
 from pysollib.gamedb import GI
 from pysollib.hint import PySolHintLayoutImportError
@@ -801,8 +802,8 @@ class PysolMenubarTkCommon:
             label=n_("Cards&et..."),
             command=self.mSelectCardsetDialog, accelerator=m+"E")
         menu.add_command(
-            label=n_("Table t&ile..."),
-            command=self.mSelectTileDialog)
+            label=n_("Table c&olor..."),
+            command=self.mSelectTableColor)
         # this submenu will get set by updateBackgroundImagesMenu()
         submenu = MfxMenu(menu, label=n_("Card &background"))
         submenu = MfxMenu(menu, label=n_("Card &view"))
@@ -991,7 +992,6 @@ class PysolMenubarTkCommon:
             self._bindKey(ctrl, "minus", self.mDecreaseCardset)
             self._bindKey(ctrl, "0", self.mOptAutoScale)
         self._bindKey(ctrl, "b", self.mOptChangeCardback)  # undocumented
-        self._bindKey(ctrl, "i", self.mOptChangeTableTile)  # undocumented
         self._bindKey(ctrl, "p", self.mOptPlayerOptions)   # undocumented
         self._bindKey(ctrl, "F1", self.mHelp)
         self._bindKey("",   "F1", self.mHelpRules)
@@ -1993,45 +1993,25 @@ Unsupported game for import.
     def mOptChangeCardback(self, *event):
         self._mOptCardback(self.app.cardset.backindex + 1)
 
-    def mOptChangeTableTile(self, *event):
+    def mSelectTableColor(self, *event):
         if self._cancelDrag(break_pause=False):
             return
-        n = self.app.tabletile_manager.len()
-        if n >= 2:
-            i = (self.tkopt.tabletile.get() + 1) % n
-            if self.app.setTile(i):
-                self.tkopt.tabletile.set(i)
-
-    def mSelectTileDialog(self, *event, initial_tab=None):
-        if self._cancelDrag(break_pause=False):
-            return
-        key = self.app.tabletile_index
-        if key <= 0:
-            key = self.app.opt.colors['table']  # .lower()
         wasPaused = False
         if not self.game.pause:
             self.game.doPause()
             wasPaused = True
-        d = self._calcSelectTileDialogWithPreview()(
-            self.top, app=self.app,
-            title=_("Select table background"),
-            manager=self.app.tabletile_manager,
-            key=key, initial_tab=initial_tab)
-        if self.game.pause:
-            if wasPaused:
+        try:
+            color = askcolor(parent=self.top,
+                             initialcolor=self.app.opt.colors['table'],
+                             title=_("Select table color"))
+        finally:
+            if self.game.pause and wasPaused:
                 self.game.doPause()
-        if d.status == 0 and d.button == 0:
-            if isinstance(d.key, str):
-                tile = self.app.tabletile_manager.get(0)
-                tile.color = d.key
-                if self.app.setTile(0):
-                    self.tkopt.tabletile.set(0)
-            elif d.key > 0 and (d.key != self.app.tabletile_index or
-                                d.preview_scaling !=
-                                self.app.opt.tabletile_scale_method):
-                if self.app.setTile(d.key, d.preview_scaling):
-                    self.tkopt.tabletile.set(d.key)
-                self.app.opt.tabletile_scale_method = d.preview_scaling
+        if color and color[1]:
+            tile = self.app.tabletile_manager.get(0)
+            tile.color = color[1]
+            if self.app.setTile(0):
+                self.tkopt.tabletile.set(0)
 
     def mOptToolbar(self, *event):
         # if self._cancelDrag(break_pause=False): return

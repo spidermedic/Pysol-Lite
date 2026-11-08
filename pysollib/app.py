@@ -72,7 +72,7 @@ from pysollib.pysoltk import unraise_solver_dialog
 from pysollib.resource import CSI, CardsetManager
 from pysollib.resource import Music, MusicManager
 from pysollib.resource import Sample, SampleManager
-from pysollib.resource import Tile, TileManager
+from pysollib.resource import TileManager
 from pysollib.settings import DEBUG
 from pysollib.settings import PACKAGE, VERSION_TUPLE  # , WIN_SYSTEM
 from pysollib.settings import TOOLKIT
@@ -1445,61 +1445,6 @@ class Application:
             if not manager.getByName(obj.name):
                 manager.register(obj)
                 # print obj.index, obj.name
-
-    #
-    # init tiles
-    #
-    def _init_tiles_process_dir(self, dirname, found, t):
-        """docstring for _init_tiles_process_die"""
-        names = []
-        if dirname and os.path.isdir(dirname):
-            names = os.listdir(dirname)
-        for name in names:
-            if not name or not image_ext_re.search(name):
-                continue
-            f = os.path.join(dirname, name)
-            if not os.path.isfile(f):
-                continue
-            tile = Tile()
-            tile.filename = f
-            n = image_ext_re.sub("", name)
-            subdir = os.path.split(dirname)[-1]
-            if subdir == 'stretch' or subdir == 'stretch-4k':
-                tile.stretch = 1
-            if subdir == 'save-aspect' or subdir == 'save-aspect-4k':
-                tile.stretch = 1
-                tile.save_aspect = 1
-            # n = re.sub("[-_]", " ", n)
-            n = n.replace('_', ' ')
-            tile.name = n
-            key = n.lower()
-            if key not in t:
-                t.add(key)
-                found.append((n, tile))
-
-    def initTiles(self):
-        manager = self.tabletile_manager
-        # find all available tiles
-        dirs = manager.getSearchDirs(
-            self,
-            ("tiles-*",
-                os.path.join("tiles", "stretch"),
-                os.path.join("tiles", "stretch-4k"),
-                os.path.join("tiles", "save-aspect"),
-                os.path.join("tiles", "save-aspect-4k")),
-            "PYSOL_TILES")
-        # print dirs
-        found, t = [], set()
-        for dirname in dirs:
-            try:
-                self._init_tiles_process_dir(dirname, found, t)
-            except EnvironmentError:
-                pass
-        # register tiles
-        for f in sorted(found):
-            obj = f[1]
-            if not manager.getByName(obj.name):
-                manager.register(obj)
 
     def _my_list_dir(self, dirname):
         """docstring for _my_list_dir"""

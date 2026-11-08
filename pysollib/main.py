@@ -362,24 +362,14 @@ Cardsets package is up to date.
                 fatal_no_cardsets(app)
                 return 3
 
-    # init tiles
+    # init table background: solid color only (image tiles were
+    # removed; every repaint redrew them and was slow on macOS)
     manager = app.tabletile_manager
     tile = Tile()
     tile.color = app.opt.colors['table']
     tile.name = "None"
     tile.filename = None
     manager.register(tile)
-    app.initTiles()
-    if app.opt.tabletile_name:  # and top.winfo_screendepth() > 8:
-        for tile in manager.getAll():
-            # The basename is checked in addition to the tile name
-            # this is to support differences in the table tile format
-            # from older PySol versions.
-            if (app.opt.tabletile_name == tile.name or
-                    (os.path.splitext(app.opt.tabletile_name)[0] ==
-                     os.path.splitext(tile.basename)[0])):
-                app.tabletile_index = tile.index
-                break
 
     # init samples and music resources
     app.initSamples()

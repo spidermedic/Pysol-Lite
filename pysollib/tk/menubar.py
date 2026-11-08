@@ -35,7 +35,6 @@ from pysollib.util import CARDSET
 
 from .selectcardset import SelectCardsetDialogWithPreview
 from .selectgame import SelectGameDialog, SelectGameDialogWithPreview
-from .selecttile import SelectTileDialogWithPreview
 from .soundoptionsdialog import SoundOptionsDialog
 from .tkwidget import MfxMessageDialog
 
@@ -77,9 +76,6 @@ class PysolMenubarTk(PysolMenubarTkCommon):
 
     def _calcSoundOptionsDialog(self):
         return SoundOptionsDialog
-
-    def _calcSelectTileDialogWithPreview(self):
-        return SelectTileDialogWithPreview
 
     def _calc_MfxMessageDialog(self):
         return MfxMessageDialog

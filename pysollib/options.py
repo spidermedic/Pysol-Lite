@@ -595,16 +595,12 @@ class Options:
         elif WIN_SYSTEM == 'aqua':
             self.tile_theme = self.default_tile_theme = 'aqua'
         #
-        sw, sh, sd = 0, 0, 8
+        sw, sh = 0, 0
         if top:
-            sw, sh, sd = (top.winfo_screenwidth(),
-                          top.winfo_screenheight(),
-                          top.winfo_screendepth())
+            sw, sh = (top.winfo_screenwidth(),
+                      top.winfo_screenheight())
         # bg
-        if sd > 8:
-            self.tabletile_name = "Felt Green"  # name
-        else:
-            self.tabletile_name = None
+        self.tabletile_name = None      # solid color only
         # cardsets
         c = "Standard"
         m = "Crystal Mahjongg"
