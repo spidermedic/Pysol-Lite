@@ -1332,8 +1332,7 @@ class Stack:
         for card in drag.cards:
             card.tkraise()
             card.moveBy(sx+dx, sy+dy)
-        if game.app.opt.dragcursor:
-            game.canvas.config(cursor=CURSOR_DRAG)
+        game.canvas.config(cursor=CURSOR_DRAG)
 
     # continue a drag operation
     def keepDrag(self, event):
@@ -1568,8 +1567,7 @@ class Stack:
 
     # finish a drag operation
     def finishDrag(self, event=None):
-        if self.game.app.opt.dragcursor:
-            self.canvas.config(cursor='')
+        self.canvas.config(cursor='')
         drag = self.game.drag.copy()
         if (self.game.app.opt.mouse_type == 'point-n-click'
                 or self.keyboard_movement):
@@ -1587,8 +1585,7 @@ class Stack:
 
     # cancel a drag operation
     def cancelDrag(self, event=None):
-        if self.game.app.opt.dragcursor:
-            self.canvas.config(cursor='')
+        self.canvas.config(cursor='')
         drag = self.game.drag.copy()
         if (self.game.app.opt.mouse_type == 'point-n-click'
                 or self.keyboard_movement):

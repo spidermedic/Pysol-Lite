@@ -108,7 +108,6 @@ mouse_undo = boolean
 negative_bottom = boolean
 randomize_place = boolean
 use_cardset_bottoms = boolean
-dragcursor = boolean
 save_games_geometry = boolean
 game_geometry = int_list(min=2, max=2)
 window_geometry = int_list(min=4, max=4)
@@ -246,7 +245,6 @@ class Options:
         ('randomize_place', 'bool'),
         ('use_cardset_bottoms', 'bool'),
         # ('save_cardsets', 'bool'),
-        ('dragcursor', 'bool'),
         ('save_games_geometry', 'bool'),
         ('topmost_dialogs', 'bool'),
         ('sound', 'bool'),
@@ -402,7 +400,6 @@ class Options:
         self.randomize_place = False
         self.use_cardset_bottoms = False
         # self.save_cardsets = True
-        self.dragcursor = True
         #
         # Card scaling is fixed: always scale to the window, keep the aspect
         # ratio, and use the best resampling filter. Not saved or loaded.
