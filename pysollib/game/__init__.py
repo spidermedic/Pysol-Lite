@@ -1776,7 +1776,7 @@ class Game:
                        tkraise=1, frames=-1, shadow=-1):
         # available values of app.opt.animations:
         # 0 - without animations
-        # 1 - very fast (without timer)
+        # 1 - very fast (half the frames, half the time of fast)
         # 2 - fast (default)
         # 3 - medium (2/3 of fast speed)
         # 4 - slow (1/4 of fast speed)
@@ -1787,13 +1787,21 @@ class Game:
 
         # init timer - need a high resolution for this to work
         clock, delay, skip = None, 1, 1
-        if self.app.opt.animations >= 2:
+        if self.app.opt.animations >= 1:
             clock = uclock
         SPF = 0.15 / 8          # animation speed - seconds per frame
         if frames < 0:
             frames = 8
         assert frames >= 2
-        if self.app.opt.animations == 3:        # medium
+        if self.app.opt.animations == 1:        # very fast
+            # Previously this mode had no timer and always drew every
+            # frame. When each canvas.update() is slow (e.g. on macOS) that
+            # made it slower than "fast", which skips frames to keep to its
+            # time budget. Use the timer too, with fewer frames and a
+            # shorter budget so it is always faster than "fast".
+            frames = max(2, frames // 4)
+            SPF /= 2
+        elif self.app.opt.animations == 3:        # medium
             frames *= 3
             SPF /= 2
         elif self.app.opt.animations == 4:      # slow
