@@ -193,7 +193,7 @@ class FontsDialog(MfxDialog):
                 title = 'Default'
             label = ttk.Label(frame, font=font, text=title)
             label.grid(row=row, column=1, padx=8)
-            b = PysolButton(frame, text=_('Change...'),
+            b = PysolButton(frame, text=_('Change'),
                             prefixtext=labeltitle + " " + title,
                             width=10, command=lambda label=label,
                             fn=fn: self.selectFont(label, fn))

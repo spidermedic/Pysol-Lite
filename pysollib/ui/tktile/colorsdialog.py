@@ -89,7 +89,7 @@ class BaseColorsDialog:
                                   bg=var.get(), textvariable=var)
             label.grid(row=row, column=1, padx=5)
             b = self._calcButton()(
-                frame, text=_('Change...'), prefixtext=title, width=10,
+                frame, text=_('Change'), prefixtext=title, width=10,
                 command=lambda label=label: self.selectColor(label))
             b.grid(row=row, column=2)
             row += 1

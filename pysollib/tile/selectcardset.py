@@ -155,7 +155,7 @@ class SelectCardsetDialogWithPreview(MfxDialog):
         MfxDialog.destroy(self)
 
     def initKw(self, kw):
-        s = (_("&Info..."), 10)
+        s = (_("&Info"), 10)
         kw = KwStruct(kw,
                       strings=(s, 'sep',
                                _("&Select"), _("&Cancel"),),

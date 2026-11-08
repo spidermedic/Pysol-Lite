@@ -100,7 +100,7 @@ class StatsDialog(MfxDialog):
             kw,
             strings=((_("&Play this game"), 401),
                      "sep", _("&OK"),
-                     (_("&Reset..."), 500)),
+                     (_("&Reset"), 500)),
             default=0,
             separator=False,
         )
@@ -130,7 +130,7 @@ class StatsDialog(MfxDialog):
         w = self.notebook.select()
         indx = self.notebook_tabs.index(w)
         StatsDialog.SELECTED_TAB = indx
-        if button == 500:               # "Reset..."
+        if button == 500:               # "Reset"
             assert indx in (0, 1)
             if indx == 0:               # "Current game"
                 button = 302
@@ -716,7 +716,7 @@ class Status_StatsDialog(MfxMessageDialog):
             _("Hints: ") + str(stats.hints) + "\n" +
             "\n" +
             w1 + w2,
-            strings=((_("&Statistics..."), 101),
+            strings=((_("&Statistics"), 101),
                      'sep',
                      _("&OK")),
             image=game.app.gimages.logos[3],
@@ -915,7 +915,7 @@ class TopFrame(ttk.Frame):
                           _('Maximum') + " " + str(max) + " " +
                           _('Average') + " " + str(avr))
 
-            b = PysolButton(frame, text=TOP_TITLE + '...',
+            b = PysolButton(frame, text=TOP_TITLE,
                             width=10, command=command,
                             prefixtext=prefixtext)
             b.grid(row=row, column=5)
