@@ -22,7 +22,6 @@
 # ---------------------------------------------------------------------------
 
 import os
-import sys
 import tkinter
 
 import pysollib.formatter
@@ -287,13 +286,7 @@ class Base_HTMLViewer:
             url = os.path.join(url, "index.html")
         url = os.path.normpath(url)
 
-        def my_open(url):
-            if sys.version_info > (3,):
-                import codecs
-                return codecs.open(url, encoding='utf-8')
-            with open(url, "rb") as fh:
-                return fh
-        return my_open(url), url
+        return open(url, encoding='utf-8'), url
 
     def display(self, url, add=1, relpath=1, xview=0, yview=0):
         # for some reason we have to stop the PySol demo

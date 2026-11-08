@@ -363,7 +363,7 @@ class CardsetInfoDialog(MfxDialog):
         text = ''
         fn = os.path.join(cardset.dir, "COPYRIGHT")
         try:
-            with open(fn, "rt") as fh:
+            with open(fn, "rt", encoding="utf-8", errors="replace") as fh:
                 text = fh.read()
         except Exception:
             pass

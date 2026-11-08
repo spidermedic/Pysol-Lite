@@ -145,9 +145,9 @@ def getGameRulesFilename(n):
 
 def gen_main_html():
     for infile, title in files:
-        outfile = open(os.path.join('html', infile), 'w')
+        outfile = open(os.path.join('html', infile), 'w', encoding='utf-8')
         print(_fmt(main_header, {'title': title}), file=outfile)
-        with open(infile, 'r') as file:
+        with open(infile, 'r', encoding='utf-8') as file:
             print(file.read(), file=outfile)
         s = '<a href="index.html">Sommaire</a>'
         if infile == 'index.html':
@@ -173,12 +173,12 @@ def gen_rules_html():
     altnames = []
 
     # open file of list of all rules
-    out_rules = open(os.path.join('html', 'rules.html'), 'w')
+    out_rules = open(os.path.join('html', 'rules.html'), 'w', encoding='utf-8')
     print(_fmt(
         main_header,
         {'title': 'PySol - une collection de jeux de solitaire'}),
         file=out_rules)
-    with open('rules.html', 'r') as file:
+    with open('rules.html', 'r', encoding='utf-8') as file:
         print(file.read(), file=out_rules)
 
     for id in games:
@@ -234,11 +234,12 @@ def gen_rules_html():
     out_rules.close()
 
     # create file of altnames
-    out_rules_alt = open(os.path.join('html', 'rules_alternate.html'), 'w')
+    out_rules_alt = open(os.path.join('html', 'rules_alternate.html'), 'w',
+                         encoding='utf-8')
     print(_fmt(
         main_header, {'title': 'PySol - une collection de jeux de solitaire'}),
         file=out_rules_alt)
-    with open('rules_alternate.html', 'r') as file:
+    with open('rules_alternate.html', 'r', encoding='utf-8') as file:
         print(file.read(), file=out_rules_alt)
     altnames.sort()
     for name, fn in altnames:

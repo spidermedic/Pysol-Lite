@@ -500,7 +500,7 @@ def test(args=None):
         data = sys.stdin.read()
     else:
         try:
-            with open(fn, 'rt') as fh:
+            with open(fn, 'rt', encoding='utf-8') as fh:
                 data = fh.read()
         except IOError as msg:
             print(fn, ":", msg)

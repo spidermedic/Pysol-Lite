@@ -488,9 +488,9 @@ def test(file=None):
     w = DumbWriter()
     f = AbstractFormatter(w)
     if file is not None:
-        fp = open(file)
+        fp = open(file, encoding='utf-8')
     elif sys.argv[1:]:
-        fp = open(sys.argv[1])
+        fp = open(sys.argv[1], encoding='utf-8')
     else:
         fp = sys.stdin
     try:

@@ -427,7 +427,7 @@ def write_game(app, game=None):
         check_game = False
 
     # print '===>', fn
-    with open(fn, 'w') as fd:
+    with open(fn, 'w', encoding='utf-8') as fd:
 
         fd.write('''\
 ## -*- coding: utf-8 -*-
