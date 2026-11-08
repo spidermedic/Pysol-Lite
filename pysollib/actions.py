@@ -41,6 +41,8 @@ from pysollib.pysoltk import PlayerOptionsDialog
 from pysollib.pysoltk import ProgressionDialog
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import Status_StatsDialog, Top_StatsDialog
+from pysollib.pysoltk import ASSIST_GAME_OPTIONS, ASSIST_OPTIONS
+from pysollib.pysoltk import AssistLevelDialog
 from pysollib.pysoltk import TimeoutsDialog
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
@@ -826,6 +828,21 @@ class PysolMenubar(PysolMenubarTk):
             self._cancelDrag()
             self.game.endGame(bookmark=1)
             self.game.quitGame(bookmark=1)
+
+    def mOptAssistLevel(self, *args):
+        if self._cancelDrag(break_pause=False):
+            return
+        options = ASSIST_OPTIONS + ASSIST_GAME_OPTIONS
+        current = dict((key, getattr(self.tkopt, key).get())
+                       for key, label, handler in options)
+        d = AssistLevelDialog(
+            self.top, _("Assist level"), self.app, current)
+        if d.status != 0 or d.button != 0:
+            return
+        for key, label, handler in options:
+            if d.values[key] != current[key]:
+                getattr(self.tkopt, key).set(d.values[key])
+                getattr(self, handler)()
 
     def mOptToolbarButtons(self, *args):
         if self._cancelDrag(break_pause=False):

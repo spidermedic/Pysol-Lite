@@ -52,6 +52,43 @@ COMPOUNDS = (
     (tkinter.TOP,    n_('Icons and text')),     # text below the icon
     )
 
+# The Assist level choices: (option and tkopt name, label, menubar handler).
+ASSIST_OPTIONS = (
+    ('undo', n_('Enable undo'), 'mOptEnableUndo'),
+    ('bookmarks', n_('Enable bookmarks'), 'mOptEnableBookmarks'),
+    ('hint', n_('Enable hint'), 'mOptEnableHint'),
+    ('shuffle', n_('Enable shuffle'), 'mOptEnableShuffle'),
+    ('free_hint', n_('Free hints'), 'mOptFreeHints'),
+    ('highlight_piles', n_('Enable highlight piles'),
+     'mOptEnableHighlightPiles'),
+    ('highlight_cards', n_('Enable highlight cards'),
+     'mOptEnableHighlightCards'),
+    ('highlight_samerank', n_('Enable highlight same rank/suit'),
+     'mOptEnableHighlightSameRank'),
+    ('peek_facedown', n_('Enable face-down peek'),
+     'mOptEnablePeekFacedown'),
+    ('highlight_not_matching', n_('Highlight no matching'),
+     'mOptEnableHighlightNotMatching'),
+    ('shade', n_('Shade legal moves'), 'mOptShade'),
+    ('stuck_notification', n_('Stuck notification'),
+     'mOptEnableStuckNotification'),
+)
+
+# Assist options that only matter for some games. The first one restarts
+# the game when it changes, so it is applied last.
+ASSIST_GAME_OPTIONS = (
+    ('shisen_show_hint', n_('Show hint arrow (in Shisen-Sho games)'),
+     'mOptShisenShowHint'),
+    ('match_three_cascade', n_('Show cascade (in Match Three games)'),
+     'mOptMatchThreeCascade'),
+    ('accordion_deal_all', n_('Deal all cards (in Accordion type games)'),
+     'mOptAccordionDealAll'),
+    ('pegged_auto_remove', n_('Auto-remove first card (in Pegged games)'),
+     'mOptPeggedAutoRemove'),
+    ('mahjongg_show_removed', n_('Show removed tiles (in Mahjongg games)'),
+     'mOptMahjonggShowRemoved'),
+)
+
 TOOLBAR_BUTTONS = (
     "new",
     "restart",

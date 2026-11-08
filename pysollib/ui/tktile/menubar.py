@@ -471,70 +471,8 @@ class PysolMenubarTkCommon:
         submenu.add_checkbutton(
             label=n_("&Quick play"), variable=self.tkopt.quickplay,
             command=self.mOptQuickPlay)
-        submenu = MfxMenu(menu, label=n_("Assist &level"))
-        submenu.add_checkbutton(
-            label=n_("Enable &undo"), variable=self.tkopt.undo,
-            command=self.mOptEnableUndo)
-        submenu.add_checkbutton(
-            label=n_("Enable &bookmarks"), variable=self.tkopt.bookmarks,
-            command=self.mOptEnableBookmarks)
-        submenu.add_checkbutton(
-            label=n_("Enable &hint"), variable=self.tkopt.hint,
-            command=self.mOptEnableHint)
-        submenu.add_checkbutton(
-            label=n_("Enable shu&ffle"), variable=self.tkopt.shuffle,
-            command=self.mOptEnableShuffle)
-        submenu.add_checkbutton(
-            label=n_("Free hin&ts"), variable=self.tkopt.free_hint,
-            command=self.mOptFreeHints)
-        submenu.add_checkbutton(
-            label=n_("Enable highlight p&iles"),
-            variable=self.tkopt.highlight_piles,
-            command=self.mOptEnableHighlightPiles)
-        submenu.add_checkbutton(
-            label=n_("Enable highlight &cards"),
-            variable=self.tkopt.highlight_cards,
-            command=self.mOptEnableHighlightCards)
-        submenu.add_checkbutton(
-            label=n_("Enable highlight same &rank/suit"),
-            variable=self.tkopt.highlight_samerank,
-            command=self.mOptEnableHighlightSameRank)
-        submenu.add_checkbutton(
-            label=n_("Enable face-down &peek"),
-            variable=self.tkopt.peek_facedown,
-            command=self.mOptEnablePeekFacedown)
-        submenu.add_checkbutton(
-            label=n_("Highlight &no matching"),
-            variable=self.tkopt.highlight_not_matching,
-            command=self.mOptEnableHighlightNotMatching)
-        submenu.add_checkbutton(
-            label=n_("Shade &legal moves"), variable=self.tkopt.shade,
-            command=self.mOptShade)
-        submenu.add_checkbutton(
-            label=n_("Stuc&k notification"),
-            variable=self.tkopt.stuck_notification,
-            command=self.mOptEnableStuckNotification)
-        submenu.add_separator()
-        submenu.add_checkbutton(
-            label=n_("&Show removed tiles (in Mahjongg games)"),
-            variable=self.tkopt.mahjongg_show_removed,
-            command=self.mOptMahjonggShowRemoved)
-        submenu.add_checkbutton(
-            label=n_("Show hint &arrow (in Shisen-Sho games)"),
-            variable=self.tkopt.shisen_show_hint,
-            command=self.mOptShisenShowHint)
-        submenu.add_checkbutton(
-            label=n_("Show ca&scade (in Match Three games)"),
-            variable=self.tkopt.match_three_cascade,
-            command=self.mOptMatchThreeCascade)
-        submenu.add_checkbutton(
-            label=n_("&Deal all cards (in Accordion type games)"),
-            variable=self.tkopt.accordion_deal_all,
-            command=self.mOptAccordionDealAll)
-        submenu.add_checkbutton(
-            label=n_("A&uto-remove first card (in Pegged games)"),
-            variable=self.tkopt.pegged_auto_remove,
-            command=self.mOptPeggedAutoRemove)
+        menu.add_command(label=n_("Assist &level..."),
+                         command=self.mOptAssistLevel)
         menu.add_separator()
         menu.add_checkbutton(
             label=n_("&Sound"), variable=self.tkopt.sound,
