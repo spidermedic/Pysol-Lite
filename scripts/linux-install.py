@@ -32,7 +32,7 @@ def main():
     if not os.path.exists("./images"):
         os.symlink("./data/images/", "./images")
     home = os.environ['HOME']
-    dot_pysol = home + "/.PySolFC"
+    dot_pysol = home + "/.pysol"
     dot_pysol_cardsets = dot_pysol + "/cardsets"
     if not os.path.exists("./images"):
         os.symlink("./data/images/", "./images")

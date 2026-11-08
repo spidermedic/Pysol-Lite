@@ -128,6 +128,19 @@ def getusername():
     return user
 
 
+def _adopt_old_prefdir(old, new):
+    # Settings used to live in the PySolFC folder. Move them to the new
+    # folder the first time the new version runs. If that is not possible,
+    # keep using the old folder so no settings or saved games are lost.
+    if os.path.isdir(new) or not os.path.isdir(old):
+        return new
+    try:
+        os.rename(old, new)
+    except OSError:
+        return old
+    return new
+
+
 def getprefdir(package):
 
     if os.name == "nt":
@@ -135,7 +148,8 @@ def getprefdir(package):
     home = os.environ.get("HOME", "").strip()
     if not home or not os.path.isdir(home):
         home = os.curdir
-    return os.path.join(home, ".PySolFC")
+    return _adopt_old_prefdir(os.path.join(home, ".PySolFC"),
+                              os.path.join(home, ".pysol"))
 
 
 # high resolution clock() and sleep()
@@ -168,7 +182,8 @@ def win32_getprefdir(package):
             hd = os.path.abspath('/windows/Application Data')
             if not os.path.exists(hd):
                 hd = os.path.abspath('/')
-    return os.path.join(hd, 'PySolFC')
+    return _adopt_old_prefdir(os.path.join(hd, 'PySolFC'),
+                              os.path.join(hd, 'PySol'))
 
 
 # ************************************************************************

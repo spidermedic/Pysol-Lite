@@ -595,3 +595,13 @@ Installed app rebuilt from commit `8b013ecc` (120 MB, arm64, ad-hoc signed, `cod
 ## 55. Update: no more `~/.PySolFC/boards` (2026-11-08)
 
 The app no longer creates the `boards` folder at startup (`app.dn.boards` is gone from `pysollib/app.py` and `pysollib/main.py`). It was only for exporting and importing starting layouts, which were removed in section 33. A fresh source run creates `cardsets`, `plugins` and `savegames` only. The user removes their existing empty `boards` folder themselves. Not rebuilt: the installed app still creates it until the next build.
+
+## 56. Update: settings folder renamed to `~/.pysol` (2026-11-08)
+
+Asked by the user. Not rebuilt or installed: the installed app still uses `~/.PySolFC` until the next build; **the first launch of the new build will move `~/.PySolFC` to `~/.pysol`** (options, saved games, cardsets and plugins folders come along).
+
+- **Change:** `getprefdir` in `pysollib/mfxutil.py` returns `~/.pysol` on macOS and Linux and `%APPDATA%\PySol` on Windows (was `~/.PySolFC` and `%APPDATA%\PySolFC`; the Windows part is untested). New `_adopt_old_prefdir(old, new)`: if the new folder does not exist and the old one does, it renames the old one to the new name. If the rename fails (permissions, say) the app keeps using the old folder, so nothing is lost. If both exist, the new one wins and the old one is left alone.
+- **Not changed:** `PACKAGE = 'PySolFC'` in `settings.py` is stored inside every saved game and checked on load (`game/__init__.py`), so changing it would make old saves "invalid or damaged". It also names the data directories (`/usr/share/PySolFC`, `share/PySolFC` in `setup.py`). The AppStream id and the bundle id are also unchanged. Error messages from `print_err` still start with `PySolFC:`.
+- **Docs and scripts updated:** README (cardset instructions), `docs/pysol.6` (FILES section), `scripts/linux-install.py`. Not updated: `contrib/help-pages-translation-to-french/howtoplay.html` (a stale French page about table tiles) and the history in earlier sections of this file, which still say `~/.PySolFC`.
+- **Verification:** throwaway homes only, never the real `~/.PySolFC`. Fresh run creates `.pysol` only; an old folder with `options.cfg` and a saved game is moved with both intact and the old folder is gone; with both present the old one is untouched; a failing rename falls back to the old folder (mocked). Unit tests unchanged (19, the one known `--version` error).
+- **Things that read the old name:** `pysolfc-handoff.md` sections 2 to 52 mention `~/.PySolFC` as the settings folder; read them as `~/.pysol` from now on. Standing rule for launch checks stays: use `HOME=<temp>` only with source runs.

@@ -78,9 +78,9 @@ gmake test
 gmake rules
 ln -s data/images images
 tar -xvf PySolFC-Cardsets-3.0.tar.bz2 # Needs to be downloaded from sourceforge
-mkdir -p ~/.PySolFC
-rmdir ~/.PySolFC/cardsets
-ln -s "`pwd`/PySolFC-Cardsets-3.0" ~/.PySolFC/cardsets
+mkdir -p ~/.pysol
+rmdir ~/.pysol/cardsets
+ln -s "`pwd`/PySolFC-Cardsets-3.0" ~/.pysol/cardsets
 python pysol.py
 ```
 
@@ -179,7 +179,7 @@ ad-hoc sign it (copy it out of iCloud-synced folders first). See
 ## Install Extras.
 
 - Cardsets
- - Copy cardsets to ~/.PySolFC/cardsets
+ - Copy cardsets to ~/.pysol/cardsets
 
  - Additional cardsets can be downloaded from the PySolFC project page:
      https://sourceforge.net/projects/pysolfc/files/

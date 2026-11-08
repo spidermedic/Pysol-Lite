@@ -24,7 +24,8 @@
 import os
 
 
-# PACKAGE names the settings folder and data directories; keep it stable.
+# PACKAGE is stored in saved games and checked when loading them, and names
+# the data directories; keep it stable. The settings folder is ~/.pysol.
 PACKAGE = 'PySolFC'
 # The release is named after its year: PySol 26 is version 26.MM[.DD].
 # VERSION_TUPLE is (YY, MM) for a monthly release and (YY, MM, DD) for an
