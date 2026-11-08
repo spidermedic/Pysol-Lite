@@ -377,19 +377,6 @@ class PysolMenubar(PysolMenubarTk):
         self.game.gotoBookmark(n, confirm=confirm)
         self.game.updateMenus()
 
-    def mClearBookmarks(self, *args):
-        if self._cancelDrag():
-            return
-        if not self.app.opt.bookmarks:
-            return
-        if not self.game.gsaveinfo.bookmarks:
-            return
-        if not self.game.areYouSure(_("Clear bookmarks"),
-                                    _("Clear all bookmarks?")):
-            return
-        self.game.gsaveinfo.bookmarks = {}
-        self.game.updateMenus()
-
     def mRestart(self, *args):
         if self._cancelDrag():
             return

@@ -276,22 +276,12 @@ class PysolMenubarTkCommon:
             command=self.mRedo, accelerator="R")
 
         menu.add_separator()
-        submenu = MfxMenu(menu, label=n_("&Set bookmark"))
-        for i in range(9):
-            label = _("Bookmark %d") % (i + 1)
-            submenu.add_command(
-                label=label,
-                command=lambda i=i: self.mSetBookmark(i))
-        submenu = MfxMenu(menu, label=n_("Go&to bookmark"))
-        for i in range(9):
-            label = _("Bookmark %d") % (i + 1)
-            acc = m + "%d" % (i + 1)
-            submenu.add_command(
-                label=label,
-                command=lambda i=i: self.mGotoBookmark(i), accelerator=acc)
         menu.add_command(
-            label=n_("&Clear bookmarks"),
-            command=self.mClearBookmarks)
+            label=n_("Set &bookmark"),
+            command=lambda: self.mSetBookmark(0), accelerator=m+"K")
+        menu.add_command(
+            label=n_("&Go to bookmark"),
+            command=lambda: self.mGotoBookmark(0), accelerator=m+"J")
 
         menu = MfxMenu(self.menubar, label=n_("&Games"))
         self._addSelectGameMenu(menu)
@@ -484,10 +474,8 @@ class PysolMenubarTkCommon:
         #
         self._bindKey("",   "f", self.mShuffle)
 
-        for i in range(9):
-            self._bindKey(
-                ctrl, str(i+1),
-                lambda e, i=i: self.mGotoBookmark(i, confirm=0))
+        self._bindKey(ctrl, "k", lambda e: self.mSetBookmark(0))
+        self._bindKey(ctrl, "j", lambda e: self.mGotoBookmark(0, confirm=0))
 
         # keyboard play
         self._bindKey("", "Up", lambda e: self.mKeyboardSelect(dir=0))
@@ -854,26 +842,14 @@ class PysolMenubarTkCommon:
         state = self._getEnabledState
         mp1 = self.menupath.get(".menubar.edit.setbookmark")
         mp2 = self.menupath.get(".menubar.edit.gotobookmark")
-        mp3 = self.menupath.get(".menubar.edit.clearbookmarks")
-        if mp1 is None or mp2 is None or mp3 is None:
+        if mp1 is None or mp2 is None:
             return
         x = self.app.opt.bookmarks and self.game.canSetBookmark()
-        #
         menu, index, submenu = mp1
-        for i in range(9):
-            submenu.entryconfig(i, state=state(x))
         menu.entryconfig(index, state=state(x))
-        #
+        s = self.game.gsaveinfo.bookmarks.get(0) is not None
         menu, index, submenu = mp2
-        ms = 0
-        for i in range(9):
-            s = self.game.gsaveinfo.bookmarks.get(i) is not None
-            submenu.entryconfig(i, state=state(s and x))
-            ms = ms or s
-        menu.entryconfig(index, state=state(ms and x))
-        #
-        menu, index, submenu = mp3
-        menu.entryconfig(index, state=state(ms and x))
+        menu.entryconfig(index, state=state(s and x))
 
     def updateBackgroundImagesMenu(self):
         mp = self.menupath.get(".menubar.options.layout.cards.backs")

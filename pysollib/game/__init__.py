@@ -3145,7 +3145,7 @@ class Game:
         if confirm and self.gsaveinfo.bookmarks.get(n):
             if not self.areYouSure(
                     _("Set bookmark"),
-                    _("Replace existing bookmark %d?") % (n+1)):
+                    _("Replace the bookmark?")):
                 return 0
         f = BytesIO()
         try:
@@ -3167,7 +3167,7 @@ class Game:
             confirm = self.app.opt.confirm
         if confirm:
             if not self.areYouSure(_("Goto bookmark"),
-                                   _("Goto bookmark %d?") % (n+1)):
+                                   _("Go to the bookmark?")):
                 return
         try:
             s, moves_index = bm
