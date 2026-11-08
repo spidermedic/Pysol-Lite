@@ -21,6 +21,7 @@
 #
 # ---------------------------------------------------------------------------##
 
+import time
 import tkinter
 
 from pysollib.ui.tktile.tkconst import EVENT_HANDLED
@@ -32,6 +33,10 @@ from pysollib.ui.tktile.tkutil import makeToplevel, setTransient
 
 
 class PysolProgressBar:
+    # Redraw at most this often; Tk update() is slow and called a lot.
+    REDRAW_INTERVAL = 0.05
+    _last_redraw = 0.0
+
     def __init__(self, app, parent, title=None, images=None, color="blue",
                  width=300, height=25, show_text=1, norm=1, rect=None):
         self.parent = parent
@@ -114,7 +119,10 @@ class PysolProgressBar:
         if self.text >= 0:
             c.coords(self.text, width//2, height//2)
             c.itemconfig(self.text, text="%d %%" % int(round(self.percent)))
-        c.update()
+        now = time.monotonic()
+        if now - self._last_redraw >= self.REDRAW_INTERVAL:
+            self._last_redraw = now
+            c.update()
 
 
 # ************************************************************************
