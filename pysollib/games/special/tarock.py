@@ -29,7 +29,6 @@ from pysollib.games.braid import Braid_BraidStack, Braid_Foundation
 from pysollib.hint import CautiousDefaultHint, Yukon_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         InitialDealTalonStack, \
@@ -229,22 +228,22 @@ class Nasty_RowStack(SS_RowStack):
 # ************************************************************************
 
 class Tarock_GameMethods:
-    SUITS = (_("Club"), _("Spade"), _("Heart"), _("Diamond"), _("Trump"))
-    SUITS_PL = (_("Clubs"), _("Spades"), _("Hearts"), _("Diamonds"),
-                _("Trumps"))
-    RANKS = (_("Ace"), "2", "3", "4", "5", "6", "7", "8", "9", "10",
-             _("Jack"), _("Cavalier"), _("Queen"), _("King"))
+    SUITS = ("Club", "Spade", "Heart", "Diamond", "Trump")
+    SUITS_PL = ("Clubs", "Spades", "Hearts", "Diamonds",
+                "Trumps")
+    RANKS = ("Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+             "Jack", "Cavalier", "Queen", "King")
 
     def getCardFaceImage(self, deck, suit, rank):
         return self.app.images.getFace(deck, suit, rank)
 
     def parseCard(self, card):
         if not card.face_up:
-            return _("Face-down")
+            return "Face-down"
         if card.suit > 3:
             if card.rank == 21:
-                return _("Fool/Skiz")
-            return str(card.rank + 1) + " - " + _("Trumps")
+                return "Fool/Skiz"
+            return str(card.rank + 1) + " - " + "Trumps"
         suit = self.SUITS_PL[card.suit]
         rank = self.RANKS[card.rank]
         return rank + " - " + suit

@@ -1,6 +1,5 @@
 
 from pysollib.mfxutil import KwStruct
-from pysollib.mygettext import _
 from pysollib.tile.tkwidget import PysolText
 
 
@@ -37,7 +36,7 @@ class BaseEditTextDialog:
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=(_("&OK"), _("&Cancel")),
+                      strings=("&OK", "&Cancel"),
                       default=-1,
                       resizable=self._calc_Resizable(),
                       separator=False,

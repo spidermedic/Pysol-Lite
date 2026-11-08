@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         InitialDealTalonStack, \
@@ -72,7 +71,7 @@ class PokerSquare(Game):
         if self.preview <= 1 and not self.UNSCORED:
             t = MfxCanvasText(self.canvas, x, y, anchor="nw",
                               font=self.app.getFont("canvas_default"),
-                              text=_('''\
+                              text=('''\
 Royal Flush
 Straight Flush
 4 of a Kind
@@ -202,15 +201,15 @@ One Pair'''))
         #
         t = ""
         if score >= self.WIN_SCORE:
-            t = _("WON\n\n")
+            t = "WON\n\n"
         if not self.isBoardFull():
-            t += _("Points: %d") % score
+            t += "Points: %d" % score
         else:
-            t += _("Total: %d") % score
+            t += "Total: %d" % score
         self.texts.score.config(text=t)
 
     def parseGameInfo(self):
-        return _("Points: %d") % self.getGameScore()
+        return "Points: %d" % self.getGameScore()
 
     def parseStackInfo(self, stack):
         if stack not in self.s.rows:
@@ -221,7 +220,7 @@ One Pair'''))
                 stackhands.append(hand)
         row = (stack.id % 5) + 1
         column = (stack.id // 5) + 1
-        return (_("Row: %d, Score %d, Column: %d, Score %d") %
+        return ("Row: %d, Score %d, Column: %d, Score %d" %
                 (row, self.getHandScore(stackhands[0])[1], column,
                  self.getHandScore(stackhands[1])[1]))
 
@@ -377,7 +376,7 @@ class Maverick(PokerShuffle):
                 stackhand = hand
         row = (stack.id % 5) + 1
         column = (stack.id // 5) + 1
-        return (_("Row: %d, Column: %d, Current hand: %s") %
+        return ("Row: %d, Column: %d, Current hand: %s" %
                 (row, column,
                  self.getNameByScore(self.getHandScore(stackhand)[1])))
 

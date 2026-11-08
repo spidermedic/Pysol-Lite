@@ -21,17 +21,16 @@
 #
 # ---------------------------------------------------------------------------##
 
-from pysollib.mygettext import n_
 
 presets = {
     'None': {
         'preset': 'None',
-        'name': n_('My Game'),
+        'name': 'My Game',
         },
 
     'Klondike': {
         'preset': 'Klondike',
-        'name': n_('My Klondike'),
+        'name': 'My Klondike',
         'layout': 'Klondike',
         'talon': 'Deal to waste',
         'redeals': 'Unlimited redeals',
@@ -45,7 +44,7 @@ presets = {
 
     'FreeCell': {
         'preset': 'FreeCell',
-        'name': n_('My FreeCell'),
+        'name': 'My FreeCell',
         'skill_level': 'Mostly skill',
         'rows_max_move': 'Top card',
         'rows_super_move': 1,
@@ -54,7 +53,7 @@ presets = {
 
     'Spider': {
         'preset': 'Spider',
-        'name': n_('My Spider'),
+        'name': 'My Spider',
         'skill_level': 'Mostly skill',
         'decks': 'Two',
         'layout': 'Klondike',
@@ -71,7 +70,7 @@ presets = {
 
     'Gypsy': {
         'preset': 'Gypsy',
-        'name': n_('My Gypsy'),
+        'name': 'My Gypsy',
         'skill_level': 'Mostly skill',
         'decks': 'Two',
         'layout': 'Gypsy',
@@ -84,7 +83,7 @@ presets = {
 
     'Grounds for a Divorce': {
         'preset': 'Grounds for a Divorce',
-        'name': n_('My Grounds for a Divorce'),
+        'name': 'My Grounds for a Divorce',
         'skill_level': 'Mostly skill',
         'decks': 'Two',
         'layout': 'Harp',
@@ -101,7 +100,7 @@ presets = {
 
     'Double Klondike': {
         'preset': 'Double Klondike',
-        'name': n_('My Double Klondike'),
+        'name': 'My Double Klondike',
         'decks': 'Two',
         'layout': 'Harp',
         'talon': 'Deal to waste',
@@ -116,7 +115,7 @@ presets = {
 
     'Simple Simon': {
         'preset': 'Simple Simon',
-        'name': n_('My Simple Simon'),
+        'name': 'My Simple Simon',
         'skill_level': 'Mostly skill',
         'found_type': 'Spider same suit',
         'found_max_move': 'None',
@@ -128,7 +127,7 @@ presets = {
 
     'Somerset': {
         'preset': 'Somerset',
-        'name': n_('My Somerset'),
+        'name': 'My Somerset',
         'skill_level': 'Mostly skill',
         'layout': 'Klondike',
         'rows_num': 10,

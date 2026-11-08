@@ -30,7 +30,6 @@ from pysollib.games.montana import Montana, Montana_RowStack
 from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText, get_text_width
 from pysollib.stack import \
         AC_RowStack, \
@@ -294,15 +293,15 @@ class Merlins_ReserveStack(ReserveStack):
 # ************************************************************************
 
 class AbstractHexADeckGame(Game):
-    RANKS = (_("1"), "2", "3", "4", "5", "6", "7", "8", "9",
+    RANKS = ("1", "2", "3", "4", "5", "6", "7", "8", "9",
              "A", "B", "C", "D", "E", "F", "10")
     WIZARDS = ("4", "3", "2", "1")
 
     def parseCard(self, card):
         if not card.face_up:
-            return _("Face-down")
+            return "Face-down"
         if card.suit > 3:
-            return _("Wizard") + " " + self.WIZARDS[card.rank]
+            return "Wizard" + " " + self.WIZARDS[card.rank]
         suit = SUITS_PL[card.suit]
         rank = self.RANKS[card.rank]
         return rank + " - " + suit
@@ -426,9 +425,9 @@ class BitsNBytes(AbstractHexADeckGame):
 
     def parseEmptyStack(self, stack):
         if isinstance(stack, Bits_RowStack):
-            return _("Bit stack") + " - " + str(stack.getBit())
+            return "Bit stack" + " - " + str(stack.getBit())
         if isinstance(stack, Bytes_RowStack):
-            return _("Byte stack") + " - " + self.RANKS[stack.getByte()]
+            return "Byte stack" + " - " + self.RANKS[stack.getByte()]
         return Game.parseEmptyStack(self, stack)
 
     def shallHighlightMatch(self, stack1, card1, stack2, card2):
@@ -1287,9 +1286,9 @@ class MerlinsMeander(AbstractHexADeckGame):
             t = self.RANKS[self.base_card.rank]
             dir = self.getFoundationDir() % 16
             if dir == 1:
-                t = t + _(" Ascending")
+                t = t + " Ascending"
             elif dir == 15:
-                t = t + _(" Descending")
+                t = t + " Descending"
         self.texts.info.config(text=t)
 
     def isGameWon(self):
@@ -1825,7 +1824,7 @@ class HexOfHearts_Foundation(HexADeck_RK_FoundationStack):
                 if rank < 16:
                     self.texts.misc.config(text=self.game.RANKS[rank])
                 else:
-                    self.texts.misc.config(text=_("Wizard"))
+                    self.texts.misc.config(text="Wizard")
 
     def acceptsCards(self, from_stack, cards):
         rank = (self.cards[-1].rank + self.cap.dir) % 17
@@ -1853,7 +1852,7 @@ class HexOfHearts_RowStack(BasicRowStack):
     getBottomImage = Stack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Tableau. Build regardless of rank and suit.')
+        return 'Tableau. Build regardless of rank and suit.'
 
 
 class HexOfHearts(AbstractHexADeckGame):
@@ -1867,7 +1866,7 @@ class HexOfHearts(AbstractHexADeckGame):
     #
 
     def _getHelpText(self):
-        help = (_('''\
+        help = (('''\
 1: 2 3 4 5 6 7 8 9 A B C D E F T W
 2: 4 6 8 A C E T 1 3 5 7 9 B D F W
 3: 6 9 C F 1 4 7 A D T 2 5 8 B E W

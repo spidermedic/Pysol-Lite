@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         AbstractFoundationStack, \
         InitialDealTalonStack, \
@@ -242,7 +241,7 @@ class Pegged(Game):
         return ((rows, 1),)
 
     def parseCard(self, card):
-        return _("Card")
+        return "Card"
 
 
 class PeggedCross1(Pegged):

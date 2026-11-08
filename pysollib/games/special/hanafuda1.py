@@ -40,7 +40,6 @@ from pysollib.games.special.hanafuda_common import \
 from pysollib.hint import AbstractHint, CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         BasicRowStack, \
@@ -273,9 +272,9 @@ class LesserQueue(AbstractFlowerGame):
             t = self.SUITS[self.base_card.suit]
             dir = self.getFoundationDir()
             if dir == 1:
-                t = t + _(" Ascending")
+                t = t + " Ascending"
             elif dir == 11:
-                t = t + _(" Descending")
+                t = t + " Descending"
         self.texts.info.config(text=t)
 
     def getFoundationDir(self):

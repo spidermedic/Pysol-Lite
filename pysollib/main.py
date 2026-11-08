@@ -30,7 +30,6 @@ import traceback
 from pysollib.app import Application
 from pysollib.gamedb import GAME_DB
 from pysollib.mfxutil import print_err
-from pysollib.mygettext import _
 from pysollib.pysolaudio import AbstractAudioClient
 from pysollib.pysolaudio import OSSAudioClient
 from pysollib.pysolaudio import PyGameAudioClient, Win32AudioClient
@@ -52,15 +51,15 @@ from pysollib.winsystems import init_root_window
 
 def fatal_no_cardsets(app):
     app.wm_withdraw()
-    MfxMessageDialog(app.top, title=_("%s installation error") % TITLE,
-                     text=_('''No cardsets were found!!!
+    MfxMessageDialog(app.top, title="%s installation error" % TITLE,
+                     text=('''No cardsets were found!!!
 
 Main data directory is:
 %(dir)s
 
 Please check your %(app)s installation.
 ''') % {'dir': app.dataloader.dir, 'app': TITLE},
-                     bitmap="error", strings=(_("&Quit"),))
+                     bitmap="error", strings=("&Quit",))
 
 
 # ************************************************************************
@@ -79,7 +78,7 @@ def parse_option(argv):
                                        "sound-mod=",
                                        "help"])
     except getopt.GetoptError as err:
-        print_err(str(err) + "\n" + _("try %s --help for more information") %
+        print_err(str(err) + "\n" + "try %s --help for more information" %
                   prog_name, 0)
         return None
     opts = {"help": False,
@@ -114,7 +113,7 @@ def parse_option(argv):
             opts["sound-mod"] = i[1]
 
     if opts["help"]:
-        print(_("""Usage: %s [OPTIONS] [FILE]
+        print(("""Usage: %s [OPTIONS] [FILE]
   -g    --game=GAMENAME        start game GAMENAME
   -i    --gameid=GAMEID        start game with ID GAMEID
         --deal=DEAL            start game deal by number DEAL
@@ -133,13 +132,13 @@ def parse_option(argv):
 
     if len(args) > 1:
         print_err(
-            _("too many files\ntry %s --help for more information") %
+            "too many files\ntry %s --help for more information" %
             prog_name, 0)
         return None
     filename = args and args[0] or None
     if filename and not os.path.isfile(filename):
         print_err(
-            _("invalid file name\ntry %s --help for more information") %
+            "invalid file name\ntry %s --help for more information" %
             prog_name, 0)
         return None
     return opts, filename
@@ -165,7 +164,7 @@ def pysol_init(app, args):
         try:
             app.commandline.gameid = int(opts['gameid'])
         except ValueError:
-            print_err(_('invalid game id: ') + opts['gameid'])
+            print_err('invalid game id: ' + opts['gameid'])
 
     # try to create the config directory
     for d in (
@@ -209,7 +208,7 @@ def pysol_init(app, args):
     app.wm_withdraw()
 
     # create the progress bar
-    title = _("Welcome to %s") % TITLE
+    title = "Welcome to %s" % TITLE
     color = app.opt.colors['table']
     if app.tabletile_index > 0:
         color = "#008200"
@@ -277,8 +276,8 @@ def pysol_init(app, args):
     if len(app.gdb.getGamesIdSortedByName()) == 0:
         app.wm_withdraw()
         app.intro.progress.destroy()
-        d = MfxMessageDialog(top, title=_("%s installation error") % TITLE,
-                             text=_('''
+        d = MfxMessageDialog(top, title="%s installation error" % TITLE,
+                             text=('''
 No games were found!!!
 
 Main data directory is:
@@ -286,7 +285,7 @@ Main data directory is:
 
 Please check your %(app)s installation.
 ''') % {'dir': app.dataloader.dir, 'app': TITLE},
-                             bitmap="error", strings=(_("&Quit"),))
+                             bitmap="error", strings=("&Quit",))
         return 1
 
     if opts['random-game']:
@@ -306,18 +305,18 @@ Please check your %(app)s installation.
     missing = app.cardset_manager.identify_missing_cardsets()
     if len(missing) > 0:
         error_text = \
-            _('''PySol cannot find cardsets of the following types:''')
+            '''PySol cannot find cardsets of the following types:'''
         error_text += "\n\n"
         for missingtype in missing:
             error_text += missingtype + "\n"
-        error_text += _('''
+        error_text += ('''
 This may make games that use those types of cardsets unplayable. Please
 ensure that your Cardsets package is up to date.''')
-        MfxMessageDialog(top, title=_("Cardset error"), text=error_text,
+        MfxMessageDialog(top, title="Cardset error", text=error_text,
                          bitmap="error")
     if not cardset:
-        MfxMessageDialog(top, title=_("Cardset error"),
-                         text=_('''
+        MfxMessageDialog(top, title="Cardset error",
+                         text=('''
 The cardset "%(cs)s" was not found.
 
 Please ensure that this cardset has been installed, and that your
@@ -359,7 +358,7 @@ Cardsets package is up to date.
     elif app.commandline.game is not None:
         gameid = app.gdb.getGameByName(app.commandline.game)
         if gameid is None:
-            print_err(_("can't find game: %(game)s") % {
+            print_err("can't find game: %(game)s" % {
                 'game': app.commandline.game})
             sys.exit(-1)
         else:

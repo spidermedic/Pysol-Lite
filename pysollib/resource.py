@@ -27,7 +27,6 @@ import re
 import traceback
 
 from pysollib.mfxutil import Image, KwStruct, Struct, USE_PIL
-from pysollib.mygettext import _, pgettext
 from pysollib.settings import DEBUG
 
 # ************************************************************************
@@ -203,45 +202,45 @@ class CSI:
     SUBTYPE_10X10 = 10
 
     TYPE = {
-        1:  _("French type (52-54 cards)"),
-        2:  _("Hanafuda type (48 cards)"),
-        3:  _("Tarock type (78 cards)"),
-        4:  _("Mahjongg type (42 tiles)"),
-        5:  _("Hex A Deck type (68 cards)"),
-        6:  _("Mughal Ganjifa type (96 cards)"),
-        7:  _("Navagraha Ganjifa type (108 cards)"),
-        8:  _("Dashavatara Ganjifa type (120 cards)"),
-        9:  _("Trumps only type (variable cards)"),
-        10: _("Matching type (variable cards)"),
-        11: _("Puzzle type (variable pieces)"),
-        12: _("Ishido type (36 tiles)")
+        1:  "French type (52-54 cards)",
+        2:  "Hanafuda type (48 cards)",
+        3:  "Tarock type (78 cards)",
+        4:  "Mahjongg type (42 tiles)",
+        5:  "Hex A Deck type (68 cards)",
+        6:  "Mughal Ganjifa type (96 cards)",
+        7:  "Navagraha Ganjifa type (108 cards)",
+        8:  "Dashavatara Ganjifa type (120 cards)",
+        9:  "Trumps only type (variable cards)",
+        10: "Matching type (variable cards)",
+        11: "Puzzle type (variable pieces)",
+        12: "Ishido type (36 tiles)"
     }
 
     TYPE_NAME = {
-        1:  _("French"),
-        2:  _("Hanafuda"),
-        3:  _("Tarock"),
-        4:  _("Mahjongg"),
-        5:  _("Hex A Deck"),
-        6:  _("Mughal Ganjifa"),
-        7:  _("Navagraha Ganjifa"),
-        8:  _("Dashavatara Ganjifa"),
-        9:  _("Trumps only"),
-        10: _("Matching"),
-        11: _("Puzzle"),
-        12: _("Ishido")
+        1:  "French",
+        2:  "Hanafuda",
+        3:  "Tarock",
+        4:  "Mahjongg",
+        5:  "Hex A Deck",
+        6:  "Mughal Ganjifa",
+        7:  "Navagraha Ganjifa",
+        8:  "Dashavatara Ganjifa",
+        9:  "Trumps only",
+        10: "Matching",
+        11: "Puzzle",
+        12: "Ishido"
     }
 
     SUBTYPE_NAME = {
-        1:  {0: _("No Jokers"), 1: _("Joker Deck")},
-        11: {3: _("3x3"),
-             4: _("4x4"),
-             5: _("5x5"),
-             6: _("6x6"),
-             7: _("7x7"),
-             8: _("8x8"),
-             9: _("9x9"),
-             10: _("10x10")}
+        1:  {0: "No Jokers", 1: "Joker Deck"},
+        11: {3: "3x3",
+             4: "4x4",
+             5: "5x5",
+             6: "6x6",
+             7: "7x7",
+             8: "8x8",
+             9: "9x9",
+             10: "10x10"}
     }
 
     TYPE_ID = {
@@ -306,70 +305,70 @@ class CSI:
 
     # cardset styles
     STYLE = {
-        35: _("Abstract"),              #
-        1:  _("Adult"),                 #
-        2:  _("Animals"),               #
-        3:  _("Anime"),                 #
-        4:  _("Art"),                   #
-        5:  _("Cartoons"),              #
-        6:  _("Children"),              #
-        7:  _("Classic Look"),          #
-        8:  _("Collectors"),            # scanned collectors cardsets
-        9:  _("Computers"),             #
-        36: _("Divination"),            # e.g. fortunetelling decks
-        10:  _("Engines"),              #
-        11:  _("Fantasy"),              #
-        37:  _("Four Color"),           #
-        30:  _("Ganjifa"),              #
-        12:  _("Hanafuda"),             #
-        29:  _("Hex A Deck"),           #
-        13:  _("Holiday"),              #
-        34:  _("Ishido"),               #
-        28:  _("Mahjongg"),             #
-        32:  _("Matching"),             #
-        38:  _("Monochrome"),           #
-        14:  _("Movies"),               #
-        31:  _("Matrix"),               #
-        15:  _("Music"),                #
-        16:  _("Nature"),               #
-        17:  _("Operating Systems"),    # e.g. cards with Linux logos
-        19:  _("People"),               # famous people
-        20:  _("Places"),               #
-        21:  _("Plain"),                #
-        22:  _("Products"),             #
-        33:  _("Puzzle"),               #
-        18:  _("Round Cardsets"),       #
-        23:  _("Science Fiction"),      #
-        24:  _("Sports"),               #
-        27:  _("Tarock"),               #
-        25:  _("Vehicles"),             #
-        26:  _("Video Games"),          #
+        35: "Abstract",              #
+        1:  "Adult",                 #
+        2:  "Animals",               #
+        3:  "Anime",                 #
+        4:  "Art",                   #
+        5:  "Cartoons",              #
+        6:  "Children",              #
+        7:  "Classic Look",          #
+        8:  "Collectors",            # scanned collectors cardsets
+        9:  "Computers",             #
+        36: "Divination",            # e.g. fortunetelling decks
+        10:  "Engines",              #
+        11:  "Fantasy",              #
+        37:  "Four Color",           #
+        30:  "Ganjifa",              #
+        12:  "Hanafuda",             #
+        29:  "Hex A Deck",           #
+        13:  "Holiday",              #
+        34:  "Ishido",               #
+        28:  "Mahjongg",             #
+        32:  "Matching",             #
+        38:  "Monochrome",           #
+        14:  "Movies",               #
+        31:  "Matrix",               #
+        15:  "Music",                #
+        16:  "Nature",               #
+        17:  "Operating Systems",    # e.g. cards with Linux logos
+        19:  "People",               # famous people
+        20:  "Places",               #
+        21:  "Plain",                #
+        22:  "Products",             #
+        33:  "Puzzle",               #
+        18:  "Round Cardsets",       #
+        23:  "Science Fiction",      #
+        24:  "Sports",               #
+        27:  "Tarock",               #
+        25:  "Vehicles",             #
+        26:  "Video Games",          #
     }
 
     # cardset nationality (suit and rank symbols)
     NATIONALITY = {
-        1021:  _("Australia"),         #
-        1001:  _("Austria"),           #
-        1019:  _("Belgium"),           #
-        1010:  _("Canada"),            #
-        1011:  _("China"),             #
-        1012:  _("Czech Republic"),    #
-        1013:  _("Denmark"),           #
-        1003:  _("England"),           #
-        1004:  _("France"),            #
-        1006:  _("Germany"),           #
-        1014:  _("Great Britain"),     #
-        1015:  _("Hungary"),           #
-        1020:  _("India"),             #
-        1005:  _("Italy"),             #
-        1016:  _("Japan"),             #
-        1002:  _("Netherlands"),       #
-        1022:  _("Portugal"),          #
-        1007:  _("Russia"),            #
-        1008:  _("Spain"),             #
-        1017:  _("Sweden"),            #
-        1009:  _("Switzerland"),       #
-        1018:  _("USA"),               #
+        1021:  "Australia",         #
+        1001:  "Austria",           #
+        1019:  "Belgium",           #
+        1010:  "Canada",            #
+        1011:  "China",             #
+        1012:  "Czech Republic",    #
+        1013:  "Denmark",           #
+        1003:  "England",           #
+        1004:  "France",            #
+        1006:  "Germany",           #
+        1014:  "Great Britain",     #
+        1015:  "Hungary",           #
+        1020:  "India",             #
+        1005:  "Italy",             #
+        1016:  "Japan",             #
+        1002:  "Netherlands",       #
+        1022:  "Portugal",          #
+        1007:  "Russia",            #
+        1008:  "Spain",             #
+        1017:  "Sweden",            #
+        1009:  "Switzerland",       #
+        1018:  "USA",               #
     }
 
     # cardset creation date
@@ -390,12 +389,12 @@ class CSI:
     }
 
     SIZE_NAME = {
-        1:  _("Tiny"),
-        2:  _("Small"),
-        3:  pgettext("size", "Medium"),
-        4:  _("Large"),
-        5:  _("Extra Large"),
-        6:  _("Hi-Res"),
+        1:  "Tiny",
+        2:  "Small",
+        3:  "Medium",
+        4:  "Large",
+        5:  "Extra Large",
+        6:  "Hi-Res",
     }
 
 
@@ -663,7 +662,7 @@ class CardsetManager(ResourceManager):
                 if t in required_cards_needed:
                     if self.type_max_cards[t] < required_cards_needed[t]:
                         missing.append(CSI.TYPE_NAME[t] + " (" +
-                                       _("With %(cards)d or more cards" + ")")
+                                       ("With %(cards)d or more cards" + ")")
                                        % {'cards': required_cards_needed[t]})
 
         return sorted(missing)

@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import DefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -314,7 +313,7 @@ class Pyramid(Game):
             if r.cards:
                 coverCards += (r,)
         if len(coverCards) > 0:
-            mainCard += " - " + _("Covered by")
+            mainCard += " - " + "Covered by"
             for c in coverCards:
                 mainCard += " - " + self.parseCard(c.cards[0])
         return mainCard

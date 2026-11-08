@@ -26,7 +26,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AC_FoundationStack, \
@@ -316,7 +315,7 @@ class ThreeShufflesAndADraw_ReserveStack(ReserveStack):
     def updateText(self):
         if self.game.preview > 1 or self.texts.misc is None:
             return
-        t = (_("X"), _("Draw"))[self.game.draw_done == 0]
+        t = ("X", "Draw")[self.game.draw_done == 0]
         self.texts.misc.config(text=t)
 
     def prepareView(self):
@@ -537,7 +536,7 @@ class CloverLeaf_RowStack(UD_SS_RowStack):
         return True
 
     def _getBaseCard(self):
-        return _('Base card - Ace or King.')
+        return 'Base card - Ace or King.'
 
 
 class CloverLeaf(Game):

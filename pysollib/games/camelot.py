@@ -26,7 +26,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.numerica import Numerica_Hint
 from pysollib.hint import AbstractHint, CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -580,8 +579,8 @@ class GrandmammasPatience(Game):
         if base_rank == ANY_RANK:
             t1 = t2 = ''
         else:
-            t1 = RANKS[base_rank]+_(" Descending")
-            t2 = RANKS[(base_rank+1) % 13]+_(" Ascending")
+            t1 = RANKS[base_rank]+" Descending"
+            t2 = RANKS[(base_rank+1) % 13]+" Ascending"
         self.s.foundations[0].texts.misc.config(text=t1)
         self.s.foundations[4].texts.misc.config(text=t2)
 

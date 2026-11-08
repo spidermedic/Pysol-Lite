@@ -2,7 +2,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import DefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText, get_text_width
 from pysollib.stack import \
         BasicRowStack, \
@@ -65,7 +64,7 @@ class Calculation_RowStack(BasicRowStack):
     getBottomImage = Stack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Tableau. Build regardless of rank and suit.')
+        return 'Tableau. Build regardless of rank and suit.'
 
 
 # ************************************************************************
@@ -85,13 +84,13 @@ class Calculation(Game):
 
     def _getHelpText(self):
         decks = self.gameinfo.decks
-        help = (_('''\
+        help = (('''\
 1: 2 3 4 5 6 7 8 9 T J Q K
 2: 4 6 8 T Q A 3 5 7 9 J K
 3: 6 9 Q 2 5 8 J A 4 7 T K
 4: 8 Q 3 7 J 2 6 T A 5 9 K'''))
         if decks > 1:
-            help += (_('''\
+            help += (('''\
 
 5: T 2 7 Q 4 9 A 6 J 3 8 K
 6: Q 5 J 4 T 3 9 2 8 A 7 K

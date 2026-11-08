@@ -27,7 +27,6 @@ from pysollib.games.spider import Spider_SS_Foundation
 from pysollib.hint import Yukon_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
     DealRowTalonStack, \
@@ -178,8 +177,8 @@ class Alaska_RowStack(Yukon_SS_RowStack):
                  (c2.rank + self.cap.dir) % self.cap.mod == c1.rank))
 
     def getHelp(self):
-        return _('Tableau. Build up or down by suit, can move any face-up '
-                 'cards regardless of sequence.')
+        return ('Tableau. Build up or down by suit, can move any face-up '
+                'cards regardless of sequence.')
 
 
 class Alaska(RussianSolitaire):
@@ -197,8 +196,8 @@ class Roslin_RowStack(Yukon_AC_RowStack):
                  (c2.rank + self.cap.dir) % self.cap.mod == c1.rank))
 
     def getHelp(self):
-        return _('Tableau. Build up or down by alternate color, can move '
-                 'any face-up cards regardless of sequence.')
+        return ('Tableau. Build up or down by alternate color, can move '
+                'any face-up cards regardless of sequence.')
 
 
 class Roslin(Yukon):
@@ -300,7 +299,7 @@ class Abacus(Rushdike):
 
     def createGame(self):
         layout = Rushdike.createGame(self)
-        help = (_('''\
+        help = (('''\
 Club:    A 2 3 4 5 6 7 8 9 T J Q K
 Spade:   2 4 6 8 T Q A 3 5 7 9 J K
 Heart:   3 6 9 Q 2 5 8 J A 4 7 T K
@@ -651,8 +650,8 @@ class Brisbane_RowStack(Yukon_AC_RowStack):
         return (c1.rank + self.cap.dir) % self.cap.mod == c2.rank
 
     def getHelp(self):
-        return _('Tableau. Build down regardless of suit, can move any '
-                 'face-up cards regardless of sequence.')
+        return ('Tableau. Build down regardless of suit, can move any '
+                'face-up cards regardless of sequence.')
 
 
 class Brisbane(Yukon):

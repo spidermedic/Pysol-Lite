@@ -27,17 +27,10 @@ import tkinter
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import Struct
-from pysollib.mygettext import _
 from pysollib.ui.tktile.tkhtml import Base_HTMLViewer
 
 from .statusbar import HtmlStatusbar
 from .tkwidget import MfxMessageDialog, PysolButton, PysolText
-
-if __name__ == '__main__':
-    d = os.path.abspath(os.path.join(sys.path[0], '..', '..'))
-    sys.path.append(d)
-    import gettext
-    gettext.install('pysol', d, unicode=True)
 
 # ************************************************************************
 # *
@@ -73,23 +66,23 @@ class HTMLViewer(Base_HTMLViewer):
 
         # create buttons
         button_width = 8
-        self.homeButton = PysolButton(frame, text=_("Index"),
+        self.homeButton = PysolButton(frame, text="Index",
                                       width=button_width,
                                       command=self.goHome)
         self.homeButton.grid(row=0, column=0, sticky='w')
-        self.backButton = PysolButton(frame, text=_("Back"),
+        self.backButton = PysolButton(frame, text="Back",
                                       width=button_width,
                                       command=self.goBack)
         self.backButton.grid(row=0, column=1, sticky='w')
-        self.forwardButton = PysolButton(frame, text=_("Forward"),
+        self.forwardButton = PysolButton(frame, text="Forward",
                                          width=button_width,
                                          command=self.goForward)
         self.forwardButton.grid(row=0, column=2, sticky='w')
-        self.browserButton = PysolButton(frame, text=_("Browser"),
+        self.browserButton = PysolButton(frame, text="Browser",
                                          width=button_width,
                                          command=self.browser)
         self.browserButton.grid(row=0, column=3, sticky='w')
-        self.closeButton = PysolButton(frame, text=_("Close"),
+        self.closeButton = PysolButton(frame, text="Close",
                                        width=button_width,
                                        command=self.destroy)
         self.closeButton.grid(row=0, column=4, sticky='e')

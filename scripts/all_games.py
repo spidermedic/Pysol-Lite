@@ -2,10 +2,8 @@
 # -*- mode: python; coding: koi8-r; -*-
 #
 
-import builtins
 import os
 import sys
-import time
 
 # from pprint import pprint
 import pysollib.games  # noqa: F401
@@ -14,12 +12,8 @@ import pysollib.games.special  # noqa: F401
 from pysollib.gamedb import GAME_DB
 from pysollib.gamedb import GI
 from pysollib.mfxutil import latin1_normalize
-from pysollib.mygettext import fix_gettext
 from pysollib.resource import CSI
 
-os.environ['LANG'] = 'C'
-builtins.__dict__['_'] = lambda x: x
-builtins.__dict__['n_'] = lambda x: x
 
 pysollib_path = os.path.join(sys.path[0], '..')
 sys.path[0] = os.path.normpath(pysollib_path)
@@ -27,8 +21,6 @@ rules_dir = os.path.normpath(os.path.join(pysollib_path, 'data/html/rules'))
 # pprint(sys.path)
 # print rules_dir
 html_mode = None
-
-fix_gettext()
 
 
 def _get_game_rules_filename(n):
@@ -202,41 +194,6 @@ def create_html(sort_by):
         print('</body></html>')
 
 
-def get_text():
-    # get_games_func = GAME_DB.getGamesIdSortedById
-    get_games_func = GAME_DB.getGamesIdSortedByName
-
-    games_list = {}  # for unique
-    for id in get_games_func():
-        gi = GAME_DB.get(id)
-        games_list[gi.name] = ''
-        if gi.name != gi.short_name:
-            games_list[gi.short_name] = ''
-        for n in gi.altnames:
-            games_list[n] = ''
-    games_list = sorted(games_list.keys())
-    print('''\
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: PySol 0.0.1\\n"
-"POT-Creation-Date: %s\\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"
-"Language-Team: LANGUAGE <LL@li.org>\\n"
-"MIME-Version: 1.0\\n"
-"Content-Type: text/plain; charset=CHARSET\\n"
-"Content-Transfer-Encoding: ENCODING\\n"
-"Generated-By: %s 0.1\\n"
-
-''' % (time.asctime(), sys.argv[0]))
-    for g in games_list:
-        print('msgid "%s"\nmsgstr ""\n' % g)
-
-
 def old_plain_text():
     # get_games_func = GAME_DB.getGamesIdSortedById
     get_games_func = GAME_DB.getGamesIdSortedByName
@@ -280,8 +237,6 @@ if len(sys.argv) < 2 or sys.argv[1] == 'html':
     if len(sys.argv) > 4:
         html_mode = sys.argv[4]
     create_html(sort_by)
-elif sys.argv[1] == 'gettext':
-    get_text()
 elif sys.argv[1] == 'text':
     plain_text()
 else:

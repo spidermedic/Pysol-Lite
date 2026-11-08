@@ -28,8 +28,6 @@ from pysollib.games.mahjongg.mahjongg import AbstractMahjonggGame, \
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
-from pysollib.mygettext import ungettext
 from pysollib.pysoltk import MfxCanvasLine, MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -413,21 +411,21 @@ class AbstractShisenGame(AbstractMahjonggGame):
                     if r.acceptsCards(t, t.cards):
                         f += 1
             if f == 0:
-                f = _('No Free\nMatching\nPairs')
+                f = 'No Free\nMatching\nPairs'
             else:
-                f = ungettext('%d Free\nMatching\nPair',
-                              '%d Free\nMatching\nPairs',
-                              f) % f
+                if f == 1:
+                    f = '%d Free\nMatching\nPair' % f
+                else:
+                    f = '%d Free\nMatching\nPairs' % f
         else:
             f = ''
 
         t = len(self.s.foundations[0].cards)
-        r1 = ungettext('%d\nTile\nRemoved\n\n',
-                       '%d\nTiles\nRemoved\n\n',
-                       t) % t
-        r2 = ungettext('%d\nTile\nRemaining\n\n',
-                       '%d\nTiles\nRemaining\n\n',
-                       self.NCARDS - t) % (self.NCARDS - t)
+        r1 = ('%d\nTile\nRemoved\n\n' if t == 1
+              else '%d\nTiles\nRemoved\n\n') % t
+        left = self.NCARDS - t
+        r2 = ('%d\nTile\nRemaining\n\n' if left == 1
+              else '%d\nTiles\nRemaining\n\n') % left
 
         t = r1 + r2 + f
         return t
@@ -446,7 +444,7 @@ class AbstractShisenGame(AbstractMahjonggGame):
             return ""
         row = (stack.id % self.L[1]) + 1
         column = (self.L[0] - 1 - (stack.id // self.L[1])) + 1
-        return _("Row: %d, Column: %d") % (row, column)
+        return "Row: %d, Column: %d" % (row, column)
 
 
 class Shisen_18x8(AbstractShisenGame):

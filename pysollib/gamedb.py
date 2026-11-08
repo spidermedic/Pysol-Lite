@@ -25,7 +25,6 @@ from importlib import util
 
 import pysollib.settings
 from pysollib.mfxutil import Struct, print_err
-from pysollib.mygettext import _, n_
 from pysollib.resource import CSI, getNaturalSortKey
 
 
@@ -133,60 +132,60 @@ class GI:
     SL_SKILL = 5
     #
     TYPE_NAMES = {
-        GT_BAKERS_DOZEN:        n_("Baker's Dozen"),
-        GT_BELEAGUERED_CASTLE:  n_("Beleaguered Castle"),
-        GT_CANFIELD:            n_("Canfield"),
-        GT_FAN_TYPE:            n_("Fan"),
-        GT_FORTY_THIEVES:       n_("Forty Thieves"),
-        GT_FREECELL:            n_("FreeCell"),
-        GT_GOLF:                n_("Golf"),
-        GT_GYPSY:               n_("Gypsy"),
-        GT_KLONDIKE:            n_("Klondike"),
-        GT_MONTANA:             n_("Montana"),
-        GT_NAPOLEON:            n_("Napoleon"),
-        GT_NUMERICA:            n_("Numerica"),
-        GT_PAIRING_TYPE:        n_("Pairing"),
-        GT_PICTURE_GALLERY:     n_("Picture Gallery"),
-        GT_RAGLAN:              n_("Raglan"),
-        GT_SIMPLE_TYPE:         n_("Simple games"),
-        GT_SPIDER:              n_("Spider"),
-        GT_TERRACE:             n_("Terrace"),
-        GT_YUKON:               n_("Yukon"),
-        GT_1DECK_TYPE:          n_("One-Deck games"),
-        GT_2DECK_TYPE:          n_("Two-Deck games"),
-        GT_3DECK_TYPE:          n_("Three-Deck games"),
-        GT_4DECK_TYPE:          n_("Four-Deck games"),
+        GT_BAKERS_DOZEN:        "Baker's Dozen",
+        GT_BELEAGUERED_CASTLE:  "Beleaguered Castle",
+        GT_CANFIELD:            "Canfield",
+        GT_FAN_TYPE:            "Fan",
+        GT_FORTY_THIEVES:       "Forty Thieves",
+        GT_FREECELL:            "FreeCell",
+        GT_GOLF:                "Golf",
+        GT_GYPSY:               "Gypsy",
+        GT_KLONDIKE:            "Klondike",
+        GT_MONTANA:             "Montana",
+        GT_NAPOLEON:            "Napoleon",
+        GT_NUMERICA:            "Numerica",
+        GT_PAIRING_TYPE:        "Pairing",
+        GT_PICTURE_GALLERY:     "Picture Gallery",
+        GT_RAGLAN:              "Raglan",
+        GT_SIMPLE_TYPE:         "Simple games",
+        GT_SPIDER:              "Spider",
+        GT_TERRACE:             "Terrace",
+        GT_YUKON:               "Yukon",
+        GT_1DECK_TYPE:          "One-Deck games",
+        GT_2DECK_TYPE:          "Two-Deck games",
+        GT_3DECK_TYPE:          "Three-Deck games",
+        GT_4DECK_TYPE:          "Four-Deck games",
 
-        GT_MAHJONGG:            n_("Mahjongg"),
-        GT_HANAFUDA:            n_("Hanafuda"),
-        GT_MUGHAL_GANJIFA:      n_("Mughal Ganjifa"),
-        GT_DASHAVATARA_GANJIFA: n_("Dashavatara Ganjifa"),
+        GT_MAHJONGG:            "Mahjongg",
+        GT_HANAFUDA:            "Hanafuda",
+        GT_MUGHAL_GANJIFA:      "Mughal Ganjifa",
+        GT_DASHAVATARA_GANJIFA: "Dashavatara Ganjifa",
 
-        GT_CRIBBAGE_TYPE:       n_("Cribbage"),
-        GT_HEXADECK:            n_("Hex A Deck"),
-        GT_ISHIDO:              n_("Ishido"),
-        GT_LIGHTS_OUT:          n_("Lights Out"),
-        GT_MATCH_THREE:         n_("Match Three"),
-        GT_MATRIX:              n_("Matrix"),
-        GT_MEMORY:              n_("Memory"),
-        GT_PEGGED:              n_("Pegged"),
-        GT_POKER_TYPE:          n_("Poker"),
-        GT_PUZZLE_TYPE:         n_("Puzzle"),
-        GT_SAMEGAME:            n_("Samegame"),
-        GT_SHISEN_SHO:          n_("Shisen-Sho"),
-        GT_SUDOKU:              n_("Sudoku"),
-        GT_TAROCK:              n_("Tarock"),
-        GT_HANOI:               n_("Tower of Hanoi"),
+        GT_CRIBBAGE_TYPE:       "Cribbage",
+        GT_HEXADECK:            "Hex A Deck",
+        GT_ISHIDO:              "Ishido",
+        GT_LIGHTS_OUT:          "Lights Out",
+        GT_MATCH_THREE:         "Match Three",
+        GT_MATRIX:              "Matrix",
+        GT_MEMORY:              "Memory",
+        GT_PEGGED:              "Pegged",
+        GT_POKER_TYPE:          "Poker",
+        GT_PUZZLE_TYPE:         "Puzzle",
+        GT_SAMEGAME:            "Samegame",
+        GT_SHISEN_SHO:          "Shisen-Sho",
+        GT_SUDOKU:              "Sudoku",
+        GT_TAROCK:              "Tarock",
+        GT_HANOI:               "Tower of Hanoi",
 
-        GT_CUSTOM:              n_("Custom"),
+        GT_CUSTOM:              "Custom",
     }
 
     SKILL_LEVELS = {
-        SL_LUCK: _('Luck only'),
-        SL_MOSTLY_LUCK: _('Mostly luck'),
-        SL_BALANCED: _('Balanced'),
-        SL_MOSTLY_SKILL: _('Mostly skill'),
-        SL_SKILL: _('Skill only'),
+        SL_LUCK: 'Luck only',
+        SL_MOSTLY_LUCK: 'Mostly luck',
+        SL_BALANCED: 'Balanced',
+        SL_MOSTLY_SKILL: 'Mostly skill',
+        SL_SKILL: 'Skill only',
     }
 
     #      SELECT_GAME_BY_TYPE = []
@@ -203,108 +202,108 @@ class GI:
         return (title, _callback)
 
     SELECT_GAME_BY_TYPE = (
-        _gen_select(title=n_("Baker's Dozen type"), game_type=GT_BAKERS_DOZEN),
+        _gen_select(title="Baker's Dozen type", game_type=GT_BAKERS_DOZEN),
         _gen_select(
-            title=n_("Beleaguered Castle type"),
+            title="Beleaguered Castle type",
             game_type=GT_BELEAGUERED_CASTLE),
-        _gen_select(title=n_("Canfield type"), game_type=GT_CANFIELD),
-        _gen_select(title=n_("Fan type"), game_type=GT_FAN_TYPE),
+        _gen_select(title="Canfield type", game_type=GT_CANFIELD),
+        _gen_select(title="Fan type", game_type=GT_FAN_TYPE),
         _gen_select(
-            title=n_("Forty Thieves type"), game_type=GT_FORTY_THIEVES),
-        _gen_select(title=n_("FreeCell type"), game_type=GT_FREECELL),
-        _gen_select(title=n_("Golf type"), game_type=GT_GOLF),
-        _gen_select(title=n_("Gypsy type"), game_type=GT_GYPSY),
-        _gen_select(title=n_("Klondike type"), game_type=GT_KLONDIKE),
-        _gen_select(title=n_("Montana type"), game_type=GT_MONTANA),
-        _gen_select(title=n_("Napoleon type"), game_type=GT_NAPOLEON),
-        _gen_select(title=n_("Numerica type"), game_type=GT_NUMERICA),
-        _gen_select(title=n_("Pairing type"), game_type=GT_PAIRING_TYPE),
-        _gen_select(title=n_("Picture Gallery type"),
+            title="Forty Thieves type", game_type=GT_FORTY_THIEVES),
+        _gen_select(title="FreeCell type", game_type=GT_FREECELL),
+        _gen_select(title="Golf type", game_type=GT_GOLF),
+        _gen_select(title="Gypsy type", game_type=GT_GYPSY),
+        _gen_select(title="Klondike type", game_type=GT_KLONDIKE),
+        _gen_select(title="Montana type", game_type=GT_MONTANA),
+        _gen_select(title="Napoleon type", game_type=GT_NAPOLEON),
+        _gen_select(title="Numerica type", game_type=GT_NUMERICA),
+        _gen_select(title="Pairing type", game_type=GT_PAIRING_TYPE),
+        _gen_select(title="Picture Gallery type",
                     game_type=GT_PICTURE_GALLERY),
-        _gen_select(title=n_("Raglan type"), game_type=GT_RAGLAN),
-        _gen_select(title=n_("Simple games"), game_type=GT_SIMPLE_TYPE),
-        _gen_select(title=n_("Spider type"), game_type=GT_SPIDER),
-        _gen_select(title=n_("Terrace type"), game_type=GT_TERRACE),
-        _gen_select(title=n_("Yukon type"), game_type=GT_YUKON),
-        _gen_select(title=n_("One-Deck games"), game_type=GT_1DECK_TYPE),
-        _gen_select(title=n_("Two-Deck games"), game_type=GT_2DECK_TYPE),
-        _gen_select(title=n_("Three-Deck games"), game_type=GT_3DECK_TYPE),
-        _gen_select(title=n_("Four-Deck games"), game_type=GT_4DECK_TYPE),
+        _gen_select(title="Raglan type", game_type=GT_RAGLAN),
+        _gen_select(title="Simple games", game_type=GT_SIMPLE_TYPE),
+        _gen_select(title="Spider type", game_type=GT_SPIDER),
+        _gen_select(title="Terrace type", game_type=GT_TERRACE),
+        _gen_select(title="Yukon type", game_type=GT_YUKON),
+        _gen_select(title="One-Deck games", game_type=GT_1DECK_TYPE),
+        _gen_select(title="Two-Deck games", game_type=GT_2DECK_TYPE),
+        _gen_select(title="Three-Deck games", game_type=GT_3DECK_TYPE),
+        _gen_select(title="Four-Deck games", game_type=GT_4DECK_TYPE),
     )
 
     SELECT_ORIGINAL_GAME_BY_TYPE = (
-        (n_("French type"), lambda gi, gf=GT_ORIGINAL,
+        ("French type", lambda gi, gf=GT_ORIGINAL,
             gt=(
                 GT_HANAFUDA,
                 GT_HEXADECK, GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
                 GT_DASHAVATARA_GANJIFA, GT_TAROCK,): gi.si.game_flags & gf and
             gi.si.game_type not in gt),
-        (n_("Ganjifa type"), lambda gi, gf=GT_ORIGINAL,
+        ("Ganjifa type", lambda gi, gf=GT_ORIGINAL,
             gt=(GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
                 GT_DASHAVATARA_GANJIFA,): gi.si.game_flags & gf and
             gi.si.game_type in gt),
-        (n_("Hanafuda type"), lambda gi, gf=GT_ORIGINAL, gt=GT_HANAFUDA:
+        ("Hanafuda type", lambda gi, gf=GT_ORIGINAL, gt=GT_HANAFUDA:
             gi.si.game_flags & gf and gi.si.game_type == gt),
-        (n_("Hex A Deck type"), lambda gi, gf=GT_ORIGINAL, gt=GT_HEXADECK:
+        ("Hex A Deck type", lambda gi, gf=GT_ORIGINAL, gt=GT_HEXADECK:
             gi.si.game_flags & gf and gi.si.game_type == gt),
-        (n_("Tarock type"), lambda gi, gf=GT_ORIGINAL, gt=GT_TAROCK:
+        ("Tarock type", lambda gi, gf=GT_ORIGINAL, gt=GT_TAROCK:
             gi.si.game_flags & gf and gi.si.game_type == gt),
     )
 
     SELECT_CONTRIB_GAME_BY_TYPE = (
-        (n_("French type"), lambda gi, gf=GT_CONTRIB,
+        ("French type", lambda gi, gf=GT_CONTRIB,
             gt=(GT_HANAFUDA, GT_HEXADECK, GT_MUGHAL_GANJIFA,
                 GT_NAVAGRAHA_GANJIFA, GT_DASHAVATARA_GANJIFA, GT_TAROCK,):
             gi.si.game_flags & gf and gi.si.game_type not in gt),
-        (n_("Ganjifa type"), lambda gi, gf=GT_CONTRIB,
+        ("Ganjifa type", lambda gi, gf=GT_CONTRIB,
             gt=(GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
                 GT_DASHAVATARA_GANJIFA,):
             gi.si.game_flags & gf and gi.si.game_type in gt),
-        (n_("Hanafuda type"), lambda gi, gf=GT_CONTRIB, gt=GT_HANAFUDA:
+        ("Hanafuda type", lambda gi, gf=GT_CONTRIB, gt=GT_HANAFUDA:
             gi.si.game_flags & gf and gi.si.game_type == gt),
-        (n_("Hex A Deck type"), lambda gi, gf=GT_CONTRIB, gt=GT_HEXADECK:
+        ("Hex A Deck type", lambda gi, gf=GT_CONTRIB, gt=GT_HEXADECK:
             gi.si.game_flags & gf and gi.si.game_type == gt),
-        (n_("Tarock type"), lambda gi, gf=GT_CONTRIB, gt=GT_TAROCK:
+        ("Tarock type", lambda gi, gf=GT_CONTRIB, gt=GT_TAROCK:
             gi.si.game_flags & gf and gi.si.game_type == gt),
     )
 
     SELECT_ORIENTAL_GAME_BY_TYPE = (
-        (n_("Dashavatara Ganjifa type"), lambda gi, gt=GT_DASHAVATARA_GANJIFA:
+        ("Dashavatara Ganjifa type", lambda gi, gt=GT_DASHAVATARA_GANJIFA:
             gi.si.game_type == gt),
-        (n_("Ganjifa type"), lambda gi,
+        ("Ganjifa type", lambda gi,
             gt=(GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
                 GT_DASHAVATARA_GANJIFA,): gi.si.game_type in gt),
-        (n_("Hanafuda type"),
+        ("Hanafuda type",
             lambda gi, gt=GT_HANAFUDA: gi.si.game_type == gt),
-        (n_("Mughal Ganjifa type"),
+        ("Mughal Ganjifa type",
             lambda gi, gt=GT_MUGHAL_GANJIFA: gi.si.game_type == gt),
-        (n_("Navagraha Ganjifa type"),
+        ("Navagraha Ganjifa type",
             lambda gi, gt=GT_NAVAGRAHA_GANJIFA: gi.si.game_type == gt),
     )
 
     SELECT_SPECIAL_GAME_BY_TYPE = (
-        (n_("Cribbage type"),
+        ("Cribbage type",
             lambda gi, gt=GT_CRIBBAGE_TYPE: gi.si.game_type == gt),
-        (n_("Hex A Deck type"),
+        ("Hex A Deck type",
             lambda gi, gt=GT_HEXADECK: gi.si.game_type == gt),
-        (n_("Ishido type"), lambda gi, gt=GT_ISHIDO: gi.si.game_type == gt),
-        (n_("Lights Out type"),
+        ("Ishido type", lambda gi, gt=GT_ISHIDO: gi.si.game_type == gt),
+        ("Lights Out type",
             lambda gi, gt=GT_LIGHTS_OUT: gi.si.game_type == gt),
-        (n_("Match Three type"),
+        ("Match Three type",
             lambda gi, gt=GT_MATCH_THREE: gi.si.game_type == gt),
-        (n_("Matrix type"), lambda gi, gt=GT_MATRIX: gi.si.game_type == gt),
-        (n_("Memory type"), lambda gi, gt=GT_MEMORY: gi.si.game_type == gt),
-        (n_("Pegged type"), lambda gi, gt=GT_PEGGED: gi.si.game_type == gt),
-        (n_("Poker type"), lambda gi, gt=GT_POKER_TYPE: gi.si.game_type == gt),
-        (n_("Puzzle type"),
+        ("Matrix type", lambda gi, gt=GT_MATRIX: gi.si.game_type == gt),
+        ("Memory type", lambda gi, gt=GT_MEMORY: gi.si.game_type == gt),
+        ("Pegged type", lambda gi, gt=GT_PEGGED: gi.si.game_type == gt),
+        ("Poker type", lambda gi, gt=GT_POKER_TYPE: gi.si.game_type == gt),
+        ("Puzzle type",
             lambda gi, gt=GT_PUZZLE_TYPE: gi.si.game_type == gt),
-        (n_("Samegame type"),
+        ("Samegame type",
             lambda gi, gt=GT_SAMEGAME: gi.si.game_type == gt),
-        (n_("Shisen-Sho type"),
+        ("Shisen-Sho type",
             lambda gi, gt=GT_SHISEN_SHO: gi.si.game_type == gt),
-        (n_("Sudoku type"), lambda gi, gt=GT_SUDOKU: gi.si.game_type == gt),
-        (n_("Tarock type"), lambda gi, gt=GT_TAROCK: gi.si.game_type == gt),
-        (n_("Tower of Hanoi type"),
+        ("Sudoku type", lambda gi, gt=GT_SUDOKU: gi.si.game_type == gt),
+        ("Tarock type", lambda gi, gt=GT_TAROCK: gi.si.game_type == gt),
+        ("Tower of Hanoi type",
             lambda gi, gt=GT_HANOI: gi.si.game_type == gt),
     )
 
@@ -736,18 +735,18 @@ class GameInfo(Struct):
         name = to_unicode(name)
         en_name = name                  # for app.getGameRulesFilename
         if pysollib.settings.TRANSLATE_GAME_NAMES:
-            name = _(name)
+            name = name
         if not short_name:
             short_name = name
         else:
             short_name = to_unicode(short_name)
             if pysollib.settings.TRANSLATE_GAME_NAMES:
-                short_name = _(short_name)
+                short_name = short_name
         if isinstance(altnames, str):
             altnames = (altnames,)
         altnames = [to_unicode(n) for n in altnames]
         if pysollib.settings.TRANSLATE_GAME_NAMES:
-            altnames = [_(n) for n in altnames]
+            altnames = [n for n in altnames]
         #
         if not (1 <= category <= GI.NUM_CATEGORIES):
             if game_type == GI.GT_HANAFUDA:

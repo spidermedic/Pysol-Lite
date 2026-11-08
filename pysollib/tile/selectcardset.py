@@ -25,7 +25,6 @@ import os
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import KwStruct, USE_PIL
-from pysollib.mygettext import _
 from pysollib.resource import CSI, getNaturalSortKey
 from pysollib.speech import Speech
 from pysollib.ui.tktile.selecttree import SelectDialogTreeData
@@ -56,7 +55,7 @@ class SelectCardsetData(SelectDialogTreeData):
         self.all_objects = manager.getAllSortedByName()
         self.all_objects = [obj for obj in self.all_objects if not obj.error]
         self.no_contents = [SelectCardsetLeaf(
-            None, None, _("(no cardsets)"), key=None), ]
+            None, None, "(no cardsets)", key=None), ]
         # one flat list, in alphanumeric order
         self.rootnodes = [
             SelectCardsetLeaf(None, None, text=obj.name, key=obj.index)
@@ -155,10 +154,10 @@ class SelectCardsetDialogWithPreview(MfxDialog):
         MfxDialog.destroy(self)
 
     def initKw(self, kw):
-        s = (_("&Info"), 10)
+        s = ("&Info", 10)
         kw = KwStruct(kw,
                       strings=(s, 'sep',
-                               _("&Select"), _("&Cancel"),),
+                               "&Select", "&Cancel",),
                       default=0,
                       resizable=True,
                       )
@@ -294,7 +293,7 @@ class CardsetInfoDialog(MfxDialog):
         #
         row = 0
         self.speech = Speech()
-        info_frame = ttk.LabelFrame(frame, text=_('About cardset'))
+        info_frame = ttk.LabelFrame(frame, text='About cardset')
         info_frame.grid(row=row, column=0, columnspan=2, sticky='ew',
                         padx=0, pady=5, ipadx=5, ipady=5)
         row += 1
@@ -311,13 +310,13 @@ class CardsetInfoDialog(MfxDialog):
         frow = 0
         screenreadertext = ""
         for n, t in (
-            (_('Type:'),          CSI.TYPE[cardset.type]),
-            (_('Styles:'),        styles),
-            (_('Nationality:'),   nationalities),
-            (_('Year:'),          year),
-            (_('Num. cards:'),    str(cardset.ncards)),
-            (_('Size:'), '%d x %d (%s)' % (cardset.CARDW, cardset.CARDH,
-                                           CSI.SIZE_NAME.get(cardset.si.size)))
+            ('Type:',          CSI.TYPE[cardset.type]),
+            ('Styles:',        styles),
+            ('Nationality:',   nationalities),
+            ('Year:',          year),
+            ('Num. cards:',    str(cardset.ncards)),
+            ('Size:', '%d x %d (%s)' % (cardset.CARDW, cardset.CARDH,
+                                        CSI.SIZE_NAME.get(cardset.si.size)))
                 ):
             if t is not None:
                 label = ttk.Label(info_frame, text=n,

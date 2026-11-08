@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         AC_RowStack, \
         AbstractFoundationStack, \
@@ -55,7 +54,7 @@ class TakeAway_Foundation(AbstractFoundationStack):
         pass
 
     def getHelp(self):
-        return _('Foundation. Build up or down regardless of suit.')
+        return 'Foundation. Build up or down regardless of suit.'
 
 
 class TakeAway(Game):

@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         InitialDealTalonStack, \
@@ -172,15 +171,15 @@ class Memory24(Game):
             return
         t = ""
         if self.closed_cards:
-            t = _("Points: %d") % self.score
+            t = "Points: %d" % self.score
         else:
             if self.score >= self.WIN_SCORE:
-                t = _("WON\n\n")
-            t = t + _("Total: %d") % self.score
+                t = "WON\n\n"
+            t = t + "Total: %d" % self.score
         self.texts.score.config(text=t)
 
     def parseGameInfo(self):
-        return _("Points: %d") % self.score
+        return "Points: %d" % self.score
 
     def getGameScore(self):
         return self.score

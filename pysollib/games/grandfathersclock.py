@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
     AC_FoundationStack, \
@@ -570,7 +569,7 @@ class Clock_RowStack(RK_RowStack):
         return False
 
     def getHelp(self):
-        return _('Tableau. Build by same rank.')
+        return 'Tableau. Build by same rank.'
 
 
 class Clock(Game):
@@ -722,7 +721,7 @@ class Clock(Game):
             if c.face_up and c.rank == KING:
                 numKings += 1
 
-        return _("Kings: %d") % numKings
+        return "Kings: %d" % numKings
 
 
 class RelaxedClock(Clock):

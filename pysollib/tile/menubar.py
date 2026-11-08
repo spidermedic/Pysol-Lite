@@ -22,7 +22,6 @@
 # ---------------------------------------------------------------------------##
 
 
-from pysollib.mygettext import _
 from pysollib.ui.tktile.findcarddialog import connect_game_find_card_dialog
 from pysollib.ui.tktile.findcarddialog import destroy_find_card_dialog
 from pysollib.ui.tktile.fullpicturedialog import \
@@ -67,7 +66,6 @@ class PysolMenubarTk(PysolMenubarTkCommon):
         from .selectgame import SelectGameDialogWithPreview
         return SelectGameDialogWithPreview
 
-
     def _calc_MfxMessageDialog(self):
         return MfxMessageDialog
 
@@ -79,7 +77,7 @@ class PysolMenubarTk(PysolMenubarTkCommon):
         if self._cancelDrag(break_pause=False):
             return
         key = self.app.nextgame.cardset.index
-        cs = self.app.selectCardset(_("Select deck"), key)
+        cs = self.app.selectCardset("Select deck", key)
         if not cs:
             return
         self.app.nextgame.cardset = cs

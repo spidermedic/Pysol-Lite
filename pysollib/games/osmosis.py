@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         AbstractFoundationStack, \
         BasicRowStack, \
@@ -61,7 +60,7 @@ class Osmium_Foundation(AbstractFoundationStack):
         return True
 
     def getHelp(self):
-        return _('Foundation. Build in suit regardless of rank.')
+        return 'Foundation. Build in suit regardless of rank.'
 
 
 class Osmium(Game):
@@ -157,7 +156,7 @@ class Osmosis_Foundation(AbstractFoundationStack):
         return False
 
     def getHelp(self):
-        return _('Foundation. Build in suit regardless of rank.')
+        return 'Foundation. Build in suit regardless of rank.'
 
 
 class Osmosis(Osmium):

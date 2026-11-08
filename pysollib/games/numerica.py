@@ -28,7 +28,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AC_RowStack, \
@@ -93,7 +92,7 @@ class Numerica_RowStack(BasicRowStack):
 
     def getHelp(self):
         # return _('Tableau. Accepts any one card from the Waste.')
-        return _('Tableau. Build regardless of rank and suit.')
+        return 'Tableau. Build regardless of rank and suit.'
 
 
 # ************************************************************************
@@ -301,7 +300,7 @@ class PussInTheCorner_Foundation(SS_FoundationStack):
         return True
 
     def getHelp(self):
-        return _('Foundation. Build up by color.')
+        return 'Foundation. Build up by color.'
 
 
 class PussInTheCorner_RowStack(BasicRowStack):
@@ -316,7 +315,7 @@ class PussInTheCorner_RowStack(BasicRowStack):
 
     def getHelp(self):
         # return _('Tableau. Accepts any one card from the Waste.')
-        return _('Tableau. Build regardless of rank and suit.')
+        return 'Tableau. Build regardless of rank and suit.'
 
 
 class PussInTheCorner(Numerica):
@@ -714,7 +713,7 @@ class Strategerie_RowStack(BasicRowStack):
     getBottomImage = Stack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Tableau. Build regardless of rank and suit.')
+        return 'Tableau. Build regardless of rank and suit.'
 
 
 class Strategerie_ReserveStack(ReserveStack):
@@ -885,7 +884,7 @@ class CircleNine_RowStack(BasicRowStack):
         return from_stack is self.game.s.talon
 
     def getHelp(self):
-        return _('Tableau. Build regardless of rank and suit.')
+        return 'Tableau. Build regardless of rank and suit.'
 
 
 class CircleNine(Game):

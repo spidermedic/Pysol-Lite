@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import Yukon_Hint, hint_level_is_stuck
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         AC_RowStack, \
         InitialDealTalonStack, \
@@ -196,7 +195,7 @@ class Interlock(Game):
                 if r[j + i].cards:
                     coverCards += (r[j + i],)
         if len(coverCards) > 0:
-            mainCard += " - " + _("Covered by")
+            mainCard += " - " + "Covered by"
             for c in coverCards:
                 mainCard += " - " + self.parseCard(c.cards[0])
         return mainCard

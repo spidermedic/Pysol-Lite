@@ -28,7 +28,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -237,9 +236,9 @@ class Braid(Game):
             t = self.RANKS[self.base_card.rank]
             dir = self.getFoundationDir()
             if dir == 1:
-                t = t + _(" Ascending")
+                t = t + " Ascending"
             elif dir == -1:
-                t = t + _(" Descending")
+                t = t + " Descending"
         self.texts.info.config(text=t)
 
 

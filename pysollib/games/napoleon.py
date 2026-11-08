@@ -27,7 +27,6 @@ from pysollib.games.braid import Braid_Foundation
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         BasicRowStack, \
@@ -174,9 +173,9 @@ class DerKleineNapoleon(Game):
             t = RANKS[f.cards[0].rank]
             dir = self.getFoundationDir()
             if dir == 1:
-                t = t + _(" Ascending")
+                t = t + " Ascending"
             elif dir == -1:
-                t = t + _(" Descending")
+                t = t + " Descending"
         self.texts.info.config(text=t)
 
 

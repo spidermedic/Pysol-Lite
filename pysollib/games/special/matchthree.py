@@ -26,7 +26,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import Card, MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -121,8 +120,8 @@ class AbstractMatchThreeGame(Game):
     NCOLORS = 4
     NCARDS = 144
 
-    COLORS = (_("Blue"), _("Red"), _("Yellow"), _("Green"),
-              _("Purple"), _("Orange"))
+    COLORS = ("Blue", "Red", "Yellow", "Green",
+              "Purple", "Orange")
 
     WIN_SCORE = 8000
 
@@ -286,7 +285,7 @@ class AbstractMatchThreeGame(Game):
             return ""
         row = (stack.id % self.L[1]) + 1
         column = (stack.id // self.L[1]) + 1
-        return _("Row: %d, Column: %d") % (row, column)
+        return "Row: %d, Column: %d" % (row, column)
 
     def isGameWon(self):
         return self.score >= self.WIN_SCORE and self.moves_left >= 0
@@ -324,13 +323,13 @@ class AbstractMatchThreeGame(Game):
     def updateText(self):
         if self.preview > 1 or not self.texts.score:
             return
-        t = _("Points: %d") % self.score + "\n"
-        t += _("Goal: %d") % self.WIN_SCORE + "\n"
-        t += _("Moves left: %d") % max(0, self.moves_left)
+        t = "Points: %d" % self.score + "\n"
+        t += "Goal: %d" % self.WIN_SCORE + "\n"
+        t += "Moves left: %d" % max(0, self.moves_left)
         self.texts.score.config(text=t)
 
     def parseGameInfo(self):
-        return _("Points: %d") % self.score
+        return "Points: %d" % self.score
 
     def getGameScore(self):
         return self.score

@@ -30,7 +30,6 @@ import tkinter.ttk as ttk
 import traceback
 
 from pysollib.mfxutil import KwStruct, destruct, kwdefault, openURL
-from pysollib.mygettext import _
 from pysollib.settings import WIN_SYSTEM
 from pysollib.speech import Speech
 from pysollib.ui.tktile.tkcanvas import MfxCanvas
@@ -146,7 +145,7 @@ class MfxDialog:  # ex. _ToplevelDialog
         kw = KwStruct(kw,
                       timeout=0, resizable=False,
                       text="", justify="center",
-                      strings=(_("&OK"),),
+                      strings=("&OK",),
                       default=0,
                       width=0,
                       padx=20, pady=20,
@@ -347,7 +346,7 @@ class PysolAboutDialog(MfxMessageDialog):
         show_on_start = PysolCheckbutton(bottom_frame,
                                          variable=self.splashscreen,
                                          command=self._splashUpdate,
-                                         text=_("Show this on startup"))
+                                         text="Show this on startup")
         show_on_start.grid(row=0, column=0, sticky='w',
                            padx=1, pady=1)
 
@@ -389,7 +388,7 @@ class MfxSimpleEntry(MfxDialog):
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=(_("&OK"), _("&Cancel")), default=0,
+                      strings=("&OK", "&Cancel"), default=0,
                       separator=False,
                       )
         return MfxDialog.initKw(self, kw)
@@ -957,7 +956,7 @@ class PysolCombo(ttk.Combobox):
         return "break"
 
     def _focus(self, event):
-        self.speech.speak(self.field_name + " " + _("Select box") + " " +
+        self.speech.speak(self.field_name + " " + "Select box" + " " +
                           str(self.value.get()))
 
 
@@ -990,7 +989,7 @@ class PysolCheckbutton(ttk.Checkbutton):
         self.bind('<FocusIn>', self._focus)
 
     def _focus(self, event):
-        self.speech.speak(self.field_name + " " + _("Check box") + " " +
+        self.speech.speak(self.field_name + " " + "Check box" + " " +
                           str(self.value.get()))
 
 
@@ -1020,7 +1019,7 @@ class PysolRadiobutton(ttk.Radiobutton):
         self.bind('<FocusIn>', self._focus)
 
     def _focus(self, event):
-        self.speech.speak(self.field_name + " " + _("Radio button") + " " +
+        self.speech.speak(self.field_name + " " + "Radio button" + " " +
                           str(self.value.get() == self.myvalue))
 
 
@@ -1044,7 +1043,7 @@ class PysolEntry(ttk.Entry):
         self.bind('<FocusIn>', self._focus)
 
     def _focus(self, event):
-        self.speech.speak(self.field_name + " " + _("Text box") + " " +
+        self.speech.speak(self.field_name + " " + "Text box" + " " +
                           self.value.get())
 
 
@@ -1068,7 +1067,7 @@ class PysolText(tkinter.Text):
     def _focus(self, event):
         # Get all text content
         content = self.get("1.0", "end-1c")
-        self.speech.speak(self.field_name + " " + _("Text area") + " " +
+        self.speech.speak(self.field_name + " " + "Text area" + " " +
                           content)
 
 
@@ -1117,7 +1116,7 @@ class PysolSpinbox(ttk.Spinbox):
         self.bind('<FocusIn>', self._focus)
 
     def _focus(self, event):
-        self.speech.speak(self.field_name + " " + _("Spin box") + " " +
+        self.speech.speak(self.field_name + " " + "Spin box" + " " +
                           str(self.value.get()))
 
 
@@ -1143,7 +1142,7 @@ class PysolNotebook(ttk.Notebook):
         tab_text = self.tab(current_tab_id, "text")
         content_text = self._get_screenreader_text(
             self.nametowidget(current_tab_id))
-        self.speech.speak(tab_text + " " + _("Tab") + " " + content_text)
+        self.speech.speak(tab_text + " " + "Tab" + " " + content_text)
 
     def apply_initial_tab(self, initial_tab, search_frame, search_entry=None):
         if initial_tab != 'search':

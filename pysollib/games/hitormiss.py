@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -45,7 +44,7 @@ class HitOrMiss_Foundation(AbstractFoundationStack):
         return game.rank == cards[0].rank  # check the rank
 
     def getHelp(self):
-        return _('Foundation. Place cards here that match the declared rank.')
+        return 'Foundation. Place cards here that match the declared rank.'
 
 
 class HitOrMiss_Talon(WasteTalonStack):
@@ -71,8 +70,8 @@ class HitOrMiss_Talon(WasteTalonStack):
         return WasteTalonStack.dealCards(self, sound)
 
     def getHelp(self):
-        return _('Talon. Unlimited redeals, until running through the deck '
-                 'twice with no hits.')
+        return ('Talon. Unlimited redeals, until running through the deck '
+                'twice with no hits.')
 
 
 class HitOrMiss_Waste(WasteStack):

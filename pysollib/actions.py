@@ -25,7 +25,6 @@ import os
 
 from pysollib.help import help_about, help_html
 from pysollib.mfxutil import Struct
-from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
 from pysollib.pysoltk import GameInfoDialog
 from pysollib.pysoltk import MfxMessageDialog, MfxSimpleEntry
@@ -217,7 +216,7 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag():
             return
         if self.changed():
-            if not self.game.areYouSure(_("New game")):
+            if not self.game.areYouSure("New game"):
                 return
         if self.game.nextGameFlags(self.game.id) == 0:
             self.game.endGame()
@@ -232,7 +231,7 @@ class PysolMenubar(PysolMenubarTk):
         if not force and self.game.id == id:
             return
         if self.changed():
-            if not self.game.areYouSure(_("Select game")):
+            if not self.game.areYouSure("Select game"):
                 return
         self.game.endGame()
         self.game.quitGame(id, random=random)
@@ -246,8 +245,8 @@ class PysolMenubar(PysolMenubarTk):
             if not self.app.getGameInfo(id):
                 raise ValueError
         except (ValueError, TypeError):
-            MfxMessageDialog(self.top, title=_("Invalid game number"),
-                             text=_("Invalid game number\n") + str(seed),
+            MfxMessageDialog(self.top, title="Invalid game number",
+                             text="Invalid game number\n" + str(seed),
                              bitmap="error")
             return
         f = self.game.nextGameFlags(id, random)
@@ -265,7 +264,7 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag():
             return
         if self.changed():
-            if not self.game.areYouSure(_("Select next game number")):
+            if not self.game.areYouSure("Select next game number"):
                 return
         r = self.game.random
         seed = r.increaseSeed(r.initial_seed)
@@ -276,9 +275,9 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag(break_pause=False):
             return
         f = self.game.getGameNumber(format=0)
-        d = MfxSimpleEntry(self.top, _("Select new game number"),
-                           _("\n\nEnter new game number"), f,
-                           strings=(_("&OK"), _("&Next number"), _("&Cancel")),
+        d = MfxSimpleEntry(self.top, "Select new game number",
+                           "\n\nEnter new game number", f,
+                           strings=("&OK", "&Next number", "&Cancel"),
                            default=0, e_width=25)
         if d.status != 0:
             return
@@ -288,7 +287,7 @@ class PysolMenubar(PysolMenubarTk):
             self.mNewGameWithNextId()
             return
         if self.changed():
-            if not self.game.areYouSure(_("Select new game number")):
+            if not self.game.areYouSure("Select new game number"):
                 return
         self._mNewGameBySeed(d.value, self.game.random.ORIGIN_SELECTED)
 
@@ -300,7 +299,7 @@ class PysolMenubar(PysolMenubarTk):
         if len(gl) < 2 or (id not in gl):
             return
         if self.changed():
-            if not self.game.areYouSure(_("Select next game")):
+            if not self.game.areYouSure("Select next game"):
                 return
         index = (gl.index(id) + step) % len(gl)
         self.game.endGame()
@@ -332,7 +331,7 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag():
             return
         if self.changed():
-            if not self.game.areYouSure(_("Quit %s") % TITLE):
+            if not self.game.areYouSure("Quit %s" % TITLE):
                 return
         self.game.endGame()
         self.game.quitGame()
@@ -382,8 +381,8 @@ class PysolMenubar(PysolMenubarTk):
         if self.game.moves.index == 0:
             return
         if self.changed(restart=1):
-            if not self.game.areYouSure(_("Restart game"),
-                                        _("Restart this game?")):
+            if not self.game.areYouSure("Restart game",
+                                        "Restart this game?"):
                 return
         self.game.restartGame()
 
@@ -431,7 +430,7 @@ class PysolMenubar(PysolMenubarTk):
         if not self.game.pause:
             self.game.doPause()
             wasPaused = True
-        GameInfoDialog(self.top, _("Game Info"), self.app)
+        GameInfoDialog(self.top, "Game Info", self.app)
         if self.game.pause:
             if wasPaused:
                 self.game.doPause()
@@ -473,7 +472,7 @@ class PysolMenubar(PysolMenubarTk):
         if self.changed():
             # only ask if there have been no demo moves or hints yet
             if self.game.stats.demo_moves == 0 and self.game.stats.hints == 0:
-                if not self.game.areYouSure(_("Play demo")):
+                if not self.game.areYouSure("Play demo"):
                     return
         # self.app.demo_counter = 0
         self.game.startDemo(mixed=mixed)
@@ -482,7 +481,7 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag(break_pause=False):
             return
         d = ToolbarButtonsDialog(
-            self.top, _("Visible toolbar buttons"), self.app)
+            self.top, "Visible toolbar buttons", self.app)
         if d.status == 0 and d.button == 0:
             for w, visible in d.visible.items():
                 if bool(self.app.opt.toolbar_vars.get(w)) != visible:
@@ -674,4 +673,3 @@ class PysolToolbar(PysolToolbarTk):
         if not self._busy():
             self.menubar.mHelpRules()
         return 1
-

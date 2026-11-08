@@ -21,7 +21,6 @@ import tkinter
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import USE_PIL
-from pysollib.mygettext import _
 from pysollib.ui.tktile.tkconst import (
     ASSIST_GAME_OPTIONS, ASSIST_OPTIONS, AUTOMATIC_PLAY_OPTIONS, COMPOUNDS,
     PLAY_OPTIONS)
@@ -41,7 +40,7 @@ class SettingsWindow:
 
     def __init__(self, menubar):
         self.mb = menubar
-        self.top = makeToplevel(menubar.top, title=_("Settings"))
+        self.top = makeToplevel(menubar.top, title="Settings")
         self.top.wm_resizable(False, False)
         self.top.protocol("WM_DELETE_WINDOW", self.close)
         self.top.bind("<Escape>", self.close)
@@ -55,63 +54,63 @@ class SettingsWindow:
         nb.pack(expand=True, fill="both")
 
         # General
-        page = self._page(nb, _("General"))
+        page = self._page(nb, "General")
         for key, label, handler in PLAY_OPTIONS:
             self._check(page, key, label, handler)
-        self._check(page, "sound", _("Sound"), "mOptSound")
+        self._check(page, "sound", "Sound", "mOptSound")
         ttk.Separator(page).pack(fill="x", pady=8)
         self.animations = self._choice(
-            page, _("Animation speed:"),
-            [(_(n), v) for n, v in ANIMATIONS], tk.animations,
+            page, "Animation speed:",
+            [(n, v) for n, v in ANIMATIONS], tk.animations,
             menubar.mOptAnimations)
 
         # Assist
-        page = self._page(nb, _("Assist"))
+        page = self._page(nb, "Assist")
         for key, label, handler in AUTOMATIC_PLAY_OPTIONS:
             self.auto[key] = self._check(page, key, label, handler)
         for key, label, handler in ASSIST_OPTIONS:
             self._check(page, key, label, handler)
         ttk.Separator(page).pack(fill="x", pady=8)
-        ttk.Label(page, text=_("Specific games")).pack(anchor="w")
+        ttk.Label(page, text="Specific games").pack(anchor="w")
         for key, label, handler in ASSIST_GAME_OPTIONS:
             self._check(page, key, label, handler)
 
         # Appearance
-        page = self._page(nb, _("Appearance"))
+        page = self._page(nb, "Appearance")
         row = ttk.Frame(page)
         row.pack(fill="x", pady=2)
-        ttk.Label(row, text=_("Deck:")).pack(side="left")
+        ttk.Label(row, text="Deck:").pack(side="left")
         self.deck = ttk.Label(row)
         self.deck.pack(side="left", padx=6)
-        ttk.Button(row, text=_("Choose"),
+        ttk.Button(row, text="Choose",
                    command=menubar.mSelectCardsetDialog).pack(side="right")
         self.backs_row = ttk.Frame(page)
         self.backs_row.pack(fill="x", pady=6)
         row = ttk.Frame(page)
         row.pack(fill="x", pady=2)
-        ttk.Label(row, text=_("Background color:")).pack(side="left")
+        ttk.Label(row, text="Background color:").pack(side="left")
         self.swatch = tkinter.Label(row, width=3, relief="sunken", bd=1)
         self.swatch.pack(side="left", padx=6)
-        ttk.Button(row, text=_("Choose"),
+        ttk.Button(row, text="Choose",
                    command=menubar.mSelectTableColor).pack(side="right")
         if USE_PIL:
             ttk.Separator(page).pack(fill="x", pady=8)
-            self._check(page, "spread_stacks", _("Spread stacks"),
+            self._check(page, "spread_stacks", "Spread stacks",
                         "mOptSpreadStacks")
 
         # Toolbar
-        page = self._page(nb, _("Toolbar"))
+        page = self._page(nb, "Toolbar")
         self.side = tkinter.IntVar()
         self.sidebox = self._choice(
-            page, _("Position:"), [(_(n), v) for n, v in TOOLBAR_SIDES],
+            page, "Position:", [(n, v) for n, v in TOOLBAR_SIDES],
             self.side, self._setSide)
         self.size = self._choice(
-            page, _("Icon size:"), [(_(n), v) for n, v in TOOLBAR_SIZES],
+            page, "Icon size:", [(n, v) for n, v in TOOLBAR_SIZES],
             tk.toolbar_size, menubar.mOptToolbarSize)
         self.compound = self._choice(
-            page, _("Button style:"), [(_(n), v) for v, n in COMPOUNDS],
+            page, "Button style:", [(n, v) for v, n in COMPOUNDS],
             tk.toolbar_compound, menubar.mOptToolbarCompound)
-        ttk.Button(page, text=_("Visible buttons"),
+        ttk.Button(page, text="Visible buttons",
                    command=menubar.mOptToolbarButtons).pack(
                        anchor="w", pady=8)
 
@@ -125,7 +124,7 @@ class SettingsWindow:
         return page
 
     def _check(self, page, key, label, handler):
-        w = ttk.Checkbutton(page, text=_(label),
+        w = ttk.Checkbutton(page, text=label,
                             variable=getattr(self.mb.tkopt, key),
                             command=getattr(self.mb, handler))
         w.pack(anchor="w", pady=1)
@@ -192,7 +191,7 @@ class SettingsWindow:
         backs = images.getCardbacks() if images else []
         if len(backs) < 2:
             return
-        ttk.Label(self.backs_row, text=_("Back:")).pack(side="left")
+        ttk.Label(self.backs_row, text="Back:").pack(side="left")
         for i, back in enumerate(backs):
             ttk.Radiobutton(
                 self.backs_row, style="Toolbutton", image=back.menu_image,

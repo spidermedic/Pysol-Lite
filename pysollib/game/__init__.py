@@ -53,8 +53,6 @@ from pysollib.move import ASingleCardMove
 from pysollib.move import ASingleFlipMove
 from pysollib.move import ATurnStackMove
 from pysollib.move import AUpdateStackMove
-from pysollib.mygettext import _
-from pysollib.mygettext import ungettext
 from pysollib.pysolrandom import LCRandom31, PysolRandom, construct_random
 from pysollib.pysoltk import CURSOR_WATCH
 from pysollib.pysoltk import Card
@@ -1185,7 +1183,7 @@ class Game:
 
     def keyboardSelect(self, direction):
         if self.pause:
-            self.app.speech.speak(_("Paused"))
+            self.app.speech.speak("Paused")
             return
         oldstack = self.keyboard_selected_stack
         self._getKeyboardSelectStack(direction)
@@ -1206,7 +1204,7 @@ class Game:
 
     def keyboardSelectNextType(self, dir=1):
         if self.pause:
-            self.app.speech.speak(_("Paused"))
+            self.app.speech.speak("Paused")
             return
         oldstack = self.keyboard_selected_stack
         stacktype = 0
@@ -1259,7 +1257,7 @@ class Game:
 
     def keyboardSelectMoreCards(self):
         if self.pause:
-            self.app.speech.speak(_("Paused"))
+            self.app.speech.speak("Paused")
             return
         stack = self.keyboard_selected_stack
         nextcard = -1 * (self.keyboard_select_count + 1)
@@ -1277,7 +1275,7 @@ class Game:
 
     def keyboardSelectLessCards(self):
         if self.pause:
-            self.app.speech.speak(_("Paused"))
+            self.app.speech.speak("Paused")
             return
         stack = self.keyboard_selected_stack
         if stack is None:
@@ -1292,7 +1290,7 @@ class Game:
 
     def keyboardAction(self, type=1):
         if self.pause:
-            self.app.speech.speak(_("Paused"))
+            self.app.speech.speak("Paused")
             return
         stack = self.keyboard_selected_stack
 
@@ -1518,21 +1516,21 @@ class Game:
             message = self.parseCard(stack.cards[cardindex])
             if stack == self.s.talon:
                 if not stack.cards[cardindex].face_up:
-                    return _("Talon") + " - " + stack.getNumCards()
-                message += " - " + _("Talon") + " - " + stack.getNumCards()
+                    return "Talon" + " - " + stack.getNumCards()
+                message += " - " + "Talon" + " - " + stack.getNumCards()
             if stack == self.s.waste:
-                message += " - " + _("Waste") + " - " + stack.getNumCards()
+                message += " - " + "Waste" + " - " + stack.getNumCards()
             if stack in self.s.foundations:
-                message += (" - " + _("Foundation") + " - " +
+                message += (" - " + "Foundation" + " - " +
                             stack.getNumCards())
             return message
         return self.parseEmptyStack(stack)
 
     def parseCard(self, card):
         if not card.face_up:
-            return _("Face-down")
+            return "Face-down"
         if card.suit > 3:
-            return COLORS[card.rank] + " " + _("Joker")
+            return COLORS[card.rank] + " " + "Joker"
         suit = SUITS_PL[card.suit]
         rank = RANKS[card.rank]
         return rank + " - " + suit
@@ -1541,12 +1539,12 @@ class Game:
         if self.gameinfo.category == GI.GC_FRENCH:
             if stack in self.s.foundations:
                 if stack.cap.base_suit == -1:
-                    return _("Foundation")
+                    return "Foundation"
                 if stack.cap.base_suit == 4:
-                    return _("Foundation") + " - " + _("Joker")
-                return (_("Foundation") + " - " +
+                    return "Foundation" + " - " + "Joker"
+                return ("Foundation" + " - " +
                         SUITS_PL[stack.cap.base_suit])
-        return _("Empty stack")
+        return "Empty stack"
 
     def parseGameInfo(self):
         return ""
@@ -1578,10 +1576,10 @@ class Game:
             if not title:
                 title = TITLE
             if not text:
-                text = _("Discard current game?")
+                text = "Discard current game?"
             d = MfxMessageDialog(self.top, title=title, text=text,
                                  bitmap="question",
-                                 strings=(_("&OK"), _("&Cancel")))
+                                 strings=("&OK", "&Cancel"))
             if d.status != 0 or d.button != 0:
                 return False
         return True
@@ -1929,53 +1927,55 @@ class Game:
         if status == 2:
             if not time_str:
                 time_str = self.getTime()
-            text = ungettext('Your playing time is %(time)s\nfor %(n)d move.',
-                             'Your playing time is %(time)s\nfor %(n)d moves.',
-                             self.moves.index)
+            if self.moves.index == 1:
+                text = 'Your playing time is %(time)s\nfor %(n)d move.'
+            else:
+                text = 'Your playing time is %(time)s\nfor %(n)d moves.'
             text = text % {'time': time_str, 'n': self.moves.index}
-            congrats = _('Congratulations, this\nwas a truly perfect game!')
+            congrats = 'Congratulations, this\nwas a truly perfect game!'
             d = MfxMessageDialog(
-                self.top, title=_("Game won"),
+                self.top, title="Game won",
                 text='\n' + congrats + '\n\n' + text + '\n' + top_msg + '\n',
-                strings=(_("&New game"), None, _("&Back to game"),
-                         _("&Cancel")),
+                strings=("&New game", None, "&Back to game",
+                         "&Cancel"),
                 image=self.app.gimages.logos[5])
         elif status == 1:
             if not time_str:
                 time_str = self.getTime()
-            text = ungettext('Your playing time is %(time)s\nfor %(n)d move.',
-                             'Your playing time is %(time)s\nfor %(n)d moves.',
-                             self.moves.index)
+            if self.moves.index == 1:
+                text = 'Your playing time is %(time)s\nfor %(n)d move.'
+            else:
+                text = 'Your playing time is %(time)s\nfor %(n)d moves.'
             text = text % {'time': time_str, 'n': self.moves.index}
-            congrats = _('Congratulations, you did it!')
+            congrats = 'Congratulations, you did it!'
             d = MfxMessageDialog(
-                self.top, title=_("Game won"),
+                self.top, title="Game won",
                 text='\n' + congrats + '\n\n' + text + '\n' + top_msg + '\n',
-                strings=(_("&New game"), None, _("&Back to game"),
-                         _("&Cancel")),
+                strings=("&New game", None, "&Back to game",
+                         "&Cancel"),
                 image=self.app.gimages.logos[4])
         elif self.gstats.updated < 0:
             d = MfxMessageDialog(
-                self.top, title=_("Game finished"), bitmap="info",
-                text=_("\nGame finished\n"),
-                strings=(_("&New game"), None, None, _("&Close")))
+                self.top, title="Game finished", bitmap="info",
+                text="\nGame finished\n",
+                strings=("&New game", None, None, "&Close"))
         else:
-            text = _("Game finished, but not without my help...")
+            text = "Game finished, but not without my help..."
             if self.stats.hints > 0 and not self.app.opt.free_hint:
                 if self.stats.demo_moves > 0:
-                    hintsused = _("You used %(h)s hint(s) and the demo " +
-                                  "during this game.") % {
+                    hintsused = ("You used %(h)s hint(s) and the demo " +
+                                 "during this game.") % {
                         'h': self.stats.hints}
                 else:
-                    hintsused = _("You used %(h)s hint(s) during this " +
-                                  "game.") % {
+                    hintsused = ("You used %(h)s hint(s) during this " +
+                                 "game.") % {
                         'h': self.stats.hints}
             else:
-                hintsused = _("You used the demo during this game.")
+                hintsused = "You used the demo during this game."
             d = MfxMessageDialog(
-                self.top, title=_("Game finished"), bitmap="info",
-                text=_(text + '\n\n' + hintsused),
-                strings=(_("&New game"), _("&Restart"), None, _("&Cancel")))
+                self.top, title="Game finished", bitmap="info",
+                text=(text + '\n\n' + hintsused),
+                strings=("&New game", "&Restart", None, "&Cancel"))
         if d.status == 0 and d.button == 0:
             # new game
             self.endGame()
@@ -2354,7 +2354,7 @@ class Game:
             self.hints.index = 0
         # get next hint from list
         if not self.hints.list:
-            self.app.speech.speak(_("No moves found"))
+            self.app.speech.speak("No moves found")
             self.highlightNotMatching()
             return None
         h = self.hints.list[self.hints.index]
@@ -2392,7 +2392,7 @@ class Game:
         info = (level == 1) or (level > 1 and DEBUG)
         if info and self.app.statusbar and self.app.opt.statusbar:
             self.app.statusbar.configLabel(
-                "info", text=_("Score %6d") % (score), fg=text_color)
+                "info", text="Score %6d" % (score), fg=text_color)
         else:
             info = 0
         self.drawHintArrow(from_stack, to_stack, ncards, sleep)
@@ -2401,7 +2401,7 @@ class Game:
         else:
             todesc = self.parseEmptyStack(to_stack)
 
-        self.app.speech.speak(_("Move %s to %s") %
+        self.app.speech.speak("Move %s to %s" %
                               (self.parseCard(from_stack.cards[-ncards]),
                                todesc))
         if info:
@@ -2628,14 +2628,13 @@ class Game:
             if not self.top.winfo_ismapped():
                 status = 2
             elif player_moves == 0:
-                s = self.app.miscrandom.choice((_("&Great"), _("&Cool"),
-                                                _("&Yeah"),  _("&Wow")))
-                text = ungettext('\nGame solved in %d move.\n',
-                                 '\nGame solved in %d moves.\n',
-                                 self.moves.index)
+                s = self.app.miscrandom.choice(("&Great", "&Cool",
+                                                "&Yeah",  "&Wow"))
+                text = ('\nGame solved in %d move.\n' if self.moves.index ==
+                        1 else '\nGame solved in %d moves.\n')
                 text = text % self.moves.index
                 d = MfxMessageDialog(self.top,
-                                     title=_("%s Autopilot") % TITLE,
+                                     title="%s Autopilot" % TITLE,
                                      text=text,
                                      image=self.app.gimages.logos[4],
                                      strings=(s,),
@@ -2644,13 +2643,13 @@ class Game:
                 status = d.status
             else:
                 # s = self.app.miscrandom.choice((_("&OK"), _("&OK")))
-                s = _("&OK")
-                text = _("\nGame finished\n")
+                s = "&OK"
+                text = "\nGame finished\n"
                 if DEBUG:
                     text += "\nplayer_moves: %d\ndemo_moves: %d\n" % \
                         (self.stats.player_moves, self.stats.demo_moves)
                 d = MfxMessageDialog(self.top,
-                                     title=_("%s Autopilot") % TITLE,
+                                     title="%s Autopilot" % TITLE,
                                      text=text, bitmap=bitmap, strings=(s,),
                                      padx=30, timeout=timeout)
                 status = d.status
@@ -2660,11 +2659,11 @@ class Game:
                 status = 2
             else:
                 s = self.app.miscrandom.choice(
-                        (_("&Oh well"), _("&That's life"), _("&Hmm")))
+                        ("&Oh well", "&That's life", "&Hmm"))
                 # ??? accelerators
                 d = MfxMessageDialog(self.top,
-                                     title=_("%s Autopilot") % TITLE,
-                                     text=_("\nThis won't come out...\n"),
+                                     title="%s Autopilot" % TITLE,
+                                     text="\nThis won't come out...\n",
                                      bitmap=bitmap, strings=(s,),
                                      padx=30, timeout=timeout)
                 status = d.status
@@ -2872,10 +2871,10 @@ class Game:
             if not self.stuck and not self.demo:
                 self.updateStatus(stuck='x')
                 d = MfxMessageDialog(
-                    self.top, title=_("No moves"), bitmap="info",
-                    text=_("\nNo moves left!\n"),
-                    strings=(_("&New game"), _("&Restart"), None,
-                             _("&Cancel")))
+                    self.top, title="No moves", bitmap="info",
+                    text="\nNo moves left!\n",
+                    strings=("&New game", "&Restart", None,
+                             "&Cancel"))
                 if d.status == 0 and d.button == 0:
                     # new game
                     self.endGame()
@@ -3144,8 +3143,8 @@ class Game:
             confirm = self.app.opt.confirm
         if confirm and self.gsaveinfo.bookmarks.get(n):
             if not self.areYouSure(
-                    _("Set bookmark"),
-                    _("Replace the bookmark?")):
+                    "Set bookmark",
+                    "Replace the bookmark?"):
                 return 0
         f = BytesIO()
         try:
@@ -3166,8 +3165,8 @@ class Game:
         if confirm < 0:
             confirm = self.app.opt.confirm
         if confirm:
-            if not self.areYouSure(_("Goto bookmark"),
-                                   _("Go to the bookmark?")):
+            if not self.areYouSure("Goto bookmark",
+                                   "Go to the bookmark?"):
                 return
         try:
             s, moves_index = bm
@@ -3193,7 +3192,7 @@ class Game:
 
     def loadGame(self, filename):
         if self.changed():
-            if not self.areYouSure(_("Open game")):
+            if not self.areYouSure("Open game"):
                 return
         self.finishMove()       # just in case
         game = None
@@ -3205,8 +3204,8 @@ class Game:
             self.updateMenus()
             self.setCursor(cursor=self.app.top_cursor)
             MfxMessageDialog(
-                self.top, title=_("Load game error"), bitmap="error",
-                text=_(
+                self.top, title="Load game error", bitmap="error",
+                text=(
                     "Error while loading game.\n\n" +
                     "Probably the game file is damaged,\n" +
                     "but this could also be a bug you might want to report."))
@@ -3214,14 +3213,14 @@ class Game:
         except UnpicklingError as ex:
             self.updateMenus()
             self.setCursor(cursor=self.app.top_cursor)
-            MfxExceptionDialog(self.top, ex, title=_("Load game error"),
-                               text=_("Error while loading game"))
+            MfxExceptionDialog(self.top, ex, title="Load game error",
+                               text="Error while loading game")
         except Exception:
             self.updateMenus()
             self.setCursor(cursor=self.app.top_cursor)
             MfxMessageDialog(
-                self.top, title=_("Load game error"),
-                bitmap="error", text=_(
+                self.top, title="Load game error",
+                bitmap="error", text=(
                     """Internal error while loading game.\n\n""" +
                     "Please report this bug."))
             traceback.print_exc()
@@ -3249,8 +3248,8 @@ class Game:
             self._saveGame(filename, protocol)
         except Exception as ex:
             self.setCursor(cursor=self.app.top_cursor)
-            MfxExceptionDialog(self.top, ex, title=_("Save game error"),
-                               text=_("Error while saving game"))
+            MfxExceptionDialog(self.top, ex, title="Save game error",
+                               text="Error while saving game")
         else:
             rval = True
             self.filename = filename
@@ -3272,7 +3271,7 @@ class Game:
     def _undumpGame(self, p, app):
         self.updateTime()
         #
-        err_txt = _("Invalid or damaged %s save file") % PACKAGE
+        err_txt = "Invalid or damaged %s save file" % PACKAGE
         #
 
         def pload(t=None, p=p):
@@ -3297,7 +3296,7 @@ class Game:
         version_tuple = pload(tuple)
         validate(
             version_tuple >= (1, 0),
-            _('Cannot load games saved with\n%(app)s version %(ver)s') % {
+            'Cannot load games saved with\n%(app)s version %(ver)s' % {
                 'app': PACKAGE,
                 'ver': version})
         p.set_version(version_tuple)
@@ -3317,9 +3316,9 @@ class Game:
                     game = None
         validate(
             game is not None,
-            _('Cannot load this game from version %s\n' +
-              'as the game rules have changed\n' +
-              'in the current implementation.') % version)
+            ('Cannot load this game from version %s\n' +
+             'as the game rules have changed\n' +
+             'in the current implementation.') % version)
         game.version = version
         game.version_tuple = version_tuple
         #
@@ -3422,14 +3421,14 @@ class Game:
             # self.updateTime()
             self.canvas.hideAllItems()
             self.displayPauseImage()
-            self.app.speech.speak(_("Paused"))
+            self.app.speech.speak("Paused")
         else:
             self.stats.update_time = time.time()
             self.updatePlayTime()
             self.canvas.setTopImage(None)
             self.pause_logo = None
             self.canvas.showAllItems()
-            self.app.speech.speak(_("Unpaused"))
+            self.app.speech.speak("Unpaused")
 
     def showHelp(self, *args):
         if self.preview:

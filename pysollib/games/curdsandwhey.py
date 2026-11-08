@@ -27,7 +27,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint, CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.stack import \
         AC_RowStack, \
         AbstractFoundationStack, \
@@ -74,7 +73,7 @@ class CurdsAndWhey_RowStack(BasicRowStack):
         return isSameSuitSequence(cards) or isRankSequence(cards, dir=0)
 
     def getHelp(self):
-        return _('Tableau. Build down by suit or of the same rank.')
+        return 'Tableau. Build down by suit or of the same rank.'
 
 
 class CurdsAndWhey(Game):

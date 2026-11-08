@@ -29,7 +29,6 @@ from collections import UserList
 from pysollib.gamedb import GI
 from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import KwStruct, Struct, destruct
-from pysollib.mygettext import _
 from pysollib.resource import CSI, getNaturalSortKey
 from pysollib.ui.tktile.selecttree import SelectDialogTreeData
 from pysollib.ui.tktile.tkutil import bind, unbind_destroy
@@ -83,7 +82,7 @@ class SelectGameData(SelectDialogTreeData):
         self.all_games_gi = list(map(
             app.gdb.get,
             app.gdb.getGamesIdSortedByName()))
-        self.no_games = [SelectGameLeaf(None, None, _("(no games)"), None), ]
+        self.no_games = [SelectGameLeaf(None, None, "(no games)", None), ]
         #
         s_by_type = s_oriental = s_special = s_original = s_contrib = \
             s_mahjongg = None
@@ -99,7 +98,7 @@ class SelectGameData(SelectDialogTreeData):
                 if name is None or not list(filter(
                         select_func, self.all_games_gi)):
                     continue
-                gg.append(SelectGameNode(None, _(name), select_func))
+                gg.append(SelectGameNode(None, name, select_func))
             g.append(gg)
 
         def select_mahjongg_game(gi):
@@ -107,20 +106,20 @@ class SelectGameData(SelectDialogTreeData):
 
         gg = None
         if list(filter(select_mahjongg_game, self.all_games_gi)):
-            gg = SelectGameNode(None, _("Mahjongg Games"),
+            gg = SelectGameNode(None, "Mahjongg Games",
                                 select_mahjongg_game)
         g.append(gg)
         if g[0]:
-            s_by_type = SelectGameNode(None, _("French Games"),
+            s_by_type = SelectGameNode(None, "French Games",
                                        tuple(g[0]), expanded=1)
         if g[1]:
-            s_oriental = SelectGameNode(None, _("Oriental Games"),
+            s_oriental = SelectGameNode(None, "Oriental Games",
                                         tuple(g[1]))
         if g[2]:
-            s_special = SelectGameNode(None, _("Special Games"),
+            s_special = SelectGameNode(None, "Special Games",
                                        tuple(g[2]))
         if g[3]:
-            s_original = SelectGameNode(None, _("Original Games"),
+            s_original = SelectGameNode(None, "Original Games",
                                         tuple(g[3]))
         # if g[4]:
         #   s_contrib = SelectGameNode(None, "Contributed Games", tuple(g[4]))
@@ -136,7 +135,7 @@ class SelectGameData(SelectDialogTreeData):
                 continue
             gg.append(SelectGameNode(None, name, select_func))
         if gg:
-            s_by_compatibility = SelectGameNode(None, _("by Compatibility"),
+            s_by_compatibility = SelectGameNode(None, "by Compatibility",
                                                 tuple(gg))
         #
         s_by_pysol_version, gg = None, []
@@ -146,10 +145,10 @@ class SelectGameData(SelectDialogTreeData):
             if name is None or not list(filter(
                     select_func, self.all_games_gi)):
                 continue
-            name = _("New games in v. %(version)s") % {'version': name}
+            name = "New games in v. %(version)s" % {'version': name}
             gg.append(SelectGameNode(None, name, select_func))
         if gg:
-            s_by_pysol_version = SelectGameNode(None, _("by PySol version"),
+            s_by_pysol_version = SelectGameNode(None, "by PySol version",
                                                 tuple(gg))
         s_by_inventors, gg = None, []
         for name, games in GI.GAMES_BY_INVENTORS:
@@ -160,104 +159,104 @@ class SelectGameData(SelectDialogTreeData):
                 continue
             gg.append(SelectGameNode(None, name, select_func))
         if gg:
-            s_by_inventors = SelectGameNode(None, _("by Inventors"),
+            s_by_inventors = SelectGameNode(None, "by Inventors",
                                             tuple(gg))
         #
         ul_alternate_names = UserList(
             list(app.gdb.getGamesTuplesSortedByAlternateName()))
         #
         self.rootnodes = [_f for _f in (
-            SelectGameNode(None, _("All Games"), None, expanded=0),
-            SelectGameNode(None, _("Alternate Names"), ul_alternate_names),
-            SelectGameNode(None, _("Popular Games"),
+            SelectGameNode(None, "All Games", None, expanded=0),
+            SelectGameNode(None, "Alternate Names", ul_alternate_names),
+            SelectGameNode(None, "Popular Games",
                            lambda gi: gi.si.game_flags & GI.GT_POPULAR),
             s_by_type,
             s_mahjongg,
             s_oriental,
             s_special,
-            SelectGameNode(None, _("Custom Games"),
+            SelectGameNode(None, "Custom Games",
                            lambda gi: gi.si.game_type == GI.GT_CUSTOM),
-            SelectGameNode(None, _('by Skill Level'), (
-                SelectGameNode(None, _('Luck only'),
+            SelectGameNode(None, 'by Skill Level', (
+                SelectGameNode(None, 'Luck only',
                                lambda gi: gi.skill_level == GI.SL_LUCK),
-                SelectGameNode(None, _('Mostly luck'),
+                SelectGameNode(None, 'Mostly luck',
                                lambda gi: gi.skill_level == GI.SL_MOSTLY_LUCK),
-                SelectGameNode(None, _('Balanced'),
+                SelectGameNode(None, 'Balanced',
                                lambda gi: gi.skill_level == GI.SL_BALANCED),
                 SelectGameNode(
-                    None, _('Mostly skill'),
+                    None, 'Mostly skill',
                     lambda gi: gi.skill_level == GI.SL_MOSTLY_SKILL),
-                SelectGameNode(None, _('Skill only'),
+                SelectGameNode(None, 'Skill only',
                                lambda gi: gi.skill_level == GI.SL_SKILL),
                 )),
-            SelectGameNode(None, _("by Game Feature"), (
-                SelectGameNode(None, _("by Number of Cards"), (
-                    SelectGameNode(None, _("32 cards"),
+            SelectGameNode(None, "by Game Feature", (
+                SelectGameNode(None, "by Number of Cards", (
+                    SelectGameNode(None, "32 cards",
                                    lambda gi: gi.si.ncards == 32),
-                    SelectGameNode(None, _("48 cards"),
+                    SelectGameNode(None, "48 cards",
                                    lambda gi: gi.si.ncards == 48),
-                    SelectGameNode(None, _("52 cards"),
+                    SelectGameNode(None, "52 cards",
                                    lambda gi: gi.si.ncards == 52),
-                    SelectGameNode(None, _("64 cards"),
+                    SelectGameNode(None, "64 cards",
                                    lambda gi: gi.si.ncards == 64),
-                    SelectGameNode(None, _("78 cards"),
+                    SelectGameNode(None, "78 cards",
                                    lambda gi: gi.si.ncards == 78),
-                    SelectGameNode(None, _("104 cards"),
+                    SelectGameNode(None, "104 cards",
                                    lambda gi: gi.si.ncards == 104),
-                    SelectGameNode(None, _("144 cards"),
+                    SelectGameNode(None, "144 cards",
                                    lambda gi: gi.si.ncards == 144),
                     SelectGameNode(
-                        None, _("Other number"),
+                        None, "Other number",
                         lambda gi: gi.si.ncards not in (32, 48, 52,
                                                         64, 78, 104, 144)),
                 )),
-                SelectGameNode(None, _("by Number of Decks"), (
-                    SelectGameNode(None, _("1 deck games"),
+                SelectGameNode(None, "by Number of Decks", (
+                    SelectGameNode(None, "1 deck games",
                                    lambda gi: gi.si.decks == 1),
-                    SelectGameNode(None, _("2 deck games"),
+                    SelectGameNode(None, "2 deck games",
                                    lambda gi: gi.si.decks == 2),
-                    SelectGameNode(None, _("3 deck games"),
+                    SelectGameNode(None, "3 deck games",
                                    lambda gi: gi.si.decks == 3),
-                    SelectGameNode(None, _("4 deck games"),
+                    SelectGameNode(None, "4 deck games",
                                    lambda gi: gi.si.decks == 4),
                 )),
-                SelectGameNode(None, _("by Number of Redeals"), (
-                    SelectGameNode(None, _("No redeal"),
+                SelectGameNode(None, "by Number of Redeals", (
+                    SelectGameNode(None, "No redeal",
                                    lambda gi: gi.si.redeals == 0),
-                    SelectGameNode(None, _("1 redeal"),
+                    SelectGameNode(None, "1 redeal",
                                    lambda gi: gi.si.redeals == 1),
-                    SelectGameNode(None, _("2 redeals"),
+                    SelectGameNode(None, "2 redeals",
                                    lambda gi: gi.si.redeals == 2),
-                    SelectGameNode(None, _("3 redeals"),
+                    SelectGameNode(None, "3 redeals",
                                    lambda gi: gi.si.redeals == 3),
-                    SelectGameNode(None, _("Unlimited redeals"),
+                    SelectGameNode(None, "Unlimited redeals",
                                    lambda gi: gi.si.redeals == -1),
-                    SelectGameNode(None, _("Variable redeals"),
+                    SelectGameNode(None, "Variable redeals",
                                    lambda gi: gi.si.redeals == -2),
                     SelectGameNode(
-                        None, _("Other number of redeals"),
+                        None, "Other number of redeals",
                         lambda gi: gi.si.redeals not in (-2, -1, 0, 1, 2, 3)),
                 )),
                 s_by_compatibility,
             )),
             s_by_pysol_version,
             s_by_inventors,
-            SelectGameNode(None, _("Other Categories"), (
-                SelectGameNode(None, _("Games for Children (very easy)"),
+            SelectGameNode(None, "Other Categories", (
+                SelectGameNode(None, "Games for Children (very easy)",
                                lambda gi: gi.si.game_flags & GI.GT_CHILDREN),
-                SelectGameNode(None, _("Games with Scoring"),
+                SelectGameNode(None, "Games with Scoring",
                                lambda gi: gi.si.game_flags & GI.GT_SCORE),
-                SelectGameNode(None, _("Games with Stripped Decks"),
+                SelectGameNode(None, "Games with Stripped Decks",
                                lambda gi: gi.si.game_flags & GI.GT_STRIPPED),
-                SelectGameNode(None, _("Games with Separate Decks"),
+                SelectGameNode(None, "Games with Separate Decks",
                                lambda gi: gi.si.game_flags &
                                GI.GT_SEPARATE_DECKS),
-                SelectGameNode(None, _("Games with Jokers"),
+                SelectGameNode(None, "Games with Jokers",
                                lambda gi: gi.category == GI.GC_FRENCH and
                                gi.subcategory == GI.GS_JOKER_DECK),
-                SelectGameNode(None, _("Open Games (all cards visible)"),
+                SelectGameNode(None, "Open Games (all cards visible)",
                                lambda gi: gi.si.game_flags & GI.GT_OPEN),
-                SelectGameNode(None, _("Relaxed Variants"),
+                SelectGameNode(None, "Relaxed Variants",
                                lambda gi: gi.si.game_flags & GI.GT_RELAXED),
             )),
             s_original,
@@ -313,7 +312,7 @@ class SelectGameDialog(MfxDialog):
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=(None, None, _("&Cancel"),), default=0,
+                      strings=(None, None, "&Cancel",), default=0,
                       resizable=True,
                       separator=True,
                       )
@@ -396,9 +395,9 @@ class SelectGameDialogWithPreview(SelectGameDialog):
         notebook = PysolNotebook(left_frame)
         notebook.pack(expand=True, fill='both')
         tree_frame = ttk.Frame(notebook)
-        notebook.add(tree_frame, text=_('Tree View'))
+        notebook.add(tree_frame, text='Tree View')
         search_frame = ttk.Frame(notebook)
-        notebook.add(search_frame, text=_('Search'))
+        notebook.add(search_frame, text='Search')
 
         # Tree
         font = app.getFont("default")
@@ -410,15 +409,15 @@ class SelectGameDialogWithPreview(SelectGameDialog):
         # Search
         searchbox = ttk.Frame(search_frame)
         searchText = tkinter.StringVar()
-        self.list_searchlabel = tkinter.Label(searchbox, text=_("Search:"),
+        self.list_searchlabel = tkinter.Label(searchbox, text="Search:",
                                               justify='left', anchor='w')
         self.list_searchlabel.pack(side="top", fill='both', ipadx=1)
         self.list_searchtext = PysolEntry(searchbox,
-                                          fieldname=_("Search:"),
+                                          fieldname="Search:",
                                           textvariable=searchText)
 
         self.advSearch = PysolButton(searchbox, text='...',
-                                     prefixtext=_("Advanced Search"),
+                                     prefixtext="Advanced Search",
                                      command=self.advancedSearch,
                                      width=2)
         self.advSearch.pack(side="right")
@@ -439,7 +438,7 @@ class SelectGameDialogWithPreview(SelectGameDialog):
         self.updateSearchList("")
         bind(self.list, '<<ListboxSelect>>', self.selectSearchResult)
         bind(self.list, '<FocusIn>',
-             lambda e: self.app.speech.speak(_("Games list")))
+             lambda e: self.app.speech.speak("Games list"))
         bind(self.list, '<FocusOut>',
              lambda e: self.list.selection_clear(0, 'end'))
 
@@ -451,19 +450,19 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             initial_tab, search_frame, self.list_searchtext)
 
         # LabelFrame
-        info_frame = ttk.LabelFrame(right_frame, text=_('About game'))
+        info_frame = ttk.LabelFrame(right_frame, text='About game')
         info_frame.grid(row=0, column=0, padx=padx, pady=pady,
                         ipadx=4, ipady=4, sticky='nws')
         # Info
         self.info_labels = {}
         for n, t, f, row in (
-            ('name',        _('Name:'),             info_frame,   0),
-            ('altnames',    _('Alternate names:'),  info_frame,   1),
-            ('category',    _('Category:'),         info_frame,   2),
-            ('type',        _('Type:'),             info_frame,   3),
-            ('skill_level', _('Skill level:'),      info_frame,   4),
-            ('decks',       _('Decks:'),            info_frame,   5),
-            ('redeals',     _('Redeals:'),          info_frame,   6),
+            ('name',        'Name:',             info_frame,   0),
+            ('altnames',    'Alternate names:',  info_frame,   1),
+            ('category',    'Category:',         info_frame,   2),
+            ('type',        'Type:',             info_frame,   3),
+            ('skill_level', 'Skill level:',      info_frame,   4),
+            ('decks',       'Decks:',            info_frame,   5),
+            ('redeals',     'Redeals:',          info_frame,   6),
                 ):
             title_label = ttk.Label(f, text=t, justify='left', anchor='w')
             title_label.grid(row=row, column=0, sticky='nw', padx=4)
@@ -497,8 +496,8 @@ class SelectGameDialogWithPreview(SelectGameDialog):
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=((_("&Rules"), 10), 'sep',
-                               _("&Select"), _("&Cancel"),),
+                      strings=(("&Rules", 10), 'sep',
+                               "&Select", "&Cancel",),
                       default=0,
                       )
         return SelectGameDialog.initKw(self, kw)
@@ -620,7 +619,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
                 if not version_okay:
                     continue
 
-
             if (self.criteria.popular and
                     not (game.si.game_flags & GI.GT_POPULAR)):
                 continue
@@ -664,7 +662,7 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             pos += 1
 
     def advancedSearch(self):
-        d = SelectGameAdvancedSearch(self.top, _("Advanced search"),
+        d = SelectGameAdvancedSearch(self.top, "Advanced search",
                                      self.criteria)
         if d.status == 0 and d.button == 0:
             self.criteria = SearchCriteria()
@@ -738,17 +736,17 @@ class SelectGameDialogWithPreview(SelectGameDialog):
     def speakGameInfo(self, name):
         message = name
         info = self.preview_game.gameinfo
-        message += " - " + _("Name:") + " " + info.name
+        message += " - " + "Name:" + " " + info.name
         if len(info.altnames) > 0:
-            message += (" - " + _("Alternate Names:") + " " +
+            message += (" - " + "Alternate Names:" + " " +
                         ' '.join(info.altnames))
-        message += (" - " + _("Category:") + " " +
-                    _(CSI.TYPE[info.category]))
+        message += (" - " + "Category:" + " " +
+                    (CSI.TYPE[info.category]))
         if info.si.game_type in GI.TYPE_NAMES:
-            message += (" - " + _("Type:") + " " +
-                        _(GI.TYPE_NAMES[info.si.game_type]))
+            message += (" - " + "Type:" + " " +
+                        (GI.TYPE_NAMES[info.si.game_type]))
         if info.skill_level is not None:
-            message += (" - " + _("Skill Level:") + " " +
+            message += (" - " + "Skill Level:" + " " +
                         GI.SKILL_LEVELS.get(info.skill_level))
         self.app.speech.speak(message)
 
@@ -807,7 +805,7 @@ class SelectGameDialogWithPreview(SelectGameDialog):
         # self.top.wm_title("Select Game - " +
         #   self.app.getGameTitleName(gameid))
         title = self.app.getGameTitleName(gameid)
-        self.top.wm_title(_("Select Game - %(game)s") % {'game': title})
+        self.top.wm_title("Select Game - %(game)s" % {'game': title})
         #
         self.preview_game = gi.gameclass(gi)
         self.preview_game.createPreview(self.preview_app)
@@ -869,15 +867,15 @@ class SelectGameDialogWithPreview(SelectGameDialog):
         # info
         name = gi.name
         altnames = '\n'.join(gi.altnames)
-        category = _(CSI.TYPE[gi.category])
+        category = (CSI.TYPE[gi.category])
         type = ''
         if gi.si.game_type in GI.TYPE_NAMES:
-            type = _(GI.TYPE_NAMES[gi.si.game_type])
+            type = (GI.TYPE_NAMES[gi.si.game_type])
         skill_level = GI.SKILL_LEVELS.get(gi.skill_level)
         if gi.redeals == -2:
-            redeals = _('Variable')
+            redeals = 'Variable'
         elif gi.redeals == -1:
-            redeals = _('Unlimited')
+            redeals = 'Unlimited'
         else:
             redeals = str(gi.redeals)
         for n, t in (
@@ -972,7 +970,6 @@ class SearchCriteria:
                                       "New since (inclusive)")
 
 
-
 def _extract_names(game_info):
     return [""] + [name for name, _games in game_info]
 
@@ -1034,17 +1031,17 @@ class SelectGameAdvancedSearch(MfxDialog):
         #
         row = 0
 
-        labelName = tkinter.Label(top_frame, text=_("Name:"), anchor="w")
+        labelName = tkinter.Label(top_frame, text="Name:", anchor="w")
         labelName.grid(row=row, column=0, columnspan=1, sticky='ew',
                        padx=1, pady=1)
         textName = PysolEntry(top_frame, textvariable=self.name,
-                              fieldname=_("Name:"))
+                              fieldname="Name:")
         textName.grid(row=row, column=1, columnspan=4, sticky='ew',
                       padx=1, pady=1)
         row += 1
 
         altCheck = PysolCheckbutton(top_frame, variable=self.usealt,
-                                    text=_("Check alternate names"))
+                                    text="Check alternate names")
         altCheck.grid(row=row, column=1, columnspan=4, sticky='ew',
                       padx=1, pady=1)
         row += 1
@@ -1053,12 +1050,12 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         self.categoryValues = criteria.categoryOptions
 
-        labelCategory = tkinter.Label(top_frame, text=_("Category:"),
+        labelCategory = tkinter.Label(top_frame, text="Category:",
                                       anchor="w")
         labelCategory.grid(row=row, column=0, columnspan=1, sticky='ew',
                            padx=1, pady=1)
         textCategory = PysolCombo(top_frame, values=categoryValues,
-                                  fieldname=_("Category:"),
+                                  fieldname="Category:",
                                   textvariable=self.category, state='readonly',
                                   selectcommand=self.updateSubcategories)
         textCategory.grid(row=row, column=1, columnspan=4, sticky='ew',
@@ -1067,12 +1064,12 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         subcategoryValues = sorted(criteria.subcategoryOptions.keys())
 
-        labelSubcategory = tkinter.Label(top_frame, text=_("Subcategory:"),
+        labelSubcategory = tkinter.Label(top_frame, text="Subcategory:",
                                          anchor="w")
         labelSubcategory.grid(row=row, column=0, columnspan=1, sticky='ew',
                               padx=1, pady=1)
         textSubcategory = PysolCombo(top_frame, values=subcategoryValues,
-                                     fieldname=_("Subcategory:"),
+                                     fieldname="Subcategory:",
                                      textvariable=self.subcategory,
                                      state='readonly')
         textSubcategory.grid(row=row, column=1, columnspan=4, sticky='ew',
@@ -1083,11 +1080,11 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         typeValues = sorted(criteria.typeOptions.keys())
 
-        labelType = tkinter.Label(top_frame, text=_("Type:"), anchor="w")
+        labelType = tkinter.Label(top_frame, text="Type:", anchor="w")
         labelType.grid(row=row, column=0, columnspan=1, sticky='ew',
                        padx=1, pady=1)
         textType = PysolCombo(top_frame, values=typeValues,
-                              fieldname=_("Type:"),
+                              fieldname="Type:",
                               textvariable=self.type, state='readonly')
         textType.grid(row=row, column=1, columnspan=4, sticky='ew',
                       padx=1, pady=1)
@@ -1095,12 +1092,12 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         skillValues = list(criteria.skillOptions.keys())
 
-        labelSkill = tkinter.Label(top_frame, text=_("Skill level:"),
+        labelSkill = tkinter.Label(top_frame, text="Skill level:",
                                    anchor="w")
         labelSkill.grid(row=row, column=0, columnspan=1, sticky='ew',
                         padx=1, pady=1)
         textSkill = PysolCombo(top_frame, values=skillValues,
-                               fieldname=_("Skill level:"),
+                               fieldname="Skill level:",
                                textvariable=self.skill, state='readonly')
         textSkill.grid(row=row, column=1, columnspan=4, sticky='ew',
                        padx=1, pady=1)
@@ -1108,11 +1105,11 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         deckValues = list(criteria.deckOptions.keys())
 
-        labelDecks = tkinter.Label(top_frame, text=_("Decks:"), anchor="w")
+        labelDecks = tkinter.Label(top_frame, text="Decks:", anchor="w")
         labelDecks.grid(row=row, column=0, columnspan=1, sticky='ew',
                         padx=1, pady=1)
         textDecks = PysolCombo(top_frame, values=deckValues,
-                               fieldname=_("Decks:"),
+                               fieldname="Decks:",
                                textvariable=self.decks, state='readonly')
         textDecks.grid(row=row, column=1, columnspan=4, sticky='ew',
                        padx=1, pady=1)
@@ -1120,35 +1117,35 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         redealValues = list(criteria.redealOptions.keys())
 
-        labelRedeals = tkinter.Label(top_frame, text=_("Redeals:"), anchor="w")
+        labelRedeals = tkinter.Label(top_frame, text="Redeals:", anchor="w")
         labelRedeals.grid(row=row, column=0, columnspan=1, sticky='ew',
                           padx=1, pady=1)
         textRedeals = PysolCombo(top_frame, values=redealValues,
-                                 fieldname=_("Redeals:"),
+                                 fieldname="Redeals:",
                                  textvariable=self.redeals, state='readonly')
         textRedeals.grid(row=row, column=1, columnspan=4, sticky='ew',
                          padx=1, pady=1)
         row += 1
 
-        labelCompat = tkinter.Label(top_frame, text=_("Compatibility:"),
+        labelCompat = tkinter.Label(top_frame, text="Compatibility:",
                                     anchor="w")
         labelCompat.grid(row=row, column=0, columnspan=1, sticky='ew',
                          padx=1, pady=1)
         textCompat = PysolCombo(top_frame, values=_extract_names(
                                     GI.GAMES_BY_COMPATIBILITY),
-                                fieldname=_("Compatibility:"),
+                                fieldname="Compatibility:",
                                 textvariable=self.compat, state='readonly')
         textCompat.grid(row=row, column=1, columnspan=4, sticky='ew',
                         padx=1, pady=1)
         row += 1
 
-        labelInventor = tkinter.Label(top_frame, text=_("Inventor:"),
+        labelInventor = tkinter.Label(top_frame, text="Inventor:",
                                       anchor="w")
         labelInventor.grid(row=row, column=0, columnspan=1, sticky='ew',
                            padx=1, pady=1)
         textInventor = PysolCombo(top_frame,
                                   values=_extract_names(GI.GAMES_BY_INVENTORS),
-                                  fieldname=_("Inventor:"),
+                                  fieldname="Inventor:",
                                   textvariable=self.inventor, state='readonly')
         textInventor.grid(row=row, column=1, columnspan=4, sticky='ew',
                           padx=1, pady=1)
@@ -1156,12 +1153,12 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         versionCompareValues = list(criteria.versionCompareOptions)
 
-        labelVersion = tkinter.Label(top_frame, text=_("PySol version:"),
+        labelVersion = tkinter.Label(top_frame, text="PySol version:",
                                      anchor="w")
         labelVersion.grid(row=row, column=0, columnspan=1, sticky='ew',
                           padx=1, pady=1)
         textVersionCompare = PysolCombo(top_frame, values=versionCompareValues,
-                                        fieldname=_("PySol version:"),
+                                        fieldname="PySol version:",
                                         textvariable=self.versioncompare,
                                         state='readonly')
         textVersionCompare.grid(row=row, column=1, columnspan=2, sticky='ew',
@@ -1169,7 +1166,7 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         textVersion = PysolCombo(top_frame, values=_extract_names(
                                      GI.GAMES_BY_PYSOL_VERSION),
-                                 fieldname=_("PySol version:"),
+                                 fieldname="PySol version:",
                                  textvariable=self.version, state='readonly')
         textVersion.grid(row=row, column=3, columnspan=2, sticky='ew',
                          padx=1, pady=1)
@@ -1177,19 +1174,19 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         col = 0
         popularCheck = PysolCheckbutton(top_frame, variable=self.popular,
-                                        text=_("Popular"))
+                                        text="Popular")
         popularCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                           padx=1, pady=1)
         col += 2
 
         recentCheck = PysolCheckbutton(top_frame, variable=self.recent,
-                                       text=_("Recent"))
+                                       text="Recent")
         recentCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                          padx=1, pady=1)
         col += 2
 
         favoriteCheck = PysolCheckbutton(top_frame, variable=self.favorite,
-                                         text=_("Favorite"))
+                                         text="Favorite")
         favoriteCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                            padx=1, pady=1)
 
@@ -1197,45 +1194,45 @@ class SelectGameAdvancedSearch(MfxDialog):
         col = 0
 
         childCheck = PysolCheckbutton(top_frame, variable=self.children,
-                                      text=_("Children's"))
+                                      text="Children's")
         childCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                         padx=1, pady=1)
         col += 2
 
         scoreCheck = PysolCheckbutton(top_frame, variable=self.scoring,
-                                      text=_("Scored"))
+                                      text="Scored")
         scoreCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                         padx=1, pady=1)
         col += 2
 
         stripCheck = PysolCheckbutton(top_frame, variable=self.stripped,
-                                      text=_("Stripped Deck"))
+                                      text="Stripped Deck")
         stripCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                         padx=1, pady=1)
         row += 1
         col = 0
 
         sepCheck = PysolCheckbutton(top_frame, variable=self.separate,
-                                    text=_("Separate Decks"))
+                                    text="Separate Decks")
         sepCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                       padx=1, pady=1)
         col += 2
 
         openCheck = PysolCheckbutton(top_frame, variable=self.open,
-                                     text=_("Open"))
+                                     text="Open")
         openCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                        padx=1, pady=1)
         col += 2
 
         relaxedCheck = PysolCheckbutton(top_frame, variable=self.relaxed,
-                                        text=_("Relaxed"))
+                                        text="Relaxed")
         relaxedCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                           padx=1, pady=1)
         row += 1
         col = 0
 
         originalCheck = PysolCheckbutton(top_frame, variable=self.original,
-                                         text=_("Original"))
+                                         text="Original")
         originalCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
                            padx=1, pady=1)
 
@@ -1264,7 +1261,7 @@ class SelectGameAdvancedSearch(MfxDialog):
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=(_("C&lear"), 'sep', _("&OK"), _("&Cancel")),
+                      strings=("C&lear", 'sep', "&OK", "&Cancel"),
                       default=1, padx=10, pady=10,
                       )
         return MfxDialog.initKw(self, kw)

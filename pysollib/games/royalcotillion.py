@@ -26,7 +26,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.unionsquare import UnionSquare_Foundation
 from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         AC_FoundationStack, \
         AC_RowStack, \
@@ -298,7 +297,7 @@ class Alhambra_RowStack(UD_SS_RowStack):
     getBottomImage = Stack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Waste. Build up or down by suit.')
+        return 'Waste. Build up or down by suit.'
 
 
 class Alhambra_Talon(DealRowTalonStack):
@@ -432,7 +431,7 @@ class Reserves_RowStack(UD_RK_RowStack):
     getBottomImage = Stack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Waste. Build up or down regardless of suit.')
+        return 'Waste. Build up or down regardless of suit.'
 
 
 class Reserves(Alhambra):
@@ -722,7 +721,7 @@ class Twenty_RowStack(BasicRowStack):
         return len(self.cards) == 0
 
     def getHelp(self):
-        return _('Tableau. Empty piles can be filled with any card.')
+        return 'Tableau. Empty piles can be filled with any card.'
 
 
 class Twenty(Game):
@@ -1057,7 +1056,7 @@ class ShadyLanes_Foundation(AbstractFoundationStack):
         return True
 
     def getHelp(self):
-        return _('Foundation. Build up by color.')
+        return 'Foundation. Build up by color.'
 
 
 class ShadyLanes_RowStack(AC_RowStack):

@@ -41,7 +41,6 @@ from pysollib.games.special.hanafuda_common import \
 from pysollib.hint import FreeCellType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         DealRowTalonStack, \
@@ -377,9 +376,9 @@ class Pagoda(AbstractFlowerGame):
             if not s.cards or len(s.cards) == 8:
                 text = self.SUITS[i]
             elif len(s.cards) < 5:
-                text = _("Rising")
+                text = "Rising"
             else:
-                text = _("Setting")
+                text = "Setting"
             s.texts.misc.config(text=text)
 
     #
@@ -516,11 +515,11 @@ class GreatWall(AbstractFlowerGame):
             if mylen == 0:
                 text = ""
             elif mylen == 4:
-                text = _("Filled")
+                text = "Filled"
             else:
                 text = str(mylen) + \
-                    (_("st"), _("nd"), _("rd"), _("th"))[mylen - 1] \
-                    + _(" Deck")
+                    ("st", "nd", "rd", "th")[mylen - 1] \
+                    + " Deck"
             stack.texts.misc.config(text=text)
 
     #
@@ -567,8 +566,8 @@ class FourWinds(AbstractFlowerGame):
         self.setSize(7 * l.XS, 5 * l.YS + 3 * l.YM)
 
         # Four winds
-        TEXTS = (_("North"), _("East"), _("South"), _("West"),
-                 _("NW"), _("NE"), _("SE"), _("SW"))
+        TEXTS = ("North", "East", "South", "West",
+                 "NW", "NE", "SE", "SW")
 
         # Create foundations
         x = l.XM * 3

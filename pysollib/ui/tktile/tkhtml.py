@@ -27,7 +27,6 @@ import tkinter
 import pysollib.formatter
 import pysollib.htmllib2 as htmllib
 from pysollib.mfxutil import openURL
-from pysollib.mygettext import _
 from pysollib.settings import TITLE
 from pysollib.ui.tktile.tkutil import bind, unbind_destroy
 
@@ -301,7 +300,7 @@ class Base_HTMLViewer:
         for p in REMOTE_PROTOCOLS:
             if url.startswith(p):
                 if not openURL(url):
-                    self.errorDialog(_('''%(app)s HTML limitation:
+                    self.errorDialog(('''%(app)s HTML limitation:
 The %(protocol)s protocol is not supported yet.
 
 Please use your standard web browser
@@ -329,7 +328,7 @@ to open the following URL:
         except Exception as ex:
             if file:
                 file.close()
-            self.errorDialog(_("Unable to service request:\n") + url +
+            self.errorDialog("Unable to service request:\n" + url +
                              "\n\n" + str(ex))
             return
 
@@ -421,7 +420,7 @@ to open the following URL:
             self.parent, title="%(app)s HTML Problem" % {'app': TITLE},
             text=msg,
             # bitmap="warning", # FIXME: this interp don't have images
-            strings=(_("&OK"),), default=0)
+            strings=("&OK",), default=0)
 
     def getImage(self, fn):
         if fn in self.images:

@@ -25,7 +25,6 @@ import tkinter
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import KwStruct
-from pysollib.mygettext import _
 from pysollib.ui.tktile.tkconst import TOOLBAR_BUTTONS
 
 from .tkwidget import MfxDialog, PysolCheckbutton
@@ -48,7 +47,7 @@ class ToolbarButtonsDialog(MfxDialog):
             var = tkinter.BooleanVar()
             var.set(bool(app.opt.toolbar_vars.get(w, False)))
             self.vars[w] = var
-            PysolCheckbutton(frame, variable=var, text=_(w.capitalize())
+            PysolCheckbutton(frame, variable=var, text=(w.capitalize())
                              ).grid(row=i // 2, column=i % 2, sticky='w',
                                     padx=10, pady=2)
         #
@@ -59,7 +58,7 @@ class ToolbarButtonsDialog(MfxDialog):
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=(_("&OK"), _("&Cancel")), default=0,
+                      strings=("&OK", "&Cancel"), default=0,
                       padx=10, pady=10,
                       )
         return MfxDialog.initKw(self, kw)

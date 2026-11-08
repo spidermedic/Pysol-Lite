@@ -30,8 +30,6 @@ import configobj
 import pysollib.settings
 from pysollib.mfxutil import USE_PIL, \
     get_default_resampling, print_err
-from pysollib.mygettext import _
-from pysollib.mygettext import myGettext
 from pysollib.pysoltk import TOOLBAR_BUTTONS
 from pysollib.resource import CSI
 
@@ -104,7 +102,6 @@ solver_max_iterations = integer
 solver_iterations_output_step = integer
 solver_preset = string
 display_win_message = boolean
-language = string
 table_zoom = list
 
 [colors]
@@ -199,7 +196,6 @@ class Options:
         # ('recent_gameid', 'list'),
         # ('favorite_gameid', 'list'),
         ('display_win_message', 'bool'),
-        ('language', 'str'),
         # ('table_zoom', 'list'),
         ('fontscale', 'str'),
         # ('fontsizefactor', 'float'),
@@ -215,7 +211,7 @@ class Options:
         self.last_version = (2, 20, 1)
         # options menu:
         # the player name is the account name, set at startup (not saved)
-        self.player = _("Unknown")
+        self.player = "Unknown"
         self.confirm = True
         self.autofaceup = True
         self.autodrop = False
@@ -268,7 +264,6 @@ class Options:
         self.mouse_type = 'drag-n-drop'
         self.translate_game_names = True
         self.display_win_message = True
-        self.language = ''
         self.table_zoom = [1.0, 0.0, 0.0]
         self.fontscale = 'default'
         # self.fontsizefactor = 1.0
@@ -509,7 +504,6 @@ class Options:
         # colors: only the background color can be changed
         config['colors'] = {'table': self.colors['table']}
 
-
         # cardsets
         for key, val in self.cardset.items():
             for key2, val2 in val.items():
@@ -525,7 +519,6 @@ class Options:
             config['games_geometry'][str(key)] = val
         config['general']['game_geometry'] = self.game_geometry
         config['general']['window_geometry'] = self.window_geometry
-
 
         config.write()
         # config.write(sys.stdout); print
@@ -650,8 +643,6 @@ class Options:
                     self.toolbar_vars[key] = (key in visible_buttons)
                 else:
                     self.toolbar_vars[key] = True
-
-        myGettext.language = self.language
 
         # solver
         solver_presets = self._getOption('general', 'solver_presets', 'list')

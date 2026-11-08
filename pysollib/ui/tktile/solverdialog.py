@@ -1,6 +1,5 @@
 import tkinter
 
-from pysollib.mygettext import _
 from pysollib.settings import TITLE
 from pysollib.tile.tkwidget import PysolSpinbox
 from pysollib.ui.tktile.tkconst import EVENT_HANDLED
@@ -26,7 +25,7 @@ class BaseSolverDialog:
     def __init__(self, parent, app, **kw):
         self.parent = parent
         self.app = app
-        title = _('%(app)s - FreeCell Solver') % {'app': TITLE}
+        title = '%(app)s - FreeCell Solver' % {'app': TITLE}
         kw = self.initKw(kw)
         self._calc_MfxDialog().__init__(
             self, parent, title, kw.resizable, kw.default)
@@ -42,7 +41,7 @@ class BaseSolverDialog:
         #
         row = 0
         self._calcToolkit().Label(
-            frame, text=_('Game:'), anchor='w').grid(
+            frame, text='Game:', anchor='w').grid(
             row=row, column=0, sticky='ew', padx=2, pady=2)
         games = app.getGamesForSolver()
         gamenames = ['']
@@ -57,7 +56,7 @@ class BaseSolverDialog:
         #
         row += 1
         self._calcToolkit().Label(
-            frame, text=_('Preset:'), anchor='w').grid(
+            frame, text='Preset:', anchor='w').grid(
             row=row, column=0, sticky='ew', padx=2, pady=2)
         presets = app.opt.solver_presets
         self.presets = presets
@@ -69,11 +68,11 @@ class BaseSolverDialog:
         self.max_iters_var = tkinter.IntVar()
         self.max_iters_var.set(self.app.opt.solver_max_iterations)
         self._calcToolkit().Label(
-            frame, text=_('Max iterations:'), anchor='w').grid(
+            frame, text='Max iterations:', anchor='w').grid(
             row=row, column=0, sticky='ew', padx=2, pady=2)
         spin = PysolSpinbox(frame, from_=1000, to=10e6,
                             increment=1000, textvariable=self.max_iters_var,
-                            fieldname=_('Max iterations:'))
+                            fieldname='Max iterations:')
         self.max_iters_var.trace_add('write', self._OnAssignToMaxIters)
         spin.grid(row=row, column=1, sticky='w', padx=2, pady=2)
 
@@ -87,7 +86,7 @@ class BaseSolverDialog:
 
         #
         label_frame = self._calcToolkit().LabelFrame(
-            top_frame, text=_('Progress'))
+            top_frame, text='Progress')
         label_frame.pack(expand=True, fill='both', padx=6, pady=2)
         # label_frame.columnconfigure(0, weight=1)
         label_frame.columnconfigure(1, weight=1)
@@ -95,21 +94,21 @@ class BaseSolverDialog:
         #
         frow = 0
         self._calcToolkit().Label(
-            label_frame, text=_('Iteration:'), anchor='w').grid(
+            label_frame, text='Iteration:', anchor='w').grid(
             row=frow, column=0, sticky='ew', padx=4, pady=2)
         lb = self._calcToolkit().Label(label_frame, anchor='w')
         lb.grid(row=frow, column=1, sticky='ew', padx=4, pady=2)
         self.iter_label = lb
         frow += 1
         self._calcToolkit().Label(
-            label_frame, text=_('Depth:'), anchor='w').grid(
+            label_frame, text='Depth:', anchor='w').grid(
             row=frow, column=0, sticky='ew', padx=4, pady=2)
         lb = self._calcToolkit().Label(label_frame, anchor='w')
         lb.grid(row=frow, column=1, sticky='ew', padx=4, pady=2)
         self.depth_label = lb
         frow += 1
         self._calcToolkit().Label(
-            label_frame, text=_('Stored-States:'), anchor='w').grid(
+            label_frame, text='Stored-States:', anchor='w').grid(
             row=frow, column=0, sticky='ew', padx=4, pady=2)
         lb = self._calcToolkit().Label(label_frame, anchor='w')
         lb.grid(row=frow, column=1, sticky='ew', padx=4, pady=2)
@@ -164,7 +163,6 @@ class BaseSolverDialog:
         self.play_button.config(state='disabled')
 
     def startSolving(self):
-        from pysollib.mygettext import ungettext
 
         self._reset()
         game = self.app.game
@@ -179,26 +177,24 @@ class BaseSolverDialog:
         try:
             solver.computeHints()
         except RuntimeError:
-            self.result_label['text'] = _('Solver not found in the PATH')
+            self.result_label['text'] = 'Solver not found in the PATH'
             return
         hints_len = len(solver.hints)-1
         if hints_len > 0:
             if solver.solver_state == 'intractable':
-                t = ungettext('This game can be hinted in %d move.',
-                              'This game can be hinted in %d moves.',
-                              hints_len)
+                t = ('This game can be hinted in %d move.' if hints_len ==
+                     1 else 'This game can be hinted in %d moves.')
             else:
-                t = ungettext('This game is solvable in %d move.',
-                              'This game is solvable in %d moves.',
-                              hints_len)
+                t = ('This game is solvable in %d move.' if hints_len ==
+                     1 else 'This game is solvable in %d moves.')
             t = t % hints_len
             self.result_label['text'] = t
             self.play_button.config(state='normal')
         else:
             self.result_label['text'] = \
-                (_('I could not solve this game.')
+                ('I could not solve this game.'
                  if solver.solver_state == 'unsolved'
-                 else _('Iterations count exceeded (Intractable)'))
+                 else 'Iterations count exceeded (Intractable)')
             self.play_button.config(state='disabled')
 
     def startPlay(self):

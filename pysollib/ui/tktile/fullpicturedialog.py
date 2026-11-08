@@ -23,7 +23,6 @@
 
 import tkinter
 
-from pysollib.mygettext import _
 from pysollib.settings import TITLE
 from pysollib.ui.tktile.tkcanvas import MfxCanvas, MfxCanvasGroup
 from pysollib.ui.tktile.tkcanvas import MfxCanvasImage
@@ -36,7 +35,7 @@ class FullPictureDialog(tkinter.Toplevel):
 
     def __init__(self, parent, game):
         tkinter.Toplevel.__init__(self)
-        title = TITLE + ' - ' + _('Full picture')
+        title = TITLE + ' - ' + 'Full picture'
         self.title(title)
         self.wm_resizable(False, False)
         self.cardsettype = ''

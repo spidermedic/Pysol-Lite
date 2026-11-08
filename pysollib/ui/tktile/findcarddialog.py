@@ -24,7 +24,6 @@
 import os
 import tkinter
 
-from pysollib.mygettext import _
 from pysollib.resource import CSI
 from pysollib.settings import TITLE
 from pysollib.ui.tktile.tkcanvas import MfxCanvas, MfxCanvasGroup
@@ -43,7 +42,7 @@ class FindCardDialog(tkinter.Toplevel):
 
     def __init__(self, parent, game, dir):
         tkinter.Toplevel.__init__(self)
-        title = TITLE + ' - ' + _('Find card')
+        title = TITLE + ' - ' + 'Find card'
         self.title(title)
         self.wm_resizable(False, False)
         self.cardsettype = ''

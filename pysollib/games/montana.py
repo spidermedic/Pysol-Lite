@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import DefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         BasicRowStack, \
         InitialDealTalonStack, \
@@ -253,7 +252,7 @@ class Montana(Game):
             return ""
         row = (stack.id // self.RSTEP) + 1
         column = (stack.id % self.RSTEP) + 1
-        return _("Row: %d, Column: %d") % (row, column)
+        return "Row: %d, Column: %d" % (row, column)
 
 
 # ************************************************************************

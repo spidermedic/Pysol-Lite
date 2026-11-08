@@ -22,20 +22,12 @@
 # ---------------------------------------------------------------------------##
 
 # imports
-import os
 import sys
 import tkinter
 import tkinter.ttk as ttk
 
-from pysollib.mygettext import _
 
 from .tkwidget import MfxTooltip
-
-if __name__ == '__main__':
-    d = os.path.abspath(os.path.join(sys.path[0], os.pardir, os.pardir))
-    sys.path.append(d)
-    import gettext
-    gettext.install('pysol', d, unicode=True)
 
 # ************************************************************************
 # *
@@ -149,10 +141,10 @@ class PysolStatusbar(MfxStatusbar):
         MfxStatusbar.__init__(self, top, row=4, column=0, columnspan=3)
         #
         for n, t, w in (
-            ('stuck',       _("'You Are Stuck' indicator"), 3),
-            ('time',        _('Playing time'),            10),
-            ('moves',       _('Moves/Total moves'),       10),
-            ('info',        _('Number of cards'),         12),
+            ('stuck',       "'You Are Stuck' indicator", 3),
+            ('time',        'Playing time',            10),
+            ('moves',       'Moves/Total moves',       10),
+            ('info',        'Number of cards',         12),
                 ):
             self._createLabel(n, tooltip=t, width=w)
         #

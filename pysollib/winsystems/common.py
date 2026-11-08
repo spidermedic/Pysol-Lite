@@ -24,7 +24,6 @@
 import traceback
 
 from pysollib.mfxutil import print_err
-from pysollib.mygettext import _
 from pysollib.settings import DEBUG
 from pysollib.settings import TITLE
 
@@ -38,7 +37,7 @@ def set_theme(app, top, theme):
     try:
         style.theme_use(theme)
     except Exception:
-        print_err(_('invalid theme name: ') + theme)
+        print_err('invalid theme name: ' + theme)
         style.theme_use(app.opt.default_tile_theme)
 
 
@@ -51,7 +50,7 @@ def get_font_name(font):
     try:
         f = Font(font=font)
     except Exception:
-        print_err(_('invalid font name: ') + font)
+        print_err('invalid font name: ' + font)
         if DEBUG:
             traceback.print_exc()
     else:

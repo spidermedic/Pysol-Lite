@@ -25,7 +25,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         InitialDealTalonStack, \
@@ -170,15 +169,15 @@ class CribbageSquare(Game):
         score = self.checkHisHeels(score)
         t = ""
         if score >= self.WIN_SCORE:
-            t = _("WON\n\n")
+            t = "WON\n\n"
         if not self.isBoardFull():
-            t += _("Points: %d") % score
+            t += "Points: %d" % score
         else:
-            t += _("Total: %d") % score
+            t += "Total: %d" % score
         self.texts.score.config(text=t)
 
     def parseGameInfo(self):
-        return _("Points: %d") % self.getGameScore()
+        return "Points: %d" % self.getGameScore()
 
     def parseStackInfo(self, stack):
         if stack not in self.s.rows:
@@ -189,7 +188,7 @@ class CribbageSquare(Game):
                 stackhands.append(hand)
         row = (stack.id % 4) + 1
         column = (stack.id // 4) + 1
-        return (_("Row: %d, Score %d, Column: %d, Score %d") %
+        return ("Row: %d, Score %d, Column: %d, Score %d" %
                 (row, self.getHandScore(stackhands[0]), column,
                  self.getHandScore(stackhands[1])))
 
@@ -509,7 +508,7 @@ class CribbagePatience(CribbageShuffle):
         for hand in self.cribbage_hands:
             if stack in hand:
                 stackhand = hand
-        return _("Hand Score %d") % self.getHandScore(stackhand)
+        return "Hand Score %d" % self.getHandScore(stackhand)
 
     def finalizeHand(self):
         if self.isFinalizedHand:
@@ -542,8 +541,8 @@ class CribbagePatience(CribbageShuffle):
         #
         t = ""
         if self.score >= self.WIN_SCORE and len(self.s.talon.cards) == 0:
-            t = _("WON\n\n")
-        t += _("Total: %d") % self.score
+            t = "WON\n\n"
+        t += "Total: %d" % self.score
         self.texts.score.config(text=t)
 
     def _autoDeal(self, sound=True):

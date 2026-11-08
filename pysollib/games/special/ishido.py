@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         OpenTalonStack, \
@@ -126,10 +125,10 @@ class Ishido(Game):
     COLS = 12
     ROWS = 8
 
-    COLORS = (_("Blue"), _("Red"), _("Yellow"), _("Green"),
-              _("Purple"), _("Orange"))
-    SHAPES = (_("Square"), _("Circle"), _("Triangle"), _("Diamond"),
-              _("Pentagon"), _("Star"))
+    COLORS = ("Blue", "Red", "Yellow", "Green",
+              "Purple", "Orange")
+    SHAPES = ("Square", "Circle", "Triangle", "Diamond",
+              "Pentagon", "Star")
 
     #
     # game layout
@@ -272,20 +271,20 @@ class Ishido(Game):
     def updateText(self):
         if self.preview > 1 or not self.texts.score or not self.SCORING:
             return
-        t = _("Points: %d") % self.score
+        t = "Points: %d" % self.score
         self.texts.score.config(text=t)
 
     def parseGameInfo(self):
         if not self.SCORING:
             return ''
-        return _("Points: %d") % self.getGameScore()
+        return "Points: %d" % self.getGameScore()
 
     def parseStackInfo(self, stack):
         if stack not in self.s.rows:
             return ""
         row = (stack.id // self.COLS) + 1
         column = (stack.id % self.COLS) + 1
-        return _("Row: %d, Column: %d") % (row, column)
+        return "Row: %d, Column: %d" % (row, column)
 
     def getGameScore(self):
         return self.score
@@ -329,7 +328,7 @@ class Ishido(Game):
 
     def parseCard(self, card):
         if not card.face_up:
-            return _("Face-down")
+            return "Face-down"
         color = self.COLORS[card.suit]
         shape = self.SHAPES[card.rank]
         return color + " - " + shape

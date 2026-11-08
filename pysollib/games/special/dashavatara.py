@@ -29,7 +29,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint, CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AC_RowStack, \
@@ -353,13 +352,13 @@ class Dashavatara_RowStack(BasicRowStack):
 
 class AbstractDashavataraGame(Game):
 
-    SUITS = (_("Fish"), _("Tortoise"), _("Boar"), _("Lion"), _("Dwarf"),
-             _("Axe"), _("Arrow"), _("Plow"), _("Lotus"), _("Horse"))
-    RANKS = (_("Ace"), "2", "3", "4", "5", "6", "7", "8", "9", "10",
-             _("Pradhan"), _("Raja"))
-    COLORS = (_("Black"), _("Red"), _("Yellow"), _("Green"), _("Brown"),
-              _("Orange"), _("Grey"), _("White"), _("Olive"), _("Crimson"))
-    FORCE = (_("Strong"), _("Weak"))
+    SUITS = ("Fish", "Tortoise", "Boar", "Lion", "Dwarf",
+             "Axe", "Arrow", "Plow", "Lotus", "Horse")
+    RANKS = ("Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+             "Pradhan", "Raja")
+    COLORS = ("Black", "Red", "Yellow", "Green", "Brown",
+              "Orange", "Grey", "White", "Olive", "Crimson")
+    FORCE = ("Strong", "Weak")
 
     def updateText(self):
         pass
@@ -370,7 +369,7 @@ class AbstractDashavataraGame(Game):
 
     def parseCard(self, card):
         if not card.face_up:
-            return _("Face-down")
+            return "Face-down"
         suit = self.SUITS[card.suit]
         rank = self.RANKS[card.rank]
         return rank + " - " + suit
@@ -959,9 +958,9 @@ class Journey(AbstractDashavataraGame):
             t = self.RANKS[self.base_card.rank]
             dir = self.getFoundationDir() % 12
             if dir == 1:
-                t = t + _(" Ascending")
+                t = t + " Ascending"
             elif dir == 11:
-                t = t + _(" Descending")
+                t = t + " Descending"
         self.texts.info.config(text=t)
 
 

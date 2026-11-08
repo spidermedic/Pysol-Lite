@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         AC_RowStack, \
         BasicRowStack, \
@@ -221,7 +220,7 @@ class Saxony_Reserve(SS_RowStack):
     getBottomImage = Stack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Reserve. Build down by suit.')
+        return 'Reserve. Build down by suit.'
 
 
 class Saxony_Talon(DealRowTalonStack):

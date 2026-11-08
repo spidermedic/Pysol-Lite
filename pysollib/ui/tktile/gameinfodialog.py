@@ -23,7 +23,6 @@
 
 from pysollib.gamedb import GI
 from pysollib.mfxutil import KwStruct
-from pysollib.mygettext import _
 
 
 class BaseGameInfoDialog:
@@ -149,7 +148,7 @@ class BaseGameInfoDialog:
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=(_("&OK"),),
+                      strings=("&OK",),
                       default=0,
                       separator=True,
                       )

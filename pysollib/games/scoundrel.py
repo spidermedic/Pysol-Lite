@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -126,7 +125,7 @@ class Scoundrel_Talon(TalonStack):
         return self.dealRowAvail(rows=rows, sound=sound)
 
     def getHelp(self):
-        return _('Talon. Click to run from the room.')
+        return 'Talon. Click to run from the room.'
 
 
 class Scoundrel_Discard(AbstractFoundationStack):
@@ -139,7 +138,7 @@ class Scoundrel_Discard(AbstractFoundationStack):
             return True
 
     def getHelp(self):
-        return _('Discard.')
+        return 'Discard.'
 
 
 class Scoundrel_RoomStack(OpenStack):
@@ -192,7 +191,7 @@ class Scoundrel_WeaponStack(OpenStack):
             self, ncards, to_stack, frames=frames, shadow=shadow)
 
     def getHelp(self):
-        return _('Equipped weapon.')
+        return 'Equipped weapon.'
 
     getBottomImage = Stack._getReserveBottomImage
 
@@ -213,7 +212,7 @@ class Scoundrel_MonsterStack(OpenStack):
         return strengthValue(cards[0]) <= strengthValue(self.cards[-1])
 
     def getHelp(self):
-        return _('Monsters slain with weapon.')
+        return 'Monsters slain with weapon.'
 
     getBottomImage = Stack._getReserveBottomImage
 
@@ -353,10 +352,10 @@ class Scoundrel(Game):
     def updateText(self):
         if self.preview > 1 or not self.texts.info:
             return
-        self.texts.info.config(text=_("Health: %d") % self.health)
+        self.texts.info.config(text="Health: %d" % self.health)
 
     def parseGameInfo(self):
-        return _("Health: %d") % self.health
+        return "Health: %d" % self.health
 
     def getState(self):
         return [self.health, self.potion_used, self.room_plays, self.ran_last]

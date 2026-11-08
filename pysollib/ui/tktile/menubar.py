@@ -9,7 +9,6 @@ from tkinter.colorchooser import askcolor
 
 from pysollib.gamedb import GI
 from pysollib.mfxutil import Struct, kwdefault
-from pysollib.mygettext import _, n_
 from pysollib.settings import SELECT_GAME_MENU
 from pysollib.settings import TITLE, TITLE_CLASS, WIN_SYSTEM
 from pysollib.ui.tktile.tkconst import COMPOUNDS, CURSOR_WATCH, EVENT_HANDLED
@@ -19,26 +18,26 @@ from pysollib.ui.tktile.tkutil import after_idle, bind
 
 def createToolbarMenu(menubar, menu):
     tearoff = menu.cget('tearoff')
-    submenu = MfxMenu(menu, label=n_('Icon size'), tearoff=tearoff)
-    submenu.add_radiobutton(label=n_("Small"),
+    submenu = MfxMenu(menu, label='Icon size', tearoff=tearoff)
+    submenu.add_radiobutton(label="Small",
                             variable=menubar.tkopt.toolbar_size, value=0,
                             command=menubar.mOptToolbarSize)
-    submenu.add_radiobutton(label=n_("Medium"),
+    submenu.add_radiobutton(label="Medium",
                             variable=menubar.tkopt.toolbar_size, value=1,
                             command=menubar.mOptToolbarSize)
-    submenu.add_radiobutton(label=n_("Large"),
+    submenu.add_radiobutton(label="Large",
                             variable=menubar.tkopt.toolbar_size, value=2,
                             command=menubar.mOptToolbarSize)
-    submenu = MfxMenu(menu, label=n_('Button style'), tearoff=tearoff)
+    submenu = MfxMenu(menu, label='Button style', tearoff=tearoff)
     for comp, label in COMPOUNDS:
         submenu.add_radiobutton(
             label=label, variable=menubar.tkopt.toolbar_compound,
             value=comp, command=menubar.mOptToolbarCompound)
-    menu.add_command(label=n_('Visible buttons'),
+    menu.add_command(label='Visible buttons',
                      command=menubar.mOptToolbarButtons)
-    submenu = MfxMenu(menu, label=n_('Position'), tearoff=tearoff)
-    for label, value in ((n_("Top"), 1), (n_("Bottom"), 2),
-                         (n_("Left"), 3), (n_("Right"), 4)):
+    submenu = MfxMenu(menu, label='Position', tearoff=tearoff)
+    for label, value in (("Top", 1), ("Bottom", 2),
+                         ("Left", 3), ("Right", 4)):
         submenu.add_radiobutton(label=label,
                                 variable=menubar.tkopt.toolbar, value=value,
                                 command=menubar.mOptToolbar)
@@ -60,7 +59,7 @@ class MfxMenubar(tkinter.Menu):
     def labeltoname(self, label):
         # print label, type(label)
         name = re.sub(r"[^0-9a-zA-Z]", "", label).lower()
-        label = _(label)
+        label = label
         underline = label.find('&')
         if underline >= 0:
             label = label.replace('&', '')
@@ -242,106 +241,106 @@ class PysolMenubarTkCommon:
         if WIN_SYSTEM == "aqua":
             applemenu = MfxMenu(self.menubar, "apple")
             applemenu.add_command(
-                label=_("&About %s") % TITLE, command=self.mHelpAbout)
+                label="&About %s" % TITLE, command=self.mHelpAbout)
             applemenu.add_separator()
             applemenu.add_command(
-                label=_("&Settings"), command=self.mOptSettings,
+                label="&Settings", command=self.mOptSettings,
                 accelerator=m+",")
 
-        menu = MfxMenu(self.menubar, n_("&File"))
+        menu = MfxMenu(self.menubar, "&File")
         menu.add_command(
-            label=n_("&New game"), command=self.mNewGame, accelerator="N")
+            label="&New game", command=self.mNewGame, accelerator="N")
         menu.add_command(
-            label=n_("&Open"),
+            label="&Open",
             command=self.mOpen, accelerator=m+"O")
         menu.add_separator()
         menu.add_command(
-            label=n_("&Save"),
+            label="&Save",
             command=self.mSave, accelerator=m+"S")
-        menu.add_command(label=n_("Save &as"), command=self.mSaveAs)
+        menu.add_command(label="Save &as", command=self.mSaveAs)
         menu.add_separator()
         menu.add_command(
-            label=n_("&Quit"),
+            label="&Quit",
             command=self.mQuit, accelerator=m+"Q")
 
         if self.progress:
             self.progress.update(step=1)
 
-        menu = MfxMenu(self.menubar, label=n_("&Edit"))
+        menu = MfxMenu(self.menubar, label="&Edit")
         menu.add_command(
-            label=n_("&Undo"),
+            label="&Undo",
             command=self.mUndo, accelerator="Z")
         menu.add_command(
-            label=n_("&Redo"),
+            label="&Redo",
             command=self.mRedo, accelerator="R")
 
         menu.add_separator()
         menu.add_command(
-            label=n_("Set &bookmark"),
+            label="Set &bookmark",
             command=lambda: self.mSetBookmark(0), accelerator=m+"K")
         menu.add_command(
-            label=n_("&Go to bookmark"),
+            label="&Go to bookmark",
             command=lambda: self.mGotoBookmark(0), accelerator=m+"J")
 
-        menu = MfxMenu(self.menubar, label=n_("&View"))
+        menu = MfxMenu(self.menubar, label="&View")
         menu.add_checkbutton(
-            label=n_("Show &toolbar"), variable=self.tkopt.toolbar_shown,
+            label="Show &toolbar", variable=self.tkopt.toolbar_shown,
             command=self.mViewToolbar)
         menu.add_checkbutton(
-            label=n_("Show stat&us bar"), variable=self.tkopt.statusbar,
+            label="Show stat&us bar", variable=self.tkopt.statusbar,
             command=self.mOptStatusbar)
         # macOS adds its own "Enter Full Screen" item to a menu named View,
         # so only the other platforms get one here.
         if sys.platform != "darwin":
             menu.add_separator()
             menu.add_checkbutton(
-                label=n_("&Full screen"), variable=self.tkopt.fullscreen,
+                label="&Full screen", variable=self.tkopt.fullscreen,
                 command=self.mViewFullscreen, accelerator="F11")
 
-        menu = MfxMenu(self.menubar, label=n_("&Games"))
+        menu = MfxMenu(self.menubar, label="&Games")
         self._addSelectGameMenu(menu)
 
         if self.progress:
             self.progress.update(step=1)
 
-        menu = MfxMenu(self.menubar, label=n_("&Play"))
+        menu = MfxMenu(self.menubar, label="&Play")
         menu.add_command(
-            label=n_("&Deal cards"),
+            label="&Deal cards",
             command=self.mDeal, accelerator="D")
         menu.add_command(
-            label=n_("&Auto drop"),
+            label="&Auto drop",
             command=self.mDrop, accelerator="A")
         menu.add_command(
-            label=n_("Shu&ffle tiles"),
+            label="Shu&ffle tiles",
             command=self.mShuffle, accelerator="F")
         menu.add_checkbutton(
-            label=n_("&Pause"), variable=self.tkopt.pause,
+            label="&Pause", variable=self.tkopt.pause,
             command=self.mPause, accelerator="P")
         menu.add_command(
-            label=n_("&Restart"),
+            label="&Restart",
             command=self.mRestart, accelerator=m+"G")
         menu.add_separator()
         menu.add_command(
-            label=n_("&Hint"),
+            label="&Hint",
             command=self.mHint, accelerator="H")
         menu.add_command(
-            label=n_("Highlight p&iles"),
+            label="Highlight p&iles",
             command=self.mHighlightPiles, accelerator="I")
         menu.add_command(
-            label=n_("&Find card"),
+            label="&Find card",
             command=self.mFindCard, accelerator="F3")
         menu.add_command(
-            label=n_("Sh&ow full picture"),
+            label="Sh&ow full picture",
             command=self.mFullPicture)
         menu.add_command(
-            label=n_("Piles &description"),
+            label="Piles &description",
             command=self.mStackDesk, accelerator="F2")
         menu.add_separator()
         menu.add_command(
-            label=n_("De&mo"),
+            label="De&mo",
             command=self.mDemo, accelerator=m+"D")
         menu.add_command(
-            label=n_("Select game by nu&mber"),
+            label="Select game by nu&mber",
             command=self.mSelectGameById, accelerator=m+"M")
 
         if self.progress:
@@ -351,9 +350,9 @@ class PysolMenubarTkCommon:
         # above, Cmd-comma); the other platforms get an Options menu with the
         # one item.
         if WIN_SYSTEM != "aqua":
-            menu = MfxMenu(self.menubar, label=n_("&Options"))
+            menu = MfxMenu(self.menubar, label="&Options")
             menu.add_command(
-                label=n_("&Settings"), command=self.mOptSettings,
+                label="&Settings", command=self.mOptSettings,
                 accelerator=m+",")
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
@@ -375,30 +374,30 @@ class PysolMenubarTkCommon:
             # system decorates with an icon that no other item has. Use a
             # different name so the menu is ordinary and the item is ours.
             self.help_menu_name = "helpmenu"
-            menu = MfxMenu(self.menubar, label=_("Help"),
+            menu = MfxMenu(self.menubar, label="Help",
                            name=self.help_menu_name, underline=-1)
             menu.add_command(
-                label=_("%s Help") % TITLE_CLASS,
+                label="%s Help" % TITLE_CLASS,
                 command=self.mHelp, accelerator=m+"F1")
         else:
             self.help_menu_name = "help"
-            menu = MfxMenu(self.menubar, label=n_("&Help"))
+            menu = MfxMenu(self.menubar, label="&Help")
             menu.add_command(
-                label=n_("&Contents"),
+                label="&Contents",
                 command=self.mHelp, accelerator=m+"F1")
         menu.add_command(
-            label=n_("&Rules for this game"),
+            label="&Rules for this game",
             command=self.mHelpRules, accelerator="F1")
         menu.add_separator()
         menu.add_command(
-            label=n_("&License terms"),
+            label="&License terms",
             command=self.mHelpLicense)
         # macOS has About in the app menu (made above); the other platforms
         # have it at the bottom of Help.
         if WIN_SYSTEM != "aqua":
             menu.add_separator()
             menu.add_command(
-                label=_("&About %s") % TITLE,
+                label="&About %s" % TITLE,
                 command=self.mHelpAbout)
 
         MfxMenubar.addPath = None
@@ -536,14 +535,14 @@ class PysolMenubarTkCommon:
         m = "Ctrl-"
         if sys.platform == "darwin":
             m = "Cmd-"
-        MfxMenu(menu, label=n_("R&ecent games"))
-        MfxMenu(menu, label=n_("Fa&vorite games"))
-        menu.add_command(label=n_("A&dd to favorites"), command=self.mAddFavor)
+        MfxMenu(menu, label="R&ecent games")
+        MfxMenu(menu, label="Fa&vorite games")
+        menu.add_command(label="A&dd to favorites", command=self.mAddFavor)
         menu.add_command(
-            label=n_("Remove &from favorites"),
+            label="Remove &from favorites",
             command=self.mDelFavor)
         menu.add_separator()
-        menu.add_command(label=n_("All &games"), accelerator=m+"V",
+        menu.add_command(label="All &games", accelerator=m+"V",
                          command=self.mSelectGameDialogWithPreview)
         if not SELECT_GAME_MENU:
             return
@@ -599,7 +598,7 @@ class PysolMenubarTkCommon:
 
         mahjongg_games.sort(key=sort_func)
         #
-        menu = MfxMenu(menu, label=n_("&Mahjongg games"))
+        menu = MfxMenu(menu, label="&Mahjongg games")
         n, d = 0, self.cb_max
         i = 0
         while True:
@@ -624,7 +623,7 @@ class PysolMenubarTkCommon:
             return gi.si.game_flags & GI.GT_POPULAR
         if len(list(filter(select_func, games))) == 0:
             return
-        data = (n_("&Popular games"), select_func)
+        data = ("&Popular games", select_func)
         self._addSelectGameSubMenu(games, menu, (data, ),
                                    self.mSelectGamePopular,
                                    self.tkopt.gameid_popular)
@@ -632,14 +631,14 @@ class PysolMenubarTkCommon:
     def _addSelectFrenchGameSubMenu(self, games, menu, command, variable):
         if self._getNumGames(games, GI.SELECT_GAME_BY_TYPE) == 0:
             return
-        submenu = MfxMenu(menu, label=n_("&French games"))
+        submenu = MfxMenu(menu, label="&French games")
         self._addSelectGameSubMenu(games, submenu, GI.SELECT_GAME_BY_TYPE,
                                    self.mSelectGame, self.tkopt.gameid)
 
     def _addSelectOrientalGameSubMenu(self, games, menu, command, variable):
         if self._getNumGames(games, GI.SELECT_ORIENTAL_GAME_BY_TYPE) == 0:
             return
-        submenu = MfxMenu(menu, label=n_("&Oriental games"))
+        submenu = MfxMenu(menu, label="&Oriental games")
         self._addSelectGameSubMenu(games, submenu,
                                    GI.SELECT_ORIENTAL_GAME_BY_TYPE,
                                    self.mSelectGame, self.tkopt.gameid)
@@ -647,7 +646,7 @@ class PysolMenubarTkCommon:
     def _addSelectSpecialGameSubMenu(self, games, menu, command, variable):
         if self._getNumGames(games, GI.SELECT_ORIENTAL_GAME_BY_TYPE) == 0:
             return
-        submenu = MfxMenu(menu, label=n_("&Special games"))
+        submenu = MfxMenu(menu, label="&Special games")
         self._addSelectGameSubMenu(games, submenu,
                                    GI.SELECT_SPECIAL_GAME_BY_TYPE,
                                    self.mSelectGame, self.tkopt.gameid)
@@ -694,7 +693,7 @@ class PysolMenubarTkCommon:
     def updateGamesMenu(self, menu, games):
         menu.delete(0, 'last')
         if len(games) == 0:
-            menu.add_radiobutton(label=_('<none>'), name=None,
+            menu.add_radiobutton(label='<none>', name=None,
                                  state='disabled')
         elif len(games) > self.cb_max*4:
             games.sort(key=lambda x: x.name)
@@ -753,7 +752,7 @@ class PysolMenubarTkCommon:
         self.game.setCursor(cursor=CURSOR_WATCH)
         after_idle(self.top, self.__restoreCursor)
         d = self._calcSelectGameDialog()(
-            self.top, title=_("Select game"),
+            self.top, title="Select game",
             app=self.app, gameid=self.game.id)
         return self._mSelectGameDialog(d)
 
@@ -773,7 +772,7 @@ class PysolMenubarTkCommon:
             self.game.doPause()
             self.wasPaused = True
         d = self._calcSelectGameDialogWithPreview()(
-            self.top, title=_("Select game"),
+            self.top, title="Select game",
             app=self.app, gameid=self.game.id,
             bookmark=bookmark, initial_tab=initial_tab)
         return self._mSelectGameDialog(d)
@@ -817,7 +816,7 @@ class PysolMenubarTkCommon:
                 games.append(gi)
         self.updateGamesMenu(submenu, games)
         submenu.add_separator()
-        submenu.add_command(label=n_("&Clear recent games"),
+        submenu.add_command(label="&Clear recent games",
                             command=self.mClearRecent)
 
     def updateBookmarkMenuState(self):
@@ -876,8 +875,8 @@ class PysolMenubarTkCommon:
     #
 
     DEFAULTEXTENSION = ".pso"
-    FILETYPES = ((_("%s files") % TITLE, "*" + DEFAULTEXTENSION),
-                 (_("All files"), "*"))
+    FILETYPES = (("%s files" % TITLE, "*" + DEFAULTEXTENSION),
+                 ("All files", "*"))
 
     def mAddFavor(self, *event):
         gameid = self.app.game.id
@@ -894,8 +893,8 @@ class PysolMenubarTkCommon:
     def mClearRecent(self, *event):
         if self._cancelDrag(break_pause=False):
             return
-        if not self.game.areYouSure(_("Clear recent games"),
-                                    _("Clear the recent games list?")):
+        if not self.game.areYouSure("Clear recent games",
+                                    "Clear the recent games list?"):
             return
         gameid = self.app.game.id
         self.app.opt.recent_gameid = []
@@ -1110,7 +1109,7 @@ class PysolMenubarTkCommon:
         try:
             color = askcolor(parent=self.top,
                              initialcolor=self.app.opt.colors['table'],
-                             title=_("Select background color"))
+                             title="Select background color")
         finally:
             if self.game.pause and wasPaused:
                 self.game.doPause()

@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 
-import builtins
 import os
 import sys
 
 from pysollib.gamedb import GAME_DB
 from pysollib.gamedb import GI
 from pysollib.mfxutil import latin1_normalize
-from pysollib.mygettext import fix_gettext
 # outdir = '../html'
 pysollib_dir = '../'
 
-
-builtins._ = lambda x: x
-builtins.n_ = lambda x: x
 
 import pysollib.games  # noqa: E402,F402,I100,I202
 import pysollib.games.mahjongg  # noqa: E402,F402
@@ -40,7 +35,6 @@ pysollib_path = os.path.join(sys.path[0], pysollib_dir)
 sys.path[0] = os.path.normpath(pysollib_path)
 # print sys.path
 
-fix_gettext()
 
 files = [
     ('credits.html', 'PySol Credits'),

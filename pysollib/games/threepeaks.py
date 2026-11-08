@@ -26,7 +26,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.golf import Golf_Hint, Golf_Waste
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import OpenStack, StackWrapper, WasteTalonStack
 from pysollib.util import ANY_RANK
@@ -215,15 +214,15 @@ class ThreePeaks(ThreePeaksExposeFlip, Game):
     def updateText(self):
         if self.preview > 1 or not self.texts.info or not self.SCORING:
             return
-        t = _('Score:\011This hand:  ') + str(self.hand_score)
-        t = t + _('\011This game:  ') + str(self.game_score)
+        t = 'Score:\011This hand:  ' + str(self.hand_score)
+        t = t + '\011This game:  ' + str(self.game_score)
         self.texts.info.config(text=t)
 
     def parseGameInfo(self):
         if not self.SCORING:
             return ''
-        t = _('Score:\011This hand:  ') + str(self.hand_score)
-        t = t + _('\011This game:  ') + str(self.game_score)
+        t = 'Score:\011This hand:  ' + str(self.hand_score)
+        t = t + '\011This game:  ' + str(self.game_score)
         return t
 
     def shallHighlightMatch(self, stack1, card1, stack2, card2):
@@ -288,7 +287,7 @@ class ThreePeaks(ThreePeaksExposeFlip, Game):
                 if r[j + i].cards:
                     coverCards += (r[j + i],)
         if len(coverCards) > 0:
-            mainCard += " - " + _("Covered by")
+            mainCard += " - " + "Covered by"
             for c in coverCards:
                 mainCard += " - " + self.parseCard(c.cards[0])
         return mainCard

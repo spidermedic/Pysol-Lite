@@ -26,7 +26,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import Card, MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -140,8 +139,8 @@ class AbstractSamegameGame(Game):
     NCOLORS = 3
     NCARDS = 144
 
-    COLORS = (_("Blue"), _("Red"), _("Yellow"), _("Green"),
-              _("Purple"), _("Orange"))
+    COLORS = ("Blue", "Red", "Yellow", "Green",
+              "Purple", "Orange")
 
     def createGame(self):
         cols, rows = self.L
@@ -255,7 +254,7 @@ class AbstractSamegameGame(Game):
             return ""
         row = (stack.id % self.L[1]) + 1
         column = (stack.id // self.L[1]) + 1
-        return _("Row: %d, Column: %d") % (row, column)
+        return "Row: %d, Column: %d" % (row, column)
 
     def getAutoStacks(self, event=None):
         return ((), (), ())

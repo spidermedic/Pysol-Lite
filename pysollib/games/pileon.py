@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AC_RowStack, \
@@ -264,7 +263,7 @@ class FourByFour_Foundation(AbstractFoundationStack):
         return (self.cards[-1].rank+dir) % self.cap.mod == cards[0].rank
 
     def getHelp(self):
-        return _('Foundation. Build up regardless of suit.')
+        return 'Foundation. Build up regardless of suit.'
 
 
 class FourByFour(Game):

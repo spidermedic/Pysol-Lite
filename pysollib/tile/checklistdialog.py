@@ -25,7 +25,6 @@ import tkinter
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import KwStruct
-from pysollib.mygettext import _
 
 from .tkwidget import MfxDialog, PysolCheckbutton
 
@@ -59,7 +58,7 @@ class ChecklistDialog(MfxDialog):
                 var = tkinter.BooleanVar()
                 var.set(bool(values.get(key)))
                 self.vars[key] = var
-                w = PysolCheckbutton(frame, variable=var, text=_(label))
+                w = PysolCheckbutton(frame, variable=var, text=label)
                 w.grid(row=row, column=0, sticky='w', padx=10, pady=1)
                 if key in disabled:
                     w.state(['disabled'])
@@ -73,7 +72,7 @@ class ChecklistDialog(MfxDialog):
 
     def initKw(self, kw):
         kw = KwStruct(kw,
-                      strings=(_("&OK"), _("&Cancel")), default=0,
+                      strings=("&OK", "&Cancel"), default=0,
                       padx=10, pady=10,
                       )
         return MfxDialog.initKw(self, kw)

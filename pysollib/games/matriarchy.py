@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         SS_RowStack, \
@@ -120,10 +119,10 @@ class Matriarchy_Talon(WasteTalonStack):
             return
         WasteTalonStack.updateText(self, update_rounds=0)
         # t = "Round %d" % self.round
-        t = _("Round %(round)d/%(max_rounds)d") % {
+        t = "Round %(round)d/%(max_rounds)d" % {
             'round': self.round, 'max_rounds': self.max_rounds}
         self.texts.rounds.config(text=t)
-        t = _("Deal %d") % self.DEAL[self.round-1]
+        t = "Deal %d" % self.DEAL[self.round-1]
         self.texts.misc.config(text=t)
 
 

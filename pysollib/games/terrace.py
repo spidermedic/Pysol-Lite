@@ -26,7 +26,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.stack import \
         AC_FoundationStack, \
         AC_RowStack, \
@@ -62,7 +61,7 @@ class Terrace_AC_Foundation(AC_FoundationStack):
 
     def getBaseCard(self):
         if self.game.getState() == 0:
-            return _('Base card - %s.') % _('any card')
+            return 'Base card - %s.' % 'any card'
         return AC_FoundationStack.getBaseCard(self)
 
 
@@ -82,7 +81,7 @@ class Terrace_SS_Foundation(SS_FoundationStack):
 
     def getBaseCard(self):
         if self.game.getState() == 0:
-            return _('Base card - %s.') % _('any card')
+            return 'Base card - %s.' % 'any card'
         return SS_FoundationStack.getBaseCard(self)
 
 

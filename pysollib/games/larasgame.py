@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         OpenStack, \
         SS_FoundationStack, \
@@ -156,7 +155,7 @@ class LarasGame_Talon(WasteTalonStack):
         WasteTalonStack.updateText(self, update_rounds=0)
         if not self.max_rounds - 1:
             return
-        t = _("Round %d") % self.round
+        t = "Round %d" % self.round
         self.texts.rounds.config(text=t)
 
     def getActiveRow(self):

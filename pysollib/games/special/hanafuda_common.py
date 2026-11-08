@@ -26,7 +26,6 @@ import math
 from pysollib.game import Game
 from pysollib.hint import DefaultHint
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.stack import \
         AbstractFoundationStack, \
         OpenStack, \
@@ -37,9 +36,9 @@ from pysollib.util import ANY_RANK, ANY_SUIT
 
 
 class AbstractFlowerGame(Game):
-    SUITS = (_("Pine"), _("Plum"), _("Cherry"), _("Wisteria"),
-             _("Iris"), _("Peony"), _("Bush Clover"), _("Eularia"),
-             _("Chrysanthemum"), _("Maple"), _("Willow"), _("Paulownia"))
+    SUITS = ("Pine", "Plum", "Cherry", "Wisteria",
+             "Iris", "Peony", "Bush Clover", "Eularia",
+             "Chrysanthemum", "Maple", "Willow", "Paulownia")
 
     def shallHighlightMatch(self, stack1, card1, stack2, card2):
         return ((card1.suit == card2.suit) and
@@ -48,7 +47,7 @@ class AbstractFlowerGame(Game):
 
     def parseCard(self, card):
         if not card.face_up:
-            return _("Face-down")
+            return "Face-down"
         suit = self.SUITS[card.suit]
         rank = card.rank + 1
         return str(rank) + " - " + suit

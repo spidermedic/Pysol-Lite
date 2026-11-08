@@ -25,7 +25,6 @@
 # imports
 
 # PySol imports
-from pysollib.mygettext import _
 from pysollib.pysoltk import HTMLViewer
 from pysollib.pysoltk import MfxMessageDialog
 from pysollib.pysoltk import PysolAboutDialog
@@ -40,14 +39,14 @@ from pysollib.settings import PACKAGE_URL, TITLE, VERSION
 def help_about(app, timeout=0, sound=True):
     if sound:
         app.audio.playSample("about")
-    t = _("A reimagining of PySolFC")
-    strings = (_("&Nice"), _("&Credits"))
+    t = "A reimagining of PySolFC"
+    strings = ("&Nice", "&Credits")
     if timeout:
-        strings = (_("&Enjoy"),)
-    version = _("Version %s") % VERSION
-    d = PysolAboutDialog(app, app.top, title=_("About %s") % TITLE,
+        strings = ("&Enjoy",)
+    version = "Version %s" % VERSION
+    d = PysolAboutDialog(app, app.top, title="About %s" % TITLE,
                          timeout=timeout,
-                         text=_('''%(title)s
+                         text=('''%(title)s
 %(description)s
 %(versioninfo)s
 
@@ -81,8 +80,8 @@ def help_credits(app, timeout=0, sound=True):
         app.audio.playSample("credits")
     t = "Tcl/Tk"
     d = MfxMessageDialog(
-        app.top, title=_("Credits"), timeout=timeout,
-        text=_('''%(app)s credits go to:
+        app.top, title="Credits", timeout=timeout,
+        text=('''%(app)s credits go to:
 
 Volker Weidner for getting me into Solitaire
 Guido van Rossum for the initial example program
@@ -118,8 +117,8 @@ def help_html(app, document, dir_, top=None):
             document, dir_ = "index.html", "html"
             help_html_index = app.dataloader.findFile(document, dir_)
     except EnvironmentError:
-        MfxMessageDialog(app.top, title=_("%s HTML Problem") % TITLE,
-                         text=_("Cannot find help document\n%s") % document,
+        MfxMessageDialog(app.top, title="%s HTML Problem" % TITLE,
+                         text="Cannot find help document\n%s" % document,
                          bitmap="warning")
         return None
     # print doc, help_html_index
@@ -132,7 +131,7 @@ def help_html(app, document, dir_, top=None):
         viewer.display(doc, relpath=0)
     except Exception:
         # traceback.print_exc()
-        top = make_help_toplevel(app, title=_("%s Help") % TITLE)
+        top = make_help_toplevel(app, title="%s Help" % TITLE)
 
         sw = top.winfo_screenwidth()
         sh = top.winfo_screenheight()

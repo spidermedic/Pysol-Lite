@@ -29,8 +29,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import Image, Struct, kwdefault
-from pysollib.mygettext import _
-from pysollib.mygettext import ungettext
 from pysollib.pysoltk import ANCHOR_NW, EVENT_HANDLED, bind
 from pysollib.pysoltk import MfxCanvasImage, MfxCanvasText
 from pysollib.pysoltk import MfxMessageDialog
@@ -284,7 +282,7 @@ class Mahjongg_RowStack(OpenStack):
                 return 1
         drag.stack = self
         self.game.playSample("startdrag")
-        self.game.app.speech.speak(_("Selected"))
+        self.game.app.speech.speak("Selected")
         # create the shade image (see stack.py, _updateShade)
         if drag.shade_img:
             # drag.shade_img.dtag(drag.shade_stack.group)
@@ -306,7 +304,7 @@ class Mahjongg_RowStack(OpenStack):
     def cancelDrag(self, event=None):
         if event is None:
             self._stopDrag()
-            self.game.app.speech.speak(_("Unselected"))
+            self.game.app.speech.speak("Unselected")
 
     def _findCard(self, event):
         # we need to override this because the shade may be hiding
@@ -329,13 +327,13 @@ def _nontrivial_keys_to_tuple(in_dict):
 
 
 class AbstractMahjonggGame(Game):
-    RANKS = ("1", "2", "3", "4", "5", "6", "7", "8", "9", _("Dragon"))
-    SUITS = (_("Strings"), _("Sticks"), _("Coins"))
-    DRAGONS = (_("Green"), _("White"), _("Red"))
-    TRUMPS = (_("North Wind"), _("South Wind"), _("East Wind"),
-              _("West Wind"), _("Winter"), _("Fall"), _("Spring"),
-              _("Summer"), _("Bamboo"), _("Orchid"), _("Plum"),
-              _("Chrysanthemum"))
+    RANKS = ("1", "2", "3", "4", "5", "6", "7", "8", "9", "Dragon")
+    SUITS = ("Strings", "Sticks", "Coins")
+    DRAGONS = ("Green", "White", "Red")
+    TRUMPS = ("North Wind", "South Wind", "East Wind",
+              "West Wind", "Winter", "Fall", "Spring",
+              "Summer", "Bamboo", "Orchid", "Plum",
+              "Chrysanthemum")
 
     Hint_Class = Mahjongg_Hint
     RowStack_Class = Mahjongg_RowStack
@@ -372,7 +370,7 @@ class AbstractMahjonggGame(Game):
 
     def parseCard(self, card):
         if not card.face_up:
-            return _("Face-down")
+            return "Face-down"
         if card.suit > 2:
             return self.TRUMPS[card.rank]
         if card.rank > 8:
@@ -387,7 +385,7 @@ class AbstractMahjonggGame(Game):
         if len(stack.cards) == 0:
             return self.parseEmptyStack(stack)
         if hasattr(stack, 'blockmap') and len(stack.blockmap.above) > 0:
-            mainCard = _("Covered Tile")
+            mainCard = "Covered Tile"
         else:
             mainCard = self.parseCard(stack.cards[cardindex])
         coverCards = ()
@@ -403,9 +401,9 @@ class AbstractMahjonggGame(Game):
                 else:
                     coverCards += (r,)
         if len(coverCards) > 0 or blockedByCovered:
-            mainCard += " - " + _("Covered by")
+            mainCard += " - " + "Covered by"
             if blockedByCovered:
-                mainCard += " - " + _("Covered Tiles")
+                mainCard += " - " + "Covered Tiles"
             for c in coverCards:
                 mainCard += " - " + self.parseCard(c.cards[0])
         coverCards = ()
@@ -417,9 +415,9 @@ class AbstractMahjonggGame(Game):
                 else:
                     coverCards += (r,)
         if len(coverCards) > 0 or blockedByCovered:
-            mainCard += " - " + _("Blocked on left by")
+            mainCard += " - " + "Blocked on left by"
             if blockedByCovered:
-                mainCard += " - " + _("Covered Tiles")
+                mainCard += " - " + "Covered Tiles"
             for c in coverCards:
                 mainCard += " - " + self.parseCard(c.cards[0])
         coverCards = ()
@@ -431,9 +429,9 @@ class AbstractMahjonggGame(Game):
                 else:
                     coverCards += (r,)
         if len(coverCards) > 0 or blockedByCovered:
-            mainCard += " - " + _("Blocked on right by")
+            mainCard += " - " + "Blocked on right by"
             if blockedByCovered:
-                mainCard += " - " + _("Covered Tiles")
+                mainCard += " - " + "Covered Tiles"
             for c in coverCards:
                 mainCard += " - " + self.parseCard(c.cards[0])
         return mainCard
@@ -1002,8 +1000,8 @@ class AbstractMahjonggGame(Game):
 
         new_cards = self._shuffleHook2(rows, cards)
         if new_cards is None:
-            MfxMessageDialog(self.top, title=_('Warning'),
-                             text=_('''\
+            MfxMessageDialog(self.top, title='Warning',
+                             text=('''\
 Sorry, I can\'t find
 a solvable configuration.'''),
                              bitmap='warning')
@@ -1078,18 +1076,15 @@ a solvable configuration.'''),
             i += 1
 
         if f == 0:
-            f = _('No Free\nMatching\nPairs')
+            f = 'No Free\nMatching\nPairs'
         else:
-            f = ungettext('%d Free\nMatching\nPair',
-                          '%d Free\nMatching\nPairs',
-                          f) % f
+            f = ('%d Free\nMatching\nPair' if f ==
+                 1 else '%d Free\nMatching\nPairs') % f
         t = sum(len(ii.cards) for ii in self.s.foundations)
-        r1 = ungettext('%d\nTile\nRemoved\n\n',
-                       '%d\nTiles\nRemoved\n\n',
-                       t) % t
-        r2 = ungettext('%d\nTile\nRemaining\n\n',
-                       '%d\nTiles\nRemaining\n\n',
-                       self.NCARDS - t) % (self.NCARDS - t)
+        r1 = ('%d\nTile\nRemoved\n\n' if t ==
+              1 else '%d\nTiles\nRemoved\n\n') % t
+        r2 = ('%d\nTile\nRemaining\n\n' if (self.NCARDS - t) ==
+              1 else '%d\nTiles\nRemaining\n\n') % (self.NCARDS - t)
 
         t = r1 + r2 + f
         return t
@@ -1097,7 +1092,7 @@ a solvable configuration.'''),
     def parseStackInfo(self, stack):
         if not hasattr(stack, 'blockmap'):
             return ""
-        return _("Layer: %d") % (stack.blockmap.level + 1)
+        return "Layer: %d" % (stack.blockmap.level + 1)
 
     def parseGameInfo(self):
         return self.getText()

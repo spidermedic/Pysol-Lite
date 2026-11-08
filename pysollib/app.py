@@ -39,7 +39,6 @@ from pysollib.mfxutil import Struct, destruct
 from pysollib.mfxutil import getprefdir, getusername
 from pysollib.mfxutil import latin1_normalize, print_err
 from pysollib.mfxutil import unpickle
-from pysollib.mygettext import _
 from pysollib.options import Options
 from pysollib.pysolrandom import PysolRandom, construct_random
 from pysollib.pysoltk import HTMLViewer
@@ -329,7 +328,7 @@ class Application:
             elif self.commandline.game is not None:
                 gameid = self.gdb.getGameByName(self.commandline.game)
                 if gameid is None:
-                    print_err(_("can't find game: %(game)s") % {
+                    print_err("can't find game: %(game)s" % {
                         'game': self.commandline.game})
                     sys.exit(-1)
                 else:
@@ -706,7 +705,7 @@ class Application:
 
             self.wm_save_state()
             self.wm_withdraw()
-            title = _("Loading cardset %s...") % cs.name
+            title = "Loading cardset %s..." % cs.name
             color = self.opt.colors['table']
             if self.tabletile_index > 0:
                 color = "#008200"
@@ -760,8 +759,8 @@ class Application:
             # images.destruct()
             destruct(images)
             MfxExceptionDialog(
-                self.top, ex, title=_("Cardset load error"),
-                text=_("Error while loading cardset"))
+                self.top, ex, title="Cardset load error",
+                text="Error while loading cardset")
         self.intro.progress = progress
         if r and not tocache and self.menubar is not None:
             self.menubar.updateBackgroundImagesMenu()
@@ -893,12 +892,12 @@ class Application:
 
         cardCountLabel = ''
         if self.isCardCountRelevant(gi):
-            cardCountLabel = _("(with %d or more cards)") % gi.ncards
+            cardCountLabel = "(with %d or more cards)" % gi.ncards
 
         MfxMessageDialog(
-            self.top, title=_("Incompatible cardset"),
+            self.top, title="Incompatible cardset",
             bitmap="warning",
-            text=_('''The currently selected cardset %(cardset)s
+            text=('''The currently selected cardset %(cardset)s
         is not compatible with the game
         %(game)s
 
@@ -907,7 +906,7 @@ class Application:
         ''') % {'cardset': cardset.name, 'game': gi.name,
                 'correct_type': t[0], 'subcategory': subcategoryLabel,
                 'cardcount': cardCountLabel},
-            strings=(_("&OK"),), default=0)
+            strings=("&OK",), default=0)
 
     def isSubcategoryRelevant(self, gi):
         if (gi.category == GI.GC_FRENCH):
@@ -946,7 +945,7 @@ class Application:
 
     def __selectCardsetDialog(self, t):
         cs = self.selectCardset(
-            _("Please select a %s type cardset") % t[0],
+            "Please select a %s type cardset" % t[0],
             self.cardset.index)
         return cs
 
@@ -1053,7 +1052,7 @@ class Application:
                 except Exception as ex:
                     if DEBUG:
                         traceback.print_exc()
-                    print_err(_("error loading plugin %(file)s: %(err)s") %
+                    print_err("error loading plugin %(file)s: %(err)s" %
                               {'file': n, 'err': ex})
 
     #

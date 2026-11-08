@@ -25,7 +25,6 @@ import os
 
 from pysollib.gamedb import GI, hideGame, loadGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _, n_
 from pysollib.stack import AC_FoundationStack, \
         AC_RowStack, \
         BO_FoundationStack, \
@@ -82,13 +81,13 @@ class WizSetting:
             self.values = []
             for k, v in self.values_map:
                 self.values.append(k)
-                self.translation_map[_(k)] = k
+                self.translation_map[k] = k
             assert self.default in self.values
         elif widget == 'preset':
             self.values = []
             for v in self.values_map:
                 self.values.append(v)
-                self.translation_map[_(v)] = v
+                self.translation_map[v] = v
             assert self.default in self.values
         else:
             self.values = self.values_map
@@ -103,132 +102,132 @@ WizardPresets = WizSetting(
     values_map=list(presets.keys()),
     default='None',
     widget='preset',
-    label=_('Initial setting:'),
+    label='Initial setting:',
     var_name='preset',
     )
 GameName = WizSetting(
     values_map=(),
-    default=_('My Game'),
+    default='My Game',
     widget='entry',
-    label=_('Name:'),
+    label='Name:',
     var_name='name',
     )
 SkillLevel = WizSetting(
-    values_map=((n_('Luck only'),    GI.SL_LUCK),
-                (n_('Mostly luck'),  GI.SL_MOSTLY_LUCK),
-                (n_('Balanced'),     GI.SL_BALANCED),
-                (n_('Mostly skill'), GI.SL_MOSTLY_SKILL),
-                (n_('Skill only'),   GI.SL_SKILL),
+    values_map=(('Luck only',    GI.SL_LUCK),
+                ('Mostly luck',  GI.SL_MOSTLY_LUCK),
+                ('Balanced',     GI.SL_BALANCED),
+                ('Mostly skill', GI.SL_MOSTLY_SKILL),
+                ('Skill only',   GI.SL_SKILL),
                 ),
-    default=n_('Balanced'),
-    label=_('Skill level:'),
+    default='Balanced',
+    label='Skill level:',
     var_name='skill_level',
     )
 NumDecks = WizSetting(
-    values_map=((n_('One'),   1),
-                (n_('Two'),   2),
-                (n_('Three'), 3),
-                (n_('Four'),  4)),
-    default=n_('One'),
-    label=_('Number of decks:'),
+    values_map=(('One',   1),
+                ('Two',   2),
+                ('Three', 3),
+                ('Four',  4)),
+    default='One',
+    label='Number of decks:',
     var_name='decks',
     )
 LayoutType = WizSetting(
-    values_map=((n_('FreeCell'), Layout.freeCellLayout),
-                (n_('Klondike'), Layout.klondikeLayout),
-                (n_('Gypsy'),    Layout.gypsyLayout),
-                (n_('Harp'),     Layout.harpLayout),
+    values_map=(('FreeCell', Layout.freeCellLayout),
+                ('Klondike', Layout.klondikeLayout),
+                ('Gypsy',    Layout.gypsyLayout),
+                ('Harp',     Layout.harpLayout),
                 ),
-    default=n_('FreeCell'),
-    label=_('Layout:'),
+    default='FreeCell',
+    label='Layout:',
     var_name='layout',
     )
 TalonType = WizSetting(
-    values_map=((n_('Deal all cards at the beginning'), InitialDealTalonStack),
-                (n_('Deal to waste'),         WasteTalonStack),
-                (n_('Deal to tableau'),       DealRowRedealTalonStack),
-                (n_('Deal to first tableau'), DealFirstRowRedealTalonStack),
-                (n_('Deal to reserves'),      DealReserveRedealTalonStack),
-                (n_('Spider'),                SpiderTalonStack),
-                (n_('Grounds for a Divorce'), GroundsForADivorceTalonStack),
+    values_map=(('Deal all cards at the beginning', InitialDealTalonStack),
+                ('Deal to waste',         WasteTalonStack),
+                ('Deal to tableau',       DealRowRedealTalonStack),
+                ('Deal to first tableau', DealFirstRowRedealTalonStack),
+                ('Deal to reserves',      DealReserveRedealTalonStack),
+                ('Spider',                SpiderTalonStack),
+                ('Grounds for a Divorce', GroundsForADivorceTalonStack),
                 ),
-    default=n_('Deal all cards at the beginning'),
-    label=_('Type:'),
+    default='Deal all cards at the beginning',
+    label='Type:',
     var_name='talon',
     )
 Redeals = WizSetting(
-    values_map=((n_('No redeals'), 0),
-                (n_('One redeal'), 1),
-                (n_('Two redeals'), 2),
-                (n_('Three redeals'), 3),
-                (n_('Unlimited redeals'), -1),
+    values_map=(('No redeals', 0),
+                ('One redeal', 1),
+                ('Two redeals', 2),
+                ('Three redeals', 3),
+                ('Unlimited redeals', -1),
                 ),
-    default=n_('No redeals'),
-    label=_('Number of redeals:'),
+    default='No redeals',
+    label='Number of redeals:',
     var_name='redeals',
     )
 DealToWaste = WizSetting(
     values_map=(1, 5),
     default=1,
     widget='spin',
-    label=_('# of cards dealt to the waste:'),
+    label='# of cards dealt to the waste:',
     var_name='deal_to_waste',
     )
 SingleCardWaste = WizSetting(
     values_map=(0, 1),
     default=0,
-    label=_('Single card waste:'),
+    label='Single card waste:',
     var_name='single_card_waste',
     widget='check',
     )
 TalonShuffle = WizSetting(
     values_map=(0, 1),
     default=0,
-    label=_('Shuffle during redeal:'),
+    label='Shuffle during redeal:',
     var_name='talon_shuffle',
     widget='check',
     )
 FoundType = WizSetting(
-    values_map=((n_('Same suit'),                       SS_FoundationStack),
-                (n_('Alternate color'),                 AC_FoundationStack),
-                (n_('Same color'),                      SC_FoundationStack),
-                (n_('Rank'),                            RK_FoundationStack),
-                (n_('Any suit but the same'),           BO_FoundationStack),
-                (n_('Spider same suit'),                Spider_SS_Foundation),
-                (n_('Spider alternate color'),          Spider_AC_Foundation),
-                (n_('Spider same color'),               Spider_SC_Foundation),
-                (n_('Spider rank'),                     Spider_RK_Foundation),
-                (n_('Spider any suit but the same'),    Spider_BO_Foundation),
+    values_map=(('Same suit',                       SS_FoundationStack),
+                ('Alternate color',                 AC_FoundationStack),
+                ('Same color',                      SC_FoundationStack),
+                ('Rank',                            RK_FoundationStack),
+                ('Any suit but the same',           BO_FoundationStack),
+                ('Spider same suit',                Spider_SS_Foundation),
+                ('Spider alternate color',          Spider_AC_Foundation),
+                ('Spider same color',               Spider_SC_Foundation),
+                ('Spider rank',                     Spider_RK_Foundation),
+                ('Spider any suit but the same',    Spider_BO_Foundation),
                 ),
-    default=n_('Same suit'),
-    label=_('Type:'),
+    default='Same suit',
+    label='Type:',
     var_name='found_type',
     )
 FoundBaseCard = WizSetting(
-    values_map=((n_('Ace'),  ACE),
-                (n_('King'), KING),
-                (n_('Any'),  ANY_RANK),
+    values_map=(('Ace',  ACE),
+                ('King', KING),
+                ('Any',  ANY_RANK),
                 ),
-    default=n_('Ace'),
-    label=_('Base card:'),
+    default='Ace',
+    label='Base card:',
     var_name='found_base_card',
     )
 FoundDir = WizSetting(
-    values_map=((n_('Up'), 1), (n_('Down'), -1)),
-    default=n_('Up'),
-    label=_('Direction:'),
+    values_map=(('Up', 1), ('Down', -1)),
+    default='Up',
+    label='Direction:',
     var_name='found_dir',
     )
 FoundMaxMove = WizSetting(
-    values_map=((n_('None'), 0,), (n_('Top card'), 1)),
-    default=n_('Top card'),
-    label=_('Move:'),
+    values_map=(('None', 0,), ('Top card', 1)),
+    default='Top card',
+    label='Move:',
     var_name='found_max_move',
     )
 FoundEqual = WizSetting(
     values_map=(0, 1),
     default=1,
-    label=_('First card sets base cards:'),
+    label='First card sets base cards:',
     var_name='found_equal',
     widget='check',
     )
@@ -236,72 +235,72 @@ RowsNum = WizSetting(
     values_map=(1, 20),
     default=8,
     widget='spin',
-    label=_('Number of tableau piles:'),
+    label='Number of tableau piles:',
     var_name='rows_num',
     )
 RowsType = WizSetting(
-    values_map=((n_('No building'),                        BasicRowStack),
+    values_map=(('No building',                        BasicRowStack),
 
-                (n_('Same suit'),                          SS_RowStack),
-                (n_('Alternate color'),                    AC_RowStack),
-                (n_('Same color'),                         SC_RowStack),
-                (n_('Rank'),                               RK_RowStack),
-                (n_('Any suit but the same'),              BO_RowStack),
+                ('Same suit',                          SS_RowStack),
+                ('Alternate color',                    AC_RowStack),
+                ('Same color',                         SC_RowStack),
+                ('Rank',                               RK_RowStack),
+                ('Any suit but the same',              BO_RowStack),
 
-                (n_('Up or down by same suit'),            UD_SS_RowStack),
-                (n_('Up or down by alternate color'),      UD_AC_RowStack),
-                (n_('Up or down by same color'),           UD_SC_RowStack),
-                (n_('Up or down by rank'),                 UD_RK_RowStack),
-                (n_('Up or down by any suit but the same'), UD_BO_RowStack),
+                ('Up or down by same suit',            UD_SS_RowStack),
+                ('Up or down by alternate color',      UD_AC_RowStack),
+                ('Up or down by same color',           UD_SC_RowStack),
+                ('Up or down by rank',                 UD_RK_RowStack),
+                ('Up or down by any suit but the same', UD_BO_RowStack),
 
-                (n_('Spider same suit'),                   Spider_SS_RowStack),
-                (n_('Spider alternate color'),             Spider_AC_RowStack),
-                (n_('Spider same color'),                  Spider_SC_RowStack),
-                (n_('Spider any suit but the same'),       Spider_BO_RowStack),
+                ('Spider same suit',                   Spider_SS_RowStack),
+                ('Spider alternate color',             Spider_AC_RowStack),
+                ('Spider same color',                  Spider_SC_RowStack),
+                ('Spider any suit but the same',       Spider_BO_RowStack),
 
-                (n_('Yukon same suit'),                    Yukon_SS_RowStack),
-                (n_('Yukon alternate color'),              Yukon_AC_RowStack),
-                (n_('Yukon same color'),                   Yukon_SC_RowStack),
-                (n_('Yukon rank'),                         Yukon_RK_RowStack),
-                (n_('Yukon any suit but the same'),        Yukon_BO_RowStack),
+                ('Yukon same suit',                    Yukon_SS_RowStack),
+                ('Yukon alternate color',              Yukon_AC_RowStack),
+                ('Yukon same color',                   Yukon_SC_RowStack),
+                ('Yukon rank',                         Yukon_RK_RowStack),
+                ('Yukon any suit but the same',        Yukon_BO_RowStack),
                 ),
-    default=n_('Alternate color'),
-    label=_('Type:'),
+    default='Alternate color',
+    label='Type:',
     var_name='rows_type',
     )
 RowsBaseCard = WizSetting(
-    values_map=((n_('Ace'),  ACE),
-                (n_('King'), KING),
-                (n_('Any'),  ANY_RANK),
-                (n_('None'), NO_RANK),
+    values_map=(('Ace',  ACE),
+                ('King', KING),
+                ('Any',  ANY_RANK),
+                ('None', NO_RANK),
                 ),
-    default=n_('Any'),
-    label=_('Base card:'),
+    default='Any',
+    label='Base card:',
     var_name='rows_base_card',
     )
 RowsDir = WizSetting(
-    values_map=((n_('Up'), 1), (n_('Down'), -1), (n_('Same rank'), 0)),
-    default=n_('Down'),
-    label=_('Direction:'),
+    values_map=(('Up', 1), ('Down', -1), ('Same rank', 0)),
+    default='Down',
+    label='Direction:',
     var_name='rows_dir',
     )
 RowsMaxMove = WizSetting(
-    values_map=((n_('Top card'), 1), (n_('Sequence'), UNLIMITED_MOVES)),
-    default=n_('Sequence'),
-    label=_('Move:'),
+    values_map=(('Top card', 1), ('Sequence', UNLIMITED_MOVES)),
+    default='Sequence',
+    label='Move:',
     var_name='rows_max_move',
     )
 RowsWrap = WizSetting(
     values_map=(0, 1),
     default=0,
-    label=_('Wrapping:'),
+    label='Wrapping:',
     var_name='rows_wrap',
     widget='check',
     )
 RowsSuperMove = WizSetting(
     values_map=(0, 1),
     default=0,
-    label=_('Use "Super Move" feature:'),
+    label='Use "Super Move" feature:',
     var_name='rows_super_move',
     widget='check',
     )
@@ -309,81 +308,81 @@ ReservesNum = WizSetting(
     values_map=(0, 20),
     default=4,
     widget='spin',
-    label=_('Number of reserves:'),
+    label='Number of reserves:',
     var_name='reserves_num',
     )
 ReservesMaxAccept = WizSetting(
     values_map=(0, 20),
     default=1,
     widget='spin',
-    label=_('Max # of accepted cards:'),
+    label='Max # of accepted cards:',
     var_name='reserves_max_accept',
     )
 DealType = WizSetting(
-    values_map=((n_('Triangle'),  'triangle'),
-                (n_('Rectangle'), 'rectangle'),
-                (n_('Pyramid'), 'pyramid')
+    values_map=(('Triangle',  'triangle'),
+                ('Rectangle', 'rectangle'),
+                ('Pyramid', 'pyramid')
                 ),
-    default=n_('Rectangle'),
-    label=_('Type:'),
+    default='Rectangle',
+    label='Type:',
     var_name='deal_type',
     )
 DealFaceDown = WizSetting(
     values_map=(0, 20),
     default=0,
     widget='spin',
-    label=_('# of face-down cards dealt to the tableau pile:'),
+    label='# of face-down cards dealt to the tableau pile:',
     var_name='deal_face_down',
     )
 DealFaceUp = WizSetting(
     values_map=(0, 20),
     default=8,
     widget='spin',
-    label=_('# of face-up cards dealt to the tableau pile:'),
+    label='# of face-up cards dealt to the tableau pile:',
     var_name='deal_face_up',
     )
 DealToReseves = WizSetting(
     values_map=(0, 208),
     default=0,
     widget='spin',
-    label=_('# of cards dealt to the reserve:'),
+    label='# of cards dealt to the reserve:',
     var_name='deal_to_reserves',
     )
 DealMaxCards = WizSetting(
     values_map=(0, 208),
     default=52,
     widget='spin',
-    label=_('Max # of dealt cards:'),
+    label='Max # of dealt cards:',
     var_name='deal_max_cards',
     )
 DealToFound = WizSetting(
     values_map=(0, 1),
     default=0,
-    label=_('Deal first cards to the foundations:'),
+    label='Deal first cards to the foundations:',
     var_name='deal_found',
     widget='check',
     )
 
 WizardWidgets = (
-    _('General'),
+    'General',
     WizardPresets,
     GameName,
     SkillLevel,
     NumDecks,
     LayoutType,
-    _('Talon'),
+    'Talon',
     TalonType,
     Redeals,
     DealToWaste,
     SingleCardWaste,
     TalonShuffle,
-    _('Foundations'),
+    'Foundations',
     FoundType,
     FoundBaseCard,
     FoundDir,
     FoundMaxMove,
     FoundEqual,
-    _('Tableau'),
+    'Tableau',
     RowsNum,
     RowsType,
     RowsBaseCard,
@@ -391,10 +390,10 @@ WizardWidgets = (
     RowsMaxMove,
     RowsWrap,
     RowsSuperMove,
-    _('Reserves'),
+    'Reserves',
     ReservesNum,
     ReservesMaxAccept,
-    _('Opening deal'),
+    'Opening deal',
     DealType,
     DealFaceDown,
     DealFaceUp,

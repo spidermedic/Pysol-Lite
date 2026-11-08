@@ -23,7 +23,6 @@
 
 import tkinter
 
-from pysollib.mygettext import n_
 
 # ************************************************************************
 # * constants
@@ -47,43 +46,43 @@ ANCHOR_W = tkinter.W
 ANCHOR_E = tkinter.E
 
 COMPOUNDS = (
-    (tkinter.NONE,   n_('Icons only')),
-    ('text',         n_('Text only')),
-    (tkinter.TOP,    n_('Icons and text')),     # text below the icon
+    (tkinter.NONE,   'Icons only'),
+    ('text',         'Text only'),
+    (tkinter.TOP,    'Icons and text'),     # text below the icon
     )
 
 # The Automatic play choices (same layout as ASSIST_OPTIONS).
 AUTOMATIC_PLAY_OPTIONS = (
-    ('autofaceup', n_('Auto face-up'), 'mOptAutoFaceUp'),
-    ('autodrop', n_('Auto drop'), 'mOptAutoDrop'),
-    ('autodeal', n_('Auto deal'), 'mOptAutoDeal'),
-    ('quickplay', n_('Quick play'), 'mOptQuickPlay'),
+    ('autofaceup', 'Auto face-up', 'mOptAutoFaceUp'),
+    ('autodrop', 'Auto drop', 'mOptAutoDrop'),
+    ('autodeal', 'Auto deal', 'mOptAutoDeal'),
+    ('quickplay', 'Quick play', 'mOptQuickPlay'),
 )
 
 # The Assist choices: (option and tkopt name, label, menubar handler).
 ASSIST_OPTIONS = (
-    ('shade', n_('Shade legal moves'), 'mOptShade'),
+    ('shade', 'Shade legal moves', 'mOptShade'),
 )
 
 # General play choices: click to move instead of dragging, and asking before
 # a game is thrown away.
 PLAY_OPTIONS = (
-    ('click_to_move', n_('Click to move cards'), 'mOptClickToMove'),
-    ('confirm', n_('Confirm before quitting'), 'mOptConfirm'),
+    ('click_to_move', 'Click to move cards', 'mOptClickToMove'),
+    ('confirm', 'Confirm before quitting', 'mOptConfirm'),
 )
 
 # Assist options that only matter for some games. The first one restarts
 # the game when it changes, so it is applied last.
 ASSIST_GAME_OPTIONS = (
-    ('shisen_show_hint', n_('Show hint arrow (in Shisen-Sho games)'),
+    ('shisen_show_hint', 'Show hint arrow (in Shisen-Sho games)',
      'mOptShisenShowHint'),
-    ('match_three_cascade', n_('Show cascade (in Match Three games)'),
+    ('match_three_cascade', 'Show cascade (in Match Three games)',
      'mOptMatchThreeCascade'),
-    ('accordion_deal_all', n_('Deal all cards (in Accordion type games)'),
+    ('accordion_deal_all', 'Deal all cards (in Accordion type games)',
      'mOptAccordionDealAll'),
-    ('pegged_auto_remove', n_('Auto-remove first card (in Pegged games)'),
+    ('pegged_auto_remove', 'Auto-remove first card (in Pegged games)',
      'mOptPeggedAutoRemove'),
-    ('mahjongg_show_removed', n_('Show removed tiles (in Mahjongg games)'),
+    ('mahjongg_show_removed', 'Show removed tiles (in Mahjongg games)',
      'mOptMahjonggShowRemoved'),
 )
 
@@ -102,4 +101,3 @@ TOOLBAR_BUTTONS = (
     "pause",
     "rules",
     )
-

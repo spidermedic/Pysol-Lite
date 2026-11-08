@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         DealRowTalonStack, \
@@ -129,8 +128,8 @@ class FourKingdoms_KingFoundation(SS_FoundationStack):
         return SS_FoundationStack.acceptsCards(self, from_stack, cards)
 
     def getHelp(self):
-        return _('Castle.  From left to right, accepts the king, queen, '
-                 'and jack of the suit, in that order.')
+        return ('Castle.  From left to right, accepts the king, queen, '
+                'and jack of the suit, in that order.')
 
 
 class FourKingdoms_QueenFoundation(FourKingdoms_KingFoundation):
@@ -145,21 +144,21 @@ class FourKingdoms_DungeonFoundation(FourKingdoms_KingFoundation):
     RequiredStacks = (1, 2, 3, 4)
 
     def getHelp(self):
-        return _('Dungeon.  Accepts the ace (dragon) of the suit, but only '
-                 'once the tower and castle are filled.')
+        return ('Dungeon.  Accepts the ace (dragon) of the suit, but only '
+                'once the tower and castle are filled.')
 
 
 class FourKingdoms_TowerFoundation(FourKingdoms_KingFoundation):
     def getHelp(self):
-        return _('Tower.  Accepts the ten (wizard) of the suit.')
+        return 'Tower.  Accepts the ten (wizard) of the suit.'
 
 
 class FourKingdoms_SubjectsFoundation(FourKingdoms_KingFoundation):
     RequiredStacks = (-1, -2, -3)
 
     def getHelp(self):
-        return _('Subjects.  Builds down by suit from 9 to 2, but can only '
-                 'be built to once the castle is filled.')
+        return ('Subjects.  Builds down by suit from 9 to 2, but can only '
+                'be built to once the castle is filled.')
 
 
 class FourKingdoms_Reserve(ReserveStack):
@@ -175,9 +174,9 @@ class FourKingdoms_Reserve(ReserveStack):
         return ReserveStack.acceptsCards(self, from_stack, cards)
 
     def getHelp(self):
-        return _('Guest Chambers.  A free cell, but only accepts cards of '
-                 'the suit, and only once the king and queen are in the '
-                 'castle.')
+        return ('Guest Chambers.  A free cell, but only accepts cards of '
+                'the suit, and only once the king and queen are in the '
+                'castle.')
 
 
 class FourKingdoms_RowStack(SS_RowStack):
@@ -264,7 +263,7 @@ class FourKingdoms(Game):
                                          tx, ty,
                                          anchor=ta,
                                          font=font)
-        stack.texts.misc.config(text=_(text))
+        stack.texts.misc.config(text=text)
 
     def startGame(self):
         for i in range(3):
@@ -277,19 +276,19 @@ class FourKingdoms(Game):
             return Game.getStackSpeech(self, stack, cardindex)
         stacktype = ""
         if stack in self.s.reserves:
-            stacktype = _("Guest")
+            stacktype = "Guest"
         elif stack.cap.base_rank == ACE:
-            stacktype = _("Dungeon")
+            stacktype = "Dungeon"
         elif stack.cap.base_rank == 9:
-            stacktype = _("Tower")
+            stacktype = "Tower"
         elif stack.cap.base_rank == 8:
-            stacktype = _("Subjects")
+            stacktype = "Subjects"
         elif stack.cap.base_rank == KING:
-            stacktype = _("King") + " " + _("Castle")
+            stacktype = "King" + " " + "Castle"
         elif stack.cap.base_rank == QUEEN:
-            stacktype = _("Queen") + " " + _("Castle")
+            stacktype = "Queen" + " " + "Castle"
         elif stack.cap.base_rank == JACK:
-            stacktype = _("Jack") + " " + _("Castle")
+            stacktype = "Jack" + " " + "Castle"
         if len(stack.cards) == 0:
             return stacktype + " - " + SUITS_PL[stack.cap.base_suit]
         return stacktype + " - " + self.parseCard(stack.cards[cardindex])

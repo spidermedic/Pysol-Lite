@@ -24,10 +24,6 @@
 import os
 
 
-def n_(x):                        # for gettext
-    return x
-
-
 # PACKAGE names the settings folder and data directories; keep it stable.
 PACKAGE = 'PySolFC'
 # The release is named after its year: PySol 26 is version 26.MM[.DD].
@@ -73,7 +69,7 @@ if os.name == 'nt':
     pass
 
 TOP_SIZE = 10
-TOP_TITLE = n_('Top 10')
+TOP_TITLE = 'Top 10'
 
 # use menu for select game
 SELECT_GAME_MENU = True

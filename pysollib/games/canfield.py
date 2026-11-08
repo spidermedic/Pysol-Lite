@@ -2,7 +2,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AC_RowStack, \
@@ -223,7 +222,7 @@ class Canfield(Game):
     shallHighlightMatch = Game._shallHighlightMatch_ACW
 
     def parseGameInfo(self):
-        return _("Base rank: ") + RANKS[self.base_card.rank]
+        return "Base rank: " + RANKS[self.base_card.rank]
 
     def _restoreGameHook(self, game):
         self.base_card = self.cards[game.loadinfo.base_card_id]
@@ -392,7 +391,7 @@ class CasinoCanfield(Canfield):
         b1, b2 = self.app.gameid_balance, 0
         if self.shallUpdateBalance():
             b2 = self.getGameBalance()
-        t = _("Balance $%d") % (b1 + b2)
+        t = "Balance $%d" % (b1 + b2)
         self.texts.score.config(text=t)
 
 
@@ -579,12 +578,12 @@ class Doorway(LittleGate):
         font = self.app.getFont("canvas_default")
         king_stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
                                               anchor=ta, font=font,
-                                              text=_('King'))
+                                              text='King')
         tx, ty, ta, tf = lay.getTextAttr(queen_stack, "s")
         font = self.app.getFont("canvas_default")
         queen_stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
                                                anchor=ta, font=font,
-                                               text=_('Queen'))
+                                               text='Queen')
         king_stack.cap.base_rank = KING
         queen_stack.cap.base_rank = QUEEN
 

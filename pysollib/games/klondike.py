@@ -32,7 +32,6 @@ from pysollib.hint import FreeCellSolverWrapper
 from pysollib.hint import KlondikeType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import Struct, kwdefault
-from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
@@ -142,7 +141,7 @@ class VegasKlondike(Klondike):
         b1, b2 = self.app.gameid_balance, 0
         if self.shallUpdateBalance():
             b2 = self.getGameBalance()
-        t = _("Balance $%d") % (b1 + b2)
+        t = "Balance $%d" % (b1 + b2)
         self.texts.score.config(text=t)
 
     def getDemoInfoTextAttr(self, tinfo):
@@ -313,8 +312,8 @@ class Whitehead_RowStack(SS_RowStack):
         return isSameColorSequence(cards, self.cap.mod, self.cap.dir)
 
     def getHelp(self):
-        return _('Tableau. Build down by color. Sequences of cards '
-                 'in the same suit can be moved as a unit.')
+        return ('Tableau. Build down by color. Sequences of cards '
+                'in the same suit can be moved as a unit.')
 
 
 class Whitehead(Klondike):
@@ -665,7 +664,7 @@ class Batsford_ReserveStack(ReserveStack):
         return cards[0].rank == KING
 
     def getHelp(self):
-        return _('Reserve. Only Kings are acceptable.')
+        return 'Reserve. Only Kings are acceptable.'
 
 
 class Batsford(Klondike):

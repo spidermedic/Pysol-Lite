@@ -26,7 +26,6 @@ import tkinter
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import Image, ImageOps, ImageTk
-from pysollib.mygettext import _, n_
 from pysollib.ui.tktile.menubar import MfxMenu, createToolbarMenu
 from pysollib.ui.tktile.tkconst import EVENT_HANDLED
 from pysollib.ui.tktile.tkutil import loadImage
@@ -172,23 +171,23 @@ class PysolToolbarTk:
                                borderwidth=TkSettings.toolbar_borderwidth)
         #
         for label, f, t in (
-            (n_("New"),      self.mNewGame,   _("New game")),
-            (n_("Restart"),  self.mRestart,   _("Restart the\ncurrent game")),
+            ("New",      self.mNewGame,   "New game"),
+            ("Restart",  self.mRestart,   "Restart the\ncurrent game"),
             (None,           None,            None),
-            (n_("Open"),     self.mOpen,      _("Open a\nsaved game")),
-            (n_("Save"),     self.mSave,      _("Save game")),
+            ("Open",     self.mOpen,      "Open a\nsaved game"),
+            ("Save",     self.mSave,      "Save game"),
             (None,           None,            None),
-            (n_("Undo"),     self.mUndo,      _("Undo last move")),
-            (n_("Redo"),     self.mRedo,      _("Redo last move")),
-            (n_("Bookmark"), self.mSetBookmark, _("Set bookmark")),
-            (n_("Go to bookmark"), self.mGotoBookmark,
-             _("Go to bookmark")),
-            (n_("Autodrop"), self.mDrop,      _("Auto drop cards")),
-            (n_("Shuffle"),  self.mShuffle,   _("Shuffle tiles")),
-            (n_("Hint"),     self.mHint,      _("Hint")),
-            (n_("Pause"),    self.mPause,     _("Pause game")),
+            ("Undo",     self.mUndo,      "Undo last move"),
+            ("Redo",     self.mRedo,      "Redo last move"),
+            ("Bookmark", self.mSetBookmark, "Set bookmark"),
+            ("Go to bookmark", self.mGotoBookmark,
+             "Go to bookmark"),
+            ("Autodrop", self.mDrop,      "Auto drop cards"),
+            ("Shuffle",  self.mShuffle,   "Shuffle tiles"),
+            ("Hint",     self.mHint,      "Hint"),
+            ("Pause",    self.mPause,     "Pause game"),
             (None,           None,            None),
-            (n_("Rules"),    self.mHelpRules, _("Rules for this game")),
+            ("Rules",    self.mHelpRules, "Rules for this game"),
                 ):
             if label is None:
                 sep = self._createSeparator()
@@ -204,7 +203,7 @@ class PysolToolbarTk:
                 self._createButton(label, f, tooltip=t)
         self.pause_button.config(variable=menubar.tkopt.pause)
 
-        self.popup = MfxMenu(master=None, label=n_('Toolbar'), tearoff=0)
+        self.popup = MfxMenu(master=None, label='Toolbar', tearoff=0)
         createToolbarMenu(menubar, self.popup)
 
         position = len(self._widgets)
@@ -299,7 +298,7 @@ class PysolToolbarTk:
             'toolbar_name': name,
             'command': command,
             'takefocus': 0,
-            'text': _(label),
+            'text': label,
             }
 
         if check:

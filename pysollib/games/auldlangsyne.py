@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.numerica import Numerica_Hint
 from pysollib.layout import Layout
-from pysollib.mygettext import _
 from pysollib.stack import \
         AbstractFoundationStack, \
         BasicRowStack, \
@@ -173,7 +172,7 @@ class Strategy_RowStack(BasicRowStack):
     getBottomImage = Stack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Tableau. Build regardless of rank and suit.')
+        return 'Tableau. Build regardless of rank and suit.'
 
 
 class Strategy(Game):
@@ -636,7 +635,7 @@ class Formic_Foundation(AbstractFoundationStack):
                 (self.cards[-1].rank-1) % 13 == cards[0].rank)
 
     def getHelp(self):
-        return _('Foundation. Build up or down regardless of suit.')
+        return 'Foundation. Build up or down regardless of suit.'
 
 
 class Formic(TamOShanter):

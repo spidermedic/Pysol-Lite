@@ -29,7 +29,6 @@ from pysollib.hint import AbstractHint, CautiousDefaultHint, DefaultHint
 from pysollib.hint import BlackHoleSolverWrapper
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
         AbstractFoundationStack, \
@@ -117,7 +116,7 @@ class Golf_Waste(WasteStack):
         return (r1 + 1) % self.cap.mod == r2 or (r2 + 1) % self.cap.mod == r1
 
     def getHelp(self):
-        return _('Waste. Build up or down regardless of suit.')
+        return 'Waste. Build up or down regardless of suit.'
 
 
 class Golf_RowStack(BasicRowStack):
@@ -125,7 +124,7 @@ class Golf_RowStack(BasicRowStack):
         return self.doubleclickHandler(event)
 
     def getHelp(self):
-        return _('Tableau. No building.')
+        return 'Tableau. No building.'
 
 
 # ************************************************************************
@@ -339,7 +338,7 @@ class KingsWay_Waste(Golf_Waste):
             self.playMoveMove(1, self.game.s.reserves[0])
 
     def getHelp(self):
-        return _('Waste. Build up or down by alternate color.')
+        return 'Waste. Build up or down by alternate color.'
 
 
 class KingsWay_Reserve(ReserveStack):
@@ -465,7 +464,7 @@ class Elevator(RelaxedGolf):
                 if r[j + i].cards:
                     coverCards += (r[j + i],)
         if len(coverCards) > 0:
-            mainCard += " - " + _("Covered by")
+            mainCard += " - " + "Covered by"
             for c in coverCards:
                 mainCard += " - " + self.parseCard(c.cards[0])
         return mainCard
@@ -491,7 +490,7 @@ class BlackHole_Foundation(AbstractFoundationStack):
         return True
 
     def getHelp(self):
-        return _('Foundation. Build up or down regardless of suit.')
+        return 'Foundation. Build up or down regardless of suit.'
 
 
 class BlackHole_RowStack(ReserveStack):
@@ -499,7 +498,7 @@ class BlackHole_RowStack(ReserveStack):
         return self.doubleclickHandler(event)
 
     def getHelp(self):
-        return _('Tableau. No building.')
+        return 'Tableau. No building.'
 
 
 class BlackHole(Game):
@@ -613,7 +612,7 @@ class FourLeafClovers_Foundation(AbstractFoundationStack):
         return True
 
     def getHelp(self):
-        return _('Foundation. Build up regardless of suit.')
+        return 'Foundation. Build up regardless of suit.'
 
 
 class FourLeafClovers(Game):
@@ -719,7 +718,7 @@ class AllInARowII_Reserve(RK_RowStack):
     getBottomImage = RK_RowStack._getReserveBottomImage
 
     def getHelp(self):
-        return _('Reserve. Build up regardless of suit.')
+        return 'Reserve. Build up regardless of suit.'
 
 
 class AllInARowII_Foundation(AbstractFoundationStack):
@@ -865,7 +864,7 @@ class Uintah_Foundation(AbstractFoundationStack):
         return True
 
     def getHelp(self):
-        return _('Foundation. Build up or down by same color.')
+        return 'Foundation. Build up or down by same color.'
 
 
 class Uintah(Robert):

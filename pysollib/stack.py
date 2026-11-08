@@ -23,7 +23,6 @@
 
 from pysollib.mfxutil import Image, ImageTk, USE_PIL
 from pysollib.mfxutil import Struct, SubclassResponsibility, kwdefault
-from pysollib.mygettext import _
 from pysollib.pysoltk import ANCHOR_NW, ANCHOR_SE
 from pysollib.pysoltk import CURSOR_DOWN_ARROW, CURSOR_DRAG
 from pysollib.pysoltk import EVENT_HANDLED, EVENT_PROPAGATE
@@ -1106,7 +1105,7 @@ class Stack:
                     or self.keyboard_movement):
                 drag.stack.moveCardsBackHandler(event, drag)
                 if not invalid:
-                    self.game.app.speech.speak(_("Unselected"))
+                    self.game.app.speech.speak("Unselected")
             else:
                 self.moveCardsBackHandler(event, drag)
             self.keyboard_movement = False
@@ -1309,7 +1308,7 @@ class Stack:
         if (self.game.app.opt.mouse_type == 'point-n-click'
                 or self.keyboard_movement):
             self._markCards(drag)
-            self.game.app.speech.speak(_("Selected"))
+            self.game.app.speech.speak("Selected")
             return
         images = game.app.images
         drag.shadows = self.createShadows(drag.cards)
@@ -1582,7 +1581,7 @@ class Stack:
         if (self.game.app.opt.mouse_type == 'point-n-click'
                 or self.keyboard_movement):
             drag.stack._stopDrag()
-            self.game.app.speech.speak(_("Unselected"))
+            self.game.app.speech.speak("Unselected")
         else:
             self._stopDrag()
         if drag.cards:
@@ -1604,29 +1603,28 @@ class Stack:
             br = self.cap.base_rank
         else:
             br = rank
-        s = _('Base card - %s.')
+        s = 'Base card - %s.'
         if br == NO_RANK:
-            s = _('Empty row cannot be filled.')
+            s = 'Empty row cannot be filled.'
         elif br == -1:
-            s = s % _('any card')
+            s = s % 'any card'
         elif br == 10:
-            s = s % _('Jack')
+            s = s % 'Jack'
         elif br == 11:
-            s = s % _('Queen')
+            s = s % 'Queen'
         elif br == 12:
-            s = s % _('King')
+            s = s % 'King'
         elif br == 0:
-            s = s % _('Ace')
+            s = s % 'Ace'
         else:
             s = s % str(br+1)
         return s
 
     def getNumCards(self):
-        from pysollib.mygettext import ungettext
         n = len(self.cards)
         if n == 0:
-            return _('No cards')
-        return ungettext('%d card', '%d cards', n) % n
+            return 'No cards'
+        return ('%d card' if n == 1 else '%d cards') % n
 
 
 # ************************************************************************
@@ -1851,7 +1849,7 @@ class TalonStack(Stack,
         Stack.updateText(self)
         if update_rounds and self.game.preview <= 1:
             if self.texts.rounds is not None:
-                t = _("Round %d") % self.round
+                t = "Round %d" % self.round
                 self.texts.rounds.config(text=t)
         if update_redeal:
             deal = self.canDealCards() != 0
@@ -1860,9 +1858,9 @@ class TalonStack(Stack,
                 if img is not None and img is not self.images.redeal_img:
                     self.images.redeal.config(image=img)
                     self.images.redeal_img = img
-                t = ("", _("Redeal"))[deal]
+                t = ("", "Redeal")[deal]
             else:
-                t = (_("Stop"), _("Redeal"))[deal]
+                t = ("Stop", "Redeal")[deal]
             if self.texts.redeal is not None and self.game.preview <= 1:
                 if t != self.texts.redeal_str:
                     self.texts.redeal.config(text=t)
@@ -1907,7 +1905,7 @@ class TalonStack(Stack,
                 else:
                     ca = None
         font = self.game.app.getFont("canvas_default")
-        text_width = get_text_width(_('Redeal'), font=font,
+        text_width = get_text_width('Redeal', font=font,
                                     root=self.canvas)
         if cw >= text_width+4 and ca:
             # add a redeal text below the bottom image
@@ -1949,16 +1947,15 @@ class TalonStack(Stack,
         return self.game.app.gimages.redeal
 
     def getHelp(self):
-        from pysollib.mygettext import ungettext
         if self.max_rounds == -2:
-            nredeals = _('Variable redeals.')
+            nredeals = 'Variable redeals.'
         elif self.max_rounds == -1:
-            nredeals = _('Unlimited redeals.')
+            nredeals = 'Unlimited redeals.'
         else:
             n = self.max_rounds-1
-            nredeals = ungettext('%d redeal', '%d redeals', n) % n
+            nredeals = ('%d redeal' if n == 1 else '%d redeals') % n
         # round = _('Round #%d.') % self.round
-        return _('Talon.')+' '+nredeals  # +' '+round
+        return 'Talon.'+' '+nredeals  # +' '+round
 
     # def getBaseCard(self):
     #    return self._getBaseCard()
@@ -2264,7 +2261,7 @@ class OpenStack(Stack):
 
     def getHelp(self):
         if self.cap.max_accept == 0:
-            return _('Reserve. No building.')
+            return 'Reserve. No building.'
         return 'Reserve.'
 
 
@@ -2310,7 +2307,7 @@ class AbstractFoundationStack(OpenStack):
             self._shadeStack()
 
     def getHelp(self):
-        return _('Foundation.')
+        return 'Foundation.'
 
     def varyAcceptsCards(self, from_stack, cards):
         # if base rank of foundations is vary
@@ -2350,10 +2347,10 @@ class SS_FoundationStack(AbstractFoundationStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Foundation. Build up by suit.')
+            return 'Foundation. Build up by suit.'
         if self.cap.dir < 0:
-            return _('Foundation. Build down by suit.')
-        return _('Foundation. Build by same rank.')
+            return 'Foundation. Build down by suit.'
+        return 'Foundation. Build by same rank.'
 
 
 # A Rank_FoundationStack builds up in rank and ignores color and suit.
@@ -2363,10 +2360,10 @@ class RK_FoundationStack(SS_FoundationStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Foundation. Build up regardless of suit.')
+            return 'Foundation. Build up regardless of suit.'
         if self.cap.dir < 0:
-            return _('Foundation. Build down regardless of suit.')
-        return _('Foundation. Build by same rank.')
+            return 'Foundation. Build down regardless of suit.'
+        return 'Foundation. Build by same rank.'
 
 
 # A AlternateColor_FoundationStack builds up in rank and alternate color.
@@ -2387,10 +2384,10 @@ class AC_FoundationStack(SS_FoundationStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Foundation. Build up by alternate color.')
+            return 'Foundation. Build up by alternate color.'
         if self.cap.dir < 0:
-            return _('Foundation. Build down by alternate color.')
-        return _('Foundation. Build by same rank.')
+            return 'Foundation. Build down by alternate color.'
+        return 'Foundation. Build by same rank.'
 
 
 # A SameColor_FoundationStack builds up in rank and alternate color.
@@ -2411,10 +2408,10 @@ class SC_FoundationStack(SS_FoundationStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Foundation. Build up by color.')
+            return 'Foundation. Build up by color.'
         if self.cap.dir < 0:
-            return _('Foundation. Build down by color.')
-        return _('Foundation. Build by same rank.')
+            return 'Foundation. Build down by color.'
+        return 'Foundation. Build by same rank.'
 
 
 # A ButOwn_FoundationStack builds up in rank and any suit but the same.
@@ -2435,10 +2432,10 @@ class BO_FoundationStack(SS_FoundationStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Foundation. Build up in any suit but the same.')
+            return 'Foundation. Build up in any suit but the same.'
         if self.cap.dir < 0:
-            return _('Foundation. Build down in any suit but the same.')
-        return _('Foundation. Build by same rank.')
+            return 'Foundation. Build down in any suit but the same.'
+        return 'Foundation. Build by same rank.'
 
 
 # Spider-type foundations
@@ -2530,7 +2527,7 @@ class BasicRowStack(OpenStack):
 
     def getHelp(self):
         if self.cap.max_accept == 0:
-            return _('Tableau. No building.')
+            return 'Tableau. No building.'
         return ''
 
     # def getBaseCard(self):
@@ -2579,10 +2576,10 @@ class AC_RowStack(SequenceRowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up by alternate color.')
+            return 'Tableau. Build up by alternate color.'
         if self.cap.dir < 0:
-            return _('Tableau. Build down by alternate color.')
-        return _('Tableau. Build by same rank.')
+            return 'Tableau. Build down by alternate color.'
+        return 'Tableau. Build by same rank.'
 
 
 # A SameColor_RowStack builds down by rank and same color.
@@ -2593,10 +2590,10 @@ class SC_RowStack(SequenceRowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up by color.')
+            return 'Tableau. Build up by color.'
         if self.cap.dir < 0:
-            return _('Tableau. Build down by color.')
-        return _('Tableau. Build by same rank.')
+            return 'Tableau. Build down by color.'
+        return 'Tableau. Build by same rank.'
 
 
 # A SameSuit_RowStack builds down by rank and suit.
@@ -2606,10 +2603,10 @@ class SS_RowStack(SequenceRowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up by suit.')
+            return 'Tableau. Build up by suit.'
         if self.cap.dir < 0:
-            return _('Tableau. Build down by suit.')
-        return _('Tableau. Build by same rank.')
+            return 'Tableau. Build down by suit.'
+        return 'Tableau. Build by same rank.'
 
 
 # A Rank_RowStack builds down by rank ignoring suit.
@@ -2619,10 +2616,10 @@ class RK_RowStack(SequenceRowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up regardless of suit.')
+            return 'Tableau. Build up regardless of suit.'
         if self.cap.dir < 0:
-            return _('Tableau. Build down regardless of suit.')
-        return _('Tableau. Build by same rank.')
+            return 'Tableau. Build down regardless of suit.'
+        return 'Tableau. Build by same rank.'
 
 
 # ButOwn_RowStack
@@ -2632,10 +2629,10 @@ class BO_RowStack(SequenceRowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up in any suit but the same.')
+            return 'Tableau. Build up in any suit but the same.'
         if self.cap.dir < 0:
-            return _('Tableau. Build down in any suit but the same.')
-        return _('Tableau. Build by same rank.')
+            return 'Tableau. Build down in any suit but the same.'
+        return 'Tableau. Build by same rank.'
 
 
 # A Freecell_AlternateColor_RowStack
@@ -2667,14 +2664,14 @@ class Spider_AC_RowStack(AC_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up regardless of suit. '
-                     'Sequences of cards in alternate color '
-                     'can be moved as a unit.')
+            return ('Tableau. Build up regardless of suit. '
+                    'Sequences of cards in alternate color '
+                    'can be moved as a unit.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down regardless of suit. '
-                     'Sequences of cards in alternate color can be moved '
-                     'as a unit.')
-        return _('Tableau. Build by same rank.')
+            return ('Tableau. Build down regardless of suit. '
+                    'Sequences of cards in alternate color can be moved '
+                    'as a unit.')
+        return 'Tableau. Build by same rank.'
 
 
 # A Spider_SameSuit_RowStack builds down by rank and suit,
@@ -2685,14 +2682,14 @@ class Spider_SS_RowStack(SS_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up regardless of suit. '
-                     'Sequences of cards in the same suit can be moved '
-                     'as a unit.')
+            return ('Tableau. Build up regardless of suit. '
+                    'Sequences of cards in the same suit can be moved '
+                    'as a unit.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down regardless of suit. '
-                     'Sequences of cards in the same suit can be moved '
-                     'as a unit.')
-        return _('Tableau. Build by same rank.')
+            return ('Tableau. Build down regardless of suit. '
+                    'Sequences of cards in the same suit can be moved '
+                    'as a unit.')
+        return 'Tableau. Build by same rank.'
 
 
 # A Spider_SameColor_RowStack builds down by rank and color,
@@ -2703,14 +2700,14 @@ class Spider_SC_RowStack(SC_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up regardless of suit. '
-                     'Sequences of cards in the same color can be moved '
-                     'as a unit.')
+            return ('Tableau. Build up regardless of suit. '
+                    'Sequences of cards in the same color can be moved '
+                    'as a unit.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down regardless of suit. '
-                     'Sequences of cards in the same color can be moved '
-                     'as a unit.')
-        return _('Tableau. Build by same rank.')
+            return ('Tableau. Build down regardless of suit. '
+                    'Sequences of cards in the same color can be moved '
+                    'as a unit.')
+        return 'Tableau. Build by same rank.'
 
 
 # A Spider_ButOwn_RowStack builds down by rank and any suit but own,
@@ -2721,14 +2718,14 @@ class Spider_BO_RowStack(BO_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up regardless of suit. '
-                     'Sequences of cards in any suit but the same '
-                     'can be moved as a unit.')
+            return ('Tableau. Build up regardless of suit. '
+                    'Sequences of cards in any suit but the same '
+                    'can be moved as a unit.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down regardless of suit. '
-                     'Sequences of cards in any suit but the same '
-                     'can be moved as a unit.')
-        return _('Tableau. Build by same rank.')
+            return ('Tableau. Build down regardless of suit. '
+                    'Sequences of cards in any suit but the same '
+                    'can be moved as a unit.')
+        return 'Tableau. Build by same rank.'
 
 
 # A Yukon_AlternateColor_RowStack builds down by rank and alternate color,
@@ -2754,13 +2751,13 @@ class Yukon_AC_RowStack(BasicRowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up by alternate color, '
-                     'can move any face-up cards regardless of sequence.')
+            return ('Tableau. Build up by alternate color, '
+                    'can move any face-up cards regardless of sequence.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down by alternate color, '
-                     'can move any face-up cards regardless of sequence.')
-        return _('Tableau. Build by same rank, can move '
-                 'any face-up cards regardless of sequence.')
+            return ('Tableau. Build down by alternate color, '
+                    'can move any face-up cards regardless of sequence.')
+        return ('Tableau. Build by same rank, can move '
+                'any face-up cards regardless of sequence.')
 
     def getBaseCard(self):
         return self._getBaseCard()
@@ -2775,13 +2772,13 @@ class Yukon_SS_RowStack(Yukon_AC_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up by suit, can move any face-up cards '
-                     'regardless of sequence.')
+            return ('Tableau. Build up by suit, can move any face-up cards '
+                    'regardless of sequence.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down by suit, can move any '
-                     'face-up cards regardless of sequence.')
-        return _('Tableau. Build by same rank, can move any '
-                 'face-up cards regardless of sequence.')
+            return ('Tableau. Build down by suit, can move any '
+                    'face-up cards regardless of sequence.')
+        return ('Tableau. Build by same rank, can move any '
+                'face-up cards regardless of sequence.')
 
 
 # A Yukon_SameColor_RowStack builds down by rank and color,
@@ -2793,13 +2790,13 @@ class Yukon_SC_RowStack(Yukon_AC_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up by color, can move any face-up cards '
-                     'regardless of sequence.')
+            return ('Tableau. Build up by color, can move any face-up cards '
+                    'regardless of sequence.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down by color, can move any '
-                     'face-up cards regardless of sequence.')
-        return _('Tableau. Build by same rank, can move any '
-                 'face-up cards regardless of sequence.')
+            return ('Tableau. Build down by color, can move any '
+                    'face-up cards regardless of sequence.')
+        return ('Tableau. Build by same rank, can move any '
+                'face-up cards regardless of sequence.')
 
 
 # A Yukon_Rank_RowStack builds down by rank
@@ -2810,13 +2807,13 @@ class Yukon_RK_RowStack(Yukon_AC_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up regardless of suit, '
-                     'can move any face-up cards regardless of sequence.')
+            return ('Tableau. Build up regardless of suit, '
+                    'can move any face-up cards regardless of sequence.')
         if self.cap.dir < 0:
-            return _('Tableau. Build up regardless of suit, can move any '
-                     'face-up cards regardless of sequence.')
-        return _('Tableau. Build by same rank, can move any '
-                 'face-up cards regardless of sequence.')
+            return ('Tableau. Build up regardless of suit, can move any '
+                    'face-up cards regardless of sequence.')
+        return ('Tableau. Build by same rank, can move any '
+                'face-up cards regardless of sequence.')
 
 
 # A Yukon_ButOwn_RowStack builds down by rank and suit,
@@ -2828,13 +2825,13 @@ class Yukon_BO_RowStack(Yukon_AC_RowStack):
 
     def getHelp(self):
         if self.cap.dir > 0:
-            return _('Tableau. Build up by any suit but the same, '
-                     'can move any face-up cards regardless of sequence.')
+            return ('Tableau. Build up by any suit but the same, '
+                    'can move any face-up cards regardless of sequence.')
         if self.cap.dir < 0:
-            return _('Tableau. Build down by any suit but the same, '
-                     'can move any face-up cards regardless of sequence.')
-        return _('Tableau. Build by same rank, can move any '
-                 'face-up cards regardless of sequence.')
+            return ('Tableau. Build down by any suit but the same, '
+                    'can move any face-up cards regardless of sequence.')
+        return ('Tableau. Build by same rank, can move any '
+                'face-up cards regardless of sequence.')
 
 #
 # King-versions of some of the above stacks: they accepts only Kings or
@@ -2871,7 +2868,7 @@ class UD_SC_RowStack(SequenceRowStack):
                 isSameColorSequence(cards, self.cap.mod, -1))
 
     def getHelp(self):
-        return _('Tableau. Build up or down by color.')
+        return 'Tableau. Build up or down by color.'
 
 
 # up or down by alternate color
@@ -2885,7 +2882,7 @@ class UD_AC_RowStack(SequenceRowStack):
                 isAlternateColorSequence(cards, self.cap.mod, -1))
 
     def getHelp(self):
-        return _('Tableau. Build up or down by alternate color.')
+        return 'Tableau. Build up or down by alternate color.'
 
 
 # up or down by suit
@@ -2899,7 +2896,7 @@ class UD_SS_RowStack(SequenceRowStack):
                 isSameSuitSequence(cards, self.cap.mod, -1))
 
     def getHelp(self):
-        return _('Tableau. Build up or down by suit.')
+        return 'Tableau. Build up or down by suit.'
 
 
 # up or down by rank ignoring suit
@@ -2913,7 +2910,7 @@ class UD_RK_RowStack(SequenceRowStack):
                 isRankSequence(cards, self.cap.mod, -1))
 
     def getHelp(self):
-        return _('Tableau. Build up or down regardless of suit.')
+        return 'Tableau. Build up or down regardless of suit.'
 
 
 # up or down by rank ignoring suit
@@ -2927,7 +2924,7 @@ class UD_BO_RowStack(SequenceRowStack):
                 isAnySuitButOwnSequence(cards, self.cap.mod, -1))
 
     def getHelp(self):
-        return _('Tableau. Build up or down in any suit but the same.')
+        return 'Tableau. Build up or down in any suit but the same.'
 
 
 # To simplify playing we also consider the number of free rows.
@@ -3021,7 +3018,7 @@ class SuperMoveBO_RowStack(SuperMoveStack_StackMethods, BO_RowStack):
 
 class WasteStack(OpenStack):
     def getHelp(self):
-        return _('Waste.')
+        return 'Waste.'
 
 
 class WasteTalonStack(TalonStack):
@@ -3141,8 +3138,8 @@ class ReserveStack(OpenStack):
 
     def getHelp(self):
         if self.cap.max_accept == 0:
-            return _('Reserve. No building.')
-        return _('Free cell.')
+            return 'Reserve. No building.'
+        return 'Free cell.'
 
 
 # ************************************************************************
