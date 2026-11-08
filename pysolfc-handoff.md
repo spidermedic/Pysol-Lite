@@ -588,6 +588,6 @@ Installed app rebuilt from commit `8b013ecc` (120 MB, arm64, ad-hoc signed, `cod
 
 - **Not looked at on screen:** the installed app has not been launched by the assistant (it reads the real `~/.PySolFC`). Worth a quick look: Help menu, Settings window, a deal in a few games, the win dialog text.
 - **`~/.PySolFC/tiles` and `music`:** gone. The rebuilt app no longer creates `tiles`.
-- **`~/.PySolFC/statistics.dat`:** still there (the delete was blocked by the permission check); nothing reads it. `rm ~/.PySolFC/statistics.dat` removes it.
+- **`~/.PySolFC/statistics.dat`:** deleted by the user after the assistant's delete was blocked by the permission check. Nothing read it.
 - **Still open:** the logos that say "PySol Fan Club" (`html-src/images`); the unreachable solver, wizard, comment and layout import/export code and the dead `auto_scale` branches (section 46); the slow canvas redraw (section 13); Windows and Linux paths have never been run since the toolkit removal.
 - **Pushed:** `origin/master` includes everything above.
