@@ -1706,7 +1706,6 @@ class Game:
                 title = TITLE
             if not text:
                 text = _("Discard current game?")
-            self.playSample("areyousure")
             d = MfxMessageDialog(self.top, title=title, text=text,
                                  bitmap="question",
                                  strings=(_("&OK"), _("&Cancel")))
@@ -2413,7 +2412,6 @@ class Game:
         if status == 2:
             if not time_str:
                 time_str = self.getTime()
-            self.playSample("gameperfect", priority=1000)
             self.winAnimation(perfect=1)
             text = ungettext('Your playing time is %(time)s\nfor %(n)d move.',
                              'Your playing time is %(time)s\nfor %(n)d moves.',
@@ -2429,7 +2427,6 @@ class Game:
         elif status == 1:
             if not time_str:
                 time_str = self.getTime()
-            self.playSample("gamewon", priority=1000)
             self.winAnimation()
             text = ungettext('Your playing time is %(time)s\nfor %(n)d move.',
                              'Your playing time is %(time)s\nfor %(n)d moves.',
@@ -2443,13 +2440,11 @@ class Game:
                          _("&Cancel")),
                 image=self.app.gimages.logos[4])
         elif self.gstats.updated < 0:
-            self.playSample("gamefinished", priority=1000)
             d = MfxMessageDialog(
                 self.top, title=_("Game finished"), bitmap="info",
                 text=_("\nGame finished\n"),
                 strings=(_("&New game"), None, None, _("&Close")))
         else:
-            self.playSample("gamelost", priority=1000)
             text = _("Game finished, but not without my help...")
             if self.stats.hints > 0 and not self.app.opt.free_hint:
                 if self.stats.demo_moves > 0:
@@ -3124,7 +3119,6 @@ class Game:
             if not self.top.winfo_ismapped():
                 status = 2
             elif player_moves == 0:
-                self.playSample("autopilotwon", priority=1000)
                 s = self.app.miscrandom.choice((_("&Great"), _("&Cool"),
                                                 _("&Yeah"),  _("&Wow")))
                 text = ungettext('\nGame solved in %d move.\n',
@@ -3156,8 +3150,6 @@ class Game:
             if not self.top.winfo_ismapped():
                 status = 2
             else:
-                if player_moves == 0:
-                    self.playSample("autopilotlost", priority=1000)
                 s = self.app.miscrandom.choice(
                         (_("&Oh well"), _("&That's life"), _("&Hmm")))
                 # ??? accelerators
@@ -3387,7 +3379,6 @@ class Game:
             text = 'x'
             if (not self.stuck and not self.demo and
                     self.app.opt.stuck_notification):
-                self.playSample("gamelost", priority=1000)
                 self.updateStatus(stuck='x')
                 d = MfxMessageDialog(
                     self.top, title=_("You are Stuck"), bitmap="info",
