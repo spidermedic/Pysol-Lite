@@ -567,7 +567,7 @@ class PysolMenubarTkCommon:
             label=n_("Table c&olor..."),
             command=self.mSelectTableColor)
         # this submenu will get set by updateBackgroundImagesMenu()
-        submenu = MfxMenu(menu, label=n_("Card &background"))
+        submenu = MfxMenu(menu, label=n_("Card &back"))
         menu.add_checkbutton(
             label=n_("Shade &legal moves"), variable=self.tkopt.shade,
             command=self.mOptShade)
@@ -1130,7 +1130,7 @@ class PysolMenubarTkCommon:
         menu.entryconfig(index, state=state(ms and x))
 
     def updateBackgroundImagesMenu(self):
-        mp = self.menupath.get(".menubar.options.cardbackground")
+        mp = self.menupath.get(".menubar.options.cardback")
         # delete all entries
         submenu = mp[2]
         submenu.delete(0, "last")
