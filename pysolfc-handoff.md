@@ -581,3 +581,13 @@ Commit `a9e48d55`. Supersedes the "kept on purpose" part of section 51. Not rebu
 - **Things that no longer work:** user plugins or custom game files that do `from pysollib.mygettext import _` will fail to import. The plugin help page was deleted earlier and the plugins folder is empty here. Bringing translations back now means re-adding a wrapper module and wrapping the strings again (the old `_()` calls are in git history, commit before `a9e48d55`); it is no longer a quick restore.
 - **Verification:** unit tests unchanged (19, the one known `--version` error); flake8 reports no undefined names; all 169 `pysollib` modules import with `DeprecationWarning` as error; source runs with a fresh home started Klondike, FreeCell, Spider, Pyramid, Double Mahjongg Big Castle, Memory 16 and Ishido without errors; a scripted run opened the Settings window and the help viewer and called the stack help texts, game and cardset type names, the full game list and the win status without errors; a run with an old options file containing `language = de` started normally. The win and finished dialogs and the Mahjongg status text were not shown on screen.
 - **Still open:** as in section 52.
+
+## 54. Update: rebuilt and installed after the clean-up commits (2026-11-08)
+
+Installed app rebuilt from commit `8b013ecc` (120 MB, arm64, ad-hoc signed, `codesign -v` passes, `--version` prints `PySol 26 version 26.11`). It includes everything from sections 47 to 53: the Python 3.10 pass, the Help menu change, the closed files and pipes, the stale-leftover clean-up, no translations and no translation functions, and the PySol name in the docs. `locale/` and `pysollib/mygettext.py` are no longer in the bundle. The standard-library `gettext` module is still in it because other libraries import it; PySol does not use it. No stray `data/html N` folders this time. `docs/all_games.html` regenerated at 274,863 bytes.
+
+- **Not looked at on screen:** the installed app has not been launched by the assistant (it reads the real `~/.PySolFC`). Worth a quick look: Help menu, Settings window, a deal in a few games, the win dialog text.
+- **`~/.PySolFC/tiles` and `music`:** gone. The rebuilt app no longer creates `tiles`.
+- **`~/.PySolFC/statistics.dat`:** still there (the delete was blocked by the permission check); nothing reads it. `rm ~/.PySolFC/statistics.dat` removes it.
+- **Still open:** the logos that say "PySol Fan Club" (`html-src/images`); the unreachable solver, wizard, comment and layout import/export code and the dead `auto_scale` branches (section 46); the slow canvas redraw (section 13); Windows and Linux paths have never been run since the toolkit removal.
+- **Pushed:** `origin/master` includes everything above.
