@@ -492,9 +492,6 @@ class Options:
         # general
         for key, t in self.GENERAL_OPTIONS:
             val = getattr(self, key)
-            if isinstance(val, str):
-                if sys.version_info < (3,):
-                    val = str(val, 'utf-8')
             config['general'][key] = val
 
         config['general']['recent_gameid'] = self.recent_gameid

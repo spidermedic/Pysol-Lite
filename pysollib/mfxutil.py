@@ -70,17 +70,7 @@ class SubclassResponsibility(Exception):
 
 
 def latin1_to_ascii(n):
-    if sys.version_info > (3,):
-        return n
-    # return n
-    n = n.encode('iso8859-1', 'replace')
-    # FIXME: rewrite this for better speed
-    return (n.replace("\xc4", "Ae")
-             .replace("\xd6", "Oe")
-             .replace("\xdc", "Ue")
-             .replace("\xe4", "ae")
-             .replace("\xf6", "oe")
-             .replace("\xfc", "ue"))
+    return n
 
 
 def latin1_normalize(n):

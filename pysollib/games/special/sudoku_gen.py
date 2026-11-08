@@ -146,7 +146,7 @@ def _as_board(value):
     return [value[row * 9:(row + 1) * 9] for row in range(9)]
 
 
-class _Grid(object):
+class _Grid:
     # Candidates are 9-bit masks, bit 0 standing for digit 1.
     # Logic steps are tried from easiest to hardest, and restarted
     # after every success, so the recorded rank is forced rather

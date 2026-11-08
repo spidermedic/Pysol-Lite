@@ -1,5 +1,4 @@
 import gettext
-import sys
 
 
 class myLocalGettext:
@@ -31,9 +30,7 @@ class myLocalGettext:
             if n == 1:
                 return msgid1
             return msgid2
-        if sys.version_info >= (3, 0):
-            return t.ngettext(msgid1, msgid2, n)
-        return t.ungettext(msgid1, msgid2, n)
+        return t.ngettext(msgid1, msgid2, n)
 
     def ugettext(self, message):
         # unicoded gettext
@@ -42,9 +39,7 @@ class myLocalGettext:
             t = self.translation()
         except IOError:
             return message
-        if sys.version_info >= (3, 0):
-            return t.gettext(message)
-        return t.ugettext(message)
+        return t.gettext(message)
 
 
 myGettext = myLocalGettext('')

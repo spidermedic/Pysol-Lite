@@ -144,8 +144,7 @@ def init():
                     pysollib.settings.FCS_COMMAND+' --help', **kw)
                 p.stdin.close()
                 line = p.stdout.readline()
-                if sys.version_info >= (3,):
-                    line = line.decode("utf-8")
+                line = line.decode("utf-8")
                 if line.startswith('fc-solve'):
                     pysollib.settings.USE_FREECELL_SOLVER = True
                 if os.name == 'posix':
