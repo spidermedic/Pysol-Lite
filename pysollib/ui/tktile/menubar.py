@@ -458,7 +458,6 @@ class PysolMenubarTkCommon:
         self._bindKey(ctrl + "Shift-", "v",
                       lambda e: self.mSelectGameDialogWithPreview(
                           initial_tab='search'))
-        self._bindKey(ctrl, "r", lambda e: self.mSelectRandomGame())
         self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
         self._bindKey(ctrl, "s", self.mSave)
@@ -584,21 +583,17 @@ class PysolMenubarTkCommon:
         m = "Ctrl-"
         if sys.platform == "darwin":
             m = "Cmd-"
-        menu.add_command(label=n_("All &games"), accelerator=m+"V",
-                         command=self.mSelectGameDialogWithPreview)
-        menu.add_command(
-            label=n_("Select &random game"),
-            command=self.mSelectRandomGame, accelerator=m+"R")
-        menu.add_separator()
         MfxMenu(menu, label=n_("R&ecent games"))
         MfxMenu(menu, label=n_("Fa&vorite games"))
         menu.add_command(label=n_("A&dd to favorites"), command=self.mAddFavor)
         menu.add_command(
             label=n_("Remove &from favorites"),
             command=self.mDelFavor)
+        menu.add_separator()
+        menu.add_command(label=n_("All &games"), accelerator=m+"V",
+                         command=self.mSelectGameDialogWithPreview)
         if not SELECT_GAME_MENU:
             return
-        menu.add_separator()
         self._addSelectPopularGameSubMenu(games, menu, self.mSelectGame,
                                           self.tkopt.gameid)
         self._addSelectFrenchGameSubMenu(games, menu, self.mSelectGame,
@@ -613,11 +608,8 @@ class PysolMenubarTkCommon:
                                           self.tkopt.gameid)
         self._addSelectCustomGameSubMenu(games, menu, self.mSelectGame,
                                          self.tkopt.gameid)
-        menu.add_separator()
         if self.progress:
             self.progress.update(step=1)
-        self._addSelectAllGameSubMenu(games, menu, self.mSelectGame,
-                                      self.tkopt.gameid)
 
     def _addSelectGameSubMenu(self, games, menu, select_data,
                               command, variable, short_name=False):
@@ -889,7 +881,6 @@ class PysolMenubarTkCommon:
 
     def updateCustomGamesMenu(self):
         menu = self.menupath[".menubar.select.customgames"][2]
-        menu2 = self.menupath[".menubar.select.allgamesbyname"][2]
 
         def select_func_visible(gi):
             return gi.si.game_type != GI.GT_HIDDEN
@@ -901,7 +892,6 @@ class PysolMenubarTkCommon:
                          self.app.gdb.getGamesIdSortedByName()))
         games = list(filter(select_func_visible, games))
         self.progress = False
-        self.updateGamesMenu(menu2, games)
         games = list(filter(select_func_custom, games))
         self.updateGamesMenu(menu, games)
 

@@ -1033,9 +1033,6 @@ class Application:
     def _choice(self, lst):
         return self.miscrandom.choice(lst)
 
-    def chooseRandomOutOfGames(self, games):
-        return self._choice(games)
-
     def getRandomGameId(self):
         return self._choice(self.gdb.getGamesIdSortedById())
 

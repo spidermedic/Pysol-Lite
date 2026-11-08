@@ -303,35 +303,6 @@ class PysolMenubar(PysolMenubarTk):
                 return
         self._mNewGameBySeed(d.value, self.game.random.ORIGIN_SELECTED)
 
-    def mSelectRandomGame(self):
-        if self._cancelDrag():
-            return
-        if self.changed():
-            if not self.game.areYouSure(_("Select random game")):
-                return
-        game_id = None
-        games = self._mGetPossibleRandomGames()
-        if games:
-            game_id = self.app.chooseRandomOutOfGames(games)
-        if game_id and game_id != self.game.id:
-            self.game.endGame()
-            self.game.quitGame(game_id)
-
-    def _mGetPossibleRandomGames(self):
-        games = []
-        for g in self.app.gdb.getGamesIdSortedById():
-            gi = self.app.getGameInfo(g)
-            if gi.id == self.game.id:
-                # force change of game
-                continue
-            # Not sure why this check to not change game category existed,
-            # but commented, as it doesn't make sense.
-            # if gi.category != self.game.gameinfo.category:
-                # don't change game category
-                # continue
-            games.append(gi.id)
-        return games
-
     def _mSelectNextGameFromList(self, gl, step):
         if self._cancelDrag():
             return
