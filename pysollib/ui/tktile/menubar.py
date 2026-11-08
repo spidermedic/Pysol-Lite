@@ -436,20 +436,20 @@ class PysolMenubarTkCommon:
             label=n_("&Sound"), variable=self.tkopt.sound,
             command=self.mOptSound)
         # cardsets
-        layout = submenu = MfxMenu(menu, label=n_("&Layout"))
-        submenu.add_command(
-            label=n_("&Background color"),
-            command=self.mSelectTableColor)
-        if USE_PIL:
-            submenu.add_checkbutton(
-                label=n_("&Spread stacks"), variable=self.tkopt.spread_stacks,
-                command=self.mOptSpreadStacks)
-        layout.add_separator()
+        layout = MfxMenu(menu, label=n_("&Layout"))
         submenu = MfxMenu(layout, label=n_("&Toolbar"))
         createToolbarMenu(self, submenu)
         layout.add_checkbutton(
             label=n_("Stat&usbar"), variable=self.tkopt.statusbar,
             command=self.mOptStatusbar)
+        layout.add_separator()
+        layout.add_command(
+            label=n_("&Background color"),
+            command=self.mSelectTableColor)
+        if USE_PIL:
+            layout.add_checkbutton(
+                label=n_("&Spread stacks"), variable=self.tkopt.spread_stacks,
+                command=self.mOptSpreadStacks)
         submenu = MfxMenu(menu, label=n_("C&ards"))
         submenu.add_command(
             label=n_("&Decks"),
