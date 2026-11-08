@@ -24,7 +24,7 @@
 import os
 
 from pysollib.help import help_about, help_html
-from pysollib.mfxutil import Struct, openURL
+from pysollib.mfxutil import Struct
 from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
 from pysollib.pysoltk import GameInfoDialog
@@ -35,7 +35,7 @@ from pysollib.pysoltk import create_find_card_dialog
 from pysollib.pysoltk import create_full_picture_dialog
 from pysollib.pysoltk import raise_find_card_dialog
 from pysollib.pysoltk import raise_full_picture_dialog
-from pysollib.settings import PACKAGE_URL, TITLE
+from pysollib.settings import TITLE
 
 
 # ************************************************************************
@@ -515,9 +515,6 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag(break_pause=False):
             return
         help_html(self.app, "license.html", "html")
-
-    def mHelpWebSite(self, *args):
-        openURL(PACKAGE_URL)
 
     def mHelpAbout(self, *args):
         if self._cancelDrag(break_pause=False):

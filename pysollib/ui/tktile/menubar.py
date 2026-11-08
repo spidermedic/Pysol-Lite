@@ -227,10 +227,6 @@ class PysolMenubarTkCommon:
             return "normal"
         return "disabled"
 
-    def updateProgress(self):
-        if self.progress:
-            self.progress.update(step=1)
-
     def _createMenubar(self):
         MfxMenubar.addPath = self._addPath
         kw = {"name": "menubar"}
@@ -1154,22 +1150,6 @@ class PysolMenubarTkCommon:
         self.app.opt.statusbar = side
         resize = not self.app.opt.save_games_geometry
         if self.app.statusbar.show(side, resize=resize):
-            self.top.update_idletasks()
-
-    def mOptNumCards(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.num_cards = self.tkopt.num_cards.get()
-
-    def mOptHelpbar(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        if not self.app.helpbar:
-            return
-        show = self.tkopt.helpbar.get()
-        self.app.opt.helpbar = show
-        resize = not self.app.opt.save_games_geometry
-        if self.app.helpbar.show(show, resize=resize):
             self.top.update_idletasks()
 
     def mOptSplashscreen(self, *event):

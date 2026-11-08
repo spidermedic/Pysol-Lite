@@ -481,3 +481,17 @@ Installed app rebuilt after commit "Help menu: About only in the app menu on mac
 - **Help menu on macOS** is now PySolFC Help, Rules for this game (F1), a divider, License terms. About PySol 26 is in the app menu only (macOS convention). Windows and Linux still show About at the bottom of Help. This reverses the macOS part of section 43.
 - **Verification (light):** py_compile; the installed app passes `--version` and `codesign -v`; no stray `html N` folder in the bundle. The menus were not looked at by eye.
 - **Still open:** as in sections 42 and 44.
+
+## 46. Update: clean-up pass (2026-11-08)
+
+Installed app rebuilt after commit "Clean up stale docs and leftovers" plus the dead-method removal below (120 MB, arm64, ad-hoc signed).
+
+- **Help pages:** removed the "Some notes about scoring" section from `howtoplay.html` (statistics are gone), the Shift-Ctrl-V "search tab" shortcut line, and the "persistent bookmarks" wording in `intro.html` (now "a bookmark").
+- **Shortcut:** removed the Shift-Ctrl-V binding in `menubar.py` (it opened the removed Search tab). Ctrl-V still opens the preview game list.
+- **Credits:** `help_credits` no longer thanks Carl Larsson for background music.
+- **Man page:** `docs/pysolfc.6` no longer mentions player statistics, a solitaire wizard, `statistics.dat`, `comments.dat`, music folders, `PYSOL_MUSIC` or the player name from USER/LOGNAME.
+- **Build:** `setup_osx.py` ran `scripts/all_games.py` without `pysollib` on the path, so the bundled `docs/all_games.html` was empty (0 bytes); it now sets `PYTHONPATH` (274,865 bytes in the bundle).
+- **Dead code removed** (no references anywhere): `mHelpWebSite`, `mOptNumCards`, `mOptHelpbar`, `updateProgress`, and the then-unused `openURL` and `PACKAGE_URL` imports in `actions.py`.
+- **Install-script lesson:** a zsh "no matches found" error from an unmatched glob in an `&&` chain silently skipped the arm64 thinning once (157 MB app); always confirm the bundle is 120 MB.
+- **Verification (light):** py_compile; a scripted source run of the Settings window still works; unit tests give 19 tests with the one known failure (`test_version_flag`: no `python` on PATH in this shell, exit 127); installed app passes `--version` and `codesign -v`.
+- **Still open (not done on purpose, larger or riskier):** unreachable solver window and its game hooks (`tile/solverdialog.py`, `ui/tktile/solverdialog.py`), `wizardutil.py` (still used by `customgame.py` for plugin games), comment and hint import/export code; dead `auto_scale` branches; `po` files and untranslated new labels (Settings window strings are passed through `_()` but not extracted); Windows and Linux installer scripts, `README.md` and the repo still say PySolFC; commented-out music lines in `MANIFEST.in`.
