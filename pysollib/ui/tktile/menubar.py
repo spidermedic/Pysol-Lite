@@ -8,7 +8,6 @@ import tkinter.filedialog
 from tkinter.colorchooser import askcolor
 
 from pysollib.gamedb import GI
-from pysollib.hint import PySolHintLayoutImportError
 from pysollib.mfxutil import USE_PIL
 from pysollib.mfxutil import Struct, kwdefault
 from pysollib.mygettext import _, n_
@@ -253,38 +252,14 @@ class PysolMenubarTkCommon:
         menu = MfxMenu(self.menubar, n_("&File"))
         menu.add_command(
             label=n_("&New game"), command=self.mNewGame, accelerator="N")
-        submenu = MfxMenu(menu, label=n_("R&ecent games"))
-        # menu.add_command(label=n_("Select &random game"),
-        #   command=self.mSelectRandomGame, accelerator=m+"R")
-        menu.add_command(
-            label=n_("Select &random game"),
-            command=self.mSelectRandomGame, accelerator=m+"R")
-        menu.add_command(
-            label=n_("Select game by nu&mber"),
-            command=self.mSelectGameById, accelerator=m+"M")
-        menu.add_command(
-            label=n_("Next game by num&ber"),
-            command=self.mNewGameWithNextId, accelerator=m+"N")
-        menu.add_separator()
-        submenu = MfxMenu(menu, label=n_("Fa&vorite games"))
-        menu.add_command(label=n_("A&dd to favorites"), command=self.mAddFavor)
-        menu.add_command(
-            label=n_("Remove &from favorites"),
-            command=self.mDelFavor)
-        menu.add_separator()
         menu.add_command(
             label=n_("&Open"),
             command=self.mOpen, accelerator=m+"O")
+        menu.add_separator()
         menu.add_command(
             label=n_("&Save"),
             command=self.mSave, accelerator=m+"S")
         menu.add_command(label=n_("Save &as"), command=self.mSaveAs)
-        menu.add_command(
-            label=n_("E&xport current layout"),
-            command=self.mExportCurrentLayout)
-        menu.add_command(
-            label=n_("&Import starting layout"),
-            command=self.mImportStartingLayout)
         menu.add_separator()
         menu.add_command(
             label=n_("&Hold and quit"),
@@ -365,6 +340,9 @@ class PysolMenubarTkCommon:
         # menu.add_command(
         #    label=n_("&Pause"), command=self.mPause, accelerator="P")
         menu.add_separator()
+        menu.add_command(
+            label=n_("Select game by nu&mber"),
+            command=self.mSelectGameById, accelerator=m+"M")
         menu.add_command(
             label=n_("&Comments"),
             command=self.mEditGameComment)
@@ -502,7 +480,6 @@ class PysolMenubarTkCommon:
                           initial_tab='search'))
         self._bindKey(ctrl, "r", lambda e: self.mSelectRandomGame())
         self._bindKey(ctrl, "m", self.mSelectGameById)
-        self._bindKey(ctrl, "n", self.mNewGameWithNextId)
         self._bindKey(ctrl, "o", self.mOpen)
         self._bindKey(ctrl, "s", self.mSave)
         self._bindKey(ctrl, "x", self.mHoldAndQuit)
@@ -630,6 +607,16 @@ class PysolMenubarTkCommon:
             m = "Cmd-"
         menu.add_command(label=n_("All &games"), accelerator=m+"V",
                          command=self.mSelectGameDialogWithPreview)
+        menu.add_command(
+            label=n_("Select &random game"),
+            command=self.mSelectRandomGame, accelerator=m+"R")
+        menu.add_separator()
+        MfxMenu(menu, label=n_("R&ecent games"))
+        MfxMenu(menu, label=n_("Fa&vorite games"))
+        menu.add_command(label=n_("A&dd to favorites"), command=self.mAddFavor)
+        menu.add_command(
+            label=n_("Remove &from favorites"),
+            command=self.mDelFavor)
         if not SELECT_GAME_MENU:
             return
         menu.add_separator()
@@ -885,7 +872,7 @@ class PysolMenubarTkCommon:
 
     def updateFavoriteGamesMenu(self):
         gameids = self.app.opt.favorite_gameid
-        menu, index, submenu = self.menupath[".menubar.file.favoritegames"]
+        menu, index, submenu = self.menupath[".menubar.select.favoritegames"]
         games = []
         for id in gameids:
             gi = self.app.getGameInfo(id)
@@ -903,14 +890,14 @@ class PysolMenubarTkCommon:
         else:
             menu.entryconfig(index, state=state(False))
         in_favor = self.app.game.id in gameids
-        menu, index, submenu = self.menupath[".menubar.file.addtofavorites"]
+        menu, index, submenu = self.menupath[".menubar.select.addtofavorites"]
         menu.entryconfig(index, state=state(not in_favor))
         menu, index, submenu = \
-            self.menupath[".menubar.file.removefromfavorites"]
+            self.menupath[".menubar.select.removefromfavorites"]
         menu.entryconfig(index, state=state(in_favor))
 
     def updateRecentGamesMenu(self, gameids):
-        submenu = self.menupath[".menubar.file.recentgames"][2]
+        submenu = self.menupath[".menubar.select.recentgames"][2]
         games = []
         for id in gameids:
             gi = self.app.getGameInfo(id)
@@ -1051,93 +1038,6 @@ class PysolMenubarTkCommon:
             # filename = os.path.normcase(filename)
             if os.path.isfile(filename):
                 self.game.loadGame(filename)
-
-    def mExportCurrentLayout(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        game = self.game
-        if not self.menustate.save_as:
-            return
-        if not game.Solver_Class:
-            d = self._calc_MfxMessageDialog()(
-                self.top, title=_('Export game error'),
-                text=_('''
-Unsupported game for export.
-'''),
-                bitmap='error')
-            return
-
-        filename = game.filename
-        if not filename:
-            filename = self.app.getGameSaveName(self.game.id)
-            if os.name == "posix" or os.path.supports_unicode_filenames:
-                filename += "-" + self.game.getGameNumber(format=0)
-            else:
-                filename += "-01"
-            filename += ".board"
-        idir, ifile = os.path.split(os.path.normpath(filename))
-        if not idir:
-            idir = self.app.dn.boards
-        # print self.game.filename, ifile
-        d = tkinter.filedialog.SaveAs()
-        filename = d.show(filetypes=self.FILETYPES,
-                          defaultextension=self.DEFAULTEXTENSION,
-                          initialdir=idir, initialfile=ifile)
-        if filename:
-            filename = os.path.normpath(filename)
-            # filename = os.path.normcase(filename)
-            with open(filename, 'w') as fh:
-                game = self.game
-                fh.write(game.Solver_Class(game, self).calcBoardString())
-            self.updateMenus()
-
-    def mImportStartingLayout(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        game = self.game
-        if not game.Solver_Class:
-            d = self._calc_MfxMessageDialog()(
-                self.top, title=_('Import game error'),
-                text=_('''
-Unsupported game for import.
-'''),
-                bitmap='error')
-            return
-
-        filename = self.game.filename
-        if filename:
-            idir, ifile = os.path.split(os.path.normpath(filename))
-        else:
-            idir, ifile = "", ""
-        if not idir:
-            idir = self.app.dn.boards
-        d = tkinter.filedialog.Open()
-        key = 'PYSOL_DEBUG_IMPORT'
-        if key not in os.environ:
-            filename = d.show(filetypes=self.FILETYPES,
-                              defaultextension=self.DEFAULTEXTENSION,
-                              initialdir=idir, initialfile=ifile)
-        else:
-            filename = os.environ[key]
-        if filename:
-            filename = os.path.normpath(filename)
-            # filename = os.path.normcase(filename)
-            if os.path.isfile(filename):
-                with open(filename, 'r+b') as fh:
-                    game = self.game
-                    try:
-                        game.Solver_Class(game, self).importFile(
-                            fh, game, self)
-                    except PySolHintLayoutImportError as err:
-                        self._calc_MfxMessageDialog()(
-                            self.top,
-                            title=_('Import game error'),
-                            text=err.format(),
-                            bitmap='error'
-                        )
-                        game.busy = False
-                        game.endGame()
-                        game.newGame()
 
     def mSaveAs(self, *event):
         if self._cancelDrag(break_pause=False):
