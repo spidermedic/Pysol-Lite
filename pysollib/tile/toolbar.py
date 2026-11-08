@@ -27,7 +27,6 @@ import tkinter.ttk as ttk
 
 from pysollib.mfxutil import Image, ImageOps, ImageTk
 from pysollib.mygettext import _, n_
-from pysollib.settings import TITLE
 from pysollib.ui.tktile.menubar import MfxMenu, createToolbarMenu
 from pysollib.ui.tktile.tkconst import EVENT_HANDLED
 from pysollib.ui.tktile.tkutil import loadImage
@@ -188,8 +187,6 @@ class PysolToolbarTk:
             (None,           None,            None),
             (n_("Statistics"), self.mPlayerStats, _("View statistics")),
             (n_("Rules"),    self.mHelpRules, _("Rules for this game")),
-            (None,           None,            None),
-            (n_("Quit"),     self.mQuit,      _("Quit %s") % TITLE),
                 ):
             if label is None:
                 sep = self._createSeparator()

@@ -65,7 +65,6 @@ TOOLBAR_BUTTONS = (
     "pause",
     "statistics",
     "rules",
-    "quit",
     "player",
     )
 

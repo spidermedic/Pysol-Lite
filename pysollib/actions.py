@@ -1059,11 +1059,6 @@ class PysolToolbar(PysolToolbarTk):
             self.menubar.mHelpRules()
         return 1
 
-    def mQuit(self, *args):
-        if not self._busy():
-            self.menubar.mQuit()
-        return 1
-
     def mOptPlayerOptions(self, *args):
         if not self._busy():
             self.menubar.mOptPlayerOptions()
