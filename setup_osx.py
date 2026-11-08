@@ -20,7 +20,7 @@ from setuptools import setup
 # build the rule pages
 if not os.path.exists('data/html'):
     os.chdir('html-src')
-    call('./gen-html.py', shell=True)
+    call([sys.executable, './gen-html.py'])
     os.chdir(os.pardir)
     shutil.copytree('html-src/images', 'html-src/html/images')
     try:
@@ -103,11 +103,10 @@ top = os.getcwd()
 # libfreecell-solver dynamic library in the app bundle.
 if SOLVER and "py2app" in sys.argv:
     os.chdir('dist/%s.app/Contents/Resources' % BUNDLE)
-    call("install_name_tool -change \
-         /usr/local/lib/libfreecell-solver.0.dylib \
-         @executable_path/../Frameworks/libfreecell-solver.0.dylib fc-solve",
-         shell=True
-         )
+    call(["install_name_tool", "-change",
+          "/usr/local/lib/libfreecell-solver.0.dylib",
+          "@executable_path/../Frameworks/libfreecell-solver.0.dylib",
+          "fc-solve"])
     os.chdir(top)
 
 # Point libwebp at the bundled libsharpyuv instead of its broken

@@ -95,11 +95,10 @@ def format_time(t):
 def get_default_resampling():
     if not USE_PIL:
         return 0
-    if hasattr(Image, "ANTIALIAS"):
-        return Image.ANTIALIAS
-    if hasattr(Image, "LANCZOS"):
-        return Image.LANCZOS
-    return Image.NEAREST
+    resampling = getattr(Image, "Resampling", None)  # Pillow >= 9.1
+    if resampling is not None:
+        return resampling.LANCZOS
+    return getattr(Image, "LANCZOS", Image.NEAREST)
 
 
 def print_err(s, level=1):
@@ -140,14 +139,8 @@ def getprefdir(package):
 
 
 # high resolution clock() and sleep()
-try:
-    uclock = time.perf_counter
-except Exception:
-    uclock = time.clock
-
+uclock = time.perf_counter
 usleep = time.sleep
-if os.name == "posix":
-    uclock = time.time
 
 # ************************************************************************
 # * MSWin util

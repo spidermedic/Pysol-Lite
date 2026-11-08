@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 
 import pysollib.settings
 
-if sys.version_info > (3,):
-    def execfile(fn):
-        return exec(open(fn).read())
+
+def execfile(fn):
+    with open(fn, encoding='utf-8') as fh:
+        return exec(fh.read())
+
 
 prog_name = 'PySol Fan Club edition'
 

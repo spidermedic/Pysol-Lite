@@ -261,21 +261,13 @@ class Base_HTMLViewer:
     def basejoin(self, url, baseurl=None, relpath=1):
         if baseurl is None:
             baseurl = self.url
-        if 0:
-            import urllib.request
-            import urllib.parse
-            import urllib.error
-            url = urllib.request.pathname2url(url)
-            if relpath and self.url:
-                url = urllib.basejoin(baseurl, url)
-        else:
+        url = os.path.normpath(url)
+        if relpath and baseurl and not os.path.isabs(url):
+            h1, t1 = os.path.split(url)
+            h2, t2 = os.path.split(baseurl)
+            if h1 != h2:
+                url = os.path.join(h2, h1, t1)
             url = os.path.normpath(url)
-            if relpath and baseurl and not os.path.isabs(url):
-                h1, t1 = os.path.split(url)
-                h2, t2 = os.path.split(baseurl)
-                if h1 != h2:
-                    url = os.path.join(h2, h1, t1)
-                url = os.path.normpath(url)
         return url
 
     def normurl(self, url, with_protocol=True):
