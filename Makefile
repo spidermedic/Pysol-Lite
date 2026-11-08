@@ -7,7 +7,7 @@ else
 endif
 export PYTHONPATH := $(PYTHONPATH)$(path_sep)$(CURDIR)
 
-.PHONY: all install dist rpm all_games_html rules pot mo pretest test runtest
+.PHONY: all install dist rpm all_games_html rules pretest test runtest
 
 all:
 	@echo "No default target"
@@ -15,10 +15,10 @@ all:
 install:
 	python3 setup.py install
 
-dist: all_games_html rules mo
+dist: all_games_html rules
 	python3 setup.py sdist
 
-rpm: all_games_html rules mo
+rpm: all_games_html rules
 	python3 setup.py bdist_rpm
 
 DOCS_DIR = docs
@@ -37,24 +37,6 @@ rules:
 	cp -r html-src/images html-src/html
 	rm -rf data/html
 	mv html-src/html data
-
-pot:
-	./scripts/all_games.py gettext > po/games.pot
-	xgettext --keyword=n_ --keyword=pgettext:1c,2 --add-comments=TRANSLATORS: -o po/pysol.pot \
-		pysollib/*.py pysollib/*/*.py pysollib/*/*/*.py data/pysolfc.glade
-	set -e; \
-	for lng in de fr pl it ru pt_BR; do \
-		msgmerge --update --quiet --backup=none po/$${lng}_pysol.po po/pysol.pot; \
-		msgmerge --update --quiet --backup=none po/$${lng}_games.po po/games.pot; \
-	done
-
-mo:
-	set -e; \
-	for lang in de fr pl it ru pt_BR; do \
-		mkdir -p locale/$${lang}/LC_MESSAGES; \
-		msgcat --use-first po/$${lang}_games.po po/$${lang}_pysol.po > po/$${lang}.po; \
-		msgfmt --check -o locale/$${lang}/LC_MESSAGES/pysol.mo po/$${lang}.po; \
-	done
 
 pretest:
 	rm -f tests/individually-importing/*.py tests/unit-generated/*.py # To avoid stray files

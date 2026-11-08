@@ -58,9 +58,9 @@ jobs:
         wget -O cardsets-pack.tar.xz "https://sourceforge.net/projects/pysolfc/files/PySolFC-Cardsets/minimal/PySolFC-Cardsets--Minimal-3.1.0.tar.xz/download"
         tar -xJf cardsets-pack.tar.xz
         mv PySolFC-Cardsets--Minimal-3.1.0/cardset-* data
-    - name: Prepare game rules (process the HTML) and translations
+    - name: Prepare game rules (process the HTML)
       run: |
-        make rules mo
+        make rules
     - name: Create the executable .app
       run: |
         set -euo pipefail

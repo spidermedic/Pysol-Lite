@@ -20,10 +20,8 @@ def get_data_files(source, destination):
 
 if os.name == 'posix':
     data_dir = 'share/PySolFC'
-    locale_dir = 'share/locale'
 else:
     data_dir = 'data'
-    locale_dir = 'locale'
 
 ddirs = [
     'html',
@@ -41,8 +39,6 @@ data_files = []
 for d in ddirs:
     data_files += get_data_files(os.path.join('data', d),
                                  os.path.join(data_dir, d))
-
-data_files += get_data_files('locale', locale_dir)
 
 if os.name == 'posix':
     for size in os.listdir('data/images/icons'):

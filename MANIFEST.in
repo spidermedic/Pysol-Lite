@@ -46,11 +46,6 @@ include data/pysol.ico data/PySol.icns
 ##
 graft data/sound
 ##
-## data - i18n
-##
-include po/*
-graft locale
-##
 ## data - cardsets
 ##
 graft data/cardset-blaren-7x7

@@ -10,12 +10,6 @@
 /html
 /html-src/html/*
 /images
-/po/de.po
-/po/fr.po
-/po/it.po
-/po/pl.po
-/po/ru.po
-/po/pt_BR.po
 /tests/individually-importing/*.py
 /tests/unit-generated/*.py
 PySolFC-Cardsets--Minimal-2.0.*

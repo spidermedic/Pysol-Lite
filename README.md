@@ -186,7 +186,7 @@ python3 -m venv .build-venv
     pygame-ce pysol-cards accessible-output2
 # Cardsets are a separate download, see "Install Extras" below; put the
 # cardset-* folders into data/
-make rules mo          # needs gettext for the translations
+make rules
 PYTHONPATH=. .build-venv/bin/python setup_osx.py py2app --arch arm64
 ```
 
