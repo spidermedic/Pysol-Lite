@@ -95,6 +95,7 @@ tabletile_scale_method = integer
 recent_gameid = int_list
 favorite_gameid = int_list
 visible_buttons = string_list
+known_buttons = string_list
 visible_status = string_list
 translate_game_names = boolean
 solver_presets = string_list
@@ -502,6 +503,9 @@ class Options:
         config['general']['visible_buttons'] = [
             b for b, is_visible in self.toolbar_vars.items() if is_visible
         ]
+        # remember which buttons existed, so that a button added by a later
+        # version shows up instead of being treated as hidden
+        config['general']['known_buttons'] = list(TOOLBAR_BUTTONS)
         if 'none' in config['general']['solver_presets']:
             config['general']['solver_presets'].remove('none')
 
@@ -639,8 +643,16 @@ class Options:
 
         visible_buttons = self._getOption('general', 'visible_buttons', 'list')
         if visible_buttons is not None:
+            known = self._getOption('general', 'known_buttons', 'list')
+            if known is None:
+                # file written before the bookmark buttons existed
+                known = [b for b in TOOLBAR_BUTTONS
+                         if b not in ('bookmark', 'gotobookmark')]
             for key in TOOLBAR_BUTTONS:
-                self.toolbar_vars[key] = (key in visible_buttons)
+                if key in known:
+                    self.toolbar_vars[key] = (key in visible_buttons)
+                else:
+                    self.toolbar_vars[key] = True
 
         myGettext.language = self.language
 

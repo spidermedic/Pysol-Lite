@@ -180,6 +180,9 @@ class PysolToolbarTk:
             (None,           None,            None),
             (n_("Undo"),     self.mUndo,      _("Undo last move")),
             (n_("Redo"),     self.mRedo,      _("Redo last move")),
+            (n_("Bookmark"), self.mSetBookmark, _("Set bookmark")),
+            (n_("Go to bookmark"), self.mGotoBookmark,
+             _("Go to bookmark")),
             (n_("Autodrop"), self.mDrop,      _("Auto drop cards")),
             (n_("Shuffle"),  self.mShuffle,   _("Shuffle tiles")),
             (n_("Hint"),     self.mHint,      _("Hint")),
@@ -195,6 +198,8 @@ class PysolToolbarTk:
                 )
             elif label == 'Pause':
                 self._createButton(label, f, check=True, tooltip=t)
+            elif label == 'Go to bookmark':
+                self._createButton(label, f, tooltip=t, name='gotobookmark')
             else:
                 self._createButton(label, f, tooltip=t)
         self.pause_button.config(variable=menubar.tkopt.pause)
@@ -284,8 +289,9 @@ class PysolToolbarTk:
         else:
             button.config(image=image)
 
-    def _createButton(self, label, command, check=False, tooltip=None):
-        name = label.lower()
+    def _createButton(self, label, command, check=False, tooltip=None,
+                      name=None):
+        name = name or label.lower()
         position = len(self._widgets)
         kw = {
             'position': position,

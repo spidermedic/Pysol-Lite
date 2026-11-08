@@ -94,6 +94,8 @@ TOOLBAR_BUTTONS = (
     "save",
     "undo",
     "redo",
+    "bookmark",
+    "gotobookmark",
     "autodrop",
     "shuffle",
     "hint",

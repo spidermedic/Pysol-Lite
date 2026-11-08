@@ -4,7 +4,7 @@
 //   /tmp/render_toolbar_icons <dir with the .svg files> \
 //       data/images/toolbar/phosphor
 //
-// Needs the eleven Phosphor "regular" icons named in `icons` below (from
+// Needs the Phosphor icons named in `icons` below ("regular" weight, plus one "fill") (from
 // https://github.com/phosphor-icons/core, MIT licence). Writes
 // <out>/{small,large,xlarge}/<name>.png (black, for light interfaces) and
 // <out>/light/{small,large,xlarge}/<name>.png (white, for dark ones).
@@ -24,6 +24,8 @@ let icons: [(String, String)] = [
     ("hint", "lightbulb"),
     ("pause", "pause"),
     ("rules", "book-open"),
+    ("bookmark", "bookmark-simple"),
+    ("gotobookmark", "bookmark-simple-fill"),
 ]
 let sizes: [(String, Int)] = [("small", 24), ("large", 32), ("xlarge", 48)]
 let src = CommandLine.arguments[1]

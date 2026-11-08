@@ -850,6 +850,10 @@ class PysolMenubarTkCommon:
         s = self.game.gsaveinfo.bookmarks.get(0) is not None
         menu, index, submenu = mp2
         menu.entryconfig(index, state=state(s and x))
+        # the toolbar buttons
+        if getattr(self.app, 'toolbar', None) is not None:
+            self.setToolbarState(x, "bookmark")
+            self.setToolbarState(s and x, "gotobookmark")
 
     def updateBackgroundImagesMenu(self):
         mp = self.menupath.get(".menubar.options.layout.cards.backs")
