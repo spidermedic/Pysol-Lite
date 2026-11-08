@@ -40,7 +40,6 @@ from pysollib.help import (destroy_help_html, help_about, raise_help_html,
                            unraise_help_html)
 from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import Struct, destruct
-from pysollib.mfxutil import USE_PIL
 from pysollib.mfxutil import getprefdir, getusername
 from pysollib.mfxutil import latin1_normalize, print_err
 from pysollib.mfxutil import pickle, unpickle
@@ -1010,17 +1009,8 @@ class Application:
         cs = self.cardset_manager.get(d.key)
         if d.status != 0 or d.button != 0 or d.key < 0 or cs is None:
             return None
-        changed = False
-        if USE_PIL:
-            if (cs.CARD_XOFFSET, cs.CARD_YOFFSET) != d.cardset_values:
-                changed = True
-        if d.key == self.cardset.index and not changed:
+        if d.key == self.cardset.index:
             return None
-        if USE_PIL:
-            if d.cardset_values:
-                cs.CARD_XOFFSET, cs.CARD_YOFFSET = d.cardset_values
-                self.opt.offsets[cs.ident] = d.cardset_values
-                self.images.setOffsets()
         return cs
 
     def __selectCardsetDialog(self, t):
@@ -1241,11 +1231,7 @@ class Application:
 
     # read & parse a cardset config.txt file - see class Cardset in resource.py
     def _readCardsetConfig(self, dirname, filename):
-        cs = read_cardset_config(dirname, filename)
-        # set offsets from options.cfg
-        if cs.ident in self.opt.offsets:
-            cs.CARD_XOFFSET, cs.CARD_YOFFSET = self.opt.offsets[cs.ident]
-        return cs
+        return read_cardset_config(dirname, filename)
 
     def initCardsets(self):
         """Load all valid cardset config.txt files and ignore invalid ones.

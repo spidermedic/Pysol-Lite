@@ -22,7 +22,6 @@
 # ---------------------------------------------------------------------------##
 
 import os
-import tkinter
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import KwStruct, USE_PIL
@@ -36,8 +35,7 @@ from pysollib.util import CARDSET
 
 from .selecttree import SelectDialogTreeCanvas
 from .selecttree import SelectDialogTreeLeaf
-from .tkwidget import MfxDialog, MfxScrolledCanvas, PysolNotebook, \
-                      PysolScale, PysolText
+from .tkwidget import MfxDialog, MfxScrolledCanvas, PysolText
 
 
 # ************************************************************************
@@ -95,7 +93,6 @@ class SelectCardsetDialogWithPreview(MfxDialog):
         self.manager = manager
         self.key = key
         self.app = app
-        self.cardset_values = None
         # padx, pady = kw.padx, kw.pady
         padx, pady = 4, 4
         if self.TreeDataHolder_Class.data is None:
@@ -121,52 +118,13 @@ class SelectCardsetDialogWithPreview(MfxDialog):
         paned_window.add(left_frame)
         paned_window.add(right_frame)
 
-        notebook = PysolNotebook(left_frame)
-        notebook.grid(row=0, column=0, sticky='nsew',
-                      padx=padx, pady=pady)
-        tree_frame = ttk.Frame(notebook)
-        notebook.add(tree_frame, text=_('Cardsets'))
-
         # Tree
         font = app.getFont("default")
-        self.tree = self.Tree_Class(self, tree_frame, key=key,
+        self.tree = self.Tree_Class(self, left_frame, key=key,
                                     default=kw.default,
                                     font=font, width=w1)
-        self.tree.frame.pack(padx=padx, pady=pady, expand=True, fill='both')
-
-        self.notebook = notebook
-
-        if USE_PIL:
-            size_frame = ttk.Frame(notebook)
-            notebook.add(size_frame, text=_('Card Size'))
-            #
-            # sliders at new position
-            cs = self.manager.get(self.tree.selection_key)
-
-            var = tkinter.IntVar()
-            self.x_offset = PysolScale(
-                size_frame, label=_('X offset:'),
-                from_=5, to=100, resolution=1,
-                orient='horizontal', variable=var,
-                fieldname=_('X offset:'),
-                value=cs.CARD_XOFFSET
-                )
-
-            self.x_offset.grid(row=3, column=0, sticky='ew',
-                               padx=padx, pady=pady)
-
-            var = tkinter.IntVar()
-            self.y_offset = PysolScale(
-                size_frame, label=_('Y offset:'),
-                from_=5, to=100, resolution=1,
-                orient='horizontal', variable=var,
-                fieldname=_('Y offset:'),
-                value=cs.CARD_YOFFSET
-                )
-            self.y_offset.grid(row=4, column=0, sticky='ew',
-                               padx=padx, pady=pady)
-
-            size_frame.columnconfigure(0, weight=1)
+        self.tree.frame.grid(row=0, column=0, sticky='nsew',
+                             padx=padx, pady=pady)
 
         #
         left_frame.rowconfigure(0, weight=1)
@@ -224,28 +182,14 @@ class SelectCardsetDialogWithPreview(MfxDialog):
                     self.app.requestCompatibleCardsetTypeDialog(cardset, gi, t)
                     return
 
-            # save the values
-            try:
-                self.cardset_values = self.x_offset.get(), self.y_offset.get()
-            except Exception:
-                pass
-
-            if USE_PIL and button == 1:
-                # no changes
-                self.cardset_values = None
         if button == 10:                # Info
             cs = self.manager.get(self.tree.selection_key)
             if not cs:
                 return
             # title = CARDSET+" "+cs.name
             title = CARDSET.capitalize()+" "+cs.name
-            d = CardsetInfoDialog(self.top, title=title, cardset=cs,
-                                  images=self.preview_images)
-            try:
-                self.cardset_values = d.cardset_values
-            except Exception:
-                self.cardset_values = None
-
+            CardsetInfoDialog(self.top, title=title, cardset=cs,
+                              images=self.preview_images)
             return
         MfxDialog.mDone(self, button)
 
@@ -281,14 +225,6 @@ class SelectCardsetDialogWithPreview(MfxDialog):
             self.preview_key = -1
             return
         names, columns = cs.getPreviewCardNames()
-
-        # if cardset has changed, set default values
-        if key != self.preview_key and USE_PIL:
-            self.x_offset.config(value=cs.CARD_XOFFSET)
-            self.x_offset.set(cs.CARD_XOFFSET)
-
-            self.y_offset.config(value=cs.CARD_YOFFSET)
-            self.y_offset.set(cs.CARD_YOFFSET)
 
         try:
             # ???names, columns = cs.getPreviewCardNames()

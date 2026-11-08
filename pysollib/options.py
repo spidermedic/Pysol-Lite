@@ -376,7 +376,6 @@ class Options:
         self.games_geometry = {}
         self.game_geometry = (0, 0)  # game geometry before exit
         self.window_geometry = (0, 0, 0, 0)
-        self.offsets = {}           # cards offsets
         #
         self.use_cardset_bottoms = False
         # self.save_cardsets = True
@@ -580,9 +579,6 @@ class Options:
         config['general']['game_geometry'] = self.game_geometry
         config['general']['window_geometry'] = self.window_geometry
 
-        # offsets
-        for key, val in self.offsets.items():
-            config['offsets'][key] = val
 
         config.write()
         # config.write(sys.stdout); print
@@ -633,7 +629,6 @@ class Options:
             'timeouts',
             'cardsets',
             'games_geometry',
-            'offsets',
                 ):
             if section not in config:
                 config[section] = {}
@@ -775,15 +770,6 @@ class Options:
         if window_geometry is not None:
             try:
                 self.window_geometry = tuple(int(i) for i in window_geometry)
-            except Exception:
-                traceback.print_exc()
-
-        # cards offsets
-        for key, val in config['offsets'].items():
-            try:
-                val = [int(i) for i in val]
-                assert len(val) == 2
-                self.offsets[key] = val
             except Exception:
                 traceback.print_exc()
 
