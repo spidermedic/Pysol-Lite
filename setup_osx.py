@@ -26,7 +26,9 @@ if not os.path.exists('data/html'):
     shutil.copytree('html-src/html', 'data/html')
 
 # build the HTML list of games
-call("./scripts/all_games.py > docs/all_games.html", shell=True)
+# (run with this interpreter so its packages are available)
+with open('docs/all_games.html', 'w') as _f:
+    call([sys.executable, './scripts/all_games.py'], stdout=_f)
 
 # Use Freecell Solver, if it is installed.
 # http://fc-solve.berlios.de/
