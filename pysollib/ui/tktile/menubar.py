@@ -424,9 +424,6 @@ class PysolMenubarTkCommon:
             self.progress.update(step=1)
 
         menu = MfxMenu(self.menubar, label=n_("&Options"))
-        menu.add_checkbutton(
-            label=n_("&Confirm before quitting"),
-            variable=self.tkopt.confirm, command=self.mOptConfirm)
         menu.add_command(label=n_("&Automatic play"),
                          command=self.mOptAutomaticPlay)
         menu.add_command(label=n_("Assist &level"),
@@ -470,10 +467,13 @@ class PysolMenubarTkCommon:
             label=n_("&Slow"), variable=self.tkopt.animations, value=3,
             command=self.mOptAnimations)
         menu.add_checkbutton(
-            label=n_("&Click to move"),
+            label=n_("&Click to move cards"),
             variable=self.tkopt.mouse_type,
             onvalue='point-n-click', offvalue='drag-n-drop',
             command=self.mOptMouseType)
+        menu.add_checkbutton(
+            label=n_("Con&firm before quitting"),
+            variable=self.tkopt.confirm, command=self.mOptConfirm)
 
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
