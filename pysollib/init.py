@@ -144,11 +144,13 @@ def init():
                     pysollib.settings.FCS_COMMAND+' --help', **kw)
                 p.stdin.close()
                 line = p.stdout.readline()
+                p.stdout.close()
+                p.stderr.close()
                 line = line.decode("utf-8")
                 if line.startswith('fc-solve'):
                     pysollib.settings.USE_FREECELL_SOLVER = True
                 if os.name == 'posix':
-                    os.wait()               # kill zombi
+                    p.wait()                # reap the child
         except Exception:
             # traceback.print_exc()
             pass

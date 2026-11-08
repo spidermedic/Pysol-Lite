@@ -275,7 +275,8 @@ if Image:
         def __init__(self, file=None, image=None, pil_image_orig=None):
 
             if file:
-                image = Image.open(file).convert('RGBA')
+                with Image.open(file) as im:
+                    image = im.convert('RGBA')
 
                 basename = os.path.basename(file)
                 file_name = os.path.splitext(basename)[0]
@@ -488,7 +489,8 @@ def _createBottomImage(image, color='white', backfile=None):
     mask = out.resize(size, resampling)
     out.paste(tmp, (th, th), mask)
     if backfile:
-        back = Image.open(backfile).convert('RGBA')
+        with Image.open(backfile) as im:
+            back = im.convert('RGBA')
         w0, h0 = back.size
         w1, h1 = w, h
         a = min(float(w1)/w0, float(h1)/h0)

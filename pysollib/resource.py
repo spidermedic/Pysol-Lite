@@ -696,8 +696,8 @@ class TileManager(ResourceManager):
     def register(self, tile):
         if USE_PIL:
             try:
-                img = Image.open(tile.filename)
-                TW, TH = img.size
+                with Image.open(tile.filename) as img:
+                    TW, TH = img.size
                 if TW < 640 or TH < 480:
                     tile.size = TTI.SIZE_TILE
                 elif TW < 1280 or TH < 720:
