@@ -30,7 +30,6 @@ from pysollib.ui.tktile.fullpicturedialog import \
 from pysollib.ui.tktile.fullpicturedialog import destroy_full_picture_dialog
 from pysollib.ui.tktile.menubar import PysolMenubarTkCommon
 from pysollib.ui.tktile.solverdialog import connect_game_solver_dialog
-from pysollib.util import CARDSET
 
 from .tkwidget import MfxMessageDialog
 
@@ -84,7 +83,7 @@ class PysolMenubarTk(PysolMenubarTkCommon):
         if self._cancelDrag(break_pause=False):
             return
         key = self.app.nextgame.cardset.index
-        cs = self.app.selectCardset(_("Select ")+CARDSET, key)
+        cs = self.app.selectCardset(_("Select deck"), key)
         if not cs:
             return
         self.app.nextgame.cardset = cs

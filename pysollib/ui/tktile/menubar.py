@@ -562,7 +562,7 @@ class PysolMenubarTkCommon:
         # n = manager.len()
         submenu = MfxMenu(menu, label=n_("C&ards"))
         submenu.add_command(
-            label=n_("Cards&et..."),
+            label=n_("&Deck..."),
             command=self.mSelectCardsetDialog, accelerator=m+"E")
         # this submenu will get set by updateBackgroundImagesMenu()
         MfxMenu(submenu, label=n_("Card &back"))
