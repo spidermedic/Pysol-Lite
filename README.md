@@ -1,33 +1,14 @@
-<p align="center"><img src="html-src/images/high_res/logo_horizontal.png" alt="PySol FC logo" height="180px"></p>
+# PySol 26
 
-# PySol Fan Club edition
+A reimagining of PySolFC: more than 1,200 solitaire and patience games
+written in Python with Tkinter. This fork focuses on macOS on Apple Silicon.
+The Windows and Linux code is kept but has not been run since the clean-up.
+The version number is the year and month (for example 26.11).
 
-This is an open source and portable (Windows, Linux and Mac OS X) collection
-of Card Solitaire/Patience games written in Python. Its homepage is
-https://pysolfc.sourceforge.io/.
-
-The maintenance branch of PySol FC on GitHub by [Shlomi
-Fish](https://www.shlomifish.org/) and by some other
-people, has gained official status, ported the code to Python 3,
-and implemented some other enhancements.
-
-- [![CI tests at GitHub](https://github.com/shlomif/PySolFC/actions/workflows/ci.yml/badge.svg)](https://github.com/shlomif/PySolFC/actions/workflows/ci.yml)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/04re7umgl3yuukmh?svg=true)](https://ci.appveyor.com/project/shlomif/pysolfc)
-
-## Call for Contributors
-
-[Shlomi Fish](https://github.com/shlomif), who adopted PySol FC, and maintained
-it for several years, has stepped down as its primary maintainer
-due to the fact he no longer plays PySol, or other computer card games too
-much and that it has been a time sink for him. (Also see
-[this Twitter discussion](https://twitter.com/bagder/status/1336793880709238786)
-). We are looking for other contributors and there are still
-[some large-scale features](https://github.com/shlomif/PySolFC/issues) that
-can be implemented.
-
-# Screenshots
-
-![Screenshot of PySol FC](https://i.imgur.com/jQkTGwf.jpg)
+PySol 26 is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
+edition and PySolFC (https://github.com/shlomif/PySolFC), and is licensed
+under the GNU General Public License. `pysolfc-handoff.md` is the working log
+of what has changed and why.
 
 ## Requirements.
 
@@ -90,8 +71,8 @@ python3 scripts/linux-install.py
 ```
 
 ```
-git clone https://github.com/shlomif/PySolFC.git
-cd PySolFC
+git clone https://github.com/spidermedic/pysol.git
+cd pysol
 # Now make sure you have installed the dependencies.
 gmake test
 gmake rules
@@ -140,8 +121,8 @@ sudo apt-get install libjpeg-dev
 #### 2 - Clone the source from version control
 
 ```
-git clone git://github.com/shlomif/PySolFC.git
-cd PySolFC
+git clone https://github.com/spidermedic/pysol.git
+cd pysol
 ```
 
 #### 3 - Create your virtual environment.

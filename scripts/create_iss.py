@@ -35,7 +35,7 @@ Compression=lzma
 SolidCompression=yes
 SourceDir=dist\\pysol
 OutputDir=.
-OutputBaseFilename=PySolFC_%(prog_version)s_setup
+OutputBaseFilename=PySol_%(prog_version)s_setup
 DisableWelcomePage=no
 DisableDirPage=no
 DisableProgramGroupPage=no
@@ -92,7 +92,7 @@ begin
     Result := True
   else begin
     MsgBox(
-      'This version of Windows is not supported. PySolFC %(prog_version)s \
+      'This version of Windows is not supported. PySol %(prog_version)s \
 requires Windows XP SP3 or higher.',
       mbCriticalError, MB_OK);
     Result := False;

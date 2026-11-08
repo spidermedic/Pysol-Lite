@@ -1,11 +1,11 @@
-# Contributing to PySol FC
+# Contributing to PySol 26
 
 You want to contribute? That's great! Welcome aboard.  Before submitting issues or PRs, please read the details below to make sure your contributions can be reviewed smoothly.  First of all see [these links](https://github.com/shlomif/Freenode-programming-channel-FAQ/blob/master/FAQ.mdwn#i-want-to-contribute-to-an-open-source-project-but-how-which-one-can-i-contribute-to)
 for general guidelines for contributing to open source.
 
 # Project Scope and Philosophy
 
-PySolFC is a collection of single player solitaire and puzzle games, focused on maintaining a high-quality library of popular and unique games.
+PySol is a collection of single player solitaire and puzzle games, focused on maintaining a high-quality library of popular and unique games.
 
 The goal is not to include every possible minor variant of each major game.  While minor variants are allowed and very often added, we avoid bulk-adding games that differ only in trivial ways purely to inflate the game count.  Instead, the project aims to maintain a curated selection of high-quality games with a consistent style and user experience.
 

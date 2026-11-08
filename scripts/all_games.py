@@ -178,7 +178,7 @@ def create_html(sort_by):
     if html_mode != 'bare':
         print('''<!DOCTYPE html><html lang="en-US">
 <head>
-  <title>PySolFC - List of solitaire games</title>
+  <title>PySol - List of solitaire games</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
 <body>

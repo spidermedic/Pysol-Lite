@@ -65,8 +65,8 @@ jobs:
       run: |
         set -euo pipefail
         PYTHONPATH="." python3 setup_osx.py py2app
-        test -d dist/PySolFC.app
-        zip -q -r -X PySolFC-app.zip dist
+        test -d dist/PySol.app
+        zip -q -r -X PySol-app.zip dist
     - name: Verify the app is universal2 (arm64 + x86_64)
       run: |
         set -euo pipefail
@@ -77,28 +77,28 @@ jobs:
             *) echo "ERROR: $1 is not universal2 (archs: ${archs:-none})"; exit 1 ;;
           esac
         }
-        check_universal2 "dist/PySolFC.app/Contents/MacOS/PySolFC"
-        pygame_ext=$(find dist/PySolFC.app -name 'base.cpython-*-darwin.so' -path '*/pygame/*' | head -1)
+        check_universal2 "dist/PySol.app/Contents/MacOS/PySol"
+        pygame_ext=$(find dist/PySol.app -name 'base.cpython-*-darwin.so' -path '*/pygame/*' | head -1)
         test -n "$pygame_ext"
         check_universal2 "$pygame_ext"
         echo "OK: app and pygame-ce are both universal2."
     - name: Make the .dmg for easy installation
       run:
-        create-dmg --volname "Install PySolFC"
+        create-dmg --volname "Install PySol"
         --volicon data/PySol.icns
         --background html-src/images/pysollogo01.png
         --window-size 800 400
-        --icon PySolFC.app 200 185
+        --icon PySol.app 200 185
         --app-drop-link 600 185
         --skip-jenkins
-        PySolFC.dmg dist
+        PySol.dmg dist
     - name: Upload zipped app
       uses: actions/upload-artifact@v7
       with:
         name: pysolfc-app
-        path: PySolFC-app.zip
+        path: PySol-app.zip
     - name: Upload dmg
       uses: actions/upload-artifact@v7
       with:
         name: pysolfc-dmg
-        path: PySolFC.dmg
+        path: PySol.dmg

@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=PySol Fan Club Edition
-Comment=More than 1000 solitaire card games
+Name=PySol
+Comment=More than 1200 solitaire card games
 Exec=pysol.py
 StartupWMClass=Pysol
 Terminal=false
