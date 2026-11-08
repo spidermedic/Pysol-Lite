@@ -36,16 +36,25 @@ class AccessibleOutput:
     def isSupported(self):
         if self.accessible_output is None:
             return False
-        o = self.accessible_output.Auto()
-        for output in o.outputs:
-            if (output is not None and output.is_active() and
-                    not output.name.startswith('sapi')):
-                return True
+        # A broken screen reader backend (e.g. a missing module such as
+        # appscript for VoiceOver) must never break gameplay: treat any
+        # failure as "speech not supported".
+        try:
+            o = self.accessible_output.Auto()
+            for output in o.outputs:
+                if (output is not None and output.is_active() and
+                        not output.name.startswith('sapi')):
+                    return True
+        except Exception:
+            self.accessible_output = None
         return False
 
     def speak(self, text):
-        o = self.accessible_output.Auto()
-        o.output(text, interrupt=True)
+        try:
+            o = self.accessible_output.Auto()
+            o.output(text, interrupt=True)
+        except Exception:
+            self.accessible_output = None
 
 
 class ConsoleSpeech:
