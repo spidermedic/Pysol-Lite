@@ -67,6 +67,13 @@ ASSIST_OPTIONS = (
      'mOptEnableStuckNotification'),
 )
 
+# General play choices: click to move instead of dragging, and asking before
+# a game is thrown away.
+PLAY_OPTIONS = (
+    ('click_to_move', n_('Click to move cards'), 'mOptClickToMove'),
+    ('confirm', n_('Confirm before quitting'), 'mOptConfirm'),
+)
+
 # Assist options that only matter for some games. The first one restarts
 # the game when it changes, so it is applied last.
 ASSIST_GAME_OPTIONS = (

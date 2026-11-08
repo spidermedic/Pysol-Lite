@@ -34,7 +34,7 @@ from pysollib.pysoltk import MfxExceptionDialog
 from pysollib.pysoltk import MfxMessageDialog, MfxSimpleEntry
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import ASSIST_GAME_OPTIONS, ASSIST_OPTIONS
-from pysollib.pysoltk import AUTOMATIC_PLAY_OPTIONS
+from pysollib.pysoltk import AUTOMATIC_PLAY_OPTIONS, PLAY_OPTIONS
 from pysollib.pysoltk import ChecklistDialog
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
@@ -628,7 +628,8 @@ class PysolMenubar(PysolMenubarTk):
                     if not usable.get(key, True)]
         self._applyChecklist(
             _("Play options"),
-            (AUTOMATIC_PLAY_OPTIONS, ASSIST_OPTIONS, ASSIST_GAME_OPTIONS),
+            (AUTOMATIC_PLAY_OPTIONS, ASSIST_OPTIONS, PLAY_OPTIONS,
+             ASSIST_GAME_OPTIONS),
             disabled)
 
     def _applyChecklist(self, title, groups, disabled=()):

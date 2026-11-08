@@ -165,7 +165,7 @@ class PysolMenubarTkCommon:
             num_cards=tkinter.BooleanVar(),
             helpbar=tkinter.BooleanVar(),
             splashscreen=tkinter.BooleanVar(),
-            mouse_type=tkinter.StringVar(),
+            click_to_move=tkinter.BooleanVar(),
             pause=tkinter.BooleanVar(),
             confirm=tkinter.BooleanVar(),
         )
@@ -198,7 +198,7 @@ class PysolMenubarTkCommon:
         # tkopt.num_cards.set(opt.num_cards)
         # tkopt.helpbar.set(opt.helpbar)
         tkopt.splashscreen.set(opt.splashscreen)
-        tkopt.mouse_type.set(opt.mouse_type)
+        tkopt.click_to_move.set(opt.mouse_type == 'point-n-click')
         tkopt.confirm.set(opt.confirm)
 
     def connectGame(self, game):
@@ -444,14 +444,6 @@ class PysolMenubarTkCommon:
         submenu.add_radiobutton(
             label=n_("&Slow"), variable=self.tkopt.animations, value=3,
             command=self.mOptAnimations)
-        menu.add_checkbutton(
-            label=n_("&Click to move cards"),
-            variable=self.tkopt.mouse_type,
-            onvalue='point-n-click', offvalue='drag-n-drop',
-            command=self.mOptMouseType)
-        menu.add_checkbutton(
-            label=n_("Con&firm before quitting"),
-            variable=self.tkopt.confirm, command=self.mOptConfirm)
 
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
@@ -1188,6 +1180,13 @@ Unsupported game for import.
         self.game.doPause()
         self.tkopt.pause.set(self.game.pause)
 
+    def mOptClickToMove(self, *args):
+        if self._cancelDrag(break_pause=False):
+            return
+        self.app.opt.mouse_type = ('point-n-click'
+                                   if self.tkopt.click_to_move.get()
+                                   else 'drag-n-drop')
+
     def mOptConfirm(self, *args):
         self.app.opt.confirm = self.tkopt.confirm.get()
 
@@ -1390,11 +1389,6 @@ Unsupported game for import.
         if self._cancelDrag(break_pause=False):
             return
         self.app.opt.splashscreen = self.tkopt.splashscreen.get()
-
-    def mOptMouseType(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.mouse_type = self.tkopt.mouse_type.get()
 
     def refresh(self, *event):
         self.app.updateCardset()
