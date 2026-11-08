@@ -200,7 +200,7 @@ class PysolMenubar(PysolMenubarTk):
         self._autoplay_usable = {
             'autofaceup': bool(ms.autofaceup), 'autodrop': bool(ms.autodrop),
             'autodeal': bool(ms.autodeal), 'quickplay': bool(ms.quickplay)}
-        self.setMenuState(ms.cardbackground, "options.cards.backs")
+        self.setMenuState(ms.cardbackground, "options.layout.cards.backs")
         # Help menu
         self.setMenuState(ms.rules, "help.rulesforthisgame")
         # Toolbar

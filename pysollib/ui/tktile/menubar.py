@@ -415,7 +415,12 @@ class PysolMenubarTkCommon:
         layout.add_checkbutton(
             label=n_("Stat&usbar"), variable=self.tkopt.statusbar,
             command=self.mOptStatusbar)
-        layout.add_separator()
+        submenu = MfxMenu(layout, label=n_("C&ards"))
+        submenu.add_command(
+            label=n_("&Decks"),
+            command=self.mSelectCardsetDialog, accelerator=m+"E")
+        # this submenu will get set by updateBackgroundImagesMenu()
+        MfxMenu(submenu, label=n_("&Backs"))
         layout.add_command(
             label=n_("&Background color"),
             command=self.mSelectTableColor)
@@ -423,12 +428,6 @@ class PysolMenubarTkCommon:
             layout.add_checkbutton(
                 label=n_("&Spread stacks"), variable=self.tkopt.spread_stacks,
                 command=self.mOptSpreadStacks)
-        submenu = MfxMenu(menu, label=n_("C&ards"))
-        submenu.add_command(
-            label=n_("&Decks"),
-            command=self.mSelectCardsetDialog, accelerator=m+"E")
-        # this submenu will get set by updateBackgroundImagesMenu()
-        MfxMenu(submenu, label=n_("&Backs"))
         submenu = MfxMenu(menu, label=n_("A&nimations"))
         submenu.add_radiobutton(
             label=n_("&Off"), variable=self.tkopt.animations, value=0,
@@ -966,7 +965,7 @@ class PysolMenubarTkCommon:
         menu.entryconfig(index, state=state(ms and x))
 
     def updateBackgroundImagesMenu(self):
-        mp = self.menupath.get(".menubar.options.cards.backs")
+        mp = self.menupath.get(".menubar.options.layout.cards.backs")
         # delete all entries
         submenu = mp[2]
         submenu.delete(0, "last")
