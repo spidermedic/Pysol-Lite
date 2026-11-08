@@ -682,9 +682,6 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "F3", self.mFindCard)
         self._bindKey(ctrl, "d", self.mDemo)
         self._bindKey(ctrl, "e", self.mSelectCardsetDialog)
-        self._bindKey(ctrl + "Shift-", "e",
-                      lambda e: self.mSelectCardsetDialog(
-                          initial_tab='search'))
         self._bindKey(ctrl, "b", self.mOptChangeCardback)  # undocumented
         self._bindKey(ctrl, "p", self.mOptPlayerOptions)   # undocumented
         self._bindKey(ctrl, "F1", self.mHelp)
