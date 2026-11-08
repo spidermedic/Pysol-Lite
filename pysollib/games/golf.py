@@ -775,11 +775,6 @@ class AllInARowII(Game):
     def startGame(self):
         self._startDealNumRowsAndDealSingleRow(3)
 
-    def getStuck(self):
-        if len(self.s.reserves[0].cards) > 1:
-            return True
-        return Game.getStuck(self)
-
 
 # ************************************************************************
 # * Robert

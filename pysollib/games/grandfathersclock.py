@@ -710,11 +710,6 @@ class Clock(Game):
     def getAutoStacks(self, event=None):
         return (), (), ()
 
-    def getStuck(self):
-        if self.DrawsLeft > 0:
-            return True
-        return Game.getStuck(self)
-
     def parseGameInfo(self):
         numKings = 0
         for c in self.s.rows[12].cards:

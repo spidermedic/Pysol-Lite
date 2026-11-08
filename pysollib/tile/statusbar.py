@@ -141,7 +141,6 @@ class PysolStatusbar(MfxStatusbar):
         MfxStatusbar.__init__(self, top, row=4, column=0, columnspan=3)
         #
         for n, t, w in (
-            ('stuck',       "'You Are Stuck' indicator", 3),
             ('time',        'Playing time',            10),
             ('moves',       'Moves/Total moves',       10),
             ('info',        'Number of cards',         12),

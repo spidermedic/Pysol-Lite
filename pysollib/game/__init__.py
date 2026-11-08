@@ -36,7 +36,7 @@ from pysol_cards.random import random__int2str
 from pysollib.game.dump import pysolDumpGame
 from pysollib.gamedb import GI
 from pysollib.help import help_about
-from pysollib.hint import DefaultHint, HINT_LEVEL_SOLVER, HINT_LEVEL_STUCK
+from pysollib.hint import DefaultHint, HINT_LEVEL_SOLVER
 from pysollib.mfxutil import USE_PIL
 from pysollib.mfxutil import Struct, SubclassResponsibility, destruct
 from pysollib.mfxutil import format_time, print_err
@@ -127,10 +127,6 @@ def _updateStatus_process_key_val(tb, sb, k, v):
         if isinstance(v, str):
             if sb:
                 sb.updateText(time=v)
-        return
-    if k == 'stuck':
-        if sb:
-            sb.updateText(stuck=v)
         return
     raise AttributeError(k)
 
@@ -474,7 +470,6 @@ class Game:
         self.busy = 0
         self.pause = False
         self.finished = False
-        self.stuck = False
         self._pending_win_status = None
         self._pending_win_top_msg = ''
         self._pending_win_time = ''
@@ -485,7 +480,6 @@ class Game:
         self.allstacks = []
         self.sn_groups = []  # snapshot groups; list of list of similar stacks
         self.snapshots = []
-        self.failed_snapshots = []
         self.stackdesc_list = []
         self.keyboard_selected_stack = None
         self.keyboard_select_count = 1
@@ -587,9 +581,6 @@ class Game:
         #
         self.stats.update_time = time.time()
         self.showHelp()                 # just in case
-        hint_class = self.getHintClass()
-        if hint_class is not None:
-            self.Stuck_Class = hint_class(self, HINT_LEVEL_STUCK)
         self.busy = old_busy
 
     def _checkGame(self):
@@ -701,7 +692,6 @@ class Game:
         self.saveinfo = GameSaveInfo()
         self.loadinfo = GameLoadInfo()
         self.snapshots = []
-        self.failed_snapshots = []
         # local statistics are reset on each game restart
         self.stats = GameStatsStruct()
         self.startMoves()
@@ -736,7 +726,6 @@ class Game:
     def newGame(self, random=None, restart=0, autoplay=1, shuffle=True,
                 dealer=None):
         self.finished = False
-        self.stuck = False
         self._pending_win_status = None
         self._pending_win_top_msg = ''
         self._pending_win_time = ''
@@ -752,7 +741,7 @@ class Game:
         for stack in self.allstacks:
             stack.updateText()
         self.updateText()
-        self.updateStatus(moves=(0, 0), stuck='')
+        self.updateStatus(moves=(0, 0))
         reset_solver_dialog()
         # unhide toplevel when we use a progress bar
         if not self.preview:
@@ -777,10 +766,6 @@ class Game:
         if autoplay:
             self.autoPlay()
             self.stats.player_moves = 0
-        # Opening layout can already be dead (Yukon shuffles that never
-        # reach a drop or a flip). Check before the player has to move.
-        if not self.preview:
-            self.updateStuck()
         self.setCursor(cursor=self.app.top_cursor)
         self.stats.update_time = time.time()
         if not self.preview:
@@ -1829,7 +1814,6 @@ class Game:
     # the actual hint class (or None)
     Hint_Class = DefaultHint
     Solver_Class = None
-    Stuck_Class = None
 
     def getHintClass(self):
         return self.Hint_Class
@@ -2843,51 +2827,6 @@ class Game:
         for pile in reversed(piles):
             yield pile
 
-    def getStuck(self):
-        h = self.Stuck_Class.getHints(None) or []
-        if h:
-            self.failed_snapshots = []
-            return True
-        if not self.canDealCards():
-            return False
-        # No table/waste moves, but dealing (or a waste redeal) is still
-        # possible. Remember this layout; if we return here after dealing
-        # through the talon/waste with no progress, treat as stuck.
-        sn = self.getSnapshot()
-        if sn in self.failed_snapshots:
-            return False
-        self.failed_snapshots.append(sn)
-        return True
-
-    def updateStuck(self):
-        # stuck
-        if self.finished or self.Stuck_Class is None or self.isGameWon() != 0:
-            return
-        if self.getStuck():
-            text = ''
-            self.stuck = False
-        else:
-            text = 'x'
-            if not self.stuck and not self.demo:
-                self.updateStatus(stuck='x')
-                d = MfxMessageDialog(
-                    self.top, title="No moves", bitmap="info",
-                    text="\nNo moves left!\n",
-                    strings=("&New game", "&Restart", None,
-                             "&Cancel"))
-                if d.status == 0 and d.button == 0:
-                    # new game
-                    self.endGame()
-                    self.newGame()
-                    return
-                if d.status == 0 and d.button == 1:
-                    # restart game
-                    self.restartGame()
-                    return
-            self.stuck = True
-            # self.playSample("autopilotlost", priority=1000)
-        self.updateStatus(stuck=text)
-
     #
     # Handle moves (with move history for undo/redo)
     # Actual move is handled in a subclass of AtomicMove.
@@ -3036,19 +2975,6 @@ class Game:
                         break
                 else:
                     redo = 1
-        # try to detect an undo move for stuck-checking
-        undo = 0
-        if len(moves.history) > 0:
-            mylen, m = len(current), moves.history[moves.index - 1]
-            if mylen == len(m):
-                for i in range(mylen):
-                    a1 = current[i]
-                    a2 = m[i]
-                    if a1.__class__ is not a2.__class__ or \
-                            a1.cmpForUndo(a2) != 0:
-                        break
-                else:
-                    undo = 1
         # add current move to history (which is a list of lists)
         if redo:
             # print "detected redo:", current
@@ -3069,8 +2995,6 @@ class Game:
         self.updateStatus(moves=(moves.index, self.stats.total_moves))
         self.updateMenus()
         self.updatePlayTime(do_after=0)
-        if not undo:
-            self.updateStuck()
         reset_solver_dialog()
 
         return 1
@@ -3093,8 +3017,6 @@ class Game:
         self.updateText()
         self.updateStatus(moves=(self.moves.index, self.stats.total_moves))
         self.updateMenus()
-        self.updateStatus(stuck='')
-        self.failed_snapshots = []
         reset_solver_dialog()
 
     def redo(self):
@@ -3116,7 +3038,6 @@ class Game:
         self.updateText()
         self.updateStatus(moves=(self.moves.index, self.stats.total_moves))
         self.updateMenus()
-        self.updateStuck()
         reset_solver_dialog()
 
     #

@@ -56,11 +56,6 @@ class AtomicMove:
     def cmpForRedo(self, other):
         return -1
 
-    # Custom comparison for detecting manual undoing.
-    # Override only for move types where this is possible.
-    def cmpForUndo(self, other):
-        return -1
-
 
 # ************************************************************************
 # * Move the top N cards from a stack to another stack.
@@ -109,11 +104,6 @@ class AMoveMove(AtomicMove):
         return (cmp(self.ncards, other.ncards) or
                 cmp(self.from_stack_id, other.from_stack_id) or
                 cmp(self.to_stack_id, other.to_stack_id))
-
-    def cmpForUndo(self, other):
-        return (cmp(self.ncards, other.ncards) or
-                cmp(self.from_stack_id, other.to_stack_id) or
-                cmp(self.to_stack_id, other.from_stack_id))
 
 
 # ************************************************************************

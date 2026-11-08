@@ -536,9 +536,6 @@ class Families(Concentration):
     def isGameWon(self):
         return self.closed_cards == 8 and self.score > -1
 
-    def getStuck(self):
-        return self.score == -1
-
     def parseGameInfo(self):
         return ""
 

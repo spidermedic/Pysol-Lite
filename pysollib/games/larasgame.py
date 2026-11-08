@@ -363,7 +363,6 @@ class LarasGame(Game):
         self.updateText()
         self.updateStatus(moves=(moves.index, self.stats.total_moves))
         self.updateMenus()
-        self.updateStuck()
         return 1
 
     def undo(self):
@@ -386,9 +385,7 @@ class LarasGame(Game):
         self.stats.total_moves = self.stats.total_moves + 1
         self.hints.list = None
         self.updateText()
-        self.updateStatus(moves=(self.moves.index, self.stats.total_moves),
-                          stuck='')
-        self.failed_snapshots = []
+        self.updateStatus(moves=(self.moves.index, self.stats.total_moves))
         self.updateMenus()
 
     def redo(self):
@@ -411,7 +408,6 @@ class LarasGame(Game):
         self.updateText()
         self.updateStatus(moves=(self.moves.index, self.stats.total_moves))
         self.updateMenus()
-        self.updateStuck()
 
     def _restoreGameHook(self, game):
         self.active_row = game.loadinfo.active_row
