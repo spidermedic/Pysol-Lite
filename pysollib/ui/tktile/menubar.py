@@ -390,11 +390,13 @@ class PysolMenubarTkCommon:
         menu.add_command(
             label=n_("&License terms"),
             command=self.mHelpLicense)
-        # also in the macOS app menu, where users expect it
-        menu.add_separator()
-        menu.add_command(
-            label=_("&About %s") % TITLE,
-            command=self.mHelpAbout)
+        # macOS has About in the app menu (made above); the other platforms
+        # have it at the bottom of Help.
+        if WIN_SYSTEM != "aqua":
+            menu.add_separator()
+            menu.add_command(
+                label=_("&About %s") % TITLE,
+                command=self.mHelpAbout)
 
         MfxMenubar.addPath = None
 
