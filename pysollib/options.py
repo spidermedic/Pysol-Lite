@@ -96,8 +96,6 @@ redeal_icon_style = string
 dialog_icon_style = string
 tree_icon_style = string
 button_icon_style = string
-tile_theme = string
-default_tile_theme = string
 toolbar = integer(0, 4)
 toolbar_land = integer(0, 4)
 toolbar_port = integer(0, 4)
@@ -255,8 +253,6 @@ class Options:
         ('dialog_icon_style', 'str'),
         ('tree_icon_style', 'str'),
         ('button_icon_style', 'str'),
-        ('tile_theme', 'str'),
-        ('default_tile_theme', 'str'),
         ('toolbar', 'int'),
         ('toolbar_land', 'int'),
         ('toolbar_port', 'int'),

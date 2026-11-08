@@ -40,7 +40,6 @@ can be implemented.
 
 - Other packages (optional):
   - Pillow (Python Imaging Library): https://pillow.readthedocs.io/
-  - TTKThemes: https://ttkthemes.readthedocs.io/
   - Accessible Output 2: https://accessible-output2.readthedocs.io/
   - Freecell Solver: https://fc-solve.shlomifish.org/
   - [Black Hole Solitaire Solver](https://www.shlomifish.org/open-source/projects/black-hole-solitaire-solver/)
@@ -184,7 +183,7 @@ the bundled Tk includes the fix for menu-opened dialogs freezing on macOS 27.
 ```
 python3 -m venv .build-venv
 .build-venv/bin/pip install py2app setuptools attrs configobj pillow pycotap \
-    pygame-ce pysol-cards ttkthemes accessible-output2
+    pygame-ce pysol-cards accessible-output2
 # Cardsets are a separate download, see "Install Extras" below; put the
 # cardset-* folders into data/
 make rules mo          # needs gettext for the translations

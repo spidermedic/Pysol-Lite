@@ -30,7 +30,6 @@ ddirs = [
     'images',
     'sound',
     'toolbar',
-    'themes',
     'tcl',
     ]
 for s in open('MANIFEST.in'):

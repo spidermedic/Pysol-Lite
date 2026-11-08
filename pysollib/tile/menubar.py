@@ -21,15 +21,14 @@
 #
 # ---------------------------------------------------------------------------##
 
-import tkinter.ttk as ttk
 
-from pysollib.mygettext import _, n_
+from pysollib.mygettext import _
 from pysollib.ui.tktile.findcarddialog import connect_game_find_card_dialog
 from pysollib.ui.tktile.findcarddialog import destroy_find_card_dialog
 from pysollib.ui.tktile.fullpicturedialog import \
     connect_game_full_picture_dialog
 from pysollib.ui.tktile.fullpicturedialog import destroy_full_picture_dialog
-from pysollib.ui.tktile.menubar import MfxMenu, PysolMenubarTkCommon
+from pysollib.ui.tktile.menubar import PysolMenubarTkCommon
 from pysollib.ui.tktile.solverdialog import connect_game_solver_dialog
 from pysollib.util import CARDSET
 
@@ -45,11 +44,6 @@ from .tkwidget import MfxMessageDialog
 class PysolMenubarTk(PysolMenubarTkCommon):
     def __init__(self, app, top, progress=None):
         PysolMenubarTkCommon.__init__(self, app, top, progress)
-
-    def _setOptions(self):
-        PysolMenubarTkCommon._setOptions(self)
-        tkopt, opt = self.tkopt, self.app.opt
-        tkopt.theme.set(opt.tile_theme)
 
     def _connect_game_find_card_dialog(self, game):
         return connect_game_find_card_dialog(game)
@@ -99,52 +93,3 @@ class PysolMenubarTk(PysolMenubarTkCommon):
         self.game.endGame(bookmark=1)
         self.game.quitGame(bookmark=1)
         self.updateMenus()
-
-    #
-    # Tile (ttk)
-    #
-
-    def mOptTheme(self, *event):
-        theme = self.tkopt.theme.get()
-        self.app.opt.tile_theme = theme
-        try:
-            from ttkthemes import themed_style
-            style = themed_style.ThemedStyle(self.top)
-        except ImportError:
-            style = ttk.Style(self.top)
-        style.theme_use(theme)
-        if self.app.refreshToolbarImages():
-            self.top.update_idletasks()
-
-    def createThemesMenu(self, menu):
-        submenu = MfxMenu(menu, label=n_("Window t&heme"))
-
-        try:
-            from ttkthemes import themed_style
-            style_path = themed_style.ThemedStyle(self.top)
-        except ImportError:
-            style_path = ttk.Style(self.top)
-        all_themes = sorted(style_path.theme_names())
-
-        #
-        tn = {
-            'alt':         n_('Alt/Revitalized'),
-            'itft1':       n_('ITFT1'),
-            'scidblue':    n_('Scid Blue'),
-            'scidgreen':   n_('Scid Green'),
-            'scidgrey':    n_('Scid Grey'),
-            'scidmint':    n_('Scid Mint'),
-            'scidpink':    n_('Scid Pink'),
-            'scidpurple':  n_('Scid Purple'),
-            'scidsand':    n_('Scid Sand'),
-            'winnative':   n_('Windows Native'),
-            'winxpblue':   n_('Windows XP Blue'),
-            'xpnative':    n_('XP Native'),
-            }
-        for t in all_themes:
-            try:
-                n = tn[t]
-            except KeyError:
-                n = t.capitalize()
-            submenu.add_radiobutton(label=n, variable=self.tkopt.theme,
-                                    value=t, command=self.mOptTheme)

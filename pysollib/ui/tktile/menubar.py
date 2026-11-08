@@ -347,7 +347,6 @@ class PysolMenubarTkCommon:
             mouse_dragcursor=tkinter.BooleanVar(),
             negative_bottom=tkinter.BooleanVar(),
             pause=tkinter.BooleanVar(),
-            theme=tkinter.StringVar(),
             toolbar_vars={},
             statusbar_vars={},
         )
@@ -860,7 +859,6 @@ class PysolMenubarTkCommon:
         menu.add_command(label=n_("&Colors..."), command=self.mOptColors)
         menu.add_command(label=n_("Time&outs..."), command=self.mOptTimeouts)
         menu.add_separator()
-        self.createThemesMenu(menu)
         submenu = MfxMenu(menu, label=n_("&Toolbar"))
         createToolbarMenu(self, submenu)
         submenu = MfxMenu(menu, label=n_("Stat&usbar"))

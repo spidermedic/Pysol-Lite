@@ -21,7 +21,6 @@
 #
 # ---------------------------------------------------------------------------
 
-import os
 import traceback
 
 from pysollib.mfxutil import print_err
@@ -34,28 +33,9 @@ from pysollib.ui.tktile.tkutil import loadImage, restore_window_geometry
 import tkinter.ttk as ttk
 
 
-def init_tile(app, top):
-    # load available themes
-    d = os.path.join(app.dataloader.dir, 'themes')
-    if os.path.isdir(d):
-        top.tk.eval('global auto_path; lappend auto_path {%s}' % d)
-        for t in os.listdir(d):
-            if os.path.exists(os.path.join(d, t, 'pkgIndex.tcl')):
-                try:
-                    top.tk.eval('package require ttk::theme::'+t)
-                    # print 'load theme:', t
-                except Exception:
-                    traceback.print_exc()
-
-
 def set_theme(app, top, theme):
-    # set
-    try:
-        from ttkthemes import themed_style
-        style = themed_style.ThemedStyle(top)
-    except ImportError:
-        style = ttk.Style(top)
-
+    # Use the platform's native ttk theme (see Options.setDefaults).
+    style = ttk.Style(top)
     try:
         style.theme_use(theme)
     except Exception:
@@ -107,9 +87,7 @@ def base_init_root_window(root, app):
 
     restore_window_geometry(root, app.opt)
 
-    theme = app.opt.tile_theme
-    init_tile(app, root)
-    set_theme(app, root, theme)
+    set_theme(app, root, app.opt.tile_theme)
 
 
 class BaseTkSettings:
