@@ -72,8 +72,8 @@ from pysollib.util import IMAGE_EXTENSIONS
 from pysollib.winsystems import TkSettings
 from pysollib.ui.tktile.solverdialog import destroy_solver_dialog
 
-# Toolbar icons used off macOS (macOS uses the SF Symbols set).
-DEFAULT_TOOLBAR_STYLE = 'bluecurve'
+# The toolbar icon set (data/images/toolbar/<name>).
+DEFAULT_TOOLBAR_STYLE = 'phosphor'
 
 # Luminance below this counts as a dark theme background.
 _DARK_LUMINANCE = 0.4
@@ -660,11 +660,8 @@ class Application:
     def getToolbarImagesDir(self):
         size = self._toolbarIconSizeName()
         images_root = os.path.join(self.dataloader.dir, 'images')
-        # SF Symbols on macOS; the bluecurve set everywhere else.
-        style = ('sfsymbols' if pysollib.settings.WIN_SYSTEM == 'aqua'
-                 else DEFAULT_TOOLBAR_STYLE)
         style, dirname = resolve_toolbar_images_dir(
-            images_root, style, size, DEFAULT_TOOLBAR_STYLE,
+            images_root, DEFAULT_TOOLBAR_STYLE, size, DEFAULT_TOOLBAR_STYLE,
             interface_is_dark(self.top))
         return dirname
 

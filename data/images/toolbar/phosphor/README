@@ -1,0 +1,5 @@
+Toolbar icons from Phosphor Icons (https://phosphoricons.com), "regular"
+weight, MIT licence (see LICENSE). The PNGs here are generated from the SVG
+files in scripts/phosphor-icons by scripts/render_toolbar_icons.swift.
+Black icons are for light interfaces; the light/ folder holds white ones for
+dark interfaces.
