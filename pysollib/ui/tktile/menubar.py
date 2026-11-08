@@ -1642,8 +1642,6 @@ Unsupported game for import.
         self.tkopt.pause.set(self.game.pause)
 
     def mOptSound(self, *args):
-        if self._cancelDrag():
-            return
         self.app.opt.sound = self.tkopt.sound.get()
         if self.app.audio:
             if not self.app.opt.sound:
