@@ -127,8 +127,6 @@ game_geometry = int_list(min=2, max=2)
 window_geometry = int_list(min=4, max=4)
 topmost_dialogs = boolean
 sound = boolean
-sound_mode = integer(0, 1)
-sound_sample_volume = integer(0, 128)
 sound_sample_buffer_size = integer(1, 4)
 tabletile_name = string
 tabletile_scale_method = integer
@@ -146,30 +144,6 @@ solver_preset = string
 display_win_message = boolean
 language = string
 table_zoom = list
-
-[sound_samples]
-move = boolean
-autodrop = boolean
-drop = boolean
-nomove = boolean
-gameperfect = boolean
-deal = boolean
-gamelost = boolean
-autopilotwon = boolean
-flip = boolean
-undo = boolean
-gamefinished = boolean
-areyousure = boolean
-startdrag = boolean
-autoflip = boolean
-autopilotlost = boolean
-turnwaste = boolean
-gamewon = boolean
-droppair = boolean
-redo = boolean
-dealwaste = boolean
-edge = boolean
-extra = boolean
 
 [fonts]
 sans = list
@@ -318,8 +292,6 @@ class Options:
         ('save_games_geometry', 'bool'),
         ('topmost_dialogs', 'bool'),
         ('sound', 'bool'),
-        ('sound_mode', 'int'),
-        ('sound_sample_volume', 'int'),
         ('sound_sample_buffer_size', 'int'),
         ('tabletile_name', 'str'),
         ('tabletile_scale_method', 'int'),
@@ -433,33 +405,7 @@ class Options:
         # self.fontsizefactor = 1.0
         # sound
         self.sound = True
-        self.sound_mode = 1
-        self.sound_sample_volume = 75
         self.sound_sample_buffer_size = 1  # 1 - 4 (1024 - 4096 bytes)
-        self.sound_samples = {
-            'areyousure': True,
-            'autodrop': True,
-            'autoflip': True,
-            'autopilotlost': True,
-            'autopilotwon': True,
-            'deal': True,
-            'dealwaste': True,
-            'droppair': True,
-            'drop': True,
-            'edge': True,
-            'extra': True,
-            'flip': True,
-            'move': True,
-            'nomove': True,
-            'redo': True,
-            'startdrag': True,
-            'turnwaste': True,
-            'undo': True,
-            'gamefinished': False,
-            'gamelost': False,
-            'gameperfect': False,
-            'gamewon': False,
-            }
         # fonts
         self.fonts = {
             "default": None,
@@ -683,9 +629,6 @@ class Options:
         if 'none' in config['general']['solver_presets']:
             config['general']['solver_presets'].remove('none')
 
-        # sound_samples
-        config['sound_samples'] = self.sound_samples
-
         # fonts
         for key, val in self.fonts.items():
             if key == 'default':
@@ -767,7 +710,6 @@ class Options:
         # create sections
         for section in (
             'general',
-            'sound_samples',
             'fonts',
             'colors',
             'timeouts',
@@ -844,12 +786,6 @@ class Options:
             if 'none' not in solver_presets:
                 solver_presets.insert(0, 'none')
             self.solver_presets = solver_presets
-
-        # sound_samples
-        for key in self.sound_samples:
-            val = self._getOption('sound_samples', key, 'bool')
-            if val is not None:
-                self.sound_samples[key] = val
 
         # fonts
         for key in self.fonts:

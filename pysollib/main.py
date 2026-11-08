@@ -278,12 +278,6 @@ def pysol_init(app, args):
         app.audio.startServer()
         app.audio.connectServer(app)
 
-    # update sound_mode
-    if isinstance(app.audio, PysolSoundServerModuleClient):
-        app.opt.sound_mode = 1
-    else:
-        app.opt.sound_mode = 0
-
     # check games
     if len(app.gdb.getGamesIdSortedByName()) == 0:
         app.wm_withdraw()

@@ -33,6 +33,10 @@ except ImportError:
     pysolsoundserver = None
 
 
+# Fixed playback volume (0-128); users adjust their device volume instead.
+SAMPLE_VOLUME = 75
+
+
 # ************************************************************************
 # * basic audio client
 # ************************************************************************
@@ -40,7 +44,6 @@ except ImportError:
 class AbstractAudioClient:
 
     CAN_PLAY_SOUND = False
-    CAN_SET_VOLUME = False
 
     def __init__(self):
         self.server = None
@@ -158,7 +161,6 @@ class AbstractAudioClient:
 class PysolSoundServerModuleClient(AbstractAudioClient):
 
     CAN_PLAY_SOUND = True
-    CAN_SET_VOLUME = True
 
     def __init__(self):
         AbstractAudioClient.__init__(self)
@@ -211,7 +213,7 @@ class PysolSoundServerModuleClient(AbstractAudioClient):
             return
         s = 0
         if self.app.opt.sound:
-            s = self.app.opt.sound_sample_volume
+            s = SAMPLE_VOLUME
         try:
             self.cmd("setwavvol %d" % s)
         except Exception:
@@ -226,7 +228,6 @@ class PysolSoundServerModuleClient(AbstractAudioClient):
 class Win32AudioClient(AbstractAudioClient):
 
     CAN_PLAY_SOUND = True
-    CAN_SET_VOLUME = False
 
     def __init__(self):
         AbstractAudioClient.__init__(self)
@@ -344,7 +345,6 @@ class OSSAudioServer:
 class OSSAudioClient(AbstractAudioClient):
 
     CAN_PLAY_SOUND = True
-    CAN_SET_VOLUME = False
 
     def __init__(self):
         AbstractAudioClient.__init__(self)
@@ -383,7 +383,6 @@ class OSSAudioClient(AbstractAudioClient):
 class PyGameAudioClient(AbstractAudioClient):
 
     CAN_PLAY_SOUND = True
-    CAN_SET_VOLUME = True
 
     def __init__(self):
         AbstractAudioClient.__init__(self)
@@ -423,7 +422,7 @@ class PyGameAudioClient(AbstractAudioClient):
             if self.sound_priority >= priority:
                 return 0
             self.sound.stop()
-        vol = self.app.opt.sound_sample_volume/128.0
+        vol = SAMPLE_VOLUME/128.0
         try:
             self.sound = self.mixer.Sound(filename)
             self.sound.set_volume(vol)

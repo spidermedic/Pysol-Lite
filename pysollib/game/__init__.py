@@ -1613,17 +1613,6 @@ class Game:
         # should return EVENT_HANDLED or EVENT_PROPAGATE explicitly.
 
     def playSample(self, name, priority=0, loop=0):
-
-        if name.startswith('deal'):
-            sampleopt = 'deal'
-        elif name not in self.app.opt.sound_samples:
-            sampleopt = 'extra'
-        else:
-            sampleopt = name
-
-        if sampleopt in self.app.opt.sound_samples and \
-           not self.app.opt.sound_samples[sampleopt]:
-            return 0
         if self.app.audio:
             return self.app.audio.playSample(
                 name,

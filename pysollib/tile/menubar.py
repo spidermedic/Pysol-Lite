@@ -78,9 +78,6 @@ class PysolMenubarTk(PysolMenubarTkCommon):
         from .selectgame import SelectGameDialogWithPreview
         return SelectGameDialogWithPreview
 
-    def _calcSoundOptionsDialog(self):
-        from .soundoptionsdialog import SoundOptionsDialog
-        return SoundOptionsDialog
 
     def _calc_MfxMessageDialog(self):
         return MfxMessageDialog

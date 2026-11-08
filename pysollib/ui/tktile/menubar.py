@@ -739,9 +739,9 @@ class PysolMenubarTkCommon:
             variable=self.tkopt.pegged_auto_remove,
             command=self.mOptPeggedAutoRemove)
         menu.add_separator()
-        label = n_("&Sound...")
-        menu.add_command(
-            label=label, command=self.mOptSoundDialog)
+        menu.add_checkbutton(
+            label=n_("&Sound"), variable=self.tkopt.sound,
+            command=self.mOptSound)
         # cardsets
         if USE_PIL:
             submenu = MfxMenu(menu, label=n_("Card si&ze"))
@@ -1641,19 +1641,14 @@ Unsupported game for import.
         self.game.doPause()
         self.tkopt.pause.set(self.game.pause)
 
-    def mOptSoundDialog(self, *args):
-        if self._cancelDrag(break_pause=False):
+    def mOptSound(self, *args):
+        if self._cancelDrag():
             return
-        wasPaused = False
-        if not self.game.pause:
-            self.game.doPause()
-            wasPaused = True
-        self._calcSoundOptionsDialog()(
-            self.top, _("Sound settings"), self.app)
-        if self.game.pause:
-            if wasPaused:
-                self.game.doPause()
-        self.tkopt.sound.set(self.app.opt.sound)
+        self.app.opt.sound = self.tkopt.sound.get()
+        if self.app.audio:
+            if not self.app.opt.sound:
+                self.app.audio.stopSamples()
+            self.app.audio.updateSettings()
 
     def mOptAutoFaceUp(self, *args):
         if self._cancelDrag():
