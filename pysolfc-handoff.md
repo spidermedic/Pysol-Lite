@@ -453,3 +453,11 @@ Installed app rebuilt as `~/Applications/PySol.app` (120 MB, arm64, ad-hoc signe
 - **Not renamed:** the repo and local folder, help pages and rules text that say "PySol", `docs/`, man pages, `po` files and Windows/Linux installer scripts (`scripts/create_iss.py`, `scripts/linux-install.py` still say PySolFC), `README.md`, and the `.PySolFC` folder.
 - **Verification (light):** py_compile on the changed modules; a source `--version` and a short source launch with no traceback; the installed bundle passes `--version` and `codesign -v` and its Info.plist shows the new name, executable and version. The About box and menu bar were not looked at.
 - **Still open:** as in sections 39 to 41, plus the renaming leftovers above.
+
+## 43. Update: About in the Help menu (2026-11-08)
+
+Installed app rebuilt after commit "Help menu: show About on every platform" (120 MB, arm64, ad-hoc signed).
+
+- **Help menu** is now PySolFC Help (added by Tk on macOS; Contents on Windows and Linux), Rules for this game (F1), a divider, License terms, a divider, About PySol 26. On macOS About also stays in the app menu.
+- **Verification (light):** py_compile; the installed app passes `--version` and `codesign -v`. The menu was not opened by hand.
+- **Still open:** as in section 42.
