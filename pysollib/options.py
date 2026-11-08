@@ -463,8 +463,8 @@ class Options:
         #    c = 'Dondorf'
         if USE_PIL:
             self.cardset = {
-                0:                  {0: ("Neo", "")},
-                CSI.TYPE_FRENCH:    {0: ("Neo", ""), 1: ("Neo", "")},
+                0:                  {0: ("Standard", "")},
+                CSI.TYPE_FRENCH:    {0: ("Standard", ""), 1: ("Standard", "")},
                 CSI.TYPE_HANAFUDA:  {0: ("Louie Mantia Hanafuda", "")},
                 CSI.TYPE_MAHJONGG:  {0: ("Uni Mahjongg", "")},
                 CSI.TYPE_TAROCK:    {0: ("Neo Tarock", "")},
@@ -476,7 +476,7 @@ class Options:
                 CSI.TYPE_DASHAVATARA_GANJIFA:
                     {0: ("Dashavatara Ganjifa XL", "")},
                 CSI.TYPE_TRUMP_ONLY: {0: ("Next Matrix", "")},
-                CSI.TYPE_MATCHING: {0: ("Neo", "")},
+                CSI.TYPE_MATCHING: {0: ("Matching XL", "")},
                 CSI.TYPE_PUZZLE: {3: ("Dojouji Ukiyo E (3x3)", ""),
                                   4: ("Knave of Hearts (4x4)", ""),
                                   5: ("Victoria Falls (5x5)", ""),

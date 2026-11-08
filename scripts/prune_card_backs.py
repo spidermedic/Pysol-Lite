@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Trim the card back choices in the cardsets under data/.
+"""Trim the cardsets under data/.
+
+Only the cardsets named in KEEP_CARDSETS are kept (one per family of
+games, plus the picture puzzle sets); the other cardset folders are
+deleted.
 
 Every cardset keeps only its default back (line 5 of config.txt), except
 the ones listed in KEEP below, which also keep the backs named there. Backs that are dropped are removed from the list on line 6 of
@@ -11,7 +15,31 @@ runs this before every build.
     python3 scripts/prune_card_backs.py [data-dir]
 """
 import os
+import shutil
 import sys
+
+# One cardset per family. Games in a family work with any of its cardsets;
+# each picture puzzle size has exactly one cardset and needs it.
+KEEP_CARDSETS = {
+    'cardset-standard',               # 52/54 card French decks (jokers too)
+    'cardset-uni-mahjongg',           # Mahjongg
+    'cardset-louie-mantia-hanafuda',  # Hanafuda
+    'cardset-neo-tarock',             # Tarock
+    'cardset-neo-hex',                # Hex A Deck
+    'cardset-mughal-ganjifa-xl',      # Mughal Ganjifa
+    'cardset-dashavatara-ganjifa-xl',  # Dashavatara Ganjifa
+    'cardset-next-matrix',            # Matrix
+    'cardset-matching-xl',            # Matching
+    'cardset-simple-ishido-xl',       # Ishido
+    'cardset-dojouji-3x3',            # picture puzzles, one per size
+    'cardset-knave-of-hearts-4x4',
+    'cardset-victoria-falls-5x5',
+    'cardset-hokusai-6x6',
+    'cardset-blaren-7x7',
+    'cardset-mid-winter-eve-8x8',
+    'cardset-the-card-players-9x9',
+    'cardset-players-trumps-10x10',
+}
 
 # cardset directory -> backs to keep besides the default one.
 KEEP = {
@@ -20,6 +48,17 @@ KEEP = {
                          'back121.gif', 'back122.gif', 'back191.gif',
                          'back192.gif'],
 }
+
+
+def prune_cardsets(data_dir):
+    removed = 0
+    for name in sorted(os.listdir(data_dir)):
+        path = os.path.join(data_dir, name)
+        if (name.startswith('cardset-') and os.path.isdir(path)
+                and name not in KEEP_CARDSETS):
+            shutil.rmtree(path)
+            removed += 1
+    return removed
 
 
 def prune(data_dir):
@@ -51,5 +90,6 @@ def prune(data_dir):
 
 
 if __name__ == '__main__':
-    n = prune(sys.argv[1] if len(sys.argv) > 1 else 'data')
-    print('removed %d card back files' % n)
+    data = sys.argv[1] if len(sys.argv) > 1 else 'data'
+    print('removed %d cardsets' % prune_cardsets(data))
+    print('removed %d card back files' % prune(data))

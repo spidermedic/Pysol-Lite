@@ -895,7 +895,7 @@ class Application:
                 t1 = t0
         elif gc == GI.GC_MATCHING:
             t0 = "Matching"
-            if cs.ncards < (gi.ncards / 2):    # not enough cards
+            if cs is None or cs.ncards < (gi.ncards / 2):  # no/too few cards
                 t1 = t0
         elif gc == GI.GC_PUZZLE:
             t0 = "Puzzle"
