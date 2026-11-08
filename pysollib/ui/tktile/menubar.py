@@ -560,14 +560,15 @@ class PysolMenubarTkCommon:
             command=self.mOptTopmostDialogs)
         # manager = self.app.cardset_manager
         # n = manager.len()
-        menu.add_command(
+        submenu = MfxMenu(menu, label=n_("C&ards"))
+        submenu.add_command(
             label=n_("Cards&et..."),
             command=self.mSelectCardsetDialog, accelerator=m+"E")
+        # this submenu will get set by updateBackgroundImagesMenu()
+        MfxMenu(submenu, label=n_("Card &back"))
         menu.add_command(
             label=n_("Table c&olor..."),
             command=self.mSelectTableColor)
-        # this submenu will get set by updateBackgroundImagesMenu()
-        submenu = MfxMenu(menu, label=n_("Card &back"))
         menu.add_checkbutton(
             label=n_("Shade &legal moves"), variable=self.tkopt.shade,
             command=self.mOptShade)
@@ -1127,7 +1128,7 @@ class PysolMenubarTkCommon:
         menu.entryconfig(index, state=state(ms and x))
 
     def updateBackgroundImagesMenu(self):
-        mp = self.menupath.get(".menubar.options.cardback")
+        mp = self.menupath.get(".menubar.options.cards.cardback")
         # delete all entries
         submenu = mp[2]
         submenu.delete(0, "last")

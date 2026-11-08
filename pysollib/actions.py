@@ -223,7 +223,7 @@ class PysolMenubar(PysolMenubarTk):
         self.setMenuState(ms.autodrop, "options.automaticplay.autodrop")
         self.setMenuState(ms.autodeal, "options.automaticplay.autodeal")
         self.setMenuState(ms.quickplay, "options.automaticplay.quickplay")
-        self.setMenuState(ms.cardbackground, "options.cardback")
+        self.setMenuState(ms.cardbackground, "options.cards.cardback")
         # Help menu
         self.setMenuState(ms.rules, "help.rulesforthisgame")
         # Toolbar
