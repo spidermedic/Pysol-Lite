@@ -208,7 +208,6 @@ class Application:
         self.fn = Struct(
             opt=os.path.join(self.dn.config, "options.dat"),
             opt_cfg=os.path.join(self.dn.config, "options.cfg"),
-            holdgame=os.path.join(self.dn.config, "holdgame.dat"),
             comments=os.path.join(self.dn.config, "comments.dat"),
         )
         for k, v in self.dn.__dict__.items():
@@ -232,7 +231,6 @@ class Application:
             loadedgame=None,          # data for loaded game
             startdemo=0,              # start demo ?
             cardset=None,             # use this cardset
-            holdgame=0,               # hold this game on exit ?
             bookmark=None,            # goto this bookmark (load new cardset)
         )
         self.commandline = Struct(
@@ -246,25 +244,6 @@ class Application:
     # the PySol mainloop
     def mainloop(self):
         self.mainproc()
-
-    def _load_held_or_saved_game(self, tmpgame):
-        """docstring for _load_held_or_saved_game"""
-        if self.opt.game_holded > 0 and not self.nextgame.loadedgame:
-            game = None
-            try:
-                game = tmpgame._loadGame(self.fn.holdgame, self)
-            except Exception:
-                traceback.print_exc()
-                game = None
-            if game:
-                if game.id == self.opt.game_holded and game.gstats.holded:
-                    game.gstats.loaded = game.gstats.loaded - 1
-                    game.gstats.holded = 0
-                    self.nextgame.loadedgame = game
-                else:
-                    # not a holded game
-                    game.destruct()
-                    destruct(game)
 
     def _main_loop(self):
         """docstring for _main_loop"""
@@ -286,14 +265,6 @@ class Application:
                     self.nextgame.id = 2
                     self.freeGame()
                     continue
-                if self.nextgame.holdgame:
-                    assert self.nextgame.id <= 0
-                    try:
-                        self.game.gstats.holded = 1
-                        self.game._saveGame(self.fn.holdgame)
-                        self.opt.game_holded = self.game.id
-                    except Exception:
-                        traceback.print_exc()
                 self.wm_save_state()
                 # save game geometry
                 geom = (self.canvas.winfo_width(), self.canvas.winfo_height())
@@ -339,26 +310,18 @@ class Application:
     def mainproc(self):
         # copy startup options
         self.startup_opt = self.opt.copy()
-        # Under normal circumstances, this won't trigger.
-        # But if the config has been incorrectly edited or
-        # otherwise corrupted, this can prevent a crash.
-        if 0 < self.opt.game_holded != self.opt.last_gameid:
-            self.opt.last_gameid = self.opt.game_holded
-
         # startup information
         if self.getGameClass(self.opt.last_gameid):
             self.nextgame.id = self.opt.last_gameid
         elif self.opt.last_gameid in GI.PROTECTED_GAMES:
             self.nextgame.id = GI.PROTECTED_GAMES.get(self.opt.last_gameid)
-        # load a holded or saved game
+        # load a saved game given on the command line
         tmpgame = self.constructGame(self.gdb.getGamesIdSortedByName()[0])
-        self._load_held_or_saved_game(tmpgame)
         if not self.nextgame.loadedgame:
             if self.commandline.loadgame:
                 try:
                     self.nextgame.loadedgame = tmpgame._loadGame(
                         self.commandline.loadgame, self)
-                    self.nextgame.loadedgame.gstats.holded = 0
                     self.nextgame.id = self.nextgame.loadedgame.id
                 except Exception:
                     traceback.print_exc()
@@ -377,7 +340,6 @@ class Application:
             elif self.commandline.gameid is not None:
                 self.nextgame.id, self.nextgame.random = \
                     self.commandline.gameid, None
-        self.opt.game_holded = 0
         tmpgame.destruct()
         destruct(tmpgame)
         #

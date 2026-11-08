@@ -262,12 +262,8 @@ class PysolMenubarTkCommon:
         menu.add_command(label=n_("Save &as"), command=self.mSaveAs)
         menu.add_separator()
         menu.add_command(
-            label=n_("&Hold and quit"),
-            command=self.mHoldAndQuit, accelerator=m+"X")
-        if WIN_SYSTEM != "aqua":
-            menu.add_command(
-                label=n_("&Quit"),
-                command=self.mQuit, accelerator=m+"Q")
+            label=n_("&Quit"),
+            command=self.mQuit, accelerator=m+"Q")
 
         if self.progress:
             self.progress.update(step=1)
@@ -482,7 +478,6 @@ class PysolMenubarTkCommon:
         self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
         self._bindKey(ctrl, "s", self.mSave)
-        self._bindKey(ctrl, "x", self.mHoldAndQuit)
         self._bindKey(ctrl, "q", self.mQuit)
         self._bindKey(ctrl, "z", self.mUndo)
         self._bindKey("",   "z", self.mUndo)

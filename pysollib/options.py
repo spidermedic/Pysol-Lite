@@ -81,7 +81,6 @@ toolbar_size = integer(0, 2)
 statusbar = boolean
 num_recent_games = integer(10, 100)
 last_gameid = integer
-game_holded = integer
 wm_maximized = boolean
 splashscreen = boolean
 date_format = string
@@ -176,7 +175,6 @@ class Options:
         # ('helpbar', 'bool'),
         ('num_recent_games', 'int'),
         ('last_gameid', 'int'),
-        ('game_holded', 'int'),
         ('wm_maximized', 'bool'),
         ('splashscreen', 'bool'),
         ('date_format', 'str'),
@@ -315,7 +313,6 @@ class Options:
         self.recent_gameid = []
         self.favorite_gameid = []
         self.last_gameid = 0            # last game played
-        self.game_holded = 0            # gameid or 0
         self.wm_maximized = 1
         # saved games geometry (gameid: (width, height))
         self.games_geometry = {}

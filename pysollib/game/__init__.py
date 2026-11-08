@@ -395,7 +395,6 @@ _GLOBAL_U_PLAY = 0
 
 @attr.s
 class GameGlobalStatsStruct(NewStruct):
-    holded = attr.ib(default=0)                 # is this a holded game
     # number of times this game was loaded
     loaded = attr.ib(default=0)
     # number of times this game was saved
@@ -881,7 +880,7 @@ class Game:
     # quit to outer mainloop in class App, possibly restarting
     # with another game from there
     def quitGame(self, id=0, random=None, loadedgame=None,
-                 startdemo=0, bookmark=0, holdgame=0):
+                 startdemo=0, bookmark=0):
         self.updateTime()
         if bookmark:
             id, random = self.id, self.random
@@ -894,13 +893,12 @@ class Game:
         self.app.nextgame.random = random
         self.app.nextgame.loadedgame = loadedgame
         self.app.nextgame.startdemo = startdemo
-        self.app.nextgame.holdgame = holdgame
         self.updateStatus(time=None, moves=None)
         self.top.mainquit()
 
     # This should be called directly before newGame(),
     # restoreGame(), restoreGameFromBookmark() and quitGame().
-    def endGame(self, restart=0, bookmark=0, holdgame=0):
+    def endGame(self, restart=0, bookmark=0):
         if self.preview:
             return
         self.app.wm_save_state()
@@ -909,8 +907,6 @@ class Game:
         self._pending_win_time = ''
         if self.pause:
             self.doPause()
-        if holdgame:
-            return
         if bookmark:
             return
         if restart:
@@ -3205,7 +3201,6 @@ class Game:
         self.disableMenus()
         try:
             game = self._loadGame(filename, self.app)
-            game.gstats.holded = 0
         except AssertionError:
             self.updateMenus()
             self.setCursor(cursor=self.app.top_cursor)

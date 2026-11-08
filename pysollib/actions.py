@@ -59,7 +59,6 @@ class PysolMenubar(PysolMenubarTk):
         self.menustate = Struct(
             save=0,
             save_as=0,
-            hold_and_quit=0,
             undo=0,
             redo=0,
             restart=0,
@@ -121,7 +120,6 @@ class PysolMenubar(PysolMenubarTk):
         ms = self.menustate
         # 0 = DISABLED, 1 = ENABLED
         ms.save_as = game.canSaveGame()
-        ms.hold_and_quit = ms.save_as
         if game.filename and ms.save_as:
             ms.save = 1
         if opt.undo:
@@ -174,7 +172,6 @@ class PysolMenubar(PysolMenubarTk):
         # File menu
         self.setMenuState(ms.save, "file.save")
         self.setMenuState(ms.save_as, "file.saveas")
-        self.setMenuState(ms.hold_and_quit, "file.holdandquit")
         # Edit menu
         self.setMenuState(ms.undo, "edit.undo")
         self.setMenuState(ms.redo, "edit.redo")
@@ -375,12 +372,6 @@ class PysolMenubar(PysolMenubarTk):
                 self.game.saveGame(self.game.filename)
             else:
                 self.mSaveAs()
-
-    def mHoldAndQuit(self, *args):
-        if self._cancelDrag():
-            return
-        self.game.endGame(holdgame=1)
-        self.game.quitGame(holdgame=1)
 
     def mQuit(self, *args):
         if self._cancelDrag():

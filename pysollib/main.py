@@ -374,7 +374,7 @@ Cardsets package is up to date.
 
     progress = app.intro.progress
     # load cardset
-    if startgameid != app.opt.last_gameid and app.opt.game_holded == 0:
+    if startgameid != app.opt.last_gameid:
         success = app.requestCompatibleCardsetType(startgameid,
                                                    progress=progress)
     else:
