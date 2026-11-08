@@ -11,7 +11,7 @@ from pysollib.gamedb import GI
 from pysollib.mfxutil import Struct, kwdefault
 from pysollib.mygettext import _, n_
 from pysollib.settings import SELECT_GAME_MENU
-from pysollib.settings import TITLE, WIN_SYSTEM
+from pysollib.settings import TITLE, TITLE_CLASS, WIN_SYSTEM
 from pysollib.ui.tktile.tkconst import COMPOUNDS, CURSOR_WATCH, EVENT_HANDLED
 from pysollib.ui.tktile.tkconst import EVENT_PROPAGATE
 from pysollib.ui.tktile.tkutil import after_idle, bind
@@ -365,17 +365,24 @@ class PysolMenubarTkCommon:
         if self.progress:
             self.progress.update(step=1)
 
-        # macOS: tk creates the menu item "Help->PySolFC Help", therefore
-        # we will not create a duplicate "Help->Contents" item.
-        # The tk-provided menu item expects this callback.
-        self.top.createcommand('tk::mac::ShowHelp', self.mHelp)
-
         if WIN_SYSTEM == "aqua":
             self.top.createcommand(
                 'tk::mac::Quit', lambda: self.top.after_idle(self.mQuit))
 
-        menu = MfxMenu(self.menubar, label=n_("&Help"))
-        if WIN_SYSTEM != "aqua":
+        if WIN_SYSTEM == "aqua":
+            # A menu named "help" is the one macOS treats as the system
+            # Help menu: Tk then adds its own "<app> Help" item, which the
+            # system decorates with an icon that no other item has. Use a
+            # different name so the menu is ordinary and the item is ours.
+            self.help_menu_name = "helpmenu"
+            menu = MfxMenu(self.menubar, label=_("Help"),
+                           name=self.help_menu_name, underline=-1)
+            menu.add_command(
+                label=_("%s Help") % TITLE_CLASS,
+                command=self.mHelp, accelerator=m+"F1")
+        else:
+            self.help_menu_name = "help"
+            menu = MfxMenu(self.menubar, label=n_("&Help"))
             menu.add_command(
                 label=n_("&Contents"),
                 command=self.mHelp, accelerator=m+"F1")

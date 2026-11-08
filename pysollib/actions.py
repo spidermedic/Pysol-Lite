@@ -182,7 +182,8 @@ class PysolMenubar(PysolMenubarTk):
         if getattr(self, "_settings", None):
             self._settings.refresh()
         # Help menu
-        self.setMenuState(ms.rules, "help.rulesforthisgame")
+        self.setMenuState(
+            ms.rules, self.help_menu_name + ".rulesforthisgame")
         # Toolbar
         self.setToolbarState(ms.restart, "restart")
         self.setToolbarState(ms.save_as, "save")
