@@ -362,3 +362,15 @@ Installed app rebuilt after commit "Replace Hold and quit with a plain Quit" (12
 - **Process note:** the user questioned how much testing went into a one-item menu change. Keep the checks proportionate to the change and do not build large harnesses for simple menu edits.
 - **Push state:** `origin/master` is still at the Phosphor handoff (section 25). Sections 26 to 34 and every commit since are local (about 26 commits).
 - **Still open:** as in sections 25, 29 and 33.
+
+## 35. Update: Assist merged into Game; Comments, Demo (all games) and Solver removed (2026-11-08)
+
+Installed app rebuilt after commit "Merge the Assist menu into Game; remove Comments, Demo (all games) and Solver" (120 MB, arm64, ad-hoc signed).
+
+- **Menu bar:** File, Select, Edit, Game, Options, Help (there is no Assist menu now). Game is Deal cards, Auto drop, Shuffle tiles, Pause, a divider, Hint, Highlight piles, Find card, Show full picture, Piles description, a divider, Demo, Select game by number. Shortcuts are unchanged (D, A, F, P, H, I, F2, F3, Cmd-D, Cmd-M). The menu paths that `actions.py` passes to `setMenuState` changed from `assist.*` to `game.hint`, `game.highlightpiles`, `game.findcard`, `game.showfullpicture` and `game.demo`.
+- **What each removed item was:** Comments (`mEditGameComment`) attached a note to a deal and appended it to `~/.PySolFC/comments.txt`; Demo (all games) (`mMixedDemo`) played random games one after another; Solver (`mSolver`) opened the solver window, but the menu item was always greyed out in this build because `fc-solve` is not installed or bundled (`USE_FREECELL_SOLVER` is False). The saved-game field `gsaveinfo.comment`, the solver dialog code (`tile/solverdialog.py`, `ui/tktile/solverdialog.py`, `create_solver_dialog` and friends in the game and app code) and the hint-layout import/export code remain but are unreachable; they are cleanup candidates.
+- **Reasoning recorded:** macOS has no standard Game or Assist menu, so merging two small menus into one is a judgement call; the user approved it.
+- **Help:** the Demo paragraph in `assist_options.html` no longer mentions Demo (all games).
+- **Verification (proportionate):** pyflakes and the unit tests (19) pass; a real-app source run printed the full menu bar and the Game menu in the order above. The installed app was checked with `--version` and `codesign -v`; the pre-bundle `data/html N` cleanup found nothing. Nothing was checked by eye.
+- **Push state:** `origin/master` is at the Hold and quit handoff (section 34, `0895eba1`). Sections 35 and the commits since are local.
+- **Still open:** as in sections 25, 29 and 33, plus the unreachable solver and comment code above.
