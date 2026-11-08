@@ -418,3 +418,16 @@ Installed app rebuilt after commit "Help menu: remove How to use PySol, What's n
 - **Deleted pages:** `html-src/install.html`, `news.html`, `news_old.html`, `plugins.html`, `report_bug.html`. They are gone from `gen-html.py`, the help index and the Settings page. `howtoplay.html` stays and is linked from the index. `credits_old.html` stays (linked from Credits).
 - **Verification (light):** AST parse of the changed files; `make rules` output has none of the deleted pages; installed bundle has none; `--version` and `codesign -v` pass. Not launched or checked by eye.
 - **Still open:** as in sections 25, 29, 33, 35 and 37; plus `howtoplay.html` scoring notes and the `help.py` credits line about music; `docs/`, `po` and `MANIFEST.in` may still name the deleted pages.
+
+## 40. Update: View menu added (2026-11-08)
+
+Installed app rebuilt after commit "Add a View menu with Show toolbar, Show status bar and Full screen" (120 MB, arm64, ad-hoc signed).
+
+- **View menu** sits between Edit and Games: Show toolbar, Show status bar, a divider, Full screen (F11; Ctrl-Cmd-F on macOS), all check items. Menu bar: File, Edit, View, Games, Play, Options, Help.
+- **Show toolbar** uses `tkopt.toolbar_shown` and `mViewToolbar`; `opt.toolbar` 0 still means hidden, and `_toolbar_side` remembers the last side so re-showing returns there. `setToolbarSide` keeps the check item in sync. The "Hide" entry was removed from the Position submenu.
+- **Show status bar** is the old Layout checkbutton (`mOptStatusbar`), moved here.
+- **Full screen** is `mViewFullscreen` / `_toggleFullscreen`: sets `opt.wm_fullscreen` and `top.attributes('-fullscreen')`. Session-only; `wm_fullscreen` is still a fixed, unsaved option. The check item does not follow fullscreen changes made outside the app (for example the green window button).
+- **Options > Layout** is now Toolbar (position, size, button style, visible buttons), Cards (Decks, Backs), Background color, Spread stacks. The Settings help page was updated.
+- **Verification (light):** py_compile; a source run built the menu bar without errors; the installed app passes `--version` and `codesign -v`. The View menu was not opened or toggled by hand.
+- **Idea discussed, not done:** a single Settings window (Cmd-comma on macOS via `tk::mac::ShowPreferences`) with General, Assist, Appearance and Toolbar tabs, replacing the Options menu on macOS.
+- **Still open:** as in sections 25, 29, 33, 35, 37 and 39.
