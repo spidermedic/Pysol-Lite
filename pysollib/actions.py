@@ -42,7 +42,8 @@ from pysollib.pysoltk import ProgressionDialog
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import Status_StatsDialog, Top_StatsDialog
 from pysollib.pysoltk import ASSIST_GAME_OPTIONS, ASSIST_OPTIONS
-from pysollib.pysoltk import AssistLevelDialog
+from pysollib.pysoltk import AUTOMATIC_PLAY_OPTIONS
+from pysollib.pysoltk import ChecklistDialog
 from pysollib.pysoltk import TimeoutsDialog
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
@@ -221,10 +222,9 @@ class PysolMenubar(PysolMenubarTk):
         self.setMenuState(ms.demo, "assist.demo")
         self.setMenuState(ms.demo, "assist.demoallgames")
         # Options menu
-        self.setMenuState(ms.autofaceup, "options.automaticplay.autofaceup")
-        self.setMenuState(ms.autodrop, "options.automaticplay.autodrop")
-        self.setMenuState(ms.autodeal, "options.automaticplay.autodeal")
-        self.setMenuState(ms.quickplay, "options.automaticplay.quickplay")
+        self._autoplay_usable = {
+            'autofaceup': bool(ms.autofaceup), 'autodrop': bool(ms.autodrop),
+            'autodeal': bool(ms.autodeal), 'quickplay': bool(ms.quickplay)}
         self.setMenuState(ms.cardbackground, "options.cards.backs")
         # Help menu
         self.setMenuState(ms.rules, "help.rulesforthisgame")
@@ -832,11 +832,26 @@ class PysolMenubar(PysolMenubarTk):
     def mOptAssistLevel(self, *args):
         if self._cancelDrag(break_pause=False):
             return
-        options = ASSIST_OPTIONS + ASSIST_GAME_OPTIONS
+        self._applyChecklist(
+            _("Assist level"), (ASSIST_OPTIONS, ASSIST_GAME_OPTIONS))
+
+    def mOptAutomaticPlay(self, *args):
+        if self._cancelDrag(break_pause=False):
+            return
+        # Options that do not apply to the current game are greyed out.
+        usable = getattr(self, '_autoplay_usable', {})
+        disabled = [key for key, label, handler in AUTOMATIC_PLAY_OPTIONS
+                    if not usable.get(key, True)]
+        self._applyChecklist(
+            _("Automatic play"), (AUTOMATIC_PLAY_OPTIONS,), disabled)
+
+    def _applyChecklist(self, title, groups, disabled=()):
+        # Show the options as check boxes and apply the changed ones with
+        # the same handlers the menu items used.
+        options = [o for group in groups for o in group]
         current = dict((key, getattr(self.tkopt, key).get())
                        for key, label, handler in options)
-        d = AssistLevelDialog(
-            self.top, _("Assist level"), self.app, current)
+        d = ChecklistDialog(self.top, title, groups, current, disabled)
         if d.status != 0 or d.button != 0:
             return
         for key, label, handler in options:

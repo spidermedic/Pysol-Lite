@@ -457,20 +457,8 @@ class PysolMenubarTkCommon:
         menu.add_command(
             label=n_("&Player options..."),
             command=self.mOptPlayerOptions, accelerator=m+'P')
-        submenu = MfxMenu(menu, label=n_("&Automatic play"))
-        submenu.add_checkbutton(
-            label=n_("Auto &face-up"), variable=self.tkopt.autofaceup,
-            command=self.mOptAutoFaceUp)
-        submenu.add_checkbutton(
-            label=n_("A&uto drop"), variable=self.tkopt.autodrop,
-            command=self.mOptAutoDrop)
-        submenu.add_checkbutton(
-            label=n_("Auto &deal"), variable=self.tkopt.autodeal,
-            command=self.mOptAutoDeal)
-        submenu.add_separator()
-        submenu.add_checkbutton(
-            label=n_("&Quick play"), variable=self.tkopt.quickplay,
-            command=self.mOptQuickPlay)
+        menu.add_command(label=n_("&Automatic play..."),
+                         command=self.mOptAutomaticPlay)
         menu.add_command(label=n_("Assist &level..."),
                          command=self.mOptAssistLevel)
         menu.add_separator()

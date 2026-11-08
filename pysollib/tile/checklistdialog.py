@@ -26,18 +26,21 @@ import tkinter.ttk as ttk
 
 from pysollib.mfxutil import KwStruct
 from pysollib.mygettext import _
-from pysollib.ui.tktile.tkconst import ASSIST_OPTIONS, ASSIST_GAME_OPTIONS
 
 from .tkwidget import MfxDialog, PysolCheckbutton
 
 
-class AssistLevelDialog(MfxDialog):
-    """Choose the assist options, several at once.
+class ChecklistDialog(MfxDialog):
+    """Choose several on/off options at once.
 
-    ``values`` maps each option key to its current True/False value.
+    ``groups`` is a list of groups of (key, label, ...) entries, shown with
+    a divider between groups. ``values`` maps each key to its current
+    True/False value, and keys in ``disabled`` are shown greyed out. After
+    the dialog closes, ``values`` is replaced by the chosen values in
+    ``self.values``.
     """
 
-    def __init__(self, parent, title, app, values, **kw):
+    def __init__(self, parent, title, groups, values, disabled=(), **kw):
         kw = self.initKw(kw)
         MfxDialog.__init__(self, parent, title, kw.resizable, kw.default)
         top_frame, bottom_frame = self.createFrames(kw)
@@ -46,28 +49,27 @@ class AssistLevelDialog(MfxDialog):
         frame.pack(expand=True, fill='both', padx=5, pady=10)
         self.vars = {}
         row = 0
-        for key, label, handler in ASSIST_OPTIONS:
-            row = self._addCheck(frame, row, key, label, values)
-        ttk.Separator(frame, orient='horizontal').grid(
-            row=row, column=0, sticky='ew', padx=10, pady=6)
-        row += 1
-        for key, label, handler in ASSIST_GAME_OPTIONS:
-            row = self._addCheck(frame, row, key, label, values)
+        for n, group in enumerate(groups):
+            if n:
+                ttk.Separator(frame, orient='horizontal').grid(
+                    row=row, column=0, sticky='ew', padx=10, pady=6)
+                row += 1
+            for entry in group:
+                key, label = entry[0], entry[1]
+                var = tkinter.BooleanVar()
+                var.set(bool(values.get(key)))
+                self.vars[key] = var
+                w = PysolCheckbutton(frame, variable=var, text=_(label))
+                w.grid(row=row, column=0, sticky='w', padx=10, pady=1)
+                if key in disabled:
+                    w.state(['disabled'])
+                row += 1
         frame.columnconfigure(0, weight=1)
         #
         focus = self.createButtons(bottom_frame, kw)
         self.mainloop(focus, kw.timeout)
         #
         self.values = dict((k, v.get()) for k, v in self.vars.items())
-
-    def _addCheck(self, frame, row, key, label, values):
-        var = tkinter.BooleanVar()
-        var.set(bool(values.get(key)))
-        self.vars[key] = var
-        PysolCheckbutton(frame, variable=var, text=_(label)
-                         ).grid(row=row, column=0, sticky='w',
-                                padx=10, pady=1)
-        return row + 1
 
     def initKw(self, kw):
         kw = KwStruct(kw,

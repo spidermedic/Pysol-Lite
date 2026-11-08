@@ -52,6 +52,14 @@ COMPOUNDS = (
     (tkinter.TOP,    n_('Icons and text')),     # text below the icon
     )
 
+# The Automatic play choices (same layout as ASSIST_OPTIONS below).
+AUTOMATIC_PLAY_OPTIONS = (
+    ('autofaceup', n_('Auto face-up'), 'mOptAutoFaceUp'),
+    ('autodrop', n_('Auto drop'), 'mOptAutoDrop'),
+    ('autodeal', n_('Auto deal'), 'mOptAutoDeal'),
+    ('quickplay', n_('Quick play'), 'mOptQuickPlay'),
+)
+
 # The Assist level choices: (option and tkopt name, label, menubar handler).
 ASSIST_OPTIONS = (
     ('undo', n_('Enable undo'), 'mOptEnableUndo'),
