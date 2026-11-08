@@ -84,11 +84,8 @@ shisen_show_hint = boolean
 shisen_show_matching = boolean
 match_three_cascade = boolean
 animations = integer(0, 5)
-compact_stacks = boolean
 shadow = boolean
 shade = boolean
-shrink_face_down = boolean
-shade_filled_stacks = boolean
 toolbar = integer(0, 4)
 toolbar_land = integer(0, 4)
 toolbar_port = integer(0, 4)
@@ -104,8 +101,6 @@ wm_fullscreen = boolean
 splashscreen = boolean
 date_format = string
 mouse_type = string
-negative_bottom = boolean
-randomize_place = boolean
 use_cardset_bottoms = boolean
 save_games_geometry = boolean
 game_geometry = int_list(min=2, max=2)
@@ -217,11 +212,8 @@ class Options:
         ('accordion_deal_all', 'bool'),
         ('pegged_auto_remove', 'bool'),
         ('animations', 'int'),
-        ('compact_stacks', 'bool'),
         ('shadow', 'bool'),
         ('shade', 'bool'),
-        ('shrink_face_down', 'bool'),
-        ('shade_filled_stacks', 'bool'),
         ('toolbar', 'int'),
         ('toolbar_land', 'int'),
         ('toolbar_port', 'int'),
@@ -239,8 +231,6 @@ class Options:
         ('splashscreen', 'bool'),
         ('date_format', 'str'),
         ('mouse_type', 'str'),
-        ('negative_bottom', 'bool'),
-        ('randomize_place', 'bool'),
         ('use_cardset_bottoms', 'bool'),
         # ('save_cardsets', 'bool'),
         ('save_games_geometry', 'bool'),
@@ -305,11 +295,8 @@ class Options:
         self.match_three_cascade = True
         # 0 none, 1 fast, 2 medium, 3 slow
         self.animations = 2             # default to Medium
-        self.compact_stacks = True
         self.shadow = True
         self.shade = True
-        self.shrink_face_down = True
-        self.shade_filled_stacks = True
         self.tile_theme = 'default'
         self.default_tile_theme = 'default'
         self.toolbar = 1       # 0 == hide, 1,2,3,4 == top, bottom, left, right
@@ -333,7 +320,6 @@ class Options:
         self.mouse_button3 = 3
         # mouse_type:  'drag-n-drop' or 'point-n-click'
         self.mouse_type = 'drag-n-drop'
-        self.negative_bottom = True
         self.translate_game_names = True
         self.display_win_message = True
         self.language = ''
@@ -394,12 +380,17 @@ class Options:
         self.window_geometry = (0, 0, 0, 0)
         self.offsets = {}           # cards offsets
         #
-        self.randomize_place = False
         self.use_cardset_bottoms = False
         # self.save_cardsets = True
         #
         # Card scaling is fixed: always scale to the window, keep the aspect
         # ratio, and use the best resampling filter. Not saved or loaded.
+        # Card view settings that are fixed (not saved or loaded).
+        self.compact_stacks = True
+        self.shrink_face_down = True
+        self.shade_filled_stacks = True
+        self.negative_bottom = True
+        self.randomize_place = False
         self.scale_cards = False
         self.scale_x = 1.0
         self.scale_y = 1.0

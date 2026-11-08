@@ -172,10 +172,6 @@ class PysolMenubarTkCommon:
             animations=tkinter.IntVar(),
             shadow=tkinter.BooleanVar(),
             shade=tkinter.BooleanVar(),
-            shade_filled_stacks=tkinter.BooleanVar(),
-            compact_stacks=tkinter.BooleanVar(),
-            shrink_face_down=tkinter.BooleanVar(),
-            randomize_place=tkinter.BooleanVar(),
             toolbar=tkinter.IntVar(),
             toolbar_relief=tkinter.StringVar(),
             toolbar_compound=tkinter.StringVar(),
@@ -185,7 +181,6 @@ class PysolMenubarTkCommon:
             helpbar=tkinter.BooleanVar(),
             splashscreen=tkinter.BooleanVar(),
             mouse_type=tkinter.StringVar(),
-            negative_bottom=tkinter.BooleanVar(),
             pause=tkinter.BooleanVar(),
         )
 
@@ -207,10 +202,6 @@ class PysolMenubarTkCommon:
         tkopt.highlight_not_matching.set(opt.highlight_not_matching)
         tkopt.peek_facedown.set(opt.peek_facedown)
         tkopt.stuck_notification.set(opt.stuck_notification)
-        tkopt.shrink_face_down.set(opt.shrink_face_down)
-        tkopt.shade_filled_stacks.set(opt.shade_filled_stacks)
-        tkopt.compact_stacks.set(opt.compact_stacks)
-        tkopt.randomize_place.set(opt.randomize_place)
         tkopt.mahjongg_show_removed.set(opt.mahjongg_show_removed)
         tkopt.shisen_show_hint.set(opt.shisen_show_hint)
         tkopt.match_three_cascade.set(opt.match_three_cascade)
@@ -237,7 +228,6 @@ class PysolMenubarTkCommon:
         # tkopt.helpbar.set(opt.helpbar)
         tkopt.splashscreen.set(opt.splashscreen)
         tkopt.mouse_type.set(opt.mouse_type)
-        tkopt.negative_bottom.set(opt.negative_bottom)
 
     def connectGame(self, game):
         self.game = game
@@ -580,33 +570,12 @@ class PysolMenubarTkCommon:
             command=self.mSelectTableColor)
         # this submenu will get set by updateBackgroundImagesMenu()
         submenu = MfxMenu(menu, label=n_("Card &background"))
-        submenu = MfxMenu(menu, label=n_("Card &view"))
-        submenu.add_checkbutton(
+        menu.add_checkbutton(
             label=n_("Card shado&w"), variable=self.tkopt.shadow,
             command=self.mOptShadow)
-        submenu.add_checkbutton(
+        menu.add_checkbutton(
             label=n_("Shade &legal moves"), variable=self.tkopt.shade,
             command=self.mOptShade)
-        submenu.add_checkbutton(
-            label=n_("&Negative cards bottom"),
-            variable=self.tkopt.negative_bottom,
-            command=self.mOptNegativeBottom)
-        submenu.add_checkbutton(
-            label=n_("Shrink face-down cards"),
-            variable=self.tkopt.shrink_face_down,
-            command=self.mOptShrinkFaceDown)
-        submenu.add_checkbutton(
-            label=n_("Shade &filled stacks"),
-            variable=self.tkopt.shade_filled_stacks,
-            command=self.mOptShadeFilledStacks)
-        submenu.add_checkbutton(
-            label=n_("&Compact long stacks"),
-            variable=self.tkopt.compact_stacks,
-            command=self.mOptCompactStacks)
-        submenu.add_checkbutton(
-            label=n_("&Randomize card placement"),
-            variable=self.tkopt.randomize_place,
-            command=self.mOptRandomizePlace)
         submenu = MfxMenu(menu, label=n_("A&nimations"))
         submenu.add_radiobutton(
             label=n_("&Off"), variable=self.tkopt.animations, value=0,
@@ -1496,27 +1465,6 @@ Unsupported game for import.
             return
         self.app.opt.shade = self.tkopt.shade.get()
 
-    def mOptShrinkFaceDown(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.shrink_face_down = self.tkopt.shrink_face_down.get()
-        self.game.endGame(bookmark=1)
-        self.game.quitGame(bookmark=1)
-
-    def mOptShadeFilledStacks(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.shade_filled_stacks = self.tkopt.shade_filled_stacks.get()
-        self.game.endGame(bookmark=1)
-        self.game.quitGame(bookmark=1)
-
-    def mOptCompactStacks(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.compact_stacks = self.tkopt.compact_stacks.get()
-        self.game.endGame(bookmark=1)
-        self.game.quitGame(bookmark=1)
-
     def mOptMahjonggShowRemoved(self, *args):
         if self._cancelDrag():
             return
@@ -1584,12 +1532,6 @@ Unsupported game for import.
         if self._cancelDrag(break_pause=True):
             return
         self.app.opt.center_layout = not self.app.opt.center_layout
-        self._updateCardSize()
-
-    def mOptRandomizePlace(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.randomize_place = self.tkopt.randomize_place.get()
         self._updateCardSize()
 
     def mOptSaveGamesGeometry(self, *event):
@@ -1692,14 +1634,6 @@ Unsupported game for import.
         if self._cancelDrag(break_pause=False):
             return
         self.app.opt.mouse_type = self.tkopt.mouse_type.get()
-
-    def mOptNegativeBottom(self, *event):
-        if self._cancelDrag():
-            return
-        self.app.opt.negative_bottom = self.tkopt.negative_bottom.get()
-        self.app.updateCardset()
-        self.game.endGame(bookmark=1)
-        self.game.quitGame(bookmark=1)
 
     def refresh(self, *event):
         self.app.updateCardset()
