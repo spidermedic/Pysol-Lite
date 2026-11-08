@@ -405,9 +405,6 @@ class PysolMenubarTkCommon:
         menu.add_command(label=n_("&Play options"),
                          command=self.mOptPlayOptions)
         menu.add_separator()
-        menu.add_checkbutton(
-            label=n_("&Sound"), variable=self.tkopt.sound,
-            command=self.mOptSound)
         # cardsets
         layout = MfxMenu(menu, label=n_("&Layout"))
         submenu = MfxMenu(layout, label=n_("&Toolbar"))
@@ -441,6 +438,9 @@ class PysolMenubarTkCommon:
         submenu.add_radiobutton(
             label=n_("&Slow"), variable=self.tkopt.animations, value=3,
             command=self.mOptAnimations)
+        menu.add_checkbutton(
+            label=n_("&Sound"), variable=self.tkopt.sound,
+            command=self.mOptSound)
 
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
