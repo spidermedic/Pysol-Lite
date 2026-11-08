@@ -491,8 +491,6 @@ class PysolMenubarTkCommon:
             onvalue='point-n-click', offvalue='drag-n-drop',
             command=self.mOptMouseType)
         menu.add_separator()
-        menu.add_command(label=n_("&Fonts"), command=self.mOptFonts)
-        menu.add_command(label=n_("&Colors"), command=self.mOptColors)
         menu.add_command(label=n_("Time&outs"), command=self.mOptTimeouts)
         menu.add_separator()
         submenu = MfxMenu(menu, label=n_("&Toolbar"))

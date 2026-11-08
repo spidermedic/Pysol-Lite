@@ -578,6 +578,15 @@ class MfxScrolledCanvas:
             self.canvas.config(bg=app.top_bg)
             # app.top.config(bg=app.top_bg)
 
+        # Text drawn on the table is white on a dark background and black
+        # on a light one, so it can always be read.
+        bg = tile.color if i == 0 else app.opt.colors['table']
+        try:
+            r, g, b = (v / 65535.0 for v in self.canvas.winfo_rgb(bg))
+            light = (0.299 * r + 0.587 * g + 0.114 * b) > 0.6
+        except Exception:
+            light = False
+        app.opt.colors['text'] = '#000000' if light else '#ffffff'
         self.canvas.setTextColor(app.opt.colors['text'])
 
         return True

@@ -120,15 +120,6 @@ display_win_message = boolean
 language = string
 table_zoom = list
 
-[fonts]
-sans = list
-small = list
-fixed = list
-canvas_default = list
-canvas_small = list
-canvas_fixed = list
-canvas_large = list
-
 [colors]
 piles = string
 text = string
@@ -319,18 +310,16 @@ class Options:
         # sound
         self.sound = True
         self.sound_sample_buffer_size = 1  # 1 - 4 (1024 - 4096 bytes)
-        # fonts
+        # Fonts are fixed (not saved or loaded). These are replaced by the
+        # system fonts in setDefaults() once Tk is running.
         self.fonts = {
             "default": None,
-            # "default": ("helvetica", 12),
-            "sans": ("times",     12),  # for html
-            "fixed": ("courier",   12),  # for html & log
-            "small": ("helvetica", 12),
-            "canvas_default": ("helvetica", 12),
-            # "canvas_card": ("helvetica", 12),
-            "canvas_fixed": ("courier",   12),
-            "canvas_large": ("helvetica", 16),
-            "canvas_small": ("helvetica", 10),
+            "sans": ("helvetica", 14),          # help text
+            "fixed": ("courier", 13),           # help code, logs
+            "canvas_default": ("helvetica", 13),
+            "canvas_fixed": ("courier", 12),
+            "canvas_large": ("helvetica", 18),
+            "canvas_small": ("helvetica", 11),
             }
         # colors
         self.colors = {
@@ -422,12 +411,22 @@ class Options:
 
     def setDefaults(self, top=None):
         WIN_SYSTEM = pysollib.settings.WIN_SYSTEM
-        # fonts
-        if WIN_SYSTEM == 'win32':
-            self.fonts["sans"] = ("times new roman", 12)
-            self.fonts["fixed"] = ("courier new", 10)
-        elif WIN_SYSTEM == 'x11':
-            self.fonts["sans"] = ("helvetica", -12)
+        # fonts: the system UI font and the system monospace font
+        if top is not None:
+            try:
+                import tkinter.font
+                ui = tkinter.font.nametofont('TkDefaultFont').actual('family')
+                mono = tkinter.font.nametofont('TkFixedFont').actual('family')
+            except Exception:
+                ui = mono = None
+            if ui and mono:
+                for key, (family, size) in (
+                        ('sans', (ui, 14)), ('fixed', (mono, 13)),
+                        ('canvas_default', (ui, 13)),
+                        ('canvas_fixed', (mono, 12)),
+                        ('canvas_large', (ui, 18)),
+                        ('canvas_small', (ui, 11))):
+                    self.fonts[key] = (family, size)
         # tile theme
         if WIN_SYSTEM == 'win32':
             self.tile_theme = self.default_tile_theme = 'winnative'
@@ -542,16 +541,8 @@ class Options:
         if 'none' in config['general']['solver_presets']:
             config['general']['solver_presets'].remove('none')
 
-        # fonts
-        for key, val in self.fonts.items():
-            if key == 'default':
-                continue
-            if val is None:
-                continue
-            config['fonts'][key] = val
-
-        # colors
-        config['colors'] = self.colors
+        # colors: only the background color can be changed
+        config['colors'] = {'table': self.colors['table']}
 
         # timeouts
         config['timeouts'] = self.timeouts
@@ -617,7 +608,6 @@ class Options:
         # create sections
         for section in (
             'general',
-            'fonts',
             'colors',
             'timeouts',
             'cardsets',
@@ -700,22 +690,8 @@ class Options:
                 solver_presets.insert(0, 'none')
             self.solver_presets = solver_presets
 
-        # fonts
-        for key in self.fonts:
-            if key == 'default':
-                continue
-            val = self._getOption('fonts', key, 'str')
-            if val is not None:
-                try:
-                    val[1] = int(val[1])
-                except Exception:
-                    traceback.print_exc()
-                else:
-                    val = tuple(val)
-                    self.fonts[key] = val
-
-        # colors
-        for key in self.colors:
+        # colors: only the background color is saved
+        for key in ('table',):
             val = self._getOption('colors', key, 'str')
             if val is not None:
                 self.colors[key] = val

@@ -30,9 +30,7 @@ from pysollib.mfxutil import print_err
 from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
 from pysollib.pysoltk import SingleGame_StatsDialog
-from pysollib.pysoltk import ColorsDialog
 from pysollib.pysoltk import EditTextDialog
-from pysollib.pysoltk import FontsDialog
 from pysollib.pysoltk import FullLog_StatsDialog, SessionLog_StatsDialog
 from pysollib.pysoltk import GameInfoDialog
 from pysollib.pysoltk import MfxExceptionDialog
@@ -785,49 +783,6 @@ class PysolMenubar(PysolMenubarTk):
                 self.game.updateStatus(stats=self.app.stats.getStats(
                     self.app.opt.player, self.game.id))
         self.updateMenus()
-
-    def mOptColors(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        wasPaused = False
-        if not self.game.pause:
-            self.game.doPause()
-            wasPaused = True
-        d = ColorsDialog(self.top, _("Set colors"), self.app)
-        if self.game.pause:
-            if wasPaused:
-                self.game.doPause()
-        text_color = self.app.opt.colors['text']
-        if d.status == 0 and d.button == 0:
-            self.app.opt.colors['text'] = d.text_color
-            self.app.opt.colors['piles'] = d.piles_color
-            self.app.opt.colors['cards_1'] = d.cards_1_color
-            self.app.opt.colors['cards_2'] = d.cards_2_color
-            self.app.opt.colors['samerank_1'] = d.samerank_1_color
-            self.app.opt.colors['samerank_2'] = d.samerank_2_color
-            self.app.opt.colors['hintarrow'] = d.hintarrow_color
-            self.app.opt.colors['not_matching'] = d.not_matching_color
-            self.app.opt.colors['keyboard_sel'] = d.keyboard_sel_color
-            #
-            if text_color != self.app.opt.colors['text']:
-                self.app.setTile(self.app.tabletile_index, force=True)
-
-    def mOptFonts(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        wasPaused = False
-        if not self.game.pause:
-            self.game.doPause()
-            wasPaused = True
-        d = FontsDialog(self.top, _("Set fonts"), self.app)
-        if self.game.pause:
-            if wasPaused:
-                self.game.doPause()
-        if d.status == 0 and d.button == 0:
-            self.app.opt.fonts.update(d.fonts)
-            self._cancelDrag()
-            self.game.endGame(bookmark=1)
-            self.game.quitGame(bookmark=1)
 
     def mOptAssistLevel(self, *args):
         if self._cancelDrag(break_pause=False):
