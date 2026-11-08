@@ -398,18 +398,9 @@ class PysolMenubarTkCommon:
                 label=n_("&Contents"),
                 command=self.mHelp, accelerator=m+"F1")
         menu.add_command(
-            label=n_("&How to use PySol"),
-            command=self.mHelpHowToPlay)
-        menu.add_command(
             label=n_("&Rules for this game"),
             command=self.mHelpRules, accelerator="F1")
         menu.add_separator()
-        menu.add_command(
-            label=n_("What's &new?"),
-            command=self.mHelpNews)
-        menu.add_command(
-            label=n_("R&eport a bug"),
-            command=self.mHelpReportBug)
         menu.add_command(
             label=n_("&License terms"),
             command=self.mHelpLicense)

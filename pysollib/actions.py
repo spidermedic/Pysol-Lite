@@ -532,11 +532,6 @@ class PysolMenubar(PysolMenubarTk):
             return
         help_html(self.app, "index.html", "html")
 
-    def mHelpHowToPlay(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        help_html(self.app, "howtoplay.html", "html")
-
     def mHelpRules(self, *args):
         if self._cancelDrag(break_pause=False):
             return
@@ -546,20 +541,10 @@ class PysolMenubar(PysolMenubarTk):
         # FIXME: plugins
         help_html(self.app, self.app.getGameRulesFilename(self.game.id), dir)
 
-    def mHelpReportBug(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        help_html(self.app, "report_bug.html", "html")
-
     def mHelpLicense(self, *args):
         if self._cancelDrag(break_pause=False):
             return
         help_html(self.app, "license.html", "html")
-
-    def mHelpNews(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        help_html(self.app, "news.html", "html")
 
     def mHelpWebSite(self, *args):
         openURL(PACKAGE_URL)

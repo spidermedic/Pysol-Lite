@@ -55,18 +55,13 @@ files = [
     ('howtoplay.html', 'How to Use PySol'),
     ('accessibility.html', 'PySol - Accessibility'),
     ('index.html', 'PySol - a Solitaire Game Collection'),
-    ('install.html', 'PySol - Installation'),
     ('intro.html', 'PySol - Introduction'),
     ('license.html', 'PySol Software License'),
-    ('news.html', 'PySol - What\'s New?'),
-    ('news_old.html', 'PySol - a Solitaire Game Collection'),
-    ('report_bug.html', 'PySol - Report a Bug'),
     # ('rules_alternate.html', 'PySol - a Solitaire Game Collection'),
     # ('rules.html', 'PySol - a Solitaire Game Collection'),
     ('settings.html', 'PySol - Settings'),
     ('assist_options.html', 'PySol - Assist Options'),
     ('cardset_customization.html', 'PySol - Cardset Customization'),
-    ('plugins.html', 'PySol - Plugins'),
     ]
 
 rules_files = [
