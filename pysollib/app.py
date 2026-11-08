@@ -75,16 +75,10 @@ from pysollib.resource import Sample, SampleManager
 from pysollib.resource import TileManager
 from pysollib.settings import DEBUG
 from pysollib.settings import PACKAGE, VERSION_TUPLE  # , WIN_SYSTEM
-from pysollib.settings import TOOLKIT
 from pysollib.speech import Speech
 from pysollib.util import IMAGE_EXTENSIONS
 from pysollib.winsystems import TkSettings
-if TOOLKIT == 'tk':
-    from pysollib.ui.tktile.solverdialog import destroy_solver_dialog
-else:
-    from pysollib.pysoltk import destroy_solver_dialog
-if TOOLKIT == 'kivy':
-    import logging
+from pysollib.ui.tktile.solverdialog import destroy_solver_dialog
 
 # Luminance below this counts as a dark theme background.
 _DARK_LUMINANCE = 0.4
@@ -144,25 +138,20 @@ def resolve_image_style(data_dir, category, style, default_style):
 def interface_is_dark(root):
     """True when the UI theme background is dark.
 
-    Tile themes are sampled from the current ttk background. Kivy uses the
-    main-window chrome color. A color that cannot be read counts as light.
+    Themes are sampled from the current ttk background. A color that cannot
+    be read counts as light.
     """
-    if TOOLKIT == 'kivy':
-        from pysollib.kivy.LApp import LColorToLuminance, MAIN_WINDOW_BG
-        return LColorToLuminance(MAIN_WINDOW_BG) < _DARK_LUMINANCE
     if root is None:
         return False
     color = ''
-    from pysollib.settings import USE_TILE
-    if TOOLKIT == 'tk' and USE_TILE:
-        try:
-            import tkinter.ttk as ttk
-            style = ttk.Style(root)
-            color = (style.lookup('TFrame', 'background')
-                     or style.lookup('.', 'background')
-                     or '')
-        except Exception:
-            color = ''
+    try:
+        import tkinter.ttk as ttk
+        style = ttk.Style(root)
+        color = (style.lookup('TFrame', 'background')
+                 or style.lookup('.', 'background')
+                 or '')
+    except Exception:
+        color = ''
     if not color:
         try:
             color = root.cget('background')
@@ -289,18 +278,7 @@ class Application:
 
     # the PySol mainloop
     def mainloop(self):
-        try:
-            approc = self.mainproc()  # setup process
-            approc.send(None)				# and go
-        except StopIteration:
-            pass
-
-    def gameproc(self):
-        while True:
-            logging.info('App: gameproc waiting for game to start')
-            (id_, random) = yield
-            logging.info('App: game started %s,%s', id_, random)
-            self.runGame(id_, random)
+        self.mainproc()
 
     def _load_held_or_saved_game(self, tmpgame):
         """docstring for _load_held_or_saved_game"""
@@ -330,13 +308,7 @@ class Application:
                 id_, random = self.nextgame.id, self.nextgame.random
                 self.nextgame.id, self.nextgame.random = 0, None
                 try:
-                    if TOOLKIT == 'kivy':
-                        self.gproc.send((id_, random))
-                        logging.info('App: sent for game to start')
-                        yield
-                        logging.info('App: game proc stopped')
-                    else:
-                        self.runGame(id_, random)
+                    self.runGame(id_, random)
                 except Exception:
                     # try Klondike if current game fails
                     if id_ == 2:
@@ -401,11 +373,6 @@ class Application:
                 self.audio.destroy()
             except Exception:
                 traceback.print_exc()
-            if TOOLKIT == 'kivy':
-                self.top.quit()
-                while True:
-                    logging.info('App: mainloop end position')
-                    yield
 
     def mainproc(self):
         # copy startup options
@@ -486,17 +453,13 @@ class Application:
                                     relief=self.opt.toolbar_relief,
                                     compound=self.opt.toolbar_compound)
         self.toolbar.show(self.opt.toolbar)
-        if TOOLKIT == 'tk':
-            for w, v in self.opt.toolbar_vars.items():
-                self.toolbar.config(w, v)
+        for w, v in self.opt.toolbar_vars.items():
+            self.toolbar.config(w, v)
         #
         if self.intro.progress:
             self.intro.progress.update(step=1)
         #
 
-        if TOOLKIT == 'kivy':
-            self.gproc = self.gameproc()
-            self.gproc.send(None)
         return self._main_loop()
 
     def runGame(self, id_, random=None):
@@ -655,7 +618,7 @@ class Application:
         MfxDialog.button_img = {}
         style = self._selectImageStyle(
             'button_icon_style', 'buttons', DEFAULT_BUTTON_ICON_STYLE)
-        if TOOLKIT == 'tk' and style != 'none':
+        if style != 'none':
             dirname = os.path.join('images', 'buttons', style)
             for f, labels in (
                 ('ok', (_('&OK'), _('&Select'), _('&Nice'), _('&Enjoy'),
@@ -762,8 +725,6 @@ class Application:
         return self._getImagesDir('cards')
 
     def _toolbarIconSizeName(self):
-        if TOOLKIT == 'kivy':
-            return 'xlarge'
         if self.opt.toolbar_size == 2:
             return 'xlarge'
         if self.opt.toolbar_size == 1:

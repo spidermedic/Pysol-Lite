@@ -32,7 +32,7 @@ from pysollib.mfxutil import USE_PIL, \
     get_default_resampling, print_err
 from pysollib.mygettext import _
 from pysollib.mygettext import myGettext
-from pysollib.pysoltk import STATUSBAR_ITEMS, TOOLBAR_BUTTONS, TOOLKIT
+from pysollib.pysoltk import STATUSBAR_ITEMS, TOOLBAR_BUTTONS
 from pysollib.resource import CSI
 
 import validate
@@ -377,17 +377,12 @@ class Options:
         self.mahjongg_create_solvable = 2  # 0 - none, 1 - easy, 2 - hard
         self.accordion_deal_all = True
         self.pegged_auto_remove = True
-        if TOOLKIT == 'kivy':
-            self.mahjongg_create_solvable = 1  # 0 - none, 1 - easy, 2 - hard
         self.shisen_show_hint = True
         self.shisen_show_matching = False
         self.match_three_cascade = True
         self.animations = 3             # default to Medium
         self.redeal_animation = True
         self.win_animation = True
-        if TOOLKIT == 'kivy':
-            self.redeal_animation = False
-            self.win_animation = False
         self.flip_animation = True
         self.compact_stacks = True
         self.shadow = True
@@ -404,7 +399,6 @@ class Options:
         self.tile_theme = 'default'
         self.default_tile_theme = 'default'
         self.toolbar = 1       # 0 == hide, 1,2,3,4 == top, bottom, left, right
-        # used with 'kivy' version in addition:
         self.toolbar_land = 4  # (landscape)
         self.toolbar_port = 2  # (portrait)
         # 0 == hide,
@@ -431,17 +425,14 @@ class Options:
         self.mouse_button2 = 2
         self.mouse_button3 = 3
         # mouse_type:  'drag-n-drop' or 'sticky-mouse' or 'point-n-click'
-        if TOOLKIT == 'kivy':
-            self.mouse_type = 'point-n-click'
-        else:
-            self.mouse_type = 'drag-n-drop'
+        self.mouse_type = 'drag-n-drop'
         self.mouse_undo = False         # use mouse for undo/redo
         self.negative_bottom = True
         self.translate_game_names = True
         self.display_win_message = True
         self.language = ''
         self.table_zoom = [1.0, 0.0, 0.0]
-        self.fontscale = 'default'        # (kivy,  platform defaults)
+        self.fontscale = 'default'
         # self.fontsizefactor = 1.0
         # sound
         self.sound = True
@@ -513,10 +504,6 @@ class Options:
         self.num_recent_games = 15
         self.recent_gameid = []
         self.favorite_gameid = []
-        if TOOLKIT == 'kivy':
-            self.favorite_gameid = [2, 7, 8, 19, 140, 116, 152, 176, 181,
-                                    194, 207, 706, 721, 756, 903, 5034,
-                                    11004, 14405, 14410, 15411, 22225]
         self.last_gameid = 0            # last game played
         self.game_holded = 0            # gameid or 0
         self.wm_maximized = 1
@@ -606,9 +593,6 @@ class Options:
         m = "Crystal Mahjongg"
         if sw < 800 or sh < 600:
             c = "2000"
-        if TOOLKIT == 'kivy':
-            c = "Standard"
-            m = "Gnome Mahjongg 1"
 
         # if sw > 1024 and sh > 768:
         #    c = 'Dondorf'

@@ -38,10 +38,6 @@ VERSION = '.'.join(map(str, VERSION_TUPLE))
 # Tk windowing system (auto set up in init.py)
 WIN_SYSTEM = 'x11'                      # win32, x11, aqua, classic
 
-# toolkit
-TOOLKIT = 'tk'                          # or 'gtk'
-USE_TILE = 'auto'                       # or True or False
-
 # sound
 # available values:
 #   'pss' - PySol-Sound-Server (all)

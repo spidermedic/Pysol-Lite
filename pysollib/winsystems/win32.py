@@ -21,32 +21,24 @@
 #
 # ---------------------------------------------------------------------------
 
-from pysollib.settings import TOOLKIT, USE_TILE
 from pysollib.winsystems.common import BaseTkSettings, base_init_root_window
 
-if USE_TILE:
-    import tkinter.ttk as ttk
+import tkinter.ttk as ttk
 
 
 def init_root_window(root, app):
     base_init_root_window(root, app)
-    if TOOLKIT == 'gtk':
-        pass
-    elif USE_TILE:
-        theme = app.opt.tile_theme
-        style = ttk.Style(root)
-        if theme not in ('winnative', 'xpnative'):
-            color = style.lookup('.', 'background')
-            if color:
-                root.tk_setPalette(color)
-            # root.option_add('*Menu.foreground', 'black')
-            root.option_add('*Menu.activeBackground', '#08246b')
-            root.option_add('*Menu.activeForeground', 'white')
-        if theme == 'winnative':
-            style.configure('Toolbutton', padding=2)
-    else:
-        # root.option_add(...)
-        pass
+    theme = app.opt.tile_theme
+    style = ttk.Style(root)
+    if theme not in ('winnative', 'xpnative'):
+        color = style.lookup('.', 'background')
+        if color:
+            root.tk_setPalette(color)
+        # root.option_add('*Menu.foreground', 'black')
+        root.option_add('*Menu.activeBackground', '#08246b')
+        root.option_add('*Menu.activeForeground', 'white')
+    if theme == 'winnative':
+        style.configure('Toolbutton', padding=2)
 
 
 class TkSettings(BaseTkSettings):
@@ -54,5 +46,4 @@ class TkSettings(BaseTkSettings):
     horizontal_toolbar_padding = (1, 0)
     toolbar_relief = 'groove'
     toolbar_borderwidth = 2
-    if USE_TILE:
-        toolbar_button_padding = (2, 0)
+    toolbar_button_padding = (2, 0)

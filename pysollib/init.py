@@ -99,46 +99,18 @@ def init():
         print("PySol FC version {}".format(pysollib.settings.VERSION))
         sys.exit(0)
 
-    # init toolkit
-    if '--gtk' in sys.argv:
-        pysollib.settings.TOOLKIT = 'gtk'
-        sys.argv.remove('--gtk')
-    elif '--tk' in sys.argv:
-        pysollib.settings.TOOLKIT = 'tk'
-        pysollib.settings.USE_TILE = False
-        sys.argv.remove('--tk')
-    elif '--tile' in sys.argv:
-        pysollib.settings.TOOLKIT = 'tk'
-        pysollib.settings.USE_TILE = True
-        sys.argv.remove('--tile')
-    elif '--kivy' in sys.argv:
-        pysollib.settings.TOOLKIT = 'kivy'
-        pysollib.settings.USE_TILE = False
-        pysollib.settings.SELECT_GAME_MENU = False
-        sys.argv.remove('--kivy')
-
-    if pysollib.settings.TOOLKIT == 'tk':
-        import tkinter
-        root = tkinter.Tk(className=pysollib.settings.TITLE)
-        root.withdraw()
-        if tkinter.TkVersion < 8.4:
-            # we need unicode support
-            sys.exit("%s needs Tcl/Tk 8.4 or better (you have %s)" %
-                     (pysollib.settings.TITLE, str(tkinter.TkVersion)))
-        pysollib.settings.WIN_SYSTEM = root.tk.call('tk', 'windowingsystem')
-        #
-        if pysollib.settings.USE_TILE == 'auto':
-            # check Tile
-            pysollib.settings.USE_TILE = False
-            try:
-                root.tk.eval('package require tile 0.7.8')
-            except tkinter.TclError:
-                pass
-            else:
-                pysollib.settings.USE_TILE = True
-        # "can't invoke event <<ThemeChanged>>: application has been destroyed"
-        root.destroy()
-        tkinter._default_root = None
+    # init Tk
+    import tkinter
+    root = tkinter.Tk(className=pysollib.settings.TITLE)
+    root.withdraw()
+    if tkinter.TkVersion < 8.4:
+        # we need unicode support
+        sys.exit("%s needs Tcl/Tk 8.4 or better (you have %s)" %
+                 (pysollib.settings.TITLE, str(tkinter.TkVersion)))
+    pysollib.settings.WIN_SYSTEM = root.tk.call('tk', 'windowingsystem')
+    # "can't invoke event <<ThemeChanged>>: application has been destroyed"
+    root.destroy()
+    tkinter._default_root = None
 
     # check FreeCell-Solver
     pysollib.settings.USE_FREECELL_SOLVER = False

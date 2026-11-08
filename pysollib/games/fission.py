@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import DefaultHint
 from pysollib.layout import Layout
-from pysollib.settings import TOOLKIT
 from pysollib.stack import \
     InitialDealTalonStack, \
     OpenStack, \
@@ -104,22 +103,10 @@ class Fission_Foundation(SS_FoundationStack):
         same_column = [fnds[col + 7 * k] for k in range(7)]
         before = [s for s in same_column if s.id < self.id and s.cards]
         after = [s for s in same_column if s.id > self.id and s.cards]
-        if TOOLKIT == 'tk':
-            if before:
-                self.group.tkraise(before[-1].group)
-            if after:
-                self.group.lower(after[0].group)
-        elif TOOLKIT == 'kivy':
-            if before:
-                self.group.tkraise(before[-1].group)
-            if after:
-                self.group.lower(after[0].group)
-        elif TOOLKIT == 'gtk':
-            # gtk raise/lower not wired; re-stack the whole column
-            for k in range(7):
-                s = fnds[col + 7 * k]
-                if s.cards:
-                    s.group.tkraise()
+        if before:
+            self.group.tkraise(before[-1].group)
+        if after:
+            self.group.lower(after[0].group)
 
 
 class Fission_Hint(DefaultHint):

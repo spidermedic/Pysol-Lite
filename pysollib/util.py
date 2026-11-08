@@ -35,7 +35,7 @@ import sys
 # PySol imports
 from pysollib.mfxutil import Image
 from pysollib.mygettext import _
-from pysollib.settings import DATA_DIRS, TOOLKIT
+from pysollib.settings import DATA_DIRS
 
 # ************************************************************************
 # * constants
@@ -88,9 +88,6 @@ if os.name == "nt":
 if Image:
     IMAGE_EXTENSIONS = (".png", ".gif", ".jpg", ".jpeg", ".ppm", ".bmp")
 
-if TOOLKIT == 'kivy':
-    IMAGE_EXTENSIONS = (".png", ".bmp", ".ppm", ".jpg", ".jpeg", ".tif",
-                        ".tiff")
 
 # ************************************************************************
 # * DataLoader

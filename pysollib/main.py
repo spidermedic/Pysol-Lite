@@ -32,7 +32,7 @@ from pysollib.gamedb import GAME_DB
 from pysollib.mfxutil import print_err
 from pysollib.mygettext import _
 from pysollib.pysolaudio import AbstractAudioClient
-from pysollib.pysolaudio import KivyAudioClient, OSSAudioClient
+from pysollib.pysolaudio import OSSAudioClient
 from pysollib.pysolaudio import PyGameAudioClient, Win32AudioClient
 from pysollib.pysolaudio import PysolSoundServerModuleClient
 from pysollib.pysolaudio import pysolsoundserver
@@ -41,7 +41,7 @@ from pysollib.pysoltk import MfxRoot
 from pysollib.pysoltk import PysolProgressBar
 from pysollib.pysoltk import loadImage
 from pysollib.resource import Tile
-from pysollib.settings import SOUND_MOD, TITLE, TOOLKIT
+from pysollib.settings import SOUND_MOD, TITLE
 from pysollib.util import DataLoader
 from pysollib.winsystems import init_root_window
 
@@ -49,26 +49,11 @@ from pysollib.winsystems import init_root_window
 # *
 # ************************************************************************
 
-if TOOLKIT == 'kivy':
-    from pysollib.mfxutil import getprefdir
-    from pysollib.settings import PACKAGE
 
-    def fatal_no_cardsets(app):
-        app.wm_withdraw()
-        MfxMessageDialog(app.top, title=_("%s installation error") % TITLE,
-                         text=_('''No cardsets were found!!!
-
-Cardsets should be installed into:
-%(dir)s
-
-Please check your %(app)s installation.
-''') % {'dir': getprefdir(PACKAGE) + '/cardsets/', 'app': TITLE},
-            bitmap="error", strings=(_("&Quit"),))
-else:
-    def fatal_no_cardsets(app):
-        app.wm_withdraw()
-        MfxMessageDialog(app.top, title=_("%s installation error") % TITLE,
-                         text=_('''No cardsets were found!!!
+def fatal_no_cardsets(app):
+    app.wm_withdraw()
+    MfxMessageDialog(app.top, title=_("%s installation error") % TITLE,
+                     text=_('''No cardsets were found!!!
 
 Main data directory is:
 %(dir)s
@@ -265,8 +250,6 @@ def pysol_init(app, args):
               'pygame':  PyGameAudioClient,
               'oss':     OSSAudioClient,
               'win':     Win32AudioClient}
-    if TOOLKIT == 'kivy':
-        sounds['kivy'] = KivyAudioClient
     if opts["nosound"] or SOUND_MOD == 'none':
         app.audio = AbstractAudioClient()
     elif opts['sound-mod']:
@@ -275,8 +258,6 @@ def pysol_init(app, args):
     elif SOUND_MOD == 'auto':
         snd = []
         snd.append(PyGameAudioClient)
-        if TOOLKIT == 'kivy':
-            snd.append(KivyAudioClient)
         if pysolsoundserver:
             snd.append(PysolSoundServerModuleClient)
         snd.append(OSSAudioClient)
@@ -443,21 +424,11 @@ Cardsets package is up to date.
 # ************************************************************************
 
 
-if TOOLKIT == 'kivy':
-    from pysollib.kivy.LApp import LApp
-    import logging
-
-    def main(args=None):
-        logging.basicConfig(level=logging.INFO)
-        LApp(args).run()
-
-else:
-
-    def main(args=None):
-        # create the application
-        app = Application()
-        r = pysol_init(app, args)
-        if r != 0:
-            return r
-        # let's go - enter the mainloop
-        app.mainloop()
+def main(args=None):
+    # create the application
+    app = Application()
+    r = pysol_init(app, args)
+    if r != 0:
+        return r
+    # let's go - enter the mainloop
+    app.mainloop()

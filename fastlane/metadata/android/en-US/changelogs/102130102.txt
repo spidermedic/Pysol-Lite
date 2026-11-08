@@ -1,3 +1,0 @@
-
-- added a tools menu entry to adjust font size.
-- bug fixes.

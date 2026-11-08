@@ -159,7 +159,7 @@ sub myglob
 
     if ($IS_WIN)
     {
-        @tests = grep { not( /pysolgtk/i or /import_v2/i ) } @tests;
+        @tests = grep { not( /import_v2/i ) } @tests;
     }
 
     if ( defined($exclude_re_s) )

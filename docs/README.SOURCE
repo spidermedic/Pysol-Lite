@@ -114,27 +114,10 @@ The main layer
 
 The toolkit layer
 -----------------
-  PySol has been designed so that it can run under multiple UI toolkits -
-  due to the dynamic nature of Python this can even be under control
-  of a runtime option.
-
-  The preferred toolkit is Tcl/Tk using the Tkinter bindings which
-  ship with every Python installation.
-
-  The Kivy UI adapts PySol for mobile devices and is mainly used for
-  PySolFC's Android port. See README.kivy for more details.
-
-  A very experimental version for GTK+ 2 (using the pygnome and pygtk
-  bindings) did exist as well. Due to pygnome and pygtk being obsoleted,
-  a rewrite against GObject Introspection Python API would be needed
-  to make the abandoned code work with GTK+ 3 or 4.
-
-  Another exciting idea is to use JPython to make PySol run under a
-  Java VM using Swing as the toolkit.
-
-  Because Tkinter is the "main" interface other toolkit layers have
-  to emulate a limited subset of Tkinter's API. This should hopefully
-  not prove too difficult in practice.
+  PySol runs on Tcl/Tk using the Tkinter bindings which ship with every
+  Python installation, with themed (ttk) widgets. Earlier versions also
+  contained Kivy and GTK+ backends and a non-themed Tk fallback; these
+  were removed to keep the code base small and macOS-focused.
 
   Relevant modules:
 
@@ -145,36 +128,37 @@ The toolkit layer
 
   Important modules of the Tkinter implementation:
 
-    tk/tkconst.py, ui/tktile/tkutil.py, tk/tkwidget.py, tk/edittextdialog:
+    ui/tktile/tkconst.py, ui/tktile/tkutil.py, tile/tkwidget.py,
+    tile/edittextdialog.py:
       Toolkit constants, utils and generic widgets.
 
-    tk/tkcanvas.py:
+    ui/tktile/tkcanvas.py:
       Wrapper for canvas widgets.
 
     pysollib/ui/tktile/tkwrap.py:
       Wrapper for other widgets.
 
-    tk/card.py:
+    ui/tktile/card.py:
       How to display a card on the screen. No intelligence here.
       Subclasses the main layer.
 
-    tk/menubar.py:
+    tile/menubar.py:
       Create menubar and handle menu actions. Delegates to class Game.
       Subclasses the actions.py main layer.
 
-    tk/toolbar.py:
+    tile/toolbar.py:
       Toolbar. Subclasses the actions.py main layer.
 
-    tk/progressbar.py, tk/statusbar.py:
+    tile/progressbar.py, tile/statusbar.py:
       Progress- and statusbar widgets.
 
-    tk/tkstats.py:
+    tile/tkstats.py:
       Statistics dialogs. Uses stats.py from the main layer.
 
-    tk/tktree.py, tk/selecttree.py, tk/select*.py:
+    tile/tktree.py, tile/selecttree.py, tile/select*.py:
       Tree and tree-selection widgets.
 
-    tk/tkhtml.py:
+    tile/tkhtml.py:
       A very limited HTML widget. Could be useful for other projects, though.
 
 

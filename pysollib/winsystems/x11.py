@@ -25,15 +25,12 @@ import os
 import traceback
 
 from pysollib.settings import TITLE
-from pysollib.settings import TOOLKIT, USE_TILE
 from pysollib.winsystems.common import \
         BaseTkSettings, \
         base_init_root_window, \
         get_font_name
 
-if TOOLKIT == 'tk':
-    if USE_TILE:
-        import tkinter.ttk as ttk
+import tkinter.ttk as ttk
 
 
 # ************************************************************************
@@ -45,88 +42,83 @@ def init_root_window(root, app):
     base_init_root_window(root, app)
 
     # root.self.wm_maxsize(9999, 9999) # unlimited
-    if TOOLKIT == 'gtk':
-        pass
-    elif TOOLKIT == 'kivy':
-        pass
-    elif USE_TILE:
-        f = os.path.join(app.dataloader.dir, 'tcl', 'menu8.4.tcl')
-        if os.path.exists(f):
-            try:
-                root.tk.evalfile(f)
-            except Exception:
-                traceback.print_exc()
-        f = 'clrpick8.5.tcl'
-        f = os.path.join(app.dataloader.dir, 'tcl', f)
-        if os.path.exists(f):
-            try:
-                root.tk.evalfile(f)
-            except Exception:
-                traceback.print_exc()
-        f = 'fsdialog8.5.tcl'
-        f = os.path.join(app.dataloader.dir, 'tcl', f)
-        if os.path.exists(f):
-            try:
-                root.tk.evalfile(f)
-            except Exception:
-                traceback.print_exc()
-            else:
-                import tkinter.filedialog
-                tkinter.filedialog.Open.command = 'ttk::getOpenFile'
-                tkinter.filedialog.SaveAs.command = 'ttk::getSaveFile'
-                tkinter.filedialog.Directory.command = 'ttk::chooseDirectory'
+    f = os.path.join(app.dataloader.dir, 'tcl', 'menu8.4.tcl')
+    if os.path.exists(f):
+        try:
+            root.tk.evalfile(f)
+        except Exception:
+            traceback.print_exc()
+    f = 'clrpick8.5.tcl'
+    f = os.path.join(app.dataloader.dir, 'tcl', f)
+    if os.path.exists(f):
+        try:
+            root.tk.evalfile(f)
+        except Exception:
+            traceback.print_exc()
+    f = 'fsdialog8.5.tcl'
+    f = os.path.join(app.dataloader.dir, 'tcl', f)
+    if os.path.exists(f):
+        try:
+            root.tk.evalfile(f)
+        except Exception:
+            traceback.print_exc()
+        else:
+            import tkinter.filedialog
+            tkinter.filedialog.Open.command = 'ttk::getOpenFile'
+            tkinter.filedialog.SaveAs.command = 'ttk::getSaveFile'
+            tkinter.filedialog.Directory.command = 'ttk::chooseDirectory'
 
-        style = ttk.Style(root)
-        color = style.lookup('.', 'background')
-        if color:
-            root.tk_setPalette(color)
+    style = ttk.Style(root)
+    color = style.lookup('.', 'background')
+    if color:
+        root.tk_setPalette(color)
 
-        root.option_add('*Menu.borderWidth', 1, 60)
-        root.option_add('*Menu.activeBorderWidth', 1, 60)
-        color = style.lookup('.', 'background', ['active'])
-        if color:
-            root.option_add('*Menu.activeBackground', color, 60)
+    root.option_add('*Menu.borderWidth', 1, 60)
+    root.option_add('*Menu.activeBorderWidth', 1, 60)
+    color = style.lookup('.', 'background', ['active'])
+    if color:
+        root.option_add('*Menu.activeBackground', color, 60)
 
-        root.option_add('*Listbox.background', 'white', 60)
-        root.option_add('*Listbox.foreground', 'black', 60)
-        root.option_add('*Text.background', 'white', 60)
-        root.option_add('*Text.foreground', 'black', 60)
-        root.option_add('*selectForeground', 'white', 60)
-        root.option_add('*selectBackground', '#0a5f89', 60)
-        root.option_add('*inactiveSelectBackground', '#0a5f89', 60)  # Tk-8.5
+    root.option_add('*Listbox.background', 'white', 60)
+    root.option_add('*Listbox.foreground', 'black', 60)
+    root.option_add('*Text.background', 'white', 60)
+    root.option_add('*Text.foreground', 'black', 60)
+    root.option_add('*selectForeground', 'white', 60)
+    root.option_add('*selectBackground', '#0a5f89', 60)
+    root.option_add('*inactiveSelectBackground', '#0a5f89', 60)  # Tk-8.5
 
-        color = style.lookup('TEntry', 'selectbackground', ['focus'])
-        if color:
-            root.option_add('*selectBackground', color, 60)
-            root.option_add('*inactiveSelectBackground', color, 60)
-        color = style.lookup('TEntry', 'selectforeground', ['focus'])
-        if color:
-            root.option_add('*selectForeground', color, 60)
+    color = style.lookup('TEntry', 'selectbackground', ['focus'])
+    if color:
+        root.option_add('*selectBackground', color, 60)
+        root.option_add('*inactiveSelectBackground', color, 60)
+    color = style.lookup('TEntry', 'selectforeground', ['focus'])
+    if color:
+        root.option_add('*selectForeground', color, 60)
 
-        root.option_add('*selectBorderWidth', 0, 60)
+    root.option_add('*selectBorderWidth', 0, 60)
 
-        font = root.option_get('font', TITLE)
+    font = root.option_get('font', TITLE)
+    if font:
+        # use font from xrdb
+        fn = get_font_name(font)
+        if fn:
+            # root.option_add('*font', font)
+            style.configure('.', font=font)
+            app.opt.fonts['default'] = fn
+            # treeview heading
+            f = root.tk.splitlist(root.tk.call('font', 'actual', fn))
+            root.tk.call('font', 'configure', 'TkHeadingFont', *f)
+    else:
+        # use font from ttk settings
+        font = style.lookup('.', 'font')
         if font:
-            # use font from xrdb
             fn = get_font_name(font)
             if fn:
-                # root.option_add('*font', font)
-                style.configure('.', font=font)
+                root.option_add('*font', font)
                 app.opt.fonts['default'] = fn
-                # treeview heading
-                f = root.tk.splitlist(root.tk.call('font', 'actual', fn))
-                root.tk.call('font', 'configure', 'TkHeadingFont', *f)
-        else:
-            # use font from ttk settings
-            font = style.lookup('.', 'font')
-            if font:
-                fn = get_font_name(font)
-                if fn:
-                    root.option_add('*font', font)
-                    app.opt.fonts['default'] = fn
-        if app.opt.tile_theme == 'clam':
-            style.configure('TLabelframe', labeloutside=False,
-                            labelmargins=(8, 0, 8, 0))
+    if app.opt.tile_theme == 'clam':
+        style.configure('TLabelframe', labeloutside=False,
+                        labelmargins=(8, 0, 8, 0))
 
     #
     else:

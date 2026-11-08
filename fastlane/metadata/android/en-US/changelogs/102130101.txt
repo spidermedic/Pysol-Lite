@@ -1,3 +1,0 @@
-
-- zoom with two fingers and pan in the card free areas of a game.
-- tools menu entry to reset the zoom.

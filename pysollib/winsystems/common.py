@@ -28,13 +28,10 @@ from pysollib.mfxutil import print_err
 from pysollib.mygettext import _
 from pysollib.settings import DEBUG
 from pysollib.settings import TITLE
-from pysollib.settings import TOOLKIT, USE_TILE
 from pysollib.settings import VERSION
 
-if TOOLKIT == 'tk':
-    from pysollib.ui.tktile.tkutil import loadImage, restore_window_geometry
-    if USE_TILE:
-        import tkinter.ttk as ttk
+from pysollib.ui.tktile.tkutil import loadImage, restore_window_geometry
+import tkinter.ttk as ttk
 
 
 def init_tile(app, top):
@@ -70,9 +67,6 @@ def get_font_name(font):
     # create font name
     # i.e. "helvetica 12" -> ("helvetica", 12, "roman", "normal")
 
-    if (TOOLKIT == 'kivy'):
-        return "helvetica 12"
-
     from tkinter.font import Font
     font_name = None
     try:
@@ -95,15 +89,14 @@ def base_init_root_window(root, app):
     root.wm_title(TITLE + ' ' + VERSION)
     root.wm_iconname(TITLE + ' ' + VERSION)
 
-    if TOOLKIT == 'tk':
-        icons = sorted(
-            (loadImage(img) for img in app.dataloader.findAllIconSizes()),
-            reverse=True, key=lambda img: img.width())
-        if icons:
-            try:
-                root.wm_iconphoto(True, *icons)
-            except AttributeError:
-                root.tk.call('wm', 'iconphoto', root, '-default', *icons)
+    icons = sorted(
+        (loadImage(img) for img in app.dataloader.findAllIconSizes()),
+        reverse=True, key=lambda img: img.width())
+    if icons:
+        try:
+            root.wm_iconphoto(True, *icons)
+        except AttributeError:
+            root.tk.call('wm', 'iconphoto', root, '-default', *icons)
 
     # set minsize
     sw, sh = (root.winfo_screenwidth(), root.winfo_screenheight())
@@ -112,13 +105,11 @@ def base_init_root_window(root, app):
     else:
         root.wm_minsize(520, 360)
 
-    if TOOLKIT == 'tk':
-        restore_window_geometry(root, app.opt)
+    restore_window_geometry(root, app.opt)
 
-    if TOOLKIT == 'tk' and USE_TILE:
-        theme = app.opt.tile_theme
-        init_tile(app, root)
-        set_theme(app, root, theme)
+    theme = app.opt.tile_theme
+    init_tile(app, root)
+    set_theme(app, root, theme)
 
 
 class BaseTkSettings:
@@ -127,12 +118,5 @@ class BaseTkSettings:
     vertical_toolbar_padding = (0, 1)
     toolbar_button_padding = (2, 2)
     toolbar_label_padding = (4, 4)
-    if USE_TILE:
-        toolbar_relief = 'flat'
-        toolbar_borderwidth = 0
-    else:
-        toolbar_relief = 'raised'
-        toolbar_button_relief = 'flat'
-        toolbar_separator_relief = 'sunken'
-        toolbar_borderwidth = 1
-        toolbar_button_borderwidth = 1
+    toolbar_relief = 'flat'
+    toolbar_borderwidth = 0

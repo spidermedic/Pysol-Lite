@@ -31,7 +31,6 @@ from pysollib.games.special.sudoku_gen import \
 from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
 from pysollib.pysoltk import ANCHOR_NW, MfxCanvasImage
-from pysollib.settings import TOOLKIT
 from pysollib.stack import \
         InitialDealTalonStack, \
         InvisibleStack, \
@@ -57,8 +56,6 @@ class Sudoku_RowStack(ReserveStack):
     def _shadeLocked(self):
         if not self.cards or self.items.shade_item:
             return
-        if TOOLKIT == 'kivy':
-            self.game.top.waitAnimation()
         card = self.cards[-1]
         img = self.game.app.images.getHighlightedCard(
             card.deck, card.suit, card.rank)

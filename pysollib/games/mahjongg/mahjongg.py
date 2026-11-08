@@ -34,7 +34,7 @@ from pysollib.mygettext import ungettext
 from pysollib.pysoltk import ANCHOR_NW, EVENT_HANDLED, bind
 from pysollib.pysoltk import MfxCanvasImage, MfxCanvasText
 from pysollib.pysoltk import MfxMessageDialog
-from pysollib.settings import DEBUG, TOOLKIT
+from pysollib.settings import DEBUG
 from pysollib.stack import \
         InitialDealTalonStack, \
         OpenStack
@@ -195,28 +195,14 @@ class Mahjongg_RowStack(OpenStack):
     def _position(self, card):
         OpenStack._position(self, card)
         #
-        if TOOLKIT == 'tk':
-            rows = [s for s in self.game.s.rows[:self.id] if s.cards]
-            if rows:
-                self.group.tkraise(rows[-1].group)
-                return
-            rows = [s for s in self.game.s.rows[self.id+1:] if s.cards]
-            if rows:
-                self.group.lower(rows[0].group)
-                return
-        elif TOOLKIT == 'kivy':
-            rows = [s for s in self.game.s.rows[:self.id] if s.cards]
-            if rows:
-                self.group.tkraise(rows[-1].group)
-                return
-            rows = [s for s in self.game.s.rows[self.id+1:] if s.cards]
-            if rows:
-                self.group.lower(rows[0].group)
-                return
-        elif TOOLKIT == 'gtk':
-            # FIXME (this is very slow)
-            for s in self.game.s.rows[self.id+1:]:
-                s.group.tkraise()
+        rows = [s for s in self.game.s.rows[:self.id] if s.cards]
+        if rows:
+            self.group.tkraise(rows[-1].group)
+            return
+        rows = [s for s in self.game.s.rows[self.id+1:] if s.cards]
+        if rows:
+            self.group.lower(rows[0].group)
+            return
 
     def _calcMouseBind(self, binding_format):
         return self.game.app.opt.calcCustomMouseButtonsBinding(binding_format)
@@ -296,12 +282,6 @@ class Mahjongg_RowStack(OpenStack):
                 self._stopDrag()
                 # this code actually moves the tiles
                 from_stack.playMoveMove(1, self, frames=0, sound=True)
-                if TOOLKIT == 'kivy':
-                    if drag.shade_img:
-                        # drag.shade_img.dtag(drag.shade_stack.group)
-                        drag.shade_img.delete()
-                        # game.canvas.delete(drag.shade_img)
-                        drag.shade_img = None
                 return 1
         drag.stack = self
         self.game.playSample("startdrag")
@@ -760,16 +740,8 @@ class AbstractMahjonggGame(Game):
                     x = l.XM+i*cardw
                     y = l.YM+fdyy+j*cardh
                 else:
-                    if TOOLKIT == 'tk':
-                        x = -l.XS-self.canvas.xmargin
-                        y = l.YM+dyy
-                    elif TOOLKIT == 'kivy':
-                        x = -1000
-                        y = l.YM+dyy
-                    elif TOOLKIT == 'gtk':
-                        # FIXME
-                        x = self.width - l.XS
-                        y = self.height - l.YS
+                    x = -l.XS-self.canvas.xmargin
+                    y = l.YM+dyy
                 stack = Mahjongg_Foundation(x, y, self)
                 if show_removed:
                     stack.CARD_XOFFSET = dx
@@ -1031,12 +1003,11 @@ class AbstractMahjonggGame(Game):
 
         new_cards = self._shuffleHook2(rows, cards)
         if new_cards is None:
-            if TOOLKIT != 'kivy':
-                MfxMessageDialog(self.top, title=_('Warning'),
-                                 text=_('''\
+            MfxMessageDialog(self.top, title=_('Warning'),
+                             text=_('''\
 Sorry, I can\'t find
 a solvable configuration.'''),
-                                 bitmap='warning')
+                             bitmap='warning')
 
             self.leaveState(old_state)
             # self.finishMove()

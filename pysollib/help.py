@@ -30,7 +30,7 @@ from pysollib.pysoltk import HTMLViewer
 from pysollib.pysoltk import MfxMessageDialog
 from pysollib.pysoltk import PysolAboutDialog
 from pysollib.pysoltk import make_help_toplevel
-from pysollib.settings import PACKAGE_URL, TITLE, TOOLKIT, VERSION
+from pysollib.settings import PACKAGE_URL, TITLE, VERSION
 
 
 # ************************************************************************
@@ -78,17 +78,7 @@ For more information about this application visit''') %
 def help_credits(app, timeout=0, sound=True):
     if sound:
         app.audio.playSample("credits")
-    t = ""
-    if TOOLKIT == "tk":
-        t = "Tcl/Tk"
-    elif TOOLKIT == "gtk":
-        t = "PyGTK"
-    elif TOOLKIT == "kde":
-        t = "pyKDE"
-    elif TOOLKIT == "wx":
-        t = "wxPython"
-    elif TOOLKIT == "kivy":
-        t = "kivy"
+    t = "Tcl/Tk"
     d = MfxMessageDialog(
         app.top, title=_("Credits"), timeout=timeout,
         text=_('''%(app)s credits go to:
@@ -149,12 +139,11 @@ def help_html(app, document, dir_, top=None):
 
         h = int(sh * .8)
         w = min(650, int(sw * .8))
-        if TOOLKIT == "tk":
-            from pysollib.ui.tktile.tkutil import placeOverParent
-            top.wm_minsize(w, min(200, h))
-            top.geometry("%dx%d" % (w, h))
-            # center over the main window, not the primary screen
-            placeOverParent(top, parent, rely=0.5, w_width=w, w_height=h)
+        from pysollib.ui.tktile.tkutil import placeOverParent
+        top.wm_minsize(w, min(200, h))
+        top.geometry("%dx%d" % (w, h))
+        # center over the main window, not the primary screen
+        placeOverParent(top, parent, rely=0.5, w_width=w, w_height=h)
 
         viewer = HTMLViewer(top, app, help_html_index)
         viewer.display(doc)

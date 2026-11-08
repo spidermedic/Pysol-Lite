@@ -29,7 +29,6 @@ ddirs = [
     'html',
     'images',
     'sound',
-    'tiles',
     'toolbar',
     'themes',
     'tcl',
@@ -84,12 +83,9 @@ kw = {
     'scripts': ['pysol.py'],
     'packages': ['pysollib',
                  'pysollib.winsystems',
-                 'pysollib.tk',
                  'pysollib.tile',
-                 'pysollib.pysolgtk',
                  'pysollib.ui',
                  'pysollib.ui.tktile',
-                 'pysollib.kivy',
                  'pysollib.game',
                  'pysollib.games',
                  'pysollib.games.special',
@@ -97,8 +93,5 @@ kw = {
                  'pysollib.games.solvable_seeds'],
     'data_files': data_files,
     }
-
-if os.name == 'nt':
-    kw['packages'].remove('pysollib.pysolgtk')
 
 setup(**kw)

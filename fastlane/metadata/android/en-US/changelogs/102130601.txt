@@ -1,4 +1,0 @@
-
-- some new games and game variants.
-- enhancements and bug fixes
-- details at https://pysolfc.sourceforge.io

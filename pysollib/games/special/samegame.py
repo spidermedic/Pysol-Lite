@@ -28,7 +28,6 @@ from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.mygettext import _
 from pysollib.pysoltk import Card, MfxCanvasText
-from pysollib.settings import TOOLKIT
 from pysollib.stack import \
         AbstractFoundationStack, \
         InitialDealTalonStack, \
@@ -196,8 +195,6 @@ class AbstractSamegameGame(Game):
         # create other stacks
         y = l.YM + dyy
         ivx = -l.XS-self.canvas.xmargin
-        if TOOLKIT == 'kivy':
-            ivx = -1000
         s.foundations.append(Samegame_Foundation(ivx, y, self))
         self.texts.info = MfxCanvasText(self.canvas,
                                         self.width - l.XM, y,

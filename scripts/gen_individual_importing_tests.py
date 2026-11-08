@@ -16,11 +16,6 @@ for d, _, files in os.walk("pysollib"):
 
 module_names.sort()
 for module_name in module_names:
-    if "kivy" in module_name:
-        continue
-    if "gtk" in module_name:
-        continue
-
     def fmt(s):
         return s % {'module_name': module_name}
 

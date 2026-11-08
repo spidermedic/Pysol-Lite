@@ -77,7 +77,7 @@ OPTIONS = dict(argv_emulation=False,
                iconfile=ICON_FILE,
                resources=RESOURCES,
                frameworks=FRAMEWORKS,
-               excludes=['pysollib.pysolgtk']
+               excludes=[]
                )
 
 setup(

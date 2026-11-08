@@ -65,15 +65,12 @@ from pysollib.pysoltk import MfxExceptionDialog, MfxMessageDialog
 from pysollib.pysoltk import after, after_cancel, after_idle
 from pysollib.pysoltk import bind, wm_map
 from pysollib.settings import DEBUG
-from pysollib.settings import PACKAGE, TITLE, TOOLKIT, TOP_SIZE
+from pysollib.settings import PACKAGE, TITLE, TOP_SIZE
 from pysollib.settings import VERSION, VERSION_TUPLE
 from pysollib.struct_new import NewStruct
 from pysollib.util import COLORS, RANKS, SUITS_PL
 
-if TOOLKIT == 'tk':
-    from pysollib.ui.tktile.solverdialog import reset_solver_dialog
-else:
-    from pysollib.pysoltk import reset_solver_dialog
+from pysollib.ui.tktile.solverdialog import reset_solver_dialog
 
 # See: https://github.com/shlomif/PySolFC/issues/159 .
 # 'factory=' is absent from older versions.
@@ -245,40 +242,18 @@ def _highlightCards__calc_item(canvas, delta, cw, ch, s, c1, c2, color):
     # print c1, c2, x1, y1, x2, y2
     x1, x2 = x1-delta[0], x2+delta[1]
     y1, y2 = y1-delta[2], y2+delta[3]
-    if TOOLKIT == 'tk':
-        r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
-                               width=4, fill=None, outline=color)
-        if tkraise:
-            canvas.tkraise(r)
-    elif TOOLKIT == 'kivy':
-        r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
-                               width=4, fill=None, outline=color)
-        if tkraise:
-            canvas.tkraise(r)
-    elif TOOLKIT == 'gtk':
-        r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
-                               width=4, fill=None, outline=color,
-                               group=s.group)
-        if tkraise:
-            i = s.cards.index(c2)
-            for c in s.cards[i+1:]:
-                c.tkraise(1)
+    r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
+                           width=4, fill=None, outline=color)
+    if tkraise:
+        canvas.tkraise(r)
     return r
 
 
 def _highlightEmptyStack__calc_item(canvas, delta, cw, ch, s, color):
     x1, y1 = s.x, s.y
     x2, y2 = x1 + cw, y1 + ch
-    if TOOLKIT == 'tk':
-        r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
-                               width=4, fill=None, outline=color)
-    elif TOOLKIT == 'kivy':
-        r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
-                               width=4, fill=None, outline=color)
-    elif TOOLKIT == 'gtk':
-        r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
-                               width=4, fill=None, outline=color,
-                               group=s.group)
+    r = MfxCanvasRectangle(canvas, x1, y1, x2, y2,
+                           width=4, fill=None, outline=color)
     return r
 
 
@@ -610,11 +585,10 @@ class Game:
         if not self.cards:
             self.cards = self.createCards(progress=self.app.intro.progress)
         self.initBindings()
-        if TOOLKIT == 'tk':
-            # self.top.bind('<ButtonPress>', self.top._sleepEvent)
-            # self.top.bind('<3>', self.top._sleepEvent)
-            self.top.bind("<FocusOut>", self.top._focusOutEvent)
-            self.top.bind("<FocusIn>", self.top._focusInEvent)
+        # self.top.bind('<ButtonPress>', self.top._sleepEvent)
+        # self.top.bind('<3>', self.top._sleepEvent)
+        self.top.bind("<FocusOut>", self.top._focusOutEvent)
+        self.top.bind("<FocusIn>", self.top._focusInEvent)
         # update display properties
         self.canvas.busy = True
         # geometry
@@ -858,11 +832,6 @@ class Game:
             wm_map(self.top, maximized=self.app.opt.wm_maximized,
                    fullscreen=self.app.opt.wm_fullscreen)
             self.top.busyUpdate()
-        if TOOLKIT == 'gtk':
-            # FIXME
-            if self.top:
-                self.top.update_idletasks()
-                self.top.show_now()
         self.stopSamples()
         self.moves.state = self.S_INIT
         if dealer:
@@ -948,11 +917,6 @@ class Game:
         self.busy = old_busy
         # wait for canvas is mapped
         after(self.top, 200, self._configureHandler)
-        if TOOLKIT == 'gtk':
-            # FIXME
-            if self.top:
-                self.top.update_idletasks()
-                self.top.show_now()
         self.startPlayTimer()
 
     def restoreGameFromBookmark(self, bookmark):
@@ -970,9 +934,6 @@ class Game:
         self.s.talon.removeAllCards()
         for stack in self.allstacks:
             stack.resetGame()
-            if TOOLKIT == 'gtk':
-                # FIXME (pyramid like games)
-                stack.group.tkraise()
         if self.preview <= 1:
             for t in (self.texts.score, self.texts.base_rank,):
                 if t:
@@ -1747,8 +1708,6 @@ class Game:
         self.app.speech.speak("X: " + str(stack.x) + ", Y: " + str(stack.y))
 
     def areYouSure(self, title=None, text=None, confirm=-1, default=0):
-        if TOOLKIT == 'kivy':
-            return True
         if self.preview:
             return True
         if confirm < 0:
@@ -1815,14 +1774,6 @@ class Game:
             # the initial dealing
             # if self.moves.state == self.S_INIT and frames > 4:
             #     frames //= 2
-            return
-        if TOOLKIT == 'kivy':
-            c0 = cards[0]
-            dx, dy = (x - c0.x), (y - c0.y)
-            for card in cards:
-                card.animatedMove(dx, dy, SPF * frames)
-            # self.top.waitAnimation(swallow=True, pickup=True)
-            # synchronise: ev. per option ?
             return
 
         # Block input while animating: canvas.update() in the loop below
@@ -1904,8 +1855,6 @@ class Game:
         if self.app.opt.animations == 0 or frames == 0:
             return False
         if not from_stack.cards:
-            return False
-        if TOOLKIT == 'gtk':
             return False
         if not Image:
             return False
@@ -2141,10 +2090,6 @@ class Game:
             return
         if not self.app.opt.win_animation:
             return
-        if TOOLKIT == 'gtk':
-            return
-        if TOOLKIT == 'kivy':
-            return
         if not Image:
             return
         self.canvas.hideAllItems()
@@ -2167,8 +2112,6 @@ class Game:
         return
 
     def redealAnimation(self):
-        if TOOLKIT == 'kivy':
-            return
         if self.preview:
             return
         if not self.app.opt.animations or not self.app.opt.redeal_animation:
@@ -2462,10 +2405,6 @@ class Game:
             return True
         if self.demo:
             return status
-        if TOOLKIT == 'kivy':
-            if not self.app.opt.display_win_message:
-                return True
-            self.top.waitAnimation()
         top_msg = ''
         time_str = ''
         if status in (1, 2):
@@ -2474,7 +2413,7 @@ class Game:
         self.finished = True
         self.updateMenus()
         # Avoid a modal win dialog while iconified — it can prevent restore.
-        if TOOLKIT != 'kivy' and self._isMainWindowIconic():
+        if self._isMainWindowIconic():
             self._pending_win_status = status
             self._pending_win_top_msg = top_msg
             self._pending_win_time = time_str
@@ -2538,8 +2477,6 @@ class Game:
                 self.top, title=_("Game finished"), bitmap="info",
                 text=_(text + '\n\n' + hintsused),
                 strings=(_("&New game"), _("&Restart"), None, _("&Cancel")))
-        if TOOLKIT == 'kivy':
-            return True
         if d.status == 0 and d.button == 0:
             # new game
             self.endGame()
@@ -2763,11 +2700,6 @@ class Game:
         x1, y1 = x+w-width//2-xmargin, y+h-width//2-ymargin
         r = MfxCanvasRectangle(self.canvas, x0, y0, x1, y1,
                                width=width, fill=None, outline=color)
-
-        if TOOLKIT == "kivy":
-            r.canvas.canvas.ask_update()
-            r.delete_deferred(self.app.opt.timeouts['highlight_cards'])
-            return
 
         self.canvas.update_idletasks()
         self.sleep(self.app.opt.timeouts['highlight_cards'])
@@ -3006,9 +2938,6 @@ class Game:
                               arrow="last", arrowshape=(30, 30, 10))
         self.canvas.update_idletasks()
         # wait
-        if TOOLKIT == "kivy":
-            arrow.delete_deferred(sleep)
-            return
         # wait
         self.sleep(sleep)
         # delete the hint
@@ -3476,16 +3405,15 @@ class Game:
                     text=_("\nThere are no moves left...\n"),
                     strings=(_("&New game"), _("&Restart"), None,
                              _("&Cancel")))
-                if TOOLKIT != 'kivy':
-                    if d.status == 0 and d.button == 0:
-                        # new game
-                        self.endGame()
-                        self.newGame()
-                        return
-                    if d.status == 0 and d.button == 1:
-                        # restart game
-                        self.restartGame()
-                        return
+                if d.status == 0 and d.button == 0:
+                    # new game
+                    self.endGame()
+                    self.newGame()
+                    return
+                if d.status == 0 and d.button == 1:
+                    # restart game
+                    self.restartGame()
+                    return
             self.stuck = True
             # self.playSample("autopilotlost", priority=1000)
         self.updateStatus(stuck=text)

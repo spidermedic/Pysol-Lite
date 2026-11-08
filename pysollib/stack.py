@@ -34,7 +34,6 @@ from pysollib.pysoltk import bind, unbind_destroy
 from pysollib.pysoltk import get_text_width
 from pysollib.pysoltk import markImage
 from pysollib.settings import DEBUG
-from pysollib.settings import TOOLKIT
 from pysollib.util import ACE, KING
 from pysollib.util import ANY_RANK, ANY_SUIT, NO_RANK
 
@@ -224,10 +223,6 @@ class Stack:
         view.INIT_CARD_OFFSETS = (0, 0)
         view.INIT_CARD_YOFFSET = 0      # for reallocateCards
         view.group = MfxCanvasGroup(view.canvas)
-
-        if (TOOLKIT == 'kivy'):
-            if hasattr(view.group, 'stack'):
-                view.group.stack = self
 
         view.shrink_face_down = 1
         # image items
@@ -823,8 +818,6 @@ class Stack:
         # returned False if CARD_YOFFSET is not changed, otherwise True
         if not self.game.app.opt.compact_stacks:
             return False
-        if TOOLKIT != 'tk':
-            return False
         if self.CARD_XOFFSET != (0,):
             return False
         if len(self.CARD_YOFFSET) != 1:
@@ -1056,11 +1049,7 @@ class Stack:
         if peeked:
             self.cards[i].showBack()
         if positions > 0:
-            if TOOLKIT == 'tk':
-                self.cards[i].item.lower(self.cards[i+1].item)
-            elif TOOLKIT == 'gtk':
-                for c in self.cards[i+1:]:
-                    c.tkraise()
+            self.cards[i].item.lower(self.cards[i+1].item)
 
         self.canvas.update_idletasks()
         return 1
@@ -1082,12 +1071,8 @@ class Stack:
         self.game.sleep(self.game.app.opt.timeouts['raise_card'])
         if not face_up:
             self.cards[i].showBack()
-        if TOOLKIT == 'tk':
-            if positions > 0:
-                self.cards[i].item.lower(self.cards[i+1].item)
-        elif TOOLKIT == 'gtk':
-            for c in self.cards[i+1:]:
-                c.tkraise()
+        if positions > 0:
+            self.cards[i].item.lower(self.cards[i+1].item)
         self.canvas.update_idletasks()
         return 1
 
@@ -1177,10 +1162,6 @@ class Stack:
             handler(event)
         return EVENT_HANDLED
 
-    if (TOOLKIT == 'kivy'):
-        def _motionEventHandler(self, event):
-            return self.__motionEventHandler(event)
-
     def keyboardAction(self, card, event, type=1):
         self.keyboard_movement = True
         self.keyboard_card = card
@@ -1240,17 +1221,6 @@ class Stack:
                 or self.keyboard_movement):
             return EVENT_HANDLED
         self.keepDrag(event)
-        #  if self.game.app.opt.mouse_type == 'drag-n-drop' \
-        #           and TOOLKIT == 'tk':
-        #      # use a timer to update the drag
-        #      # this allows us to skip redraws on slow machines
-        #      drag = self.game.drag
-        #      if drag.timer is None:
-        #          drag.timer = after_idle(self.canvas, self.keepDragTimer)
-        #      drag.event = event
-        #  else:
-        #      # update now
-        #      self.keepDrag(event)
         return EVENT_HANDLED
 
     def __releaseEventHandler(self, event):
@@ -1261,13 +1231,6 @@ class Stack:
             return EVENT_HANDLED
         if (self.game.app.opt.mouse_type == 'drag-n-drop'
                 and not self.keyboard_movement):
-
-            if TOOLKIT == 'kivy':
-                drag = self.game.drag
-                if drag and drag.stack:
-                    drag.stack.keepDrag(event)
-                    drag.stack.finishDrag(event)
-                return EVENT_HANDLED
 
             self.keepDrag(event)
             self.finishDrag(event)
@@ -1350,8 +1313,6 @@ class Stack:
             self._markCards(drag)
             self.game.app.speech.speak(_("Selected"))
             return
-        # if TOOLKIT == 'gtk':
-        #     drag.stack.group.tkraise()
         images = game.app.images
         drag.shadows = self.createShadows(drag.cards)
         # sx, sy = 0, 0
@@ -1367,8 +1328,6 @@ class Stack:
         for s in drag.shadows:
             if dx > 0 or dy > 0:
                 s.move(dx, dy)
-            if TOOLKIT == 'gtk':
-                s.addtag(drag.stack.group)
             s.tkraise()
         for card in drag.cards:
             card.tkraise()
@@ -1450,22 +1409,14 @@ class Stack:
         if img0 and img1:
             cx, cy = c0.x + cw + dx, c0.y + ch + dy
 
-            if TOOLKIT == 'kivy':
-                height0 = img0.getHeight()
-            else:
-                height0 = img0.height()
+            height0 = img0.height()
 
             s1 = MfxCanvasImage(self.game.canvas, cx, cy - height0,
                                 image=img1, anchor=ANCHOR_SE)
             s2 = MfxCanvasImage(self.canvas, cx, cy,
                                 image=img0, anchor=ANCHOR_SE)
-            if TOOLKIT == 'tk':
-                s1.lower(c0.item)
-                s2.lower(c0.item)
-            #  elif TOOLKIT == 'gtk':
-            #      positions = 2           ## FIXME
-            #      s1.lower(positions)
-            #      s2.lower(positions)
+            s1.lower(c0.item)
+            s2.lower(c0.item)
             return (s1, s2)
         return ()
 
@@ -1532,14 +1483,10 @@ class Stack:
         img = MfxCanvasImage(game.canvas, sx, sy, image=img, anchor=ANCHOR_NW)
         drag.shade_img = img
         # raise/lower the shade image to the correct stacking order
-        if TOOLKIT == 'tk':
-            if drag.shadows:
-                img.lower(drag.shadows[0])
-            else:
-                img.lower(drag.cards[0].item)
-        elif TOOLKIT == 'gtk':
-            img.tkraise()
-            drag.stack.group.tkraise()
+        if drag.shadows:
+            img.lower(drag.shadows[0])
+        else:
+            img.lower(drag.cards[0].item)
 
     # for closeStack
     def _shadeStack(self):
@@ -1554,8 +1501,6 @@ class Stack:
         if img is None:
             return
         # self.canvas.update_idletasks()
-        if TOOLKIT == 'kivy':
-            self.game.top.waitAnimation()
         item = MfxCanvasImage(self.canvas, card.x, card.y,
                               image=img, anchor=ANCHOR_NW, group=self.group)
         # item.tkraise()
@@ -1580,7 +1525,7 @@ class Stack:
         xx0, yy0 = x0, y0
         w, h = x1-x0, y1-y0
         #
-        if TOOLKIT == 'gtk' or not Image:
+        if not Image:
             color = self.game.app.opt.colors['cards_1']
             r = MfxCanvasRectangle(self.canvas, xx0, yy0, xx0+w, yy0+h,
                                    fill="", outline=color, width=4,
@@ -1742,8 +1687,6 @@ class DealRow_StackMethods:
             self.game.top.update_idletasks()
             self.game.top.busyUpdate()
         self.game.leaveState(old_state)
-        if TOOLKIT == 'kivy':
-            self.game.top.waitAnimation()
         return len(stacks)
 
     # all Aces go to the Foundations
@@ -1773,8 +1716,6 @@ class DealRow_StackMethods:
                     self.game.moveMove(1, self, r, frames=frames)
                     break
         self.game.leaveState(old_state)
-        if TOOLKIT == 'kivy':
-            self.game.top.waitAnimation()
         return n
 
 
@@ -1966,22 +1907,11 @@ class TalonStack(Stack,
             img = (self.getRedealImages())[self.max_rounds != 1]
             if img is not None:
                 self.images.redeal_img = img
-                if TOOLKIT == 'tk':
-                    self.images.redeal = MfxCanvasImage(self.canvas,
-                                                        cx, cy, image=img,
-                                                        anchor="center",
-                                                        group=self.group)
-                    self.images.redeal.tkraise(self.top_bottom)
-                elif TOOLKIT == 'kivy':
-                    self.images.redeal = MfxCanvasImage(self.canvas,
-                                                        cx, cy, image=img,
-                                                        anchor="center",
-                                                        group=self.group,
-                                                        hint="redeal_image")
-                    self.images.redeal.tkraise(self.top_bottom)
-                elif TOOLKIT == 'gtk':
-                    # FIXME
-                    pass
+                self.images.redeal = MfxCanvasImage(self.canvas,
+                                                    cx, cy, image=img,
+                                                    anchor="center",
+                                                    group=self.group)
+                self.images.redeal.tkraise(self.top_bottom)
                 self.top_bottom = self.images.redeal
                 if ch >= 90:
                     cy, ca = ty, "s"
@@ -2000,13 +1930,7 @@ class TalonStack(Stack,
                 self.texts.redeal = MfxCanvasText(self.canvas, cx, cy,
                                                   anchor=ca, font=font,
                                                   group=self.group)
-                if TOOLKIT == 'tk':
-                    self.texts.redeal.tkraise(self.top_bottom)
-                elif TOOLKIT == 'kivy':
-                    self.texts.redeal.tkraise(self.top_bottom)
-                elif TOOLKIT == 'gtk':
-                    # FIXME
-                    pass
+                self.texts.redeal.tkraise(self.top_bottom)
                 self.top_bottom = self.texts.redeal
 
     def prepareView(self):
@@ -3154,8 +3078,6 @@ class WasteTalonStack(TalonStack):
                 else:
                     self.game.moveMove(1, self, waste, frames=4, shadow=0)
                 self.fillStack()
-                if TOOLKIT == 'kivy':
-                    self.game.top.waitAnimation()
         elif waste.cards and self.round != self.max_rounds:
             if sound:
                 self.game.playSample("turnwaste", priority=20)

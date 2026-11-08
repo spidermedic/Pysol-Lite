@@ -28,7 +28,6 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.mygettext import _
-from pysollib.settings import TOOLKIT
 from pysollib.stack import \
         InitialDealTalonStack, \
         OpenStack
@@ -107,8 +106,6 @@ class LightsOut_Talon(InitialDealTalonStack):
                 self.game.flipMove(self)
             self.game.moveMove(1, self, r, frames=frames)
         self.game.leaveState(old_state)
-        if TOOLKIT == 'kivy':
-            self.game.top.waitAnimation()
         return len(stacks)
 
 

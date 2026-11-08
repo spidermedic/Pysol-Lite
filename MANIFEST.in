@@ -4,12 +4,12 @@
 ## code
 ##
 include pysol.py setup.py setup_osx.py setup.cfg MANIFEST.in Makefile
-include COPYING README.md AUTHORS.md README.android README.kivy
+include COPYING README.md AUTHORS.md
 include NEWS.asciidoc
 #recursive-include pysollib *.py
 include pysollib/*.py
 include pysollib/winsystems/*.py
-include pysollib/tk/*.py pysollib/tile/*.py pysollib/pysolgtk/*.py
+include pysollib/tile/*.py
 include pysollib/game/*.py
 include pysollib/games/*.py pysollib/games/special/*.py
 include pysollib/games/mahjongg/*.py
@@ -48,7 +48,6 @@ graft html-src
 ##
 #graft data/images
 recursive-include data/images *.gif *.png *.jpg
-graft data/tiles
 include data/pysol.ico data/PySol.icns
 ##
 ## data - sound

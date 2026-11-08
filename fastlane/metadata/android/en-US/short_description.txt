@@ -1,1 +1,0 @@
-PySolFC is a collection of solitaire card games
