@@ -406,7 +406,7 @@ class GameStatsStruct(NewStruct):
     quickplay_moves = attr.ib(default=0)        # number of quickplay moves
     goto_bookmark_moves = attr.ib(default=0)    # number of goto bookmark
     shuffle_moves = attr.ib(default=0)          # number of shuffles (Mahjongg)
-    # did this game already update the demo stats ?
+    # did this game already finish as a pure demo game ?
     demo_updated = attr.ib(default=0)
     update_time = attr.ib()
 
@@ -2349,9 +2349,9 @@ class Game:
         won, status, updated = self.getWinStatus()
         if demo and self.getPlayerMoves() == 0:
             if not self.stats.demo_updated:
-                # a pure demo game - update demo stats
+                # a pure demo game: remember it finished, so ending the
+                # game later does not add a session log entry for the player
                 self.stats.demo_updated = updated
-                self.app.stats.updateStats(None, self, won)
             return ''
         if self.changed():
             # must update player stats
