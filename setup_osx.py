@@ -25,6 +25,9 @@ if not os.path.exists('data/html'):
         pass
     shutil.copytree('html-src/html', 'data/html')
 
+# trim the card back choices in the (separately downloaded) cardsets
+call([sys.executable, './scripts/prune_card_backs.py', 'data'])
+
 # build the HTML list of games
 # (run with this interpreter so its packages are available)
 with open('docs/all_games.html', 'w') as _f:
