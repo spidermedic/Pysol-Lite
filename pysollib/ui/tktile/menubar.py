@@ -44,22 +44,16 @@ def createToolbarMenu(menubar, menu):
             label=_(w.capitalize()),
             variable=menubar.tkopt.toolbar_vars[w],
             command=lambda m=menubar, w=w: m.mOptToolbarConfig(w))
-    menu.add_separator()
-    menu.add_radiobutton(label=n_("Hide"),
-                         variable=menubar.tkopt.toolbar, value=0,
-                         command=menubar.mOptToolbar)
-    menu.add_radiobutton(label=n_("Top"),
-                         variable=menubar.tkopt.toolbar, value=1,
-                         command=menubar.mOptToolbar)
-    menu.add_radiobutton(label=n_("Bottom"),
-                         variable=menubar.tkopt.toolbar, value=2,
-                         command=menubar.mOptToolbar)
-    menu.add_radiobutton(label=n_("Left"),
-                         variable=menubar.tkopt.toolbar, value=3,
-                         command=menubar.mOptToolbar)
-    menu.add_radiobutton(label=n_("Right"),
-                         variable=menubar.tkopt.toolbar, value=4,
-                         command=menubar.mOptToolbar)
+    submenu = MfxMenu(menu, label=n_('Position'), tearoff=tearoff)
+    for label, value in ((n_("Top"), 1), (n_("Bottom"), 2),
+                         (n_("Left"), 3), (n_("Right"), 4)):
+        submenu.add_radiobutton(label=label,
+                                variable=menubar.tkopt.toolbar, value=value,
+                                command=menubar.mOptToolbar)
+    submenu.add_separator()
+    submenu.add_radiobutton(label=n_("Hide"),
+                            variable=menubar.tkopt.toolbar, value=0,
+                            command=menubar.mOptToolbar)
 
 
 # ************************************************************************
