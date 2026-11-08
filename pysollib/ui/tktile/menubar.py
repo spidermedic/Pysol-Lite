@@ -436,7 +436,7 @@ class PysolMenubarTkCommon:
             label=n_("&Sound"), variable=self.tkopt.sound,
             command=self.mOptSound)
         # cardsets
-        submenu = MfxMenu(menu, label=n_("&Layout"))
+        layout = submenu = MfxMenu(menu, label=n_("&Layout"))
         submenu.add_command(
             label=n_("&Background color"),
             command=self.mSelectTableColor)
@@ -444,6 +444,12 @@ class PysolMenubarTkCommon:
             submenu.add_checkbutton(
                 label=n_("&Spread stacks"), variable=self.tkopt.spread_stacks,
                 command=self.mOptSpreadStacks)
+        layout.add_separator()
+        submenu = MfxMenu(layout, label=n_("&Toolbar"))
+        createToolbarMenu(self, submenu)
+        layout.add_checkbutton(
+            label=n_("Stat&usbar"), variable=self.tkopt.statusbar,
+            command=self.mOptStatusbar)
         submenu = MfxMenu(menu, label=n_("C&ards"))
         submenu.add_command(
             label=n_("&Decks"),
@@ -468,13 +474,6 @@ class PysolMenubarTkCommon:
             variable=self.tkopt.mouse_type,
             onvalue='point-n-click', offvalue='drag-n-drop',
             command=self.mOptMouseType)
-        menu.add_separator()
-        menu.add_separator()
-        submenu = MfxMenu(menu, label=n_("&Toolbar"))
-        createToolbarMenu(self, submenu)
-        menu.add_checkbutton(
-            label=n_("Stat&usbar"), variable=self.tkopt.statusbar,
-            command=self.mOptStatusbar)
 
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
