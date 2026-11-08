@@ -141,3 +141,7 @@ Goal stated by the user: a much cleaner app than the upstream fork it started fr
 ## 15. Decision: keep Windows/Linux code (2026-11-08)
 
 The user wants to keep the Windows and Linux code (`pysollib/winsystems/win32.py`, `x11.py`, `Win32AudioClient`/`OSSAudioClient`, Windows/Linux packaging and install text) because they may compile the cleaned-up version for those platforms too. Treat the "Not removed" list in section 14 as intentionally kept, not pending cleanup. Caveat: the toolkit removal was only run and tested on macOS. The Windows/Linux window-system files were edited (the `USE_TILE` / `TOOLKIT` conditionals now always take the themed-ttk path), compile and import, but have not been run on those platforms. The upstream install help text (`html-src/install.html`) still describes upstream Windows/Linux/Mac distribution.
+
+## 16. Build gotcha: regenerate the help pages after editing `html-src/`
+
+`setup_osx.py` only builds `data/html` when that directory does not exist, so after editing anything in `html-src/` an ordinary `py2app` run bundles the old, stale pages. Run `make rules` first (it deletes and regenerates `data/html`), then build. The `.build-venv` Python must be first on `PATH` when running it (`PATH=$PWD/.build-venv/bin:$PATH make rules`) because `make rules` calls `gen-html.py` through the shell and needs the packages installed there. Verify by grepping the staged bundle, e.g. `grep -c "Table color" <app>/Contents/Resources/data/html/settings.html`.
