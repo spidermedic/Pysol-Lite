@@ -48,8 +48,7 @@ can be implemented.
 ## Installation.
 
 We provide an [installer for Windows](https://sourceforge.net/projects/pysolfc/files/PySolFC/)
-(requires Windows XP SP3 or higher) as well as an
-[Android package on F-droid](https://f-droid.org/packages/org.lufebe16.pysolfc/).
+(requires Windows XP SP3 or higher).
 
 ### Running from source without installation.
 
@@ -74,7 +73,7 @@ sudo dnf builddep PySolFC
 On Mageia you can do:
 
 ```
-sudo urpmi git make pygtk2 pygtk2.0-libglade gnome-python-canvas tkinter
+sudo urpmi git make tkinter
 ```
 
 On Debian / Ubuntu / etc. you can do:
@@ -169,37 +168,33 @@ mkdir -p "$PKGTREE"
 "$PKGTREE"/env/bin/pysol.py
 ```
 
-### Alternate toolkit.
-
-- Kivy
-- Features:
-  - Sound support integrated.
-  - Android apk build support.
-- Running from source without installation:
-
-```
-python pysol.py --kivy
-```
-
-### Android App
-
-On the basis of Kivy an Android App is also available. You may build
-your own using appropriate build instructions in README.android and
-in Directory buildozer.
-
-Some versions will also be published on F-droid.
-
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/org.lufebe16.pysolfc/)
-
-
 ### Configuring Freecell Solver
 
 If you want to use the solver, you should configure freecell-solver
 ( https://fc-solve.shlomifish.org/ ) by passing the following options
 to its CMake-based build-system:
 `-DMAX_NUM_FREECELLS=8 -DMAX_NUM_STACKS=20 -DMAX_NUM_INITIAL_CARDS_IN_A_STACK=60`.
+
+### Building the macOS app.
+
+This fork targets macOS on Apple Silicon (arm64) and uses Tcl/Tk with themed
+widgets only. Use the python.org Python 3.13.17 or later installer, so that
+the bundled Tk includes the fix for menu-opened dialogs freezing on macOS 27.
+
+```
+python3 -m venv .build-venv
+.build-venv/bin/pip install py2app setuptools attrs configobj pillow pycotap \
+    pygame-ce pysol-cards ttkthemes accessible-output2
+# Cardsets are a separate download, see "Install Extras" below; put the
+# cardset-* folders into data/
+make rules mo          # needs gettext for the translations
+PYTHONPATH=. .build-venv/bin/python setup_osx.py py2app --arch arm64
+```
+
+The bundled Python is still universal, so remove the x86_64 slices from
+every Mach-O file in `dist/PySolFC.app` with `lipo -thin arm64`, then
+ad-hoc sign it (copy it out of iCloud-synced folders first). See
+`pysolfc-handoff.md` for the complete, tested procedure.
 
 ## Install Extras.
 
