@@ -26,19 +26,13 @@ import os
 from pysollib.gamedb import GI
 from pysollib.help import help_about, help_html
 from pysollib.mfxutil import Struct, openURL
-from pysollib.mfxutil import print_err
 from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
-from pysollib.pysoltk import SingleGame_StatsDialog
 from pysollib.pysoltk import EditTextDialog
-from pysollib.pysoltk import FullLog_StatsDialog, SessionLog_StatsDialog
 from pysollib.pysoltk import GameInfoDialog
 from pysollib.pysoltk import MfxExceptionDialog
 from pysollib.pysoltk import MfxMessageDialog, MfxSimpleEntry
-from pysollib.pysoltk import PlayerOptionsDialog
-from pysollib.pysoltk import ProgressionDialog
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
-from pysollib.pysoltk import Status_StatsDialog, Top_StatsDialog
 from pysollib.pysoltk import ASSIST_GAME_OPTIONS, ASSIST_OPTIONS
 from pysollib.pysoltk import AUTOMATIC_PLAY_OPTIONS
 from pysollib.pysoltk import ChecklistDialog
@@ -50,8 +44,6 @@ from pysollib.pysoltk import raise_find_card_dialog
 from pysollib.pysoltk import raise_full_picture_dialog
 from pysollib.pysoltk import raise_solver_dialog
 from pysollib.settings import PACKAGE_URL, TITLE
-from pysollib.settings import TOP_SIZE
-from pysollib.stats import FileStatsFormatter
 
 
 # ************************************************************************
@@ -68,10 +60,6 @@ class PysolMenubar(PysolMenubarTk):
             save=0,
             save_as=0,
             hold_and_quit=0,
-            rndplayed=0,
-            rndwon=0,
-            rndnotwon=0,
-            rndnotplayed=0,
             undo=0,
             redo=0,
             restart=0,
@@ -132,10 +120,6 @@ class PysolMenubar(PysolMenubarTk):
         opt = self.app.opt
         ms = self.menustate
         # 0 = DISABLED, 1 = ENABLED
-        ms.rndplayed = len(self._mGetPossibleRandomGames("played")) > 0
-        ms.rndwon = len(self._mGetPossibleRandomGames("won")) > 0
-        ms.rndnotwon = len(self._mGetPossibleRandomGames("not won")) > 0
-        ms.rndnotplayed = len(self._mGetPossibleRandomGames("not played")) > 0
         ms.save_as = game.canSaveGame()
         ms.hold_and_quit = ms.save_as
         if game.filename and ms.save_as:
@@ -190,12 +174,6 @@ class PysolMenubar(PysolMenubarTk):
         # File menu
         self.setMenuState(ms.save, "file.save")
         self.setMenuState(ms.save_as, "file.saveas")
-        self.setMenuState(ms.rndplayed, "file.selectrandomgame.gamesplayed")
-        self.setMenuState(ms.rndwon, "file.selectrandomgame.gamesplayedandwon")
-        self.setMenuState(ms.rndnotwon,
-                          "file.selectrandomgame.gamesplayedandnotwon")
-        self.setMenuState(ms.rndnotplayed,
-                          "file.selectrandomgame.gamesnotplayed")
         self.setMenuState(ms.hold_and_quit, "file.holdandquit")
         # Edit menu
         self.setMenuState(ms.undo, "edit.undo")
@@ -333,21 +311,21 @@ class PysolMenubar(PysolMenubarTk):
                 return
         self._mNewGameBySeed(d.value, self.game.random.ORIGIN_SELECTED)
 
-    def mSelectRandomGame(self, type='all'):
+    def mSelectRandomGame(self):
         if self._cancelDrag():
             return
         if self.changed():
             if not self.game.areYouSure(_("Select random game")):
                 return
         game_id = None
-        games = self._mGetPossibleRandomGames(type)
+        games = self._mGetPossibleRandomGames()
         if games:
             game_id = self.app.chooseRandomOutOfGames(games)
         if game_id and game_id != self.game.id:
             self.game.endGame()
             self.game.quitGame(game_id)
 
-    def _mGetPossibleRandomGames(self, type='all'):
+    def _mGetPossibleRandomGames(self):
         games = []
         for g in self.app.gdb.getGamesIdSortedById():
             gi = self.app.getGameInfo(g)
@@ -359,17 +337,7 @@ class PysolMenubar(PysolMenubarTk):
             # if gi.category != self.game.gameinfo.category:
                 # don't change game category
                 # continue
-            won, lost = self.app.stats.getStats(self.app.opt.player, gi.id)
-            if type == 'all':
-                games.append(gi.id)
-            elif type == 'played' and won + lost > 0:
-                games.append(gi.id)
-            elif type == 'won' and won > 0:
-                games.append(gi.id)
-            elif type == 'not won' and won == 0 and lost > 0:
-                games.append(gi.id)
-            elif type == 'not played' and won + lost == 0:
-                games.append(gi.id)
+            games.append(gi.id)
         return games
 
     def _mSelectNextGameFromList(self, gl, step):
@@ -575,125 +543,15 @@ class PysolMenubar(PysolMenubarTk):
                         % {'filename': fn})
 
     #
-    # Game menu - statistics
+    # Game info
     #
 
-    def _mStatsSave(self, player, filename, write_method):
-        text = _("Your statistics were appended to\n\n%(filename)s")
-        filename = os.path.join(self.app.dn.config, filename + ".txt")
-        filename = os.path.normpath(filename)
-        try:
-            a = FileStatsFormatter(self.app, open(filename, "a"))
-            write_method(a, player)
-        except EnvironmentError as ex:
-            MfxExceptionDialog(self.top, ex,
-                               text=_("Error while writing to file"))
-        else:
-            MfxMessageDialog(
-                self.top, title=_("%s Info") % TITLE, bitmap="info",
-                text=text % {'filename': filename})
-
-    def mPlayerStats(self, *args, **kw):
+    def mGameInfo(self, *args):
         wasPaused = False
         if not self.game.pause:
             self.game.doPause()
             wasPaused = True
-        mode = kw.get("mode", 101)
-        gameid = None
-        gamenum = None
-        while mode > 0:
-            d = Struct(status=-1, button=-1)
-            player = self.app.opt.player
-            n = self.game.gameinfo.name
-            # translation keywords
-            transkw = {'app': TITLE,
-                       'player': player,
-                       'game': n,
-                       'tops': TOP_SIZE}
-            #
-            if mode == 100:
-                d = Status_StatsDialog(self.top, game=self.game)
-            elif mode == 101:
-                header = _("Statistics for %(game)s") % transkw
-                d = SingleGame_StatsDialog(
-                   self.top, header, self.app, player, gameid=self.game.id)
-                gameid = d.selected_game
-            elif mode == 103:
-                header = _("Full log for %(player)s") % transkw
-                d = FullLog_StatsDialog(self.top, header, self.app, player,
-                                        resizable=True)
-                gameid = d.selected_game
-                gamenum = d.selected_game_num
-            elif mode == 104:
-                header = _("Session log for %(player)s") % transkw
-                d = SessionLog_StatsDialog(self.top, header, self.app, player,
-                                           resizable=True)
-                gameid = d.selected_game
-                gamenum = d.selected_game_num
-            elif mode == 105:
-                # TRANSLATORS: eg. top 10 or top 5 results for a certain game
-                header = _("Top %(tops)d for %(game)s") % transkw
-                d = Top_StatsDialog(
-                    self.top, header, self.app, player, gameid=self.game.id)
-            elif mode == 106:
-                header = _("Game Info")
-                d = GameInfoDialog(self.top, header, self.app)
-            elif mode == 107:
-                header = _("Statistics progression")
-                d = ProgressionDialog(
-                    self.top, header, self.app, player, gameid=self.game.id)
-            elif mode == 202:
-                # print stats to file
-                write_method = FileStatsFormatter.writeStats
-                self._mStatsSave(player, "stats", write_method)
-            elif mode == 203:
-                # print full log to file
-                write_method = FileStatsFormatter.writeFullLog
-                self._mStatsSave(player, "log", write_method)
-            elif mode == 204:
-                # print session log to file
-                write_method = FileStatsFormatter.writeSessionLog
-                self._mStatsSave(player, "log", write_method)
-            elif mode == 301:
-                # reset all player stats
-                if self.game.areYouSure(
-                    _("Reset all statistics"),
-                    _("Reset ALL statistics and logs for player\n" +
-                      "%(player)s?") % transkw,
-                    confirm=1, default=1
-                ):
-                    self.app.stats.resetStats(player, 0)
-                    self.game.updateStatus(stats=self.app.stats.getStats(
-                        self.app.opt.player, self.game.id))
-            elif mode == 302:
-                # reset player stats for current game
-                if self.game.areYouSure(
-                    _("Reset game statistics"),
-                    _('Reset statistics and logs for player\n%(player)s\n'
-                      'and game\n%(game)s?') % transkw,
-                    confirm=1, default=1
-                ):
-                    self.app.stats.resetStats(player, self.game.id)
-                    self.game.updateStatus(stats=self.app.stats.getStats(
-                        self.app.opt.player, self.game.id))
-            elif mode == 401:
-                # start a new game with a gameid
-                if gameid and gameid != self.game.id:
-                    self.game.endGame()
-                    self.game.quitGame(gameid)
-            elif mode == 402:
-                # start a new game with a gameid / gamenumber
-                if (gameid and gamenum and
-                        (gameid != self.game.id or
-                         gamenum != self.game.getGameNumber(format=0))):
-                    self.game.endGame()
-                    self.game.quitGame(gameid,
-                                       random=construct_random(gamenum))
-            else:
-                print_err("stats problem: %s %s" % (mode, player))
-            if d.status != 0:
-                break
-            mode = d.button
+        GameInfoDialog(self.top, _("Game Info"), self.app)
         if self.game.pause:
             if wasPaused:
                 self.game.doPause()
@@ -759,29 +617,6 @@ class PysolMenubar(PysolMenubarTk):
     #
     # Options menu
     #
-
-    def mOptPlayerOptions(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        wasPaused = False
-        if not self.game.pause:
-            self.game.doPause()
-            wasPaused = True
-        d = PlayerOptionsDialog(self.top, _("Set player options"), self.app)
-        if self.game.pause:
-            if wasPaused:
-                self.game.doPause()
-        if d.status == 0 and d.button == 0:
-            self.app.opt.confirm = bool(d.confirm)
-            self.app.opt.update_player_stats = bool(d.update_stats)
-            # n = string.strip(d.player)
-            n = d.player[:30].strip()
-            if 0 < len(n) <= 30:
-                self.app.opt.player = n
-                self.game.updateStatus(player=self.app.opt.player)
-                self.game.updateStatus(stats=self.app.stats.getStats(
-                    self.app.opt.player, self.game.id))
-        self.updateMenus()
 
     def mOptAssistLevel(self, *args):
         if self._cancelDrag(break_pause=False):
@@ -1013,17 +848,8 @@ class PysolToolbar(PysolToolbarTk):
             self.menubar.mPause()
         return 1
 
-    def mPlayerStats(self, *args):
-        if not self._busy():
-            self.menubar.mPlayerStats()
-        return 1
-
     def mHelpRules(self, *args):
         if not self._busy():
             self.menubar.mHelpRules()
         return 1
 
-    def mOptPlayerOptions(self, *args):
-        if not self._busy():
-            self.menubar.mOptPlayerOptions()
-        return 1

@@ -29,7 +29,6 @@ from collections import UserList
 from pysollib.gamedb import GI
 from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import KwStruct, Struct, destruct
-from pysollib.mfxutil import format_time
 from pysollib.mygettext import _
 from pysollib.resource import CSI, getNaturalSortKey
 from pysollib.ui.tktile.selecttree import SelectDialogTreeData
@@ -455,9 +454,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
         info_frame = ttk.LabelFrame(right_frame, text=_('About game'))
         info_frame.grid(row=0, column=0, padx=padx, pady=pady,
                         ipadx=4, ipady=4, sticky='nws')
-        stats_frame = ttk.LabelFrame(right_frame, text=_('Statistics'))
-        stats_frame.grid(row=0, column=1, padx=padx, pady=pady,
-                         ipadx=4, ipady=4, sticky='nws')
         # Info
         self.info_labels = {}
         for n, t, f, row in (
@@ -468,13 +464,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             ('skill_level', _('Skill level:'),      info_frame,   4),
             ('decks',       _('Decks:'),            info_frame,   5),
             ('redeals',     _('Redeals:'),          info_frame,   6),
-            #
-            ('played',      _('Played:'),           stats_frame,  0),
-            ('won',         _('Won:'),              stats_frame,  1),
-            ('lost',        _('Lost:'),             stats_frame,  2),
-            ('time',        _('Avg. win time:'),     stats_frame,  3),
-            ('moves',       _('Avg. win moves:'),    stats_frame,  4),
-            ('percent',     _('% won:'),            stats_frame,  5),
                 ):
             title_label = ttk.Label(f, text=t, justify='left', anchor='w')
             title_label.grid(row=row, column=0, sticky='nw', padx=4)
@@ -483,7 +472,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             self.info_labels[n] = (title_label, text_label)
         # info_frame.columnconfigure(1, weight=1)
         info_frame.rowconfigure(6, weight=1)
-        stats_frame.rowconfigure(6, weight=1)
         # Canvas
         self.preview = MfxScrolledCanvas(right_frame)
         bind(self.preview.parent, '<Configure>',
@@ -632,19 +620,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
                 if not version_okay:
                     continue
 
-            if self.criteria.statistics != '':
-                won, lost = (self.app.stats.getStats
-                             (self.app.opt.player, game.id))
-                statoption = \
-                    self.criteria.statisticsOptions[self.criteria.statistics]
-                if statoption == 'played' and won + lost == 0:
-                    continue
-                if statoption == 'won' and won == 0:
-                    continue
-                if statoption == 'not won' and (won != 0 or lost == 0):
-                    continue
-                if statoption == 'not played' and won + lost != 0:
-                    continue
 
             if (self.criteria.popular and
                     not (game.si.game_flags & GI.GT_POPULAR)):
@@ -712,7 +687,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             self.criteria.inventor = d.inventor.get()
             self.criteria.versioncompare = d.versioncompare.get()
             self.criteria.version = d.version.get()
-            self.criteria.statistics = d.statistics.get()
 
             self.criteria.popular = d.popular.get()
             self.criteria.recent = d.recent.get()
@@ -804,7 +778,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
                 opt=self.app.opt.copy(),
                 speech=self.app.speech,
                 startup_opt=self.app.startup_opt,
-                stats=self.app.stats.new(),
                 top=None,
                 top_cursor=self.app.top_cursor,
                 toolbar=None,
@@ -907,15 +880,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             redeals = _('Unlimited')
         else:
             redeals = str(gi.redeals)
-        # stats
-        won, lost, time, moves = self.app.stats.getFullStats(
-            self.app.opt.player, gameid)
-        if won+lost > 0:
-            percent = "%.1f" % (100.0*won/(won+lost))
-        else:
-            percent = "0.0"
-        time = format_time(time)
-        moves = str(round(moves, 1))
         for n, t in (
             ('name',        name),
             ('altnames',    altnames),
@@ -924,12 +888,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             ('skill_level', skill_level),
             ('decks',       gi.decks),
             ('redeals',     redeals),
-            ('played',      won+lost),
-            ('won',         won),
-            ('lost',        lost),
-            ('time',        time),
-            ('moves',       moves),
-            ('percent',     percent),
                 ):
             title_label, text_label = self.info_labels[n]
             if t in ('', None):
@@ -955,7 +913,6 @@ class SearchCriteria:
         self.inventor = ""
         self.versioncompare = "New in"
         self.version = ""
-        self.statistics = ""
 
         self.popular = False
         self.recent = False
@@ -1014,11 +971,6 @@ class SearchCriteria:
         self.versionCompareOptions = ("New in", "Present in", "New since",
                                       "New since (inclusive)")
 
-        self.statisticsOptions = {"": "all",
-                                  "Games played": "played",
-                                  "Games played and won": "won",
-                                  "Games played and not won": "not won",
-                                  "Games not played": "not played"}
 
 
 def _extract_names(game_info):
@@ -1057,8 +1009,6 @@ class SelectGameAdvancedSearch(MfxDialog):
         self.versioncompare.set(criteria.versioncompare)
         self.version = tkinter.StringVar()
         self.version.set(criteria.version)
-        self.statistics = tkinter.StringVar()
-        self.statistics.set(criteria.statistics)
 
         self.popular = tkinter.BooleanVar()
         self.popular.set(criteria.popular)
@@ -1223,19 +1173,6 @@ class SelectGameAdvancedSearch(MfxDialog):
                                  textvariable=self.version, state='readonly')
         textVersion.grid(row=row, column=3, columnspan=2, sticky='ew',
                          padx=1, pady=1)
-        row += 1
-
-        statisticsValues = list(criteria.statisticsOptions.keys())
-
-        labelStats = tkinter.Label(top_frame, text=_("Play history:"),
-                                   anchor="w")
-        labelStats.grid(row=row, column=0, columnspan=1, sticky='ew',
-                        padx=1, pady=1)
-        textStats = PysolCombo(top_frame, values=statisticsValues,
-                               fieldname=_("Play history:"),
-                               textvariable=self.statistics, state='readonly')
-        textStats.grid(row=row, column=1, columnspan=4, sticky='ew',
-                       padx=1, pady=1)
         row += 1
 
         col = 0

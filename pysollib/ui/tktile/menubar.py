@@ -177,6 +177,7 @@ class PysolMenubarTkCommon:
             splashscreen=tkinter.BooleanVar(),
             mouse_type=tkinter.StringVar(),
             pause=tkinter.BooleanVar(),
+            confirm=tkinter.BooleanVar(),
         )
 
     def _setOptions(self):
@@ -218,6 +219,7 @@ class PysolMenubarTkCommon:
         # tkopt.helpbar.set(opt.helpbar)
         tkopt.splashscreen.set(opt.splashscreen)
         tkopt.mouse_type.set(opt.mouse_type)
+        tkopt.confirm.set(opt.confirm)
 
     def connectGame(self, game):
         self.game = game
@@ -276,23 +278,9 @@ class PysolMenubarTkCommon:
         submenu = MfxMenu(menu, label=n_("R&ecent games"))
         # menu.add_command(label=n_("Select &random game"),
         #   command=self.mSelectRandomGame, accelerator=m+"R")
-        submenu = MfxMenu(menu, label=n_("Select &random game"))
-        submenu.add_command(
-            label=n_("&All games"), command=lambda:
-            self.mSelectRandomGame('all'), accelerator=m+"R")
-        submenu.add_separator()
-        submenu.add_command(
-            label=n_("&Games played"),
-            command=lambda: self.mSelectRandomGame('played'))
-        submenu.add_command(
-            label=n_("Games played and &won"),
-            command=lambda: self.mSelectRandomGame('won'))
-        submenu.add_command(
-            label=n_("Games played and &not won"),
-            command=lambda: self.mSelectRandomGame('not won'))
-        submenu.add_command(
-            label=n_("Games not &played"),
-            command=lambda: self.mSelectRandomGame('not played'))
+        menu.add_command(
+            label=n_("Select &random game"),
+            command=self.mSelectRandomGame, accelerator=m+"R")
         menu.add_command(
             label=n_("Select game by nu&mber"),
             command=self.mSelectGameById, accelerator=m+"M")
@@ -400,16 +388,6 @@ class PysolMenubarTkCommon:
         #    label=n_("&Pause"), command=self.mPause, accelerator="P")
         menu.add_separator()
         menu.add_command(
-            label=n_("S&tatus"),
-            command=lambda: self.mPlayerStats(mode=100), accelerator=m+"Y")
-        menu.add_command(
-            label=n_("&Statistics"),
-            command=self.mPlayerStats, accelerator=m+"T")
-        menu.add_command(
-            label=n_("Log"),
-            command=lambda: self.mPlayerStats(mode=103))
-        menu.add_separator()
-        menu.add_command(
             label=n_("&Comments"),
             command=self.mEditGameComment)
 
@@ -446,9 +424,9 @@ class PysolMenubarTkCommon:
             self.progress.update(step=1)
 
         menu = MfxMenu(self.menubar, label=n_("&Options"))
-        menu.add_command(
-            label=n_("&Player options"),
-            command=self.mOptPlayerOptions, accelerator=m+'P')
+        menu.add_checkbutton(
+            label=n_("&Confirm before quitting"),
+            variable=self.tkopt.confirm, command=self.mOptConfirm)
         menu.add_command(label=n_("&Automatic play"),
                          command=self.mOptAutomaticPlay)
         menu.add_command(label=n_("Assist &level"),
@@ -570,8 +548,6 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "r", self.mRedo)
         self._bindKey(ctrl, "g", self.mRestart)
         self._bindKey("",   "space", self.mDeal)        # undocumented
-        self._bindKey(ctrl, "y", lambda e: self.mPlayerStats(mode=100))
-        self._bindKey(ctrl, "t", lambda e: self.mPlayerStats(mode=105))
         self._bindKey("",   "h", self.mHint)
         self._bindKey(ctrl, "h", self.mHint1)           # undocumented
         # self._bindKey("",   "Shift_L", self.mHighlightPiles)
@@ -581,7 +557,6 @@ class PysolMenubarTkCommon:
         self._bindKey(ctrl, "d", self.mDemo)
         self._bindKey(ctrl, "e", self.mSelectCardsetDialog)
         self._bindKey(ctrl, "b", self.mOptChangeCardback)  # undocumented
-        self._bindKey(ctrl, "p", self.mOptPlayerOptions)   # undocumented
         self._bindKey(ctrl, "F1", self.mHelp)
         self._bindKey("",   "F1", self.mHelpRules)
         self._bindKey("",   "Print", self.mScreenshot)
@@ -601,7 +576,7 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "F2", self.mStackDesk)
         #
         # undocumented, devel
-        self._bindKey("", "slash", lambda e: self.mPlayerStats(mode=106))
+        self._bindKey("", "slash", self.mGameInfo)
         #
         self._bindKey("",   "f", self.mShuffle)
 
@@ -1236,6 +1211,9 @@ Unsupported game for import.
         self.game.doPause()
         self.tkopt.pause.set(self.game.pause)
 
+    def mOptConfirm(self, *args):
+        self.app.opt.confirm = self.tkopt.confirm.get()
+
     def mOptSound(self, *args):
         self.app.opt.sound = self.tkopt.sound.get()
         if self.app.audio:
@@ -1527,7 +1505,6 @@ Unsupported game for import.
         self.tkopt.toolbar_size.set(size)                # update radiobutton
         dir = self.app.getToolbarImagesDir()
         if self.app.toolbar.updateImages(dir, size):
-            self.game.updateStatus(player=self.app.opt.player)
             self.top.update_idletasks()
 
     def setToolbarCompound(self, compound):
@@ -1536,7 +1513,6 @@ Unsupported game for import.
         self.app.opt.toolbar_compound = compound
         self.tkopt.toolbar_compound.set(compound)          # update radiobutton
         if self.app.toolbar.setCompound(compound):
-            self.game.updateStatus(player=self.app.opt.player)
             self.top.update_idletasks()
 
     def wizardDialog(self, edit=False):

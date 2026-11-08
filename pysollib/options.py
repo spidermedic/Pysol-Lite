@@ -60,9 +60,7 @@ def calcCustomMouseButtonsBinding(binding_format):
 configspec = '''
 [general]
 last_version = list
-player = string
 confirm = boolean
-update_player_stats = boolean
 autofaceup = boolean
 autodrop = boolean
 autodeal = boolean
@@ -164,9 +162,7 @@ spread_stacks = boolean
 class Options:
     GENERAL_OPTIONS = [
         ('last_version', 'list'),
-        ('player', 'str'),
         ('confirm', 'bool'),
-        ('update_player_stats', 'bool'),
         ('autofaceup', 'bool'),
         ('autodrop', 'bool'),
         ('autodeal', 'bool'),
@@ -241,9 +237,9 @@ class Options:
 
         self.last_version = (2, 20, 1)
         # options menu:
+        # the player name is the account name, set at startup (not saved)
         self.player = _("Unknown")
         self.confirm = True
-        self.update_player_stats = True
         self.autofaceup = True
         self.autodrop = False
         self.autodeal = True

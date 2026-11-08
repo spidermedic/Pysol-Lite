@@ -389,7 +389,7 @@ class CasinoCanfield(Canfield):
     def updateText(self):
         if self.preview > 1:
             return
-        b1, b2 = self.app.stats.gameid_balance, 0
+        b1, b2 = self.app.gameid_balance, 0
         if self.shallUpdateBalance():
             b2 = self.getGameBalance()
         t = _("Balance $%d") % (b1 + b2)

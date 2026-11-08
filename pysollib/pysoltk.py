@@ -31,8 +31,6 @@ from pysollib.ui.tktile.fullpicturedialog import *  # noqa: F401,F403
 from pysollib.tile.tkwidget import *  # noqa: F401,F403
 from pysollib.tile.tkhtml import *  # noqa: F401,F403
 from pysollib.tile.edittextdialog import *  # noqa: F401,F403
-from pysollib.tile.tkstats import *  # noqa: F401,F403
-from pysollib.tile.playeroptionsdialog import *  # noqa: F401,F403
 from pysollib.tile.checklistdialog import *  # noqa: F401,F403
 from pysollib.tile.toolbarbuttonsdialog import *  # noqa: F401,F403
 from pysollib.tile.solverdialog import *  # noqa: F401,F403

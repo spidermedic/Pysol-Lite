@@ -28,12 +28,8 @@ import sys
 import traceback
 from pickle import UnpicklingError
 
-import pysollib.app_stat
-import pysollib.settings
 from pysollib.actions import PysolMenubar
 from pysollib.actions import PysolToolbar
-from pysollib.app_stat_result import GameStatResult
-from pysollib.app_statistics import Statistics
 from pysollib.cardsetparser import read_cardset_config
 from pysollib.gamedb import GAME_DB, GI, loadGame
 from pysollib.help import (destroy_help_html, help_about, raise_help_html,
@@ -42,7 +38,7 @@ from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import Struct, destruct
 from pysollib.mfxutil import getprefdir, getusername
 from pysollib.mfxutil import latin1_normalize, print_err
-from pysollib.mfxutil import pickle, unpickle
+from pysollib.mfxutil import unpickle
 from pysollib.mygettext import _
 from pysollib.options import Options
 from pysollib.pysolrandom import PysolRandom, construct_random
@@ -66,7 +62,7 @@ from pysollib.resource import CSI, CardsetManager
 from pysollib.resource import Sample, SampleManager
 from pysollib.resource import TileManager
 from pysollib.settings import DEBUG
-from pysollib.settings import PACKAGE, VERSION_TUPLE  # , WIN_SYSTEM
+from pysollib.settings import PACKAGE  # , WIN_SYSTEM
 from pysollib.speech import Speech
 from pysollib.util import IMAGE_EXTENSIONS
 from pysollib.winsystems import TkSettings
@@ -143,10 +139,6 @@ def interface_is_dark(root):
     return luminance < _DARK_LUMINANCE
 
 
-_GameStatResult = GameStatResult
-GameStat = pysollib.app_stat.GameStat
-
-
 # ************************************************************************
 # * Application
 # * This is the glue between the toplevel window and a Game.
@@ -164,8 +156,8 @@ class Application:
         self.opt = Options()
         self.speech = Speech()
         self.startup_opt = self.opt.copy()
-        self.stats = Statistics()
         self.splashscreen = 1
+        self.gameid_balance = 0         # casino games: money won this run
         # visual components
         self.top = None                 # the root toplevel window
         self.top_bg = None              # default background
@@ -216,7 +208,6 @@ class Application:
         self.fn = Struct(
             opt=os.path.join(self.dn.config, "options.dat"),
             opt_cfg=os.path.join(self.dn.config, "options.cfg"),
-            stats=os.path.join(self.dn.config, "statistics.dat"),
             holdgame=os.path.join(self.dn.config, "holdgame.dat"),
             comments=os.path.join(self.dn.config, "comments.dat"),
         )
@@ -339,11 +330,6 @@ class Application:
                 self.saveOptions()
             except Exception:
                 traceback.print_exc()
-            # save statistics
-            try:
-                self.saveStatistics()
-            except Exception:
-                traceback.print_exc()
             # shut down audio
             try:
                 self.audio.destroy()
@@ -353,12 +339,6 @@ class Application:
     def mainproc(self):
         # copy startup options
         self.startup_opt = self.opt.copy()
-        # try to load statistics
-        try:
-            self.loadStatistics()
-        except Exception:
-            traceback.print_exc()
-
         # Under normal circumstances, this won't trigger.
         # But if the config has been incorrectly edited or
         # otherwise corrupted, this can prevent a crash.
@@ -459,7 +439,6 @@ class Application:
         self.menubar.connectGame(self.game)
         if self.toolbar:  # ~
             self.toolbar.connectGame(self.game)
-        self.game.updateStatus(player=self.opt.player)
         # update "Recent games" menubar entry
         if id_ in self.opt.recent_gameid:
             self.opt.recent_gameid.remove(id_)
@@ -479,13 +458,13 @@ class Application:
         # prepare game
         autoplay = 0
         if self.nextgame.loadedgame is not None:
-            self.stats.gameid_balance = 0
+            self.gameid_balance = 0
             self.game.restoreGame(self.nextgame.loadedgame)
             destruct(self.nextgame.loadedgame)
         elif self.nextgame.bookmark is not None:
             self.game.restoreGameFromBookmark(self.nextgame.bookmark)
         else:
-            self.stats.gameid_balance = 0
+            self.gameid_balance = 0
             self.game.newGame(random=random, autoplay=0)
             autoplay = 1
         self.nextgame.loadedgame = None
@@ -1027,28 +1006,8 @@ class Application:
         self.opt.load(self.fn.opt_cfg)
         self.opt.setConstants()
 
-    def loadStatistics(self):
-        if not os.path.exists(self.fn.stats):
-            return
-        stats = unpickle(self.fn.stats)
-        if stats:
-            # print "loaded:", stats.__dict__
-            self.stats.__dict__.update(stats.__dict__)
-        # start a new session
-        self.stats.session_games = {}
-        self.stats.session_balance = {}
-        self.stats.gameid_balance = 0
-
-    def __saveObject(self, obj, fn):
-        obj.version_tuple = VERSION_TUPLE
-        obj.saved += 1
-        pickle(obj, fn, protocol=-1)
-
     def saveOptions(self):
         self.opt.save(self.fn.opt_cfg)
-
-    def saveStatistics(self):
-        self.__saveObject(self.stats, self.fn.stats)
 
     #
     # access games database
@@ -1067,72 +1026,6 @@ class Application:
         return self.gdb.getGamesIdSortedByName()
 
     ##
-    def getGamesIdSortedByPlayed(self, player=''):
-        if player == '':
-            player = self.opt.player
-
-        def _key(a):
-            wa, la, ta, ma = self.stats.getFullStats(player, a)
-            return wa+la
-        return sorted(
-            self.gdb.getGamesIdSortedByName(), key=_key, reverse=True
-        )
-
-    def getGamesIdSortedByWon(self, player=''):
-        if player == '':
-            player = self.opt.player
-
-        def _key(a):
-            wa, la, ta, ma = self.stats.getFullStats(player, a)
-            return wa
-        return sorted(
-            self.gdb.getGamesIdSortedByName(), key=_key, reverse=True
-        )
-
-    def getGamesIdSortedByLost(self, player=''):
-        if player == '':
-            player = self.opt.player
-
-        def _key(a):
-            wa, la, ta, ma = self.stats.getFullStats(player, a)
-            return la
-        return sorted(
-            self.gdb.getGamesIdSortedByName(), key=_key, reverse=True
-        )
-
-    def getGamesIdSortedByPercent(self, player=''):
-        if player == '':
-            player = self.opt.player
-
-        def _key(a):
-            wa, la, ta, ma = self.stats.getFullStats(player, a)
-            return float(wa)/(1 if wa+la == 0 else wa+la)
-        return sorted(
-            self.gdb.getGamesIdSortedByName(), key=_key, reverse=True
-        )
-
-    def getGamesIdSortedByPlayingTime(self, player=''):
-        if player == '':
-            player = self.opt.player
-
-        def _key(a):
-            wa, la, ta, ma = self.stats.getFullStats(player, a)
-            return ta
-        return sorted(
-            self.gdb.getGamesIdSortedByName(), key=_key, reverse=True
-        )
-
-    def getGamesIdSortedByMoves(self, player=''):
-        if player == '':
-            player = self.opt.player
-
-        def _key(a):
-            wa, la, ta, ma = self.stats.getFullStats(player, a)
-            return ma
-        return sorted(
-            self.gdb.getGamesIdSortedByName(), key=_key, reverse=True
-        )
-
     def getGameInfo(self, id):
         return self.gdb.get(id)
 
@@ -1183,17 +1076,6 @@ class Application:
 
     def getRandomGameId(self):
         return self._choice(self.gdb.getGamesIdSortedById())
-
-    def getAllUserNames(self):
-        names = []
-        for n in self.stats.games_stats:
-            if n is None:               # demo
-                continue
-            if self.stats.games_stats[n]:
-                names.append(n)
-        if self.opt.player not in names:
-            names.append(self.opt.player)
-        return sorted(names)
 
     def getGamesForSolver(self):
         return self.gdb.getGamesForSolver()

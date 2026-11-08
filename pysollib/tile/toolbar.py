@@ -185,7 +185,6 @@ class PysolToolbarTk:
             (n_("Hint"),     self.mHint,      _("Hint")),
             (n_("Pause"),    self.mPause,     _("Pause game")),
             (None,           None,            None),
-            (n_("Statistics"), self.mPlayerStats, _("View statistics")),
             (n_("Rules"),    self.mHelpRules, _("Rules for this game")),
                 ):
             if label is None:
@@ -207,13 +206,6 @@ class PysolToolbarTk:
         self.frame.rowconfigure(position, weight=1)
         self.frame.columnconfigure(position, weight=1)
         #
-        self._createLabel("player", label=n_('Player'),
-                          tooltip=_("Player options"))
-        #
-        self.player_label.bind(
-            calcCustomMouseButtonsBinding("<{mouse_button1}>"),
-            self.mOptPlayerOptions
-        )
         self.frame.bind(
             calcCustomMouseButtonsBinding("<{mouse_button3}>"),
             self.rightclickHandler
@@ -222,19 +214,11 @@ class PysolToolbarTk:
         self.setCompound(compound, force=True)
 
     def config(self, w, v):
-        if w == 'player':
-            # label
-            if v:
-                self.player_label.show(orient=self.orient)
-            else:
-                self.player_label.hide()
+        widget = getattr(self, w+'_button')
+        if v:
+            widget.show(orient=self.orient)
         else:
-            # button
-            widget = getattr(self, w+'_button')
-            if v:
-                widget.show(orient=self.orient)
-            else:
-                widget.hide()
+            widget.hide()
         #
         prev_visible = None
         last_visible = None
@@ -408,11 +392,6 @@ class PysolToolbarTk:
             self.frame.config(cursor=cursor)
             self.frame.update_idletasks()
 
-    def updateText(self, **kw):
-        for name, value in kw.items():
-            label = getattr(self, name + "_label")
-            label["text"] = value
-
     def updateImages(self, dir, size):
         if dir == self.dir and size == self.size:
             return 0
@@ -425,9 +404,6 @@ class PysolToolbarTk:
                 continue
             name = w.toolbar_name
             data.append((name, w))
-        label = self.player_label
-        aspect = (400, 300)[size != 0]
-        label.config(aspect=aspect)
         for name, w in data:
             self._setButtonImage(w, name)
         self.setCompound(self.compound, force=True)

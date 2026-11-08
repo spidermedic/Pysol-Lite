@@ -481,7 +481,6 @@ registerCustomGame(MyCustomGame)
 
 def delete_game(app, game):
     hideGame(game)
-    app.stats.deleteGameStats(game.id)
     fn = game.MODULE_FILENAME
     os.remove(fn)
 

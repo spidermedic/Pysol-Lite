@@ -152,7 +152,6 @@ class PysolStatusbar(MfxStatusbar):
             ('stuck',       _("'You Are Stuck' indicator"), 3),
             ('time',        _('Playing time'),            10),
             ('moves',       _('Moves/Total moves'),       10),
-            ('stats',       _('Games played: won/lost'),  12),
             ('info',        _('Number of cards'),         12),
                 ):
             self._createLabel(n, tooltip=t, width=w)

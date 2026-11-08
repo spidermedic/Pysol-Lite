@@ -64,7 +64,7 @@ from pysollib.pysoltk import MfxExceptionDialog, MfxMessageDialog
 from pysollib.pysoltk import after, after_cancel, after_idle
 from pysollib.pysoltk import bind, wm_map
 from pysollib.settings import DEBUG
-from pysollib.settings import PACKAGE, TITLE, TOP_SIZE
+from pysollib.settings import PACKAGE, TITLE
 from pysollib.settings import VERSION, VERSION_TUPLE
 from pysollib.struct_new import NewStruct
 from pysollib.util import COLORS, RANKS, SUITS_PL
@@ -121,29 +121,6 @@ def _updateStatus_process_key_val(tb, sb, k, v):
             # if tb: tb.updateText(moves=v)
             if sb:
                 sb.updateText(moves=v)
-            return
-    if k == "player":
-        if v is None:
-            if tb:
-                tb.updateText(player=_("Player\n"))
-            return
-        if isinstance(v, str):
-            if tb:
-                # if self.app.opt.toolbar_size:
-                if tb.getSize():
-                    tb.updateText(player=_("Player\n") + v)
-                else:
-                    tb.updateText(player=v)
-            return
-    if k == "stats":
-        if v is None:
-            if sb:
-                sb.updateText(stats="")
-            return
-        if isinstance(v, tuple):
-            t = "%d: %d/%d" % (v[0]+v[1], v[0], v[1])
-            if sb:
-                sb.updateText(stats=t)
             return
     if k == "time":
         if v is None:
@@ -778,13 +755,7 @@ class Game:
         for stack in self.allstacks:
             stack.updateText()
         self.updateText()
-        self.updateStatus(
-            player=self.app.opt.player,
-            moves=(0, 0),
-            stats=self.app.stats.getStats(
-                self.app.opt.player,
-                self.id),
-            stuck='')
+        self.updateStatus(moves=(0, 0), stuck='')
         reset_solver_dialog()
         # unhide toplevel when we use a progress bar
         if not self.preview:
@@ -863,9 +834,7 @@ class Game:
             stack.updateText()
         self.updateText()
         self.updateStatus(
-            player=self.app.opt.player,
-            moves=(self.moves.index, self.stats.total_moves),
-            stats=self.app.stats.getStats(self.app.opt.player, self.id))
+            moves=(self.moves.index, self.stats.total_moves))
         if not self.preview:
             self.updateMenus()
             wm_map(self.top, maximized=self.app.opt.wm_maximized,
@@ -926,7 +895,7 @@ class Game:
         self.app.nextgame.loadedgame = loadedgame
         self.app.nextgame.startdemo = startdemo
         self.app.nextgame.holdgame = holdgame
-        self.updateStatus(time=None, moves=None, stats=None)
+        self.updateStatus(time=None, moves=None)
         self.top.mainquit()
 
     # This should be called directly before newGame(),
@@ -949,15 +918,10 @@ class Game:
                 self.gstats.restarted += 1
             return
         self.updateStats()
-        stats = self.app.stats
         if self.shallUpdateBalance():
             b = self.getGameBalance()
             if b:
-                stats.total_balance[self.id] = \
-                    stats.total_balance.get(self.id, 0) + b
-                stats.session_balance[self.id] = \
-                    stats.session_balance.get(self.id, 0) + b
-                stats.gameid_balance = stats.gameid_balance + b
+                self.app.gameid_balance += b
 
     def restartGame(self):
         self.endGame(restart=1)
@@ -1923,7 +1887,7 @@ class Game:
             return won, 2, self.U_PERFECT
         return won, 1, self.U_WON
 
-    # update statistics when a game was won/ended/canceled/...
+    # remember how a game ended (won/ended/canceled/...)
     def updateStats(self, demo=0):
         if self.preview:
             return ''
@@ -1932,49 +1896,11 @@ class Game:
         won, status, updated = self.getWinStatus()
         if demo and self.getPlayerMoves() == 0:
             if not self.stats.demo_updated:
-                # a pure demo game: remember it finished, so ending the
-                # game later does not add a session log entry for the player
+                # a pure demo game: remember it finished
                 self.stats.demo_updated = updated
             return ''
         if self.changed():
-            # must update player stats
             self.gstats.updated = updated
-            if self.app.opt.update_player_stats:
-                ret = self.app.stats.updateStats(
-                    self.app.opt.player, self, status)
-                self.updateStatus(
-                    stats=self.app.stats.getStats(
-                        self.app.opt.player, self.id))
-                top_msg = ''
-                if ret:
-                    if ret[0] and ret[1]:
-                        top_msg = _(
-                            '\nYou have reached\n# %(timerank)d in the top ' +
-                            '%(tops)d of playing time\nand # %(movesrank)d ' +
-                            'in the top %(tops)d of moves.') % {
-                                'timerank': ret[0],
-                                'movesrank': ret[1],
-                                'tops': TOP_SIZE}
-                    elif ret[0]:        # playing time
-                        top_msg = _(
-                            '\nYou have reached\n# %(timerank)d in the top ' +
-                            '%(tops)d of playing time.') % {
-                                'timerank': ret[0],
-                                'tops': TOP_SIZE}
-                    elif ret[1]:        # moves
-                        top_msg = _(
-                            '\nYou have reached\n# %(movesrank)d in the top ' +
-                            '%(tops)s of moves.') % {
-                                'movesrank': ret[1],
-                                'tops': TOP_SIZE}
-                return top_msg
-        elif not demo:
-            # only update the session log
-            if self.app.opt.update_player_stats:
-                if self.gstats.loaded:
-                    self.app.stats.updateStats(self.app.opt.player, self, -2)
-                elif self.gstats.updated == 0 and self.stats.demo_updated == 0:
-                    self.app.stats.updateStats(self.app.opt.player, self, -1)
         return ''
 
     def checkForWin(self):

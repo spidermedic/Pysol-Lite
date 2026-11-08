@@ -108,8 +108,6 @@ TOOLBAR_BUTTONS = (
     "shuffle",
     "hint",
     "pause",
-    "statistics",
     "rules",
-    "player",
     )
 
