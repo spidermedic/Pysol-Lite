@@ -23,7 +23,6 @@
 
 import os
 
-from pysollib.gamedb import GI
 from pysollib.help import help_about, help_html
 from pysollib.mfxutil import Struct, openURL
 from pysollib.mygettext import _
@@ -67,13 +66,11 @@ class PysolMenubar(PysolMenubarTk):
             quickplay=0,
             cardbackground=0,
             demo=0,
-            replay=0,
             highlight_piles=0,
             find_card=0,
             full_picture=0,
             rules=0,
             pause=0,
-            custom_game=0,
         )
         PysolMenubarTk.__init__(self, app, top, progress)
 
@@ -125,7 +122,6 @@ class PysolMenubar(PysolMenubarTk):
                 ms.redo = 1
         if game.moves.index > 0:
             ms.restart = 1
-            ms.replay = 1
         if game.canDealCards():
             ms.deal = 1
         if game.getHintClass() is not None:
@@ -154,8 +150,6 @@ class PysolMenubar(PysolMenubarTk):
             ms.rules = 1
         if not game.finished:
             ms.pause = 1
-        if game.gameinfo.si.game_type == GI.GT_CUSTOM:
-            ms.custom_game = 1
         if game.canShuffle():
             if opt.shuffle:
                 ms.shuffle = 1
@@ -171,12 +165,8 @@ class PysolMenubar(PysolMenubarTk):
         # Edit menu
         self.setMenuState(ms.undo, "edit.undo")
         self.setMenuState(ms.redo, "edit.redo")
-        self.setMenuState(ms.redo, "edit.redoall")
         self.updateBookmarkMenuState()
-        self.setMenuState(ms.restart, "edit.restart")
-        self.setMenuState(ms.replay, "edit.replay")
-        self.setMenuState(ms.custom_game, "edit.editcurrentgame")
-        self.setMenuState(ms.custom_game, "edit.deletecurrentgame")
+        self.setMenuState(ms.restart, "game.restart")
         # Game menu
         self.setMenuState(ms.deal, "game.dealcards")
         self.setMenuState(ms.autodrop, "game.autodrop")
@@ -367,18 +357,6 @@ class PysolMenubar(PysolMenubarTk):
             self.game.redo()
             self.game.checkForWin()
 
-    def mRedoAll(self, *args):
-        if self._cancelDrag():
-            return
-        if self.menustate.redo:
-            self.app.top.busyUpdate()
-            self.game.playSample("redo", loop=1)
-            while self.game.moves.index < len(self.game.moves.history):
-                self.game.redo()
-                if self.game.checkForWin():
-                    break
-            self.game.stopSamples()
-
     def mSetBookmark(self, n, confirm=1):
         if self._cancelDrag():
             return
@@ -513,21 +491,6 @@ class PysolMenubar(PysolMenubarTk):
                     return
         # self.app.demo_counter = 0
         self.game.startDemo(mixed=mixed)
-
-    def mReplay(self, *args):
-        if self._cancelDrag():
-            return
-        if self.game.moves.index == 0:
-            return
-        if self.changed(restart=1):
-            if not self.game.areYouSure(_("Replay"),
-                                        _("Replay this game?")):
-                return
-        self.game.startReplay()
-
-    #
-    # Options menu
-    #
 
     def mOptPlayOptions(self, *args):
         if self._cancelDrag(break_pause=False):

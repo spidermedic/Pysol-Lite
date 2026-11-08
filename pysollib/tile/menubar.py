@@ -59,10 +59,6 @@ class PysolMenubarTk(PysolMenubarTkCommon):
     def _connect_game_solver_dialog(self, game):
         return connect_game_solver_dialog(game)
 
-    def _calcWizardDialog(self):
-        from .wizarddialog import WizardDialog
-        return WizardDialog
-
     def _calcSelectGameDialog(self):
         from .selectgame import SelectGameDialog
         return SelectGameDialog

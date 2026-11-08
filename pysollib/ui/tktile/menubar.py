@@ -274,15 +274,6 @@ class PysolMenubarTkCommon:
         menu.add_command(
             label=n_("&Redo"),
             command=self.mRedo, accelerator="R")
-        menu.add_command(label=n_("Redo &all"), command=self.mRedoAll)
-
-        menu.add_separator()
-        menu.add_command(
-            label=n_("Restart"),
-            command=self.mRestart, accelerator=m+"G")
-        menu.add_command(
-            label=n_("&Replay"),
-            command=self.mReplay)
 
         menu.add_separator()
         submenu = MfxMenu(menu, label=n_("&Set bookmark"))
@@ -301,17 +292,6 @@ class PysolMenubarTkCommon:
         menu.add_command(
             label=n_("&Clear bookmarks"),
             command=self.mClearBookmarks)
-
-        menu.add_separator()
-        menu.add_command(
-            label=n_("Solitaire &Wizard"),
-            command=self.mWizard)
-        menu.add_command(
-            label=n_("&Edit current game"),
-            command=self.mWizardEdit)
-        menu.add_command(
-            label=n_("&Delete current game"),
-            command=self.mWizardDelete)
 
         menu = MfxMenu(self.menubar, label=n_("&Select"))
         self._addSelectGameMenu(menu)
@@ -332,6 +312,9 @@ class PysolMenubarTkCommon:
         menu.add_checkbutton(
             label=n_("&Pause"), variable=self.tkopt.pause,
             command=self.mPause, accelerator="P")
+        menu.add_command(
+            label=n_("&Restart"),
+            command=self.mRestart, accelerator=m+"G")
         menu.add_separator()
         menu.add_command(
             label=n_("&Hint"),
@@ -606,8 +589,6 @@ class PysolMenubarTkCommon:
                                            self.tkopt.gameid)
         self._addSelectSpecialGameSubMenu(games, menu, self.mSelectGame,
                                           self.tkopt.gameid)
-        self._addSelectCustomGameSubMenu(games, menu, self.mSelectGame,
-                                         self.tkopt.gameid)
         if self.progress:
             self.progress.update(step=1)
 
@@ -700,14 +681,6 @@ class PysolMenubarTkCommon:
         self._addSelectGameSubMenu(games, submenu,
                                    GI.SELECT_SPECIAL_GAME_BY_TYPE,
                                    self.mSelectGame, self.tkopt.gameid)
-
-    def _addSelectCustomGameSubMenu(self, games, menu, command, variable):
-        submenu = MfxMenu(menu, label=n_("&Custom games"))
-
-        def select_func(gi):
-            return gi.si.game_type == GI.GT_CUSTOM
-        games = list(filter(select_func, games))
-        self.updateGamesMenu(submenu, games)
 
     def _addSelectAllGameSubMenu(self, games, menu, command, variable):
         if menu.name == "select":
@@ -878,22 +851,6 @@ class PysolMenubarTkCommon:
         submenu.add_separator()
         submenu.add_command(label=n_("&Clear recent games"),
                             command=self.mClearRecent)
-
-    def updateCustomGamesMenu(self):
-        menu = self.menupath[".menubar.select.customgames"][2]
-
-        def select_func_visible(gi):
-            return gi.si.game_type != GI.GT_HIDDEN
-
-        def select_func_custom(gi):
-            return gi.si.game_type == GI.GT_CUSTOM
-
-        games = list(map(self.app.gdb.get,
-                         self.app.gdb.getGamesIdSortedByName()))
-        games = list(filter(select_func_visible, games))
-        self.progress = False
-        games = list(filter(select_func_custom, games))
-        self.updateGamesMenu(menu, games)
 
     def updateBookmarkMenuState(self):
         state = self._getEnabledState
@@ -1284,72 +1241,6 @@ class PysolMenubarTkCommon:
         self.tkopt.toolbar_compound.set(compound)          # update radiobutton
         if self.app.toolbar.setCompound(compound):
             self.top.update_idletasks()
-
-    def wizardDialog(self, edit=False):
-        wasPaused = False
-        if not self.game.pause:
-            self.game.doPause()
-            wasPaused = True
-        from pysollib.wizardutil import write_game, reset_wizard
-        WizardDialog = self._calcWizardDialog()
-
-        if edit:
-            reset_wizard(self.game)
-        else:
-            reset_wizard(None)
-        d = WizardDialog(self.top, _('Solitaire Wizard'), self.app)
-        if self.game.pause:
-            if wasPaused:
-                self.game.doPause()
-        if d.status == 0 and d.button == 0:
-            try:
-                if edit:
-                    gameid = write_game(self.app, game=self.game)
-                else:
-                    gameid = write_game(self.app)
-            except Exception as err:
-                # if False:
-                #    traceback.print_exc()
-                self._calc_MfxMessageDialog()(
-                    self.top, title=_('Save game error'),
-                    text=_('''
-Error while saving game.
-
-%s
-''') % str(err),
-                    bitmap='error')
-                return
-
-            if SELECT_GAME_MENU:
-                self.updateCustomGamesMenu()
-
-            self.tkopt.gameid.set(gameid)
-            self._mSelectGame(gameid, force=True)
-
-    def mWizard(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.wizardDialog()
-
-    def mWizardEdit(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.wizardDialog(edit=True)
-
-    def mWizardDelete(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        if not self.game.areYouSure(_("Delete game"),
-                                    _("Delete the game %s?")
-                                    % self.game.gameinfo.name):
-            return
-        from pysollib.wizardutil import delete_game
-        delete_game(self.app, self.game)
-        self.game.endGame()
-        self.game.quitGame(2)
-
-        if SELECT_GAME_MENU:
-            self.updateCustomGamesMenu()
 
     def toolbarConfig(self, w, v):
         if self._cancelDrag(break_pause=False):
