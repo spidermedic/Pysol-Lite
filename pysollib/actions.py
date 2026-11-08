@@ -788,7 +788,6 @@ class PysolMenubar(PysolMenubarTk):
         if d.status == 0 and d.button == 0:
             self.app.opt.confirm = bool(d.confirm)
             self.app.opt.update_player_stats = bool(d.update_stats)
-            self.app.opt.win_animation = bool(d.win_animation)
             # n = string.strip(d.player)
             n = d.player[:30].strip()
             if 0 < len(n) <= 30:

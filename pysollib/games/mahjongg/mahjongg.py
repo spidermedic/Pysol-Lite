@@ -1120,7 +1120,6 @@ a solvable configuration.'''),
             return 0
         if self.pause:
             return 0
-        self.stopWinAnimation()
         items = []
         for s, c1, c2, color in info:
             assert c1 is c2

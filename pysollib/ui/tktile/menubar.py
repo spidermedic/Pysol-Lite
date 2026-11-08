@@ -320,9 +320,6 @@ class PysolMenubarTkCommon:
             cardback=tkinter.IntVar(),
             tabletile=tkinter.IntVar(),
             animations=tkinter.IntVar(),
-            redeal_animation=tkinter.BooleanVar(),
-            win_animation=tkinter.BooleanVar(),
-            flip_animation=tkinter.BooleanVar(),
             shadow=tkinter.BooleanVar(),
             shade=tkinter.BooleanVar(),
             shade_filled_stacks=tkinter.BooleanVar(),
@@ -399,9 +396,6 @@ class PysolMenubarTkCommon:
         tkopt.cardback.set(self.app.cardset.backindex)
         tkopt.tabletile.set(self.app.tabletile_index)
         tkopt.animations.set(opt.animations)
-        tkopt.redeal_animation.set(opt.redeal_animation)
-        tkopt.win_animation.set(opt.win_animation)
-        tkopt.flip_animation.set(opt.flip_animation)
         tkopt.shadow.set(opt.shadow)
         tkopt.shade.set(opt.shade)
         tkopt.toolbar.set(opt.toolbar)
@@ -828,7 +822,7 @@ class PysolMenubarTkCommon:
             command=self.mOptRandomizePlace)
         submenu = MfxMenu(menu, label=n_("A&nimations"))
         submenu.add_radiobutton(
-            label=n_("&None"), variable=self.tkopt.animations, value=0,
+            label=n_("&Off"), variable=self.tkopt.animations, value=0,
             command=self.mOptAnimations)
         submenu.add_radiobutton(
             label=n_("&Fast"), variable=self.tkopt.animations, value=1,
@@ -839,20 +833,6 @@ class PysolMenubarTkCommon:
         submenu.add_radiobutton(
             label=n_("&Slow"), variable=self.tkopt.animations, value=3,
             command=self.mOptAnimations)
-        submenu.add_separator()
-        submenu.add_checkbutton(
-            label=n_("&Redeal animation"),
-            variable=self.tkopt.redeal_animation,
-            command=self.mRedealAnimation)
-        submenu.add_checkbutton(
-            label=n_("F&lip animation"),
-            variable=self.tkopt.flip_animation,
-            command=self.mFlipAnimation)
-        if Image:
-            submenu.add_checkbutton(
-                label=n_("&Winning animation"),
-                variable=self.tkopt.win_animation,
-                command=self.mWinAnimation)
         submenu = MfxMenu(menu, label=n_("&Mouse"))
         submenu.add_radiobutton(
             label=n_("&Drag-and-Drop"), variable=self.tkopt.mouse_type,
@@ -1742,21 +1722,6 @@ Unsupported game for import.
         # the radio button change while the option silently stayed the same,
         # so a slow speed could not be changed back.
         self.app.opt.animations = self.tkopt.animations.get()
-
-    def mRedealAnimation(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.redeal_animation = self.tkopt.redeal_animation.get()
-
-    def mFlipAnimation(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.flip_animation = self.tkopt.flip_animation.get()
-
-    def mWinAnimation(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.win_animation = self.tkopt.win_animation.get()
 
     def mOptShadow(self, *args):
         if self._cancelDrag(break_pause=False):

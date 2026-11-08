@@ -42,8 +42,6 @@ class PlayerOptionsDialog(MfxDialog):
         self.update_stats_var.set(app.opt.update_player_stats != 0)
         self.confirm_var = tkinter.BooleanVar()
         self.confirm_var.set(app.opt.confirm != 0)
-        self.win_animation_var = tkinter.BooleanVar()
-        self.win_animation_var.set(app.opt.win_animation != 0)
         #
         frame = ttk.Frame(top_frame)
         frame.pack(expand=True, fill='both', padx=5, pady=10)
@@ -64,15 +62,11 @@ class PlayerOptionsDialog(MfxDialog):
         widget = PysolCheckbutton(frame, variable=self.update_stats_var,
                                   text=_("Update statistics and logs"))
         widget.grid(row=3, column=0, columnspan=2, sticky='ew', padx=0, pady=5)
-        #  widget = PysolCheckbutton(frame, variable=self.win_animation_var,
-        #                               text="Win animation")
-        #  widget.pack(side='top', padx=kw.padx, pady=kw.pady)
         frame.columnconfigure(0, weight=1)
         #
         self.player = self.player_var.get()
         self.confirm = self.confirm_var.get()
         self.update_stats = self.update_stats_var.get()
-        self.win_animation = self.win_animation_var.get()
         #
         focus = self.createButtons(bottom_frame, kw)
         self.mainloop(focus, kw.timeout)
@@ -82,7 +76,6 @@ class PlayerOptionsDialog(MfxDialog):
         self.player = self.player_var.get()
         self.confirm = self.confirm_var.get()
         self.update_stats = self.update_stats_var.get()
-        self.win_animation = self.win_animation_var.get()
         raise SystemExit
 
     def initKw(self, kw):

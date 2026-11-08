@@ -22,7 +22,6 @@
 # ---------------------------------------------------------------------------
 
 
-import math
 import random
 import time
 import traceback
@@ -38,7 +37,7 @@ from pysollib.game.dump import pysolDumpGame
 from pysollib.gamedb import GI
 from pysollib.help import help_about
 from pysollib.hint import DefaultHint, HINT_LEVEL_SOLVER, HINT_LEVEL_STUCK
-from pysollib.mfxutil import Image, ImageTk, USE_PIL
+from pysollib.mfxutil import USE_PIL
 from pysollib.mfxutil import Struct, SubclassResponsibility, destruct
 from pysollib.mfxutil import format_time, print_err
 from pysollib.mfxutil import uclock, usleep
@@ -452,18 +451,6 @@ class GameGlobalStatsStruct(NewStruct):
 
 
 @attr.s
-class GameWinAnimation(NewStruct):
-    timer = attr.ib(default=None)
-    images = attr.ib(factory=list)
-    tk_images = attr.ib(factory=list)             # saved tk images
-    saved_images = attr.ib(factory=dict)          # saved resampled images
-    canvas_images = attr.ib(factory=list)         # ids of canvas images
-    frame_num = attr.ib(default=0)              # number of the current frame
-    width = attr.ib(default=0)
-    height = attr.ib(default=0)
-
-
-@attr.s
 class GameMoves(NewStruct):
     current = attr.ib(factory=list)
     history = attr.ib(factory=list)
@@ -771,8 +758,6 @@ class Game:
         # global statistics survive a game restart
         self.gstats = GameGlobalStatsStruct()
         self.gsaveinfo = GameGlobalSaveInfo()
-        # some vars for win animation
-        self.win_animation = GameWinAnimation()
 
     def getTitleName(self):
         return self.app.getGameTitleName(self.id)
@@ -805,10 +790,7 @@ class Game:
         self._pending_win_time = ''
         old_busy, self.busy = self.busy, 1
         self.setCursor(cursor=CURSOR_WATCH)
-        self.stopWinAnimation()
         self.disableMenus()
-        if shuffle:
-            self.redealAnimation()
         self.reset(restart=restart)
         self.resetGame()
         self.createRandom(random)
@@ -1476,7 +1458,6 @@ class Game:
         return 0
 
     def _cancelDrag(self, break_pause=True):
-        self.stopWinAnimation()
         if self.demo:
             self.stopDemo()
         if break_pause and self.pause:
@@ -1504,8 +1485,6 @@ class Game:
             return True
         if self.pause:
             self.app.menubar.mPause()
-            return True
-        if not self.event_handled and self.stopWinAnimation():
             return True
         self.interruptSleep()
         if self.deleteStackDesc():
@@ -1827,308 +1806,6 @@ class Game:
         finally:
             self.busy = old_busy
 
-    def doAnimatedFlipAndMove(self, from_stack, to_stack=None, frames=-1):
-        if self.app.opt.animations == 0 or frames == 0:
-            return False
-        if not from_stack.cards:
-            return False
-        if not Image:
-            return False
-
-        canvas = self.canvas
-        card = from_stack.cards[-1]
-        im1 = card._active_image._pil_image
-        if card.face_up:
-            im2 = card._back_image._pil_image
-        else:
-            im2 = card._face_image._pil_image
-        w, h = im1.size
-        id = card.item.id
-
-        SPF = 0.1/8                     # animation speed - seconds per frame
-        frames = 4.0                    # num frames for each step
-        if self.app.opt.animations == 3:  # slow
-            SPF = 0.1/8
-            frames = 7.0
-
-        if to_stack is None:
-            x0, y0 = from_stack.getPositionFor(card)
-            x1, y1 = x0, y0
-            dest_x, dest_y = 0, 0
-        else:
-            x0, y0 = from_stack.getPositionFor(card)
-            x1, y1 = to_stack.getPositionForNextCard()
-            dest_x, dest_y = x1-x0, y1-y0
-
-        if dest_x == 0 and dest_y == 0:
-            # flip
-            # ascent_dx, ascent_dy = 0, self.app.images.SHADOW_YOFFSET/frames
-            ascent_dx, ascent_dy = 0, h/10.0/frames
-            min_size = w/10
-            shrink_dx = (w-min_size) / (frames-1)
-            shrink_dy = 0
-        elif dest_y == 0:
-            # move to left/right waste
-            # ascent_dx, ascent_dy = 0, self.app.images.SHADOW_YOFFSET/frames
-            ascent_dx, ascent_dy = 0, h/10.0/frames
-            min_size = w/10
-            shrink_dx = (w-min_size) / (frames-1)
-            shrink_dy = 0
-        elif dest_x == 0:
-            # move to top/bottom waste
-            if 0:
-                ascent_dx, ascent_dy = 0, h/10.0/frames
-                min_size = w/10
-                shrink_dx = (w-min_size) / (frames-1)
-                shrink_dy = 0
-            elif 0:
-                ascent_dx, ascent_dy = 0, 0
-                min_size = h/10
-                shrink_dx = 0
-                shrink_dy = (h-min_size) / (frames-1)
-            else:
-                return False
-        else:
-            # dest_x != 0 and dest_y != 0
-            return False
-
-        move_dx = dest_x / frames / 2
-        move_dy = dest_y / frames / 2
-        xpos, ypos = float(x0), float(y0)
-
-        card.tkraise()
-
-        # step 1
-        d_x = shrink_dx/2+move_dx-ascent_dx
-        d_y = shrink_dy/2+move_dy-ascent_dy
-        nframe = 0
-        while nframe < frames:
-            starttime = uclock()
-            # resize img
-            ww = w - nframe*shrink_dx
-            hh = h - nframe*shrink_dy
-            tmp = im1.resize((int(ww), int(hh)))
-            tk_tmp = ImageTk.PhotoImage(image=tmp)
-            canvas.itemconfig(id, image=tk_tmp)
-            # move img
-            xpos += d_x
-            ypos += d_y
-            card.moveTo(int(round(xpos)), int(round(ypos)))
-            canvas.update_idletasks()
-
-            nframe += 1
-            t = (SPF-(uclock()-starttime))*1000   # milliseconds
-            if t > 0:
-                usleep(t/1000)
-                # else:
-                # nframe += 1
-                # xpos += d_x
-                # ypos += d_y
-
-        # step 2
-        d_x = -shrink_dx/2+move_dx+ascent_dx
-        d_y = -shrink_dy/2+move_dy+ascent_dy
-        nframe = 0
-        while nframe < frames:
-            starttime = uclock()
-            # resize img
-            ww = w - (frames-nframe-1)*shrink_dx
-            hh = h - (frames-nframe-1)*shrink_dy
-            tmp = im2.resize((int(ww), int(hh)))
-            tk_tmp = ImageTk.PhotoImage(image=tmp)
-            canvas.itemconfig(id, image=tk_tmp)
-            # move img
-            xpos += d_x
-            ypos += d_y
-            card.moveTo(int(round(xpos)), int(round(ypos)))
-            canvas.update_idletasks()
-
-            nframe += 1
-            t = (SPF-(uclock()-starttime))*1000  # milliseconds
-            if t > 0:
-                usleep(t/1000)
-                # else:
-                # nframe += 1
-                # xpos += d_x
-                # ypos += d_y
-
-        card.moveTo(x1, y1)
-        # canvas.update_idletasks()
-        return True
-
-    def animatedFlip(self, stack):
-        if self.preview or not self.app.opt.flip_animation:
-            return False
-        return self.doAnimatedFlipAndMove(stack)
-
-    def animatedFlipAndMove(self, from_stack, to_stack, frames=-1):
-        if self.preview or not self.app.opt.flip_animation:
-            return False
-        return self.doAnimatedFlipAndMove(from_stack, to_stack, frames)
-
-    def winAnimationEvent(self):
-        # based on code from pygtk-demo
-        FRAME_DELAY = 80
-        CYCLE_LEN = 60
-        starttime = uclock()
-        images = self.win_animation.images
-        saved_images = self.win_animation.saved_images  # cached images
-        canvas = self.canvas
-        canvas.delete(*self.win_animation.canvas_images)
-        self.win_animation.canvas_images = []
-
-        x0 = int(int(canvas.cget('width'))*(canvas.xview()[0]))
-        y0 = int(int(canvas.cget('height'))*(canvas.yview()[0]))
-        width, height = self.win_animation.width, self.win_animation.height
-        cw = self.canvas.winfo_width()
-        ch = self.canvas.winfo_height()
-        x0 -= (width-cw)/2
-        y0 -= (height-ch)/2
-
-        tmp_tk_images = []
-        raised_images = []
-        n_images = len(images)
-        xmid = width / 2.0
-        ymid = height / 2.0
-        radius = min(xmid, ymid) / 2.0
-
-        f = float(self.win_animation.frame_num % CYCLE_LEN) / float(CYCLE_LEN)
-        r = radius + (radius / 3.0) * math.sin(f * 2.0 * math.pi)
-        img_index = 0
-
-        for im in images:
-
-            iw, ih = im.size
-
-            ang = 2.0 * math.pi * img_index / n_images - f * 2.0 * math.pi
-            xpos = x0 + int(xmid + r * math.cos(ang) - iw / 2.0)
-            ypos = y0 + int(ymid + r * math.sin(ang) - ih / 2.0)
-
-            k = (math.sin if img_index & 1 else math.cos)(f * 2.0 * math.pi)
-            k = max(0.4, k ** 2)
-            round_k = int(round(k*100))
-            if img_index not in saved_images:
-                saved_images[img_index] = {}
-            if round_k in saved_images[img_index]:
-                tk_tmp = saved_images[img_index][round_k]
-            else:
-                new_size = (int(iw*k), int(ih*k))
-                if round_k == 100:
-                    tmp = im
-                else:
-                    tmp = im.resize(new_size, resample=Image.BILINEAR)
-                tk_tmp = ImageTk.PhotoImage(image=tmp)
-                saved_images[img_index][round_k] = tk_tmp
-
-            id = canvas.create_image(xpos, ypos, image=tk_tmp, anchor='nw')
-            self.win_animation.canvas_images.append(id)
-            if k > 0.6:
-                raised_images.append(id)
-            tmp_tk_images.append(tk_tmp)
-
-            img_index += 1
-
-        for id in raised_images:
-            canvas.tag_raise(id)
-        self.win_animation.frame_num = \
-            (self.win_animation.frame_num+1) % CYCLE_LEN
-        self.win_animation.tk_images = tmp_tk_images
-        canvas.update_idletasks()
-        # loop
-        t = FRAME_DELAY-int((uclock()-starttime)*1000)
-        if t > 0:
-            self.win_animation.timer = after(canvas, t, self.winAnimationEvent)
-        else:
-            self.win_animation.timer = after_idle(
-                canvas,
-                self.winAnimationEvent)
-
-    def stopWinAnimation(self):
-        if self.win_animation.timer:
-            after_cancel(self.win_animation.timer)  # stop loop
-            self.win_animation.timer = None
-            self.canvas.delete(*self.win_animation.canvas_images)
-            self.win_animation.canvas_images = []
-            self.win_animation.tk_images = []  # delete all images
-            self.saved_images = {}
-            self.canvas.showAllItems()
-            return True
-        return False
-
-    def winAnimation(self, perfect=0):
-        if self.preview:
-            return
-        if not self.app.opt.win_animation:
-            return
-        if not Image:
-            return
-        self.canvas.hideAllItems()
-        # select some random cards
-        cards = self.cards[:]
-        scards = []
-        ncards = min(10, len(cards))
-        for i in range(ncards):
-            c = self.app.miscrandom.choice(cards)
-            scards.append(c)
-            cards.remove(c)
-        for c in scards:
-            self.win_animation.images.append(c._face_image._pil_image)
-        # compute visible geometry
-        self.win_animation.width = self.canvas.winfo_width()
-        self.win_animation.height = self.canvas.winfo_height()
-        # run win animation in background
-        # after_idle(self.canvas, self.winAnimationEvent)
-        after(self.canvas, 200, self.winAnimationEvent)
-        return
-
-    def redealAnimation(self):
-        if self.preview:
-            return
-        if not self.app.opt.animations or not self.app.opt.redeal_animation:
-            return
-        cards = []
-        for s in self.allstacks:
-            if s is not self.s.talon:
-                for c in s.cards:
-                    cards.append((c, s))
-        if not cards:
-            return
-        self.setCursor(cursor=CURSOR_WATCH)
-        self.top.busyUpdate()
-        self.canvas.update_idletasks()
-        old_a = self.app.opt.animations
-        if old_a == 0:
-            self.app.opt.animations = 1     # fast
-        elif old_a == 3:                    # slow
-            self.app.opt.animations = 2     # medium
-        # select some random cards
-        acards = []
-        scards = cards[:]
-        for i in range(8):
-            c, s = self.app.miscrandom.choice(scards)
-            if c not in acards:
-                acards.append(c)
-                scards.remove((c, s))
-                if not scards:
-                    break
-        # animate
-        sx, sy = self.s.talon.x, self.s.talon.y
-        w, h = self.width, self.height
-        while cards:
-            # get and un-tuple a random card
-            t = self.app.miscrandom.choice(cards)
-            c, s = t
-            s.removeCard(c, update=0)
-            # animation
-            if c in acards or len(cards) <= 2:
-                self.animatedMoveTo(
-                    s, None, [c], w//2, h//2, tkraise=0, shadow=0)
-                self.animatedMoveTo(s, None, [c], sx, sy, tkraise=0, shadow=0)
-            else:
-                c.moveTo(sx, sy)
-            cards.remove(t)
-        self.app.opt.animations = old_a
-
     def sleep(self, seconds):
         # if 0 and self.canvas:
         # self.canvas.update_idletasks()
@@ -2392,7 +2069,6 @@ class Game:
         if status == 2:
             if not time_str:
                 time_str = self.getTime()
-            self.winAnimation(perfect=1)
             text = ungettext('Your playing time is %(time)s\nfor %(n)d move.',
                              'Your playing time is %(time)s\nfor %(n)d moves.',
                              self.moves.index)
@@ -2407,7 +2083,6 @@ class Game:
         elif status == 1:
             if not time_str:
                 time_str = self.getTime()
-            self.winAnimation()
             text = ungettext('Your playing time is %(time)s\nfor %(n)d move.',
                              'Your playing time is %(time)s\nfor %(n)d moves.',
                              self.moves.index)
@@ -2449,8 +2124,7 @@ class Game:
             # restart game
             self.restartGame()
         elif d.status == 0 and d.button == 2:
-            self.stopWinAnimation()
-        return True
+            return True
 
     #
     # Game - subclass overridable methods (but usually not)
@@ -2599,7 +2273,6 @@ class Game:
             return 0
         if self.pause:
             return 0
-        self.stopWinAnimation()
         cw, ch = self.app.images.getSize()
         items = []
         for s, c1, c2, color in info:
@@ -2624,7 +2297,6 @@ class Game:
             return 0
         if self.pause:
             return 0
-        self.stopWinAnimation()
         cw, ch = self.app.images.getSize()
         items = []
         for s, color in info:
@@ -3178,11 +2850,6 @@ class Game:
                     self.quitGame(id, startdemo=1)
             else:
                 self.stopDemo()
-                if DEBUG >= 10:
-                    # debug - only for testing winAnimation()
-                    self.endGame()
-                    self.winAnimation()
-                    self.newGame()
         else:
             # game not finished yet
             self.top.busyUpdate()

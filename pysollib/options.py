@@ -84,9 +84,6 @@ shisen_show_hint = boolean
 shisen_show_matching = boolean
 match_three_cascade = boolean
 animations = integer(0, 5)
-redeal_animation = boolean
-win_animation = boolean
-flip_animation = boolean
 compact_stacks = boolean
 shadow = boolean
 shade = boolean
@@ -246,9 +243,6 @@ class Options:
         ('accordion_deal_all', 'bool'),
         ('pegged_auto_remove', 'bool'),
         ('animations', 'int'),
-        ('redeal_animation', 'bool'),
-        ('win_animation', 'bool'),
-        ('flip_animation', 'bool'),
         ('compact_stacks', 'bool'),
         ('shadow', 'bool'),
         ('shade', 'bool'),
@@ -351,9 +345,6 @@ class Options:
         self.match_three_cascade = True
         # 0 none, 1 fast, 2 medium, 3 slow
         self.animations = 2             # default to Medium
-        self.redeal_animation = False
-        self.win_animation = False
-        self.flip_animation = False
         self.compact_stacks = True
         self.shadow = True
         self.shade = True

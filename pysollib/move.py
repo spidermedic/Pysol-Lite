@@ -129,7 +129,6 @@ class AFlipMove(AtomicMove):
     # do the actual move
     def _doMove(self, game, stack):
         card = stack.cards[-1]
-        # game.animatedFlip(stack)
         if card.face_up:
             card.showBack()
         else:
@@ -149,7 +148,6 @@ class AFlipMove(AtomicMove):
 class ASingleFlipMove(AFlipMove):
     def _doMove(self, game, stack):
         card = stack.cards[-1]
-        game.animatedFlip(stack)
         if card.face_up:
             card.showBack()
         else:
@@ -171,7 +169,7 @@ class AFlipAndMoveMove(AtomicMove):
         if self.frames == 0:
             moved = True
         else:
-            moved = game.animatedFlipAndMove(from_stack, to_stack, self.frames)
+            moved = False
         c = from_stack.cards[-1]
         if c.face_up:
             c.showBack()
