@@ -267,12 +267,6 @@ class PysolMenubarTkCommon:
         if self.progress:
             self.progress.update(step=1)
 
-        menu = MfxMenu(self.menubar, label=n_("&Select"))
-        self._addSelectGameMenu(menu)
-
-        if self.progress:
-            self.progress.update(step=1)
-
         menu = MfxMenu(self.menubar, label=n_("&Edit"))
         menu.add_command(
             label=n_("&Undo"),
@@ -318,6 +312,12 @@ class PysolMenubarTkCommon:
         menu.add_command(
             label=n_("&Delete current game"),
             command=self.mWizardDelete)
+
+        menu = MfxMenu(self.menubar, label=n_("&Select"))
+        self._addSelectGameMenu(menu)
+
+        if self.progress:
+            self.progress.update(step=1)
 
         menu = MfxMenu(self.menubar, label=n_("&Game"))
         menu.add_command(
