@@ -307,3 +307,12 @@ Installed app rebuilt after commit "Move Toolbar and Statusbar into the Layout s
 - **Help pages:** the Player Options section became "Confirm Before Quitting"; statistics mentions were removed from the assist options, intro and install pages; the toolbar/status bar section says they are under Options > Layout.
 - **Push state:** `origin/master` is still at the Phosphor handoff (section 25). Sections 26 to 29 and every commit since are local.
 - **Still open:** as in section 25. The "Some notes about scoring" list in `howtoplay.html` still describes win/loss rules in terms of the removed statistics ("Loaded games don't count") and could be rewritten.
+
+## 30. Update: Layout submenu order (2026-11-08)
+
+Installed app rebuilt after commit "Layout submenu order: Toolbar, Statusbar, Background color, Spread stacks" (120 MB, arm64, ad-hoc signed).
+
+- **Change:** Options > Layout is now Toolbar (Icon size, Button style, Visible buttons, Position), Statusbar, a divider, Background color, Spread stacks. It was Background color, Spread stacks, a divider, Toolbar, Statusbar (section 29). The code is the `layout = MfxMenu(menu, label=n_("&Layout"))` block in `ui/tktile/menubar.py`; the menu path for Backs is unaffected (`options.cards.backs`).
+- **Verification:** unit tests pass (19); a real-app source run printed the new order, toggled Statusbar, moved the toolbar between positions and confirmed the toolbar right-click popup still exists. The installed app was checked with `--version` and `codesign -v` only. Nothing was checked by eye.
+- **Push state:** `origin/master` is still at the Phosphor handoff (section 25). Sections 26 to 30 and every commit since are local (the last count was 13 commits before this entry).
+- **Still open:** as in sections 25 and 29.
