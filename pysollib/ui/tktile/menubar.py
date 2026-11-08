@@ -508,6 +508,9 @@ class PysolMenubarTkCommon:
             variable=self.tkopt.highlight_not_matching,
             command=self.mOptEnableHighlightNotMatching)
         submenu.add_checkbutton(
+            label=n_("Shade &legal moves"), variable=self.tkopt.shade,
+            command=self.mOptShade)
+        submenu.add_checkbutton(
             label=n_("Stuc&k notification"),
             variable=self.tkopt.stuck_notification,
             command=self.mOptEnableStuckNotification)
@@ -562,16 +565,13 @@ class PysolMenubarTkCommon:
         # n = manager.len()
         submenu = MfxMenu(menu, label=n_("C&ards"))
         submenu.add_command(
-            label=n_("&Deck..."),
+            label=n_("&Decks..."),
             command=self.mSelectCardsetDialog, accelerator=m+"E")
         # this submenu will get set by updateBackgroundImagesMenu()
-        MfxMenu(submenu, label=n_("Card &back"))
+        MfxMenu(submenu, label=n_("&Backs"))
         menu.add_command(
             label=n_("Table c&olor..."),
             command=self.mSelectTableColor)
-        menu.add_checkbutton(
-            label=n_("Shade &legal moves"), variable=self.tkopt.shade,
-            command=self.mOptShade)
         submenu = MfxMenu(menu, label=n_("A&nimations"))
         submenu.add_radiobutton(
             label=n_("&Off"), variable=self.tkopt.animations, value=0,
@@ -1128,7 +1128,7 @@ class PysolMenubarTkCommon:
         menu.entryconfig(index, state=state(ms and x))
 
     def updateBackgroundImagesMenu(self):
-        mp = self.menupath.get(".menubar.options.cards.cardback")
+        mp = self.menupath.get(".menubar.options.cards.backs")
         # delete all entries
         submenu = mp[2]
         submenu.delete(0, "last")
