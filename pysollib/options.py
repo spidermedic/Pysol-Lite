@@ -184,14 +184,7 @@ highlight_piles = float(0.2, 9.9)
 11_9 = string_list(min=2, max=2)
 11_10 = string_list(min=2, max=2)
 12 = string_list(min=2, max=2)
-scale_cards = boolean
-scale_x = float
-scale_y = float
-auto_scale = boolean
-preview_scale = boolean
 spread_stacks = boolean
-preserve_aspect_ratio = boolean
-resampling = integer(0, 10)
 '''.splitlines()
 
 
@@ -416,6 +409,8 @@ class Options:
         # self.save_cardsets = True
         self.dragcursor = True
         #
+        # Card scaling is fixed: always scale to the window, keep the aspect
+        # ratio, and use the best resampling filter. Not saved or loaded.
         self.scale_cards = False
         self.scale_x = 1.0
         self.scale_y = 1.0
@@ -601,10 +596,7 @@ class Options:
                     config['cardsets'][str(key) + "_" + str(key2)] = val2
                 else:
                     config['cardsets'][str(key)] = val2
-        for key in ('scale_cards', 'scale_x', 'scale_y',
-                    'auto_scale', 'preview_scale', 'spread_stacks',
-                    'preserve_aspect_ratio', 'resampling'):
-            config['cardsets'][key] = getattr(self, key)
+        config['cardsets']['spread_stacks'] = self.spread_stacks
 
         # games_geometry
         config['games_geometry'].clear()
@@ -776,14 +768,7 @@ class Options:
                         self.cardset[int(key)][int(key2)] = val
                     except Exception:
                         traceback.print_exc()
-        for key, t in (('scale_cards', 'bool'),
-                       ('scale_x', 'float'),
-                       ('scale_y', 'float'),
-                       ('auto_scale', 'bool'),
-                       ('preview_scale', 'bool'),
-                       ('spread_stacks', 'bool'),
-                       ('preserve_aspect_ratio', 'bool'),
-                       ('resampling', 'int')):
+        for key, t in (('spread_stacks', 'bool'),):
             val = self._getOption('cardsets', key, t)
             if val is not None:
                 setattr(self, key, val)

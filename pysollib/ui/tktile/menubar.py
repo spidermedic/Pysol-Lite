@@ -9,7 +9,7 @@ from tkinter.colorchooser import askcolor
 
 from pysollib.gamedb import GI
 from pysollib.hint import PySolHintLayoutImportError
-from pysollib.mfxutil import Image, USE_PIL
+from pysollib.mfxutil import USE_PIL
 from pysollib.mfxutil import Struct, kwdefault
 from pysollib.mygettext import _, n_
 from pysollib.settings import SELECT_GAME_MENU
@@ -70,46 +70,6 @@ def createToolbarMenu(menubar, menu):
     menu.add_radiobutton(label=n_("Right"),
                          variable=menubar.tkopt.toolbar, value=4,
                          command=menubar.mOptToolbar)
-
-
-def createResamplingMenu(menubar, menu):
-    tearoff = menu.cget('tearoff')
-    submenu = MfxMenu(menu, label=n_('R&esampling'), tearoff=tearoff)
-
-    submenu.add_radiobutton(label=n_("&Nearest Neighbor"),
-                            variable=menubar.tkopt.resampling,
-                            value=int(Image.NEAREST),
-                            command=menubar.mOptResampling)
-    if hasattr(Image, "BILINEAR"):
-        submenu.add_radiobutton(label=n_("&Bilinear"),
-                                variable=menubar.tkopt.resampling,
-                                value=int(Image.BILINEAR),
-                                command=menubar.mOptResampling)
-    if hasattr(Image, "BICUBIC"):
-        submenu.add_radiobutton(label=n_("B&icubic"),
-                                variable=menubar.tkopt.resampling,
-                                value=int(Image.BICUBIC),
-                                command=menubar.mOptResampling)
-    if hasattr(Image, "LANCZOS"):
-        submenu.add_radiobutton(label=n_("&Lanczos"),
-                                variable=menubar.tkopt.resampling,
-                                value=int(Image.LANCZOS),
-                                command=menubar.mOptResampling)
-    elif hasattr(Image, "ANTIALIAS"):
-        submenu.add_radiobutton(label=n_("&Antialiasing"),
-                                variable=menubar.tkopt.resampling,
-                                value=int(Image.ANTIALIAS),
-                                command=menubar.mOptResampling)
-    if hasattr(Image, "BOX"):
-        submenu.add_radiobutton(label=n_("B&ox"),
-                                variable=menubar.tkopt.resampling,
-                                value=int(Image.BOX),
-                                command=menubar.mOptResampling)
-    if hasattr(Image, "HAMMING"):
-        submenu.add_radiobutton(label=n_("&Hamming"),
-                                variable=menubar.tkopt.resampling,
-                                value=int(Image.HAMMING),
-                                command=menubar.mOptResampling)
 
 
 # ************************************************************************
@@ -223,10 +183,6 @@ class PysolMenubarTkCommon:
             accordion_deal_all=tkinter.BooleanVar(),
             pegged_auto_remove=tkinter.BooleanVar(),
             sound=tkinter.BooleanVar(),
-            auto_scale=tkinter.BooleanVar(),
-            preview_scale=tkinter.BooleanVar(),
-            preserve_aspect_ratio=tkinter.BooleanVar(),
-            resampling=tkinter.IntVar(),
             fullscreen=tkinter.BooleanVar(),
             spread_stacks=tkinter.BooleanVar(),
             center_layout=tkinter.BooleanVar(),
@@ -288,10 +244,6 @@ class PysolMenubarTkCommon:
         tkopt.accordion_deal_all.set(opt.accordion_deal_all)
         tkopt.pegged_auto_remove.set(opt.pegged_auto_remove)
         tkopt.sound.set(opt.sound)
-        tkopt.auto_scale.set(opt.auto_scale)
-        tkopt.preview_scale.set(opt.preview_scale)
-        tkopt.preserve_aspect_ratio.set(opt.preserve_aspect_ratio)
-        tkopt.resampling.set(opt.resampling)
         tkopt.fullscreen.set(opt.wm_fullscreen)
         tkopt.spread_stacks.set(opt.spread_stacks)
         tkopt.center_layout.set(opt.center_layout)
@@ -629,31 +581,6 @@ class PysolMenubarTkCommon:
             label=n_("&Sound"), variable=self.tkopt.sound,
             command=self.mOptSound)
         # cardsets
-        if USE_PIL:
-            submenu = MfxMenu(menu, label=n_("Card si&ze"))
-            submenu.add_command(
-                label=n_("&Increase the card size"),
-                command=self.mIncreaseCardset, accelerator=m+"+")
-            submenu.add_command(
-                label=n_("&Decrease the card size"),
-                command=self.mDecreaseCardset, accelerator=m+"-")
-            submenu.add_command(
-                label=n_("&Reset the card size"),
-                command=self.mResetCardset)
-            submenu.add_separator()
-            submenu.add_checkbutton(
-                label=n_("&Auto scaling"), variable=self.tkopt.auto_scale,
-                command=self.mOptAutoScale, accelerator=m+'0')
-            submenu.add_checkbutton(
-                label=n_("&Preview scaling"),
-                variable=self.tkopt.preview_scale,
-                command=self.mOptPreviewScale)
-            submenu.add_checkbutton(
-                label=n_("Pr&eserve aspect ratio"),
-                variable=self.tkopt.preserve_aspect_ratio,
-                command=self.mOptPreserveAspectRatio)
-            submenu.add_separator()
-            createResamplingMenu(self, submenu)
         submenu = MfxMenu(menu, label=n_("Game la&yout"))
         submenu.add_checkbutton(
             label=n_("&Fullscreen"),
@@ -843,11 +770,6 @@ class PysolMenubarTkCommon:
         self._bindKey(ctrl + "Shift-", "e",
                       lambda e: self.mSelectCardsetDialog(
                           initial_tab='search'))
-        if USE_PIL:
-            self._bindKey(ctrl, "plus", self.mIncreaseCardset)
-            self._bindKey(ctrl, "equal", self.mIncreaseCardset)
-            self._bindKey(ctrl, "minus", self.mDecreaseCardset)
-            self._bindKey(ctrl, "0", self.mOptAutoScale)
         self._bindKey(ctrl, "b", self.mOptChangeCardback)  # undocumented
         self._bindKey(ctrl, "p", self.mOptPlayerOptions)   # undocumented
         self._bindKey(ctrl, "F1", self.mHelp)
@@ -1697,81 +1619,6 @@ Unsupported game for import.
         self.tkopt.tabletile.set(self.app.tabletile_index)
 
         self.updateMenus()
-
-    def mIncreaseCardset(self, *event):
-        if self._cancelDrag(break_pause=True):
-            return
-        if self.app.opt.scale_x < 4:
-            self.app.opt.scale_x += 0.1
-        else:
-            return
-        if self.app.opt.scale_y < 4:
-            self.app.opt.scale_y += 0.1
-        else:
-            return
-        self.app.opt.auto_scale = False
-        self.tkopt.auto_scale.set(False)
-        self._updateCardSize()
-
-    def mDecreaseCardset(self, *event):
-        if self._cancelDrag(break_pause=True):
-            return
-        if self.app.opt.scale_x > 0.5:
-            self.app.opt.scale_x -= 0.1
-        else:
-            return
-        if self.app.opt.scale_y > 0.5:
-            self.app.opt.scale_y -= 0.1
-        else:
-            return
-        self.app.opt.auto_scale = False
-        self.tkopt.auto_scale.set(False)
-        self._updateCardSize()
-
-    def mResetCardset(self, *event):
-        if self._cancelDrag(break_pause=True):
-            return
-        self.app.opt.scale_x = 1
-        self.app.opt.scale_y = 1
-
-        self.app.opt.auto_scale = False
-        self.tkopt.auto_scale.set(False)
-        self._updateCardSize()
-
-    def mOptAutoScale(self, *event):
-        if self._cancelDrag(break_pause=True):
-            return
-        auto_scale = not self.app.opt.auto_scale
-
-        self.app.opt.auto_scale = auto_scale
-        self.tkopt.auto_scale.set(auto_scale)
-        self._updateCardSize()
-
-    def mOptPreviewScale(self, *event):
-        if self._cancelDrag(break_pause=True):
-            return
-        preview_scale = not self.app.opt.preview_scale
-
-        self.app.opt.preview_scale = preview_scale
-        self.tkopt.preview_scale.set(preview_scale)
-
-    def mOptPreserveAspectRatio(self, *event):
-        if self._cancelDrag(break_pause=True):
-            return
-        preserve_aspect_ratio = not self.app.opt.preserve_aspect_ratio
-
-        self.app.opt.preserve_aspect_ratio = preserve_aspect_ratio
-        self.tkopt.preserve_aspect_ratio.set(preserve_aspect_ratio)
-        self._updateCardSize()
-
-    def mOptResampling(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        resampling = self.tkopt.resampling.get()
-        self.app.opt.resampling = resampling
-        self.tkopt.resampling.set(resampling)  # update radiobutton
-        self.app.opt.resampling = (self.tkopt.resampling.get())
-        self._updateCardSize()
 
     def mOptSpreadStacks(self, *event):
         if self._cancelDrag(break_pause=True):

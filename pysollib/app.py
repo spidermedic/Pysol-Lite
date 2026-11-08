@@ -1026,23 +1026,11 @@ class Application:
             return None
         changed = False
         if USE_PIL:
-            if (self.opt.scale_x, self.opt.scale_y,
-                self.opt.auto_scale, self.opt.preview_scale,
-                self.opt.preserve_aspect_ratio) != \
-                d.scale_values or \
-                    (cs.CARD_XOFFSET, cs.CARD_YOFFSET) != d.cardset_values:
+            if (cs.CARD_XOFFSET, cs.CARD_YOFFSET) != d.cardset_values:
                 changed = True
         if d.key == self.cardset.index and not changed:
             return None
         if USE_PIL:
-            (self.opt.scale_x,
-             self.opt.scale_y,
-             self.opt.auto_scale,
-             self.opt.preview_scale,
-             self.opt.preserve_aspect_ratio) = d.scale_values
-            if not self.opt.auto_scale:
-                self.images.resize(self.opt.scale_x, self.opt.scale_y,
-                                   resample=self.opt.resampling)
             if d.cardset_values:
                 cs.CARD_XOFFSET, cs.CARD_YOFFSET = d.cardset_values
                 self.opt.offsets[cs.ident] = d.cardset_values

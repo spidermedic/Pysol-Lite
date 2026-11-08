@@ -26,7 +26,7 @@ import os
 from pysollib.gamedb import GI
 from pysollib.help import help_about, help_html
 from pysollib.mfxutil import Struct, openURL
-from pysollib.mfxutil import USE_PIL, print_err
+from pysollib.mfxutil import print_err
 from pysollib.mygettext import _
 from pysollib.pysolrandom import construct_random
 from pysollib.pysoltk import SingleGame_StatsDialog
@@ -85,7 +85,6 @@ class PysolMenubar(PysolMenubarTk):
             demo=0,
             replay=0,
             highlight_piles=0,
-            autoscale=0,
             find_card=0,
             full_picture=0,
             rules=0,
@@ -168,8 +167,6 @@ class PysolMenubar(PysolMenubarTk):
             ms.cardbackground = 1
         if opt.highlight_piles and game.getHighlightPilesStacks():
             ms.highlight_piles = 1
-        if opt.auto_scale:
-            ms.autoscale = 1
         if game.canFindCard():
             ms.find_card = 1
         if game.canShowFullPicture():
@@ -226,17 +223,6 @@ class PysolMenubar(PysolMenubarTk):
         self.setMenuState(ms.autodeal, "options.automaticplay.autodeal")
         self.setMenuState(ms.quickplay, "options.automaticplay.quickplay")
         self.setMenuState(ms.cardbackground, "options.cardbackground")
-        if USE_PIL:
-            self.setMenuState(ms.autoscale,
-                              "options.cardsize.preserveaspectratio")
-            self.setMenuState(ms.autoscale,
-                              "options.cardsize.previewscaling")
-            self.setMenuState(not ms.autoscale,
-                              "options.cardsize.increasethecardsize")
-            self.setMenuState(not ms.autoscale,
-                              "options.cardsize.decreasethecardsize")
-            self.setMenuState(not ms.autoscale,
-                              "options.cardsize.resetthecardsize")
         # Help menu
         self.setMenuState(ms.rules, "help.rulesforthisgame")
         # Toolbar
