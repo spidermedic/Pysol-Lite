@@ -170,7 +170,6 @@ def pysol_init(app, args):
     for d in (
         app.dn.config,
         app.dn.savegames,
-        app.dn.boards,
         # os.path.join(app.dn.config, "screenshots"),
         os.path.join(app.dn.config, "cardsets"),
         os.path.join(app.dn.config, "plugins"),

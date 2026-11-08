@@ -591,3 +591,7 @@ Installed app rebuilt from commit `8b013ecc` (120 MB, arm64, ad-hoc signed, `cod
 - **`~/.PySolFC/statistics.dat`:** deleted by the user after the assistant's delete was blocked by the permission check. Nothing read it.
 - **Still open:** the logos that say "PySol Fan Club" (`html-src/images`); the unreachable solver, wizard, comment and layout import/export code and the dead `auto_scale` branches (section 46); the slow canvas redraw (section 13); Windows and Linux paths have never been run since the toolkit removal.
 - **Pushed:** `origin/master` includes everything above.
+
+## 55. Update: no more `~/.PySolFC/boards` (2026-11-08)
+
+The app no longer creates the `boards` folder at startup (`app.dn.boards` is gone from `pysollib/app.py` and `pysollib/main.py`). It was only for exporting and importing starting layouts, which were removed in section 33. A fresh source run creates `cardsets`, `plugins` and `savegames` only. The user removes their existing empty `boards` folder themselves. Not rebuilt: the installed app still creates it until the next build.
