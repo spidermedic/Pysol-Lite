@@ -684,6 +684,10 @@ class Options:
         # The two slowest speeds were removed; older files may hold 4 or 5.
         self.animations = min(self.animations, 3)
 
+        # The text above/beside icon placements were removed.
+        if self.toolbar_compound not in ('none', 'top', 'text'):
+            self.toolbar_compound = 'top'
+
         pysollib.settings.TRANSLATE_GAME_NAMES = self.translate_game_names
 
         recent_gameid = self._getOption('general', 'recent_gameid', 'list')

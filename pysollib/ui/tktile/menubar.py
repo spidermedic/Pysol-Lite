@@ -24,16 +24,16 @@ from pysollib.ui.tktile.tkutil import after_idle, bind
 def createToolbarMenu(menubar, menu):
     tearoff = menu.cget('tearoff')
     submenu = MfxMenu(menu, label=n_('Icon size'), tearoff=tearoff)
-    submenu.add_radiobutton(label=n_("Small icons"),
+    submenu.add_radiobutton(label=n_("Small"),
                             variable=menubar.tkopt.toolbar_size, value=0,
                             command=menubar.mOptToolbarSize)
-    submenu.add_radiobutton(label=n_("Large icons"),
+    submenu.add_radiobutton(label=n_("Medium"),
                             variable=menubar.tkopt.toolbar_size, value=1,
                             command=menubar.mOptToolbarSize)
-    submenu.add_radiobutton(label=n_("Extra large icons"),
+    submenu.add_radiobutton(label=n_("Large"),
                             variable=menubar.tkopt.toolbar_size, value=2,
                             command=menubar.mOptToolbarSize)
-    submenu = MfxMenu(menu, label=n_('Compound'), tearoff=tearoff)
+    submenu = MfxMenu(menu, label=n_('Button style'), tearoff=tearoff)
     for comp, label in COMPOUNDS:
         submenu.add_radiobutton(
             label=label, variable=menubar.tkopt.toolbar_compound,
