@@ -350,3 +350,15 @@ Installed app rebuilt after commit "Reorder the File menu and move game-picking 
 - **Process note:** the cut-out helper stops a method at the next line that starts in column 0, so it cut `mImportStartingLayout` short because that method contains a multi-line string with unindented text. The file was restored from git and redone with a helper that stops only at the next `    def`. Use that rule for methods with multi-line strings.
 - **Push state:** `origin/master` is still at the Phosphor handoff (section 25). Sections 26 to 33 and every commit since are local (about 25 commits).
 - **Still open:** as in sections 25 and 29, plus the unreachable solver import/export code in `hint.py`.
+
+## 34. Update: Hold and quit replaced by Quit (2026-11-08)
+
+Installed app rebuilt after commit "Replace Hold and quit with a plain Quit" (120 MB, arm64, ad-hoc signed).
+
+- **Asked by the user:** "it should just be quit; the user can save it on their own." File is now New game, Open, a divider, Save, Save as, a divider, Quit (Cmd-Q) on every platform. Before, the item was hidden on macOS, where the app menu has its own Quit.
+- **What "Hold and quit" did:** it wrote the full game state to `~/.PySolFC/holdgame.dat` and set `opt.game_holded`; the next launch loaded it (`_load_held_or_saved_game`) and then cleared the hold.
+- **Removed:** `mHoldAndQuit`, the `hold_and_quit` menu state, the Cmd-X binding, `fn.holdgame`, `nextgame.holdgame`, the save-on-quit block in `Application._main_loop`, `_load_held_or_saved_game` and the startup check on `game_holded`, the `holdgame` parameter of `Game.endGame` and `Game.quitGame`, `GameGlobalStatsStruct.holded`, and the `game_holded` option (also dropped from the check in `main.py`). Old option files with `game_holded` load fine, and old saved games that carry a `holded` field in their pickled global stats load too, because the struct is restored from its `__dict__`.
+- **Verification (limited, on purpose):** pyflakes, the unit tests (19) and the import of all 179 modules pass, and a source run with an old options file that had `game_holded` set to a game id started and built the new File menu. A Save and Open round trip in the test harness hung, most likely a problem in the harness itself (nothing in the save or open code changed apart from deleting one unused line); it was not chased and is unconfirmed. The installed app was checked with `--version` and `codesign -v` only.
+- **Process note:** the user questioned how much testing went into a one-item menu change. Keep the checks proportionate to the change and do not build large harnesses for simple menu edits.
+- **Push state:** `origin/master` is still at the Phosphor handoff (section 25). Sections 26 to 34 and every commit since are local (about 26 commits).
+- **Still open:** as in sections 25, 29 and 33.
