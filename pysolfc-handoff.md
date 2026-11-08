@@ -512,11 +512,11 @@ Installed app rebuilt from commit `754c557f` (120 MB, arm64, ad-hoc signed, `--v
 - **Left alone, with reasons:** `shell=True` for the FreeCell solver in `hint.py` and `init.py` (`FCS_COMMAND` is user-configurable and may carry arguments); `getopt` in `main.py` (not deprecated); `import *` in `pysoltk.py`; the `__del__` methods in `hint.py` and `pysolaudio.py`.
 - **Verification:** 19 unit tests with the same results as before (run with `.venv/bin/python -m unittest`; the system Python lacks `attr`), all 170 `pysollib` modules import with `DeprecationWarning` as error, no compile warnings, flake8 clean on touched lines (a few older warnings in `options.py`, `init.py`, `setup_osx.py` and `tkconst.py` were already there). The dev copy started and drew the Standard cardset without a traceback. The installed bundle's `mfxutil` has no `ANTIALIAS` or `time.clock`. Nothing was checked by eye.
 - **Smoke test script (deleted, never committed):** a script that drove the real app through Klondike, FreeCell, Spider and Pyramid with a throwaway `HOME` passed every Klondike check (deal, animated and dragged moves, undo/redo, autoplay, save/load, hint, help viewer, gettext, resampling), then hung: `quitGame(next_id)` did not end the Tk loop, so the second game never started. The same hang happened on the commit before this pass (`dcb38d26`, checked in a throwaway worktree), so it was the script, not these changes. The user had it deleted on 2026-11-08. If a scripted full-app check is wanted again, run one process per game.
-- **Existing warnings noticed, not fixed:** running with `-W default` shows `ResourceWarning: unclosed file` from `tkutil.py:278` (`Image.open(file).convert('RGBA')` never closes the file) and from the subprocess pipes in `init()`. They leak a handle per card image until garbage collection.
+- **Unclosed-file warnings (fixed in `4bc522fb`, see section 49):** `-W default` showed `ResourceWarning: unclosed file` from `tkutil.py` (`Image.open(file).convert('RGBA')`) and the `fc-solve` probe pipes in `init()`.
 - **Theme question:** the dev-copy test runs looked different from the installed app. No theme code was touched (the only `options.py` change was a dead branch in `save()`). Likely causes: the smoke test used fresh default settings (table `#008200`, not the saved `#006d04`) and the dev copy runs under python.org's `Python.app`, not the py2app bundle, on a Mac in Dark mode. Not confirmed by comparing screenshots.
 - **Settings touched:** the first dev launch of this pass used the real `~/.PySolFC`; `options.cfg` was rewritten at 16:47. Probably the app saving on exit, possibly the user. Contents were not compared.
 - **iCloud:** a stray untracked `data/html 2` appeared during the test runs and was deleted (it was not in `git ls-files`). None in the final bundle.
-- **Still open:** as in section 46, plus the unclosed-file warnings above.
+- **Still open:** as in section 46.
 
 ## 48. Update: plain Help menu on macOS (2026-11-08)
 
@@ -527,3 +527,11 @@ Installed app rebuilt after commit `2137523e` (120 MB, arm64, ad-hoc signed). Th
 - **Trade-off:** the system Help menu's search box is gone, because macOS no longer sees this as its Help menu.
 - **Build note:** an iCloud duplicate `data/html 2` appeared in the source folder and the bundle again during this build. Removed from both, re-signed, then installed.
 - **Pushed:** `origin/master` now includes the modernization pass (section 47) and this change.
+
+## 49. Update: unclosed files and pipes (2026-11-08)
+
+Commit `4bc522fb`; installed app rebuilt after it.
+
+- **Cause:** `Image.open(file).convert('RGBA')` in `pysollib/ui/tktile/tkutil.py` (`PIL_Image.__init__` and the card-back code) kept one file handle open per card image until garbage collection. The `fc-solve` probe in `pysollib/init.py` never closed its stdout/stderr pipes and used `os.wait()`.
+- **Fix:** `with Image.open(...) as im:` before `convert`; the probe closes both pipes and uses `p.wait()` on posix (still no wait on Windows). `TileManager.register` in `resource.py` got the same `with` (effectively dead code since tiles are solid colors). The stored background image in `tkcanvas.py` is kept open on purpose and was not changed.
+- **Verification:** a 25-second source run with `-W default` and a fresh `HOME` printed zero `ResourceWarning`s (before: one per card image); unit tests unchanged (19, the one known `--version` error); flake8 clean on the touched lines. The card display was not checked by eye.
