@@ -431,3 +431,12 @@ Installed app rebuilt after commit "Add a View menu with Show toolbar, Show stat
 - **Verification (light):** py_compile; a source run built the menu bar without errors; the installed app passes `--version` and `codesign -v`. The View menu was not opened or toggled by hand.
 - **Idea discussed, not done:** a single Settings window (Cmd-comma on macOS via `tk::mac::ShowPreferences`) with General, Assist, Appearance and Toolbar tabs, replacing the Options menu on macOS.
 - **Still open:** as in sections 25, 29, 33, 35, 37 and 39.
+
+## 41. Update: View menu uses the native macOS full screen item (2026-11-08)
+
+Installed app rebuilt after commit "View menu: leave Full screen to macOS; keep F11 item on other platforms" (120 MB, arm64, ad-hoc signed).
+
+- **Problem:** macOS adds its own "Enter Full Screen" (Ctrl-Cmd-F) to any menu titled View, so section 40's Full screen item appeared twice.
+- **Fix:** on macOS the View menu is now Show toolbar, Show status bar, plus the native item; the app's own Full screen check item and its Ctrl-Cmd-F binding exist only when `sys.platform != "darwin"` (Windows and Linux keep "Full screen", F11). The native item's text ("Enter Full Screen" / "Exit Full Screen") is set by macOS and cannot be renamed without renaming the View menu. The Settings help page mentions both.
+- **Verification (light):** py_compile; the installed app passes `--version` and `codesign -v`. The native item was not clicked, so whether it toggles the game window correctly is unconfirmed.
+- **Still open:** as in section 40.
