@@ -63,8 +63,6 @@ AUTOMATIC_PLAY_OPTIONS = (
 # The Assist choices: (option and tkopt name, label, menubar handler).
 ASSIST_OPTIONS = (
     ('shade', n_('Shade legal moves'), 'mOptShade'),
-    ('stuck_notification', n_('Stuck notification'),
-     'mOptEnableStuckNotification'),
 )
 
 # General play choices: click to move instead of dragging, and asking before

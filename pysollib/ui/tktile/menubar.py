@@ -145,7 +145,6 @@ class PysolMenubarTkCommon:
             autodrop=tkinter.BooleanVar(),
             autodeal=tkinter.BooleanVar(),
             quickplay=tkinter.BooleanVar(),
-            stuck_notification=tkinter.BooleanVar(),
             mahjongg_show_removed=tkinter.BooleanVar(),
             shisen_show_hint=tkinter.BooleanVar(),
             match_three_cascade=tkinter.BooleanVar(),
@@ -177,7 +176,6 @@ class PysolMenubarTkCommon:
         tkopt.autodrop.set(opt.autodrop)
         tkopt.autodeal.set(opt.autodeal)
         tkopt.quickplay.set(opt.quickplay)
-        tkopt.stuck_notification.set(opt.stuck_notification)
         tkopt.mahjongg_show_removed.set(opt.mahjongg_show_removed)
         tkopt.shisen_show_hint.set(opt.shisen_show_hint)
         tkopt.match_three_cascade.set(opt.match_three_cascade)
@@ -1222,12 +1220,6 @@ Unsupported game for import.
         if self._cancelDrag(break_pause=False):
             return
         self.app.opt.quickplay = self.tkopt.quickplay.get()
-
-    def mOptEnableStuckNotification(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.stuck_notification = self.tkopt.stuck_notification.get()
-        # self.game.updateMenus()
 
     def mOptAnimations(self, *args):
         self._cancelDrag(break_pause=False)

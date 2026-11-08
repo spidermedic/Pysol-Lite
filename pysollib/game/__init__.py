@@ -2873,12 +2873,11 @@ class Game:
             self.stuck = False
         else:
             text = 'x'
-            if (not self.stuck and not self.demo and
-                    self.app.opt.stuck_notification):
+            if not self.stuck and not self.demo:
                 self.updateStatus(stuck='x')
                 d = MfxMessageDialog(
-                    self.top, title=_("You are Stuck"), bitmap="info",
-                    text=_("\nThere are no moves left...\n"),
+                    self.top, title=_("No moves"), bitmap="info",
+                    text=_("\nNo moves left!\n"),
                     strings=(_("&New game"), _("&Restart"), None,
                              _("&Cancel")))
                 if d.status == 0 and d.button == 0:
