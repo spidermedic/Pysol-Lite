@@ -43,10 +43,6 @@ def createToolbarMenu(menubar, menu):
         submenu.add_radiobutton(label=label,
                                 variable=menubar.tkopt.toolbar, value=value,
                                 command=menubar.mOptToolbar)
-    submenu.add_separator()
-    submenu.add_radiobutton(label=n_("Hide"),
-                            variable=menubar.tkopt.toolbar, value=0,
-                            command=menubar.mOptToolbar)
 
 
 # ************************************************************************
@@ -159,6 +155,8 @@ class PysolMenubarTkCommon:
             toolbar_compound=tkinter.StringVar(),
             toolbar_size=tkinter.IntVar(),
             statusbar=tkinter.BooleanVar(),
+            toolbar_shown=tkinter.BooleanVar(),
+            fullscreen=tkinter.BooleanVar(),
             num_cards=tkinter.BooleanVar(),
             helpbar=tkinter.BooleanVar(),
             splashscreen=tkinter.BooleanVar(),
@@ -191,6 +189,8 @@ class PysolMenubarTkCommon:
         tkopt.toolbar_size.set(opt.toolbar_size)
         tkopt.toolbar_relief.set(opt.toolbar_relief)
         tkopt.statusbar.set(opt.statusbar)
+        tkopt.toolbar_shown.set(bool(opt.toolbar))
+        self._toolbar_side = opt.toolbar or 1
         # tkopt.num_cards.set(opt.num_cards)
         # tkopt.helpbar.set(opt.helpbar)
         tkopt.splashscreen.set(opt.splashscreen)
@@ -283,6 +283,22 @@ class PysolMenubarTkCommon:
             label=n_("&Go to bookmark"),
             command=lambda: self.mGotoBookmark(0), accelerator=m+"J")
 
+        menu = MfxMenu(self.menubar, label=n_("&View"))
+        menu.add_checkbutton(
+            label=n_("Show &toolbar"), variable=self.tkopt.toolbar_shown,
+            command=self.mViewToolbar)
+        menu.add_checkbutton(
+            label=n_("Show stat&us bar"), variable=self.tkopt.statusbar,
+            command=self.mOptStatusbar)
+        menu.add_separator()
+        if sys.platform == "darwin":
+            fs_accel = "Ctrl-Cmd-F"
+        else:
+            fs_accel = "F11"
+        menu.add_checkbutton(
+            label=n_("Enter &full screenFull screen"), variable=self.tkopt.fullscreen,
+            command=self.mViewFullscreen, accelerator=fs_accel)
+
         menu = MfxMenu(self.menubar, label=n_("&Games"))
         self._addSelectGameMenu(menu)
 
@@ -340,9 +356,6 @@ class PysolMenubarTkCommon:
         layout = MfxMenu(menu, label=n_("&Layout"))
         submenu = MfxMenu(layout, label=n_("&Toolbar"))
         createToolbarMenu(self, submenu)
-        layout.add_checkbutton(
-            label=n_("Stat&usbar"), variable=self.tkopt.statusbar,
-            command=self.mOptStatusbar)
         submenu = MfxMenu(layout, label=n_("C&ards"))
         submenu.add_command(
             label=n_("&Decks"),
@@ -424,6 +437,10 @@ class PysolMenubarTkCommon:
                           initial_tab='search'))
         self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
+        if sys.platform == "darwin":
+            self._bindKey("Control-Command-", "f", self._toggleFullscreen)
+        else:
+            bind(self.top, "<KeyPress-F11>", self._toggleFullscreen)
         self._bindKey(ctrl, "s", self.mSave)
         self._bindKey(ctrl, "q", self.mQuit)
         self._bindKey(ctrl, "z", self.mUndo)
@@ -1144,6 +1161,22 @@ class PysolMenubarTkCommon:
         # if self._cancelDrag(break_pause=False): return
         self.setToolbarSize(self.tkopt.toolbar_size.get())
 
+    def mViewToolbar(self, *event):
+        if self.tkopt.toolbar_shown.get():
+            self.setToolbarSide(self._toolbar_side)
+        else:
+            self.setToolbarSide(0)
+
+    def mViewFullscreen(self, *event):
+        on = bool(self.tkopt.fullscreen.get())
+        self.app.opt.wm_fullscreen = int(on)
+        self.top.attributes('-fullscreen', on)
+
+    def _toggleFullscreen(self, *event):
+        self.tkopt.fullscreen.set(not self.tkopt.fullscreen.get())
+        self.mViewFullscreen()
+        return "break"
+
     def mOptStatusbar(self, *event):
         if self._cancelDrag(break_pause=False):
             return
@@ -1190,6 +1223,9 @@ class PysolMenubarTkCommon:
             return
         self.app.opt.toolbar = side
         self.tkopt.toolbar.set(side)                    # update radiobutton
+        if side:
+            self._toolbar_side = side
+        self.tkopt.toolbar_shown.set(bool(side))
         resize = not self.app.opt.save_games_geometry
         if self.app.toolbar.show(side, resize=resize):
             self.top.update_idletasks()
