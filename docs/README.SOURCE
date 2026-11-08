@@ -48,7 +48,7 @@ The main layer
   app.py:
     Main control loop. Contains the class Application which is the glue
     between the toplevel window and a Game. Also responsible for global
-    resources like options, statistics and plugins.
+    resources like options and plugins.
 
     Main objects making a full PySol application are:
       - an Application                                        [app]
@@ -97,10 +97,7 @@ The main layer
     Game database and game/plugin loader.
 
   resource.py:
-    Resource managers (cardsets, tiles, samples, music)
-
-  stats.py:
-    Abstract statistics handler. May get rewritten in the future.
+    Resource managers (cardsets, samples)
 
   mfxutil.py, util.py, random.py:
     More or less standalone utility modules.
@@ -151,9 +148,6 @@ The toolkit layer
 
     tile/progressbar.py, tile/statusbar.py:
       Progress- and statusbar widgets.
-
-    tile/tkstats.py:
-      Statistics dialogs. Uses stats.py from the main layer.
 
     tile/tktree.py, tile/selecttree.py, tile/select*.py:
       Tree and tree-selection widgets.
@@ -213,7 +207,7 @@ have an interesting gameplay.
 Contributing
 ------------
 Apart from contributing new games you can also help by improving the
-interface - e.g. some fancy statistics dialogs would be very nice.
+interface.
 See the main README.md and CONTIRBUTING.md for more ideas.
 
 

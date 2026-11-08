@@ -32,7 +32,7 @@ can be implemented.
 ## Requirements.
 
 - Python (3.10 or later)
-- Tkinter (Tcl/Tk 8.4 or later)
+- Tkinter (Tcl/Tk 8.6 or later)
 
 - For sound support (optional)
   - PySol-Sound-Server fork: https://github.com/shlomif/pysol-sound-server (wav)
@@ -191,7 +191,7 @@ PYTHONPATH=. .build-venv/bin/python setup_osx.py py2app --arch arm64
 ```
 
 The bundled Python is still universal, so remove the x86_64 slices from
-every Mach-O file in `dist/PySolFC.app` with `lipo -thin arm64`, then
+every Mach-O file in `dist/PySol.app` with `lipo -thin arm64`, then
 ad-hoc sign it (copy it out of iCloud-synced folders first). See
 `pysolfc-handoff.md` for the complete, tested procedure.
 
@@ -210,7 +210,6 @@ ad-hoc sign it (copy it out of iCloud-synced folders first). See
 - [PySolFC Announcements Drafts](https://github.com/shlomif/pysolfc-announcements)
 - [PySolFC-Cardsets tarballs sources repo](https://github.com/shlomif/PySolFC-Cardsets)
 - [Extra mahjongg cardsets for PySolFC - originally for flowersol](https://github.com/shlomif/PySol-Extra-Mahjongg-Cardsets)
-- [The old "pysol-music" distribution](https://github.com/shlomif/pysol-music)
 
 Related:
 

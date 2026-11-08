@@ -173,11 +173,6 @@ def pysol_init(app, args):
         app.dn.savegames,
         app.dn.boards,
         # os.path.join(app.dn.config, "screenshots"),
-        os.path.join(app.dn.config, "tiles"),
-        os.path.join(app.dn.config, "tiles", "stretch"),
-        os.path.join(app.dn.config, "tiles", "save-aspect"),
-        os.path.join(app.dn.config, "tiles", "stretch-4k"),
-        os.path.join(app.dn.config, "tiles", "save-aspect-4k"),
         os.path.join(app.dn.config, "cardsets"),
         os.path.join(app.dn.config, "plugins"),
             ):

@@ -21,6 +21,7 @@ include scripts/create_iss.py scripts/mahjongg_utils.py
 include scripts/all_games.py scripts/cardset_viewer.py
 include scripts/cardconv
 include scripts/gen_individual_importing_tests.py
+include scripts/prune_card_backs.py
 
 recursive-include tests/ *.pm *.py *.t *.yml
 exclude tests/individually-importing/*
@@ -29,12 +30,6 @@ include tests/individually-importing/PLACEHOLDER
 recursive-include tests/unit/data *
 
 include .tidyallrc
-include android/*.py
-include android/mk*
-include android/initsdk
-include android/initsupport
-include android/debian/*
-#graft data/plugins
 ##
 ## data - docs
 ##
@@ -44,23 +39,11 @@ graft html-src
 ##
 ## data - images
 ##
-#graft data/images
 recursive-include data/images *.gif *.png *.jpg
 include data/pysol.ico data/PySol.icns
 ##
 ## data - sound
 ##
-#graft data/music
-#include data/music/Astral_Dreams.COPYRIGHT
-#include data/music/Astral_Dreams.it
-#include data/music/Bye_For_Now.COPYRIGHT
-#include data/music/Bye_For_Now.s3m
-#include data/music/Past_and_Future.COPYRIGHT
-#include data/music/Past_and_Future.it
-#include data/music/Ranger_Song.COPYRIGHT
-#include data/music/Ranger_Song.s3m
-#include data/music/Subsequential.COPYRIGHT
-#include data/music/Subsequential.mod
 graft data/sound
 ##
 ## data - i18n
@@ -70,29 +53,24 @@ graft locale
 ##
 ## data - cardsets
 ##
-graft data/cardset-2000
-graft data/cardset-crystal-mahjongg
-graft data/cardset-dashavatara-ganjifa
-graft data/cardset-hexadeck
-graft data/cardset-kintengu
-graft data/cardset-gnome-mahjongg-1
-graft data/cardset-matrix
-graft data/cardset-mughal-ganjifa
-graft data/cardset-oxymoron
-graft data/cardset-standard
-graft data/cardset-tuxedo
-graft data/cardset-vienna-2k
-graft data/cardset-dondorf
-graft data/cardset-neo
+graft data/cardset-blaren-7x7
+graft data/cardset-dashavatara-ganjifa-xl
+graft data/cardset-dojouji-3x3
+graft data/cardset-hokusai-6x6
+graft data/cardset-knave-of-hearts-4x4
+graft data/cardset-louie-mantia-hanafuda
+graft data/cardset-matching-xl
+graft data/cardset-mid-winter-eve-8x8
+graft data/cardset-mughal-ganjifa-xl
 graft data/cardset-neo-hex
 graft data/cardset-neo-tarock
-graft data/cardset-uni-mahjongg
-graft data/cardset-louie-mantia-hanafuda
-graft data/cardset-mughal-ganjifa-xl
-graft data/cardset-dashavatara-ganjifa-xl
 graft data/cardset-next-matrix
-graft data/cardset-matching
-graft data/cardset-matching-xl
+graft data/cardset-players-trumps-10x10
+graft data/cardset-simple-ishido-xl
+graft data/cardset-standard
+graft data/cardset-the-card-players-9x9
+graft data/cardset-uni-mahjongg
+graft data/cardset-victoria-falls-5x5
 ##
 ## exclude dirs
 ##
