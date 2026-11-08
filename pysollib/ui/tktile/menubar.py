@@ -17,7 +17,6 @@ from pysollib.settings import TITLE, WIN_SYSTEM
 from pysollib.settings import USE_FREECELL_SOLVER
 from pysollib.ui.tktile.tkconst import COMPOUNDS, CURSOR_WATCH, EVENT_HANDLED
 from pysollib.ui.tktile.tkconst import EVENT_PROPAGATE
-from pysollib.ui.tktile.tkconst import TOOLBAR_BUTTONS
 from pysollib.ui.tktile.tkutil import after_idle, bind
 
 
@@ -38,12 +37,8 @@ def createToolbarMenu(menubar, menu):
         submenu.add_radiobutton(
             label=label, variable=menubar.tkopt.toolbar_compound,
             value=comp, command=menubar.mOptToolbarCompound)
-    submenu = MfxMenu(menu, label=n_('Visible buttons'), tearoff=tearoff)
-    for w in TOOLBAR_BUTTONS:
-        submenu.add_checkbutton(
-            label=_(w.capitalize()),
-            variable=menubar.tkopt.toolbar_vars[w],
-            command=lambda m=menubar, w=w: m.mOptToolbarConfig(w))
+    menu.add_command(label=n_('Visible buttons...'),
+                     command=menubar.mOptToolbarButtons)
     submenu = MfxMenu(menu, label=n_('Position'), tearoff=tearoff)
     for label, value in ((n_("Top"), 1), (n_("Bottom"), 2),
                          (n_("Left"), 3), (n_("Right"), 4)):
@@ -194,10 +189,7 @@ class PysolMenubarTkCommon:
             mouse_dragcursor=tkinter.BooleanVar(),
             negative_bottom=tkinter.BooleanVar(),
             pause=tkinter.BooleanVar(),
-            toolbar_vars={},
         )
-        for w in TOOLBAR_BUTTONS:
-            self.tkopt.toolbar_vars[w] = tkinter.BooleanVar()
 
     def _setOptions(self):
         tkopt, opt = self.tkopt, self.app.opt
@@ -250,8 +242,6 @@ class PysolMenubarTkCommon:
         tkopt.mouse_undo.set(opt.mouse_undo)
         tkopt.mouse_dragcursor.set(opt.dragcursor)
         tkopt.negative_bottom.set(opt.negative_bottom)
-        for w in TOOLBAR_BUTTONS:
-            tkopt.toolbar_vars[w].set(opt.toolbar_vars.get(w, False))
 
     def connectGame(self, game):
         self.game = game
@@ -1686,9 +1676,6 @@ Unsupported game for import.
     def mOptToolbarSize(self, *event):
         # if self._cancelDrag(break_pause=False): return
         self.setToolbarSize(self.tkopt.toolbar_size.get())
-
-    def mOptToolbarConfig(self, w):
-        self.toolbarConfig(w, self.tkopt.toolbar_vars[w].get())
 
     def mOptStatusbar(self, *event):
         if self._cancelDrag(break_pause=False):

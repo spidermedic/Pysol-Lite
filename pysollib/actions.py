@@ -42,6 +42,7 @@ from pysollib.pysoltk import ProgressionDialog
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import Status_StatsDialog, Top_StatsDialog
 from pysollib.pysoltk import TimeoutsDialog
+from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
 from pysollib.pysoltk import create_full_picture_dialog
 from pysollib.pysoltk import create_solver_dialog
@@ -825,6 +826,16 @@ class PysolMenubar(PysolMenubarTk):
             self._cancelDrag()
             self.game.endGame(bookmark=1)
             self.game.quitGame(bookmark=1)
+
+    def mOptToolbarButtons(self, *args):
+        if self._cancelDrag(break_pause=False):
+            return
+        d = ToolbarButtonsDialog(
+            self.top, _("Visible toolbar buttons"), self.app)
+        if d.status == 0 and d.button == 0:
+            for w, visible in d.visible.items():
+                if bool(self.app.opt.toolbar_vars.get(w)) != visible:
+                    self.toolbarConfig(w, visible)
 
     def mOptTimeouts(self, *args):
         if self._cancelDrag(break_pause=False):
