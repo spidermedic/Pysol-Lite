@@ -351,9 +351,9 @@ class Options:
         self.match_three_cascade = True
         # 0 none, 1 fast, 2 medium, 3 slow
         self.animations = 2             # default to Medium
-        self.redeal_animation = True
-        self.win_animation = True
-        self.flip_animation = True
+        self.redeal_animation = False
+        self.win_animation = False
+        self.flip_animation = False
         self.compact_stacks = True
         self.shadow = True
         self.shade = True
