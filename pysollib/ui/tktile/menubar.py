@@ -8,7 +8,6 @@ import tkinter.filedialog
 from tkinter.colorchooser import askcolor
 
 from pysollib.gamedb import GI
-from pysollib.mfxutil import USE_PIL
 from pysollib.mfxutil import Struct, kwdefault
 from pysollib.mygettext import _, n_
 from pysollib.settings import SELECT_GAME_MENU
@@ -122,6 +121,7 @@ class PysolMenubarTkCommon:
 
         # Sometimes, this needs to be tracked between methods
         self.wasPaused = False
+        self._settings = None
 
         if self.progress:
             self.progress.update(step=1)
@@ -347,44 +347,17 @@ class PysolMenubarTkCommon:
         if self.progress:
             self.progress.update(step=1)
 
-        menu = MfxMenu(self.menubar, label=n_("&Options"))
-        menu.add_command(label=n_("&Play options"),
-                         command=self.mOptPlayOptions)
-        menu.add_separator()
-        # cardsets
-        layout = MfxMenu(menu, label=n_("&Layout"))
-        submenu = MfxMenu(layout, label=n_("&Toolbar"))
-        createToolbarMenu(self, submenu)
-        submenu = MfxMenu(layout, label=n_("C&ards"))
-        submenu.add_command(
-            label=n_("&Decks"),
-            command=self.mSelectCardsetDialog, accelerator=m+"E")
-        # this submenu will get set by updateBackgroundImagesMenu()
-        MfxMenu(submenu, label=n_("&Backs"))
-        layout.add_command(
-            label=n_("&Background color"),
-            command=self.mSelectTableColor)
-        if USE_PIL:
-            layout.add_checkbutton(
-                label=n_("&Spread stacks"), variable=self.tkopt.spread_stacks,
-                command=self.mOptSpreadStacks)
-        submenu = MfxMenu(menu, label=n_("A&nimations"))
-        submenu.add_radiobutton(
-            label=n_("&Off"), variable=self.tkopt.animations, value=0,
-            command=self.mOptAnimations)
-        submenu.add_radiobutton(
-            label=n_("&Fast"), variable=self.tkopt.animations, value=1,
-            command=self.mOptAnimations)
-        submenu.add_radiobutton(
-            label=n_("&Medium"), variable=self.tkopt.animations, value=2,
-            command=self.mOptAnimations)
-        submenu.add_radiobutton(
-            label=n_("&Slow"), variable=self.tkopt.animations, value=3,
-            command=self.mOptAnimations)
-        menu.add_checkbutton(
-            label=n_("&Sound"), variable=self.tkopt.sound,
-            command=self.mOptSound)
-
+        # All settings are in one window. macOS opens it from the app menu
+        # ("Settings", Cmd-comma); the other platforms get an Options menu
+        # with the one item.
+        if WIN_SYSTEM == "aqua":
+            self.top.createcommand('tk::mac::ShowPreferences',
+                                   self.mOptSettings)
+        else:
+            menu = MfxMenu(self.menubar, label=n_("&Options"))
+            menu.add_command(
+                label=n_("&Settings"), command=self.mOptSettings,
+                accelerator=m+",")
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
         #     variable=self.tkopt.splashscreen,
@@ -436,6 +409,8 @@ class PysolMenubarTkCommon:
                           initial_tab='search'))
         self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
+        if WIN_SYSTEM != "aqua":
+            self._bindKey(ctrl, "comma", self.mOptSettings)
         if sys.platform != "darwin":
             bind(self.top, "<KeyPress-F11>", self._toggleFullscreen)
         self._bindKey(ctrl, "s", self.mSave)
@@ -861,20 +836,17 @@ class PysolMenubarTkCommon:
             self.setToolbarState(s and x, "gotobookmark")
 
     def updateBackgroundImagesMenu(self):
-        mp = self.menupath.get(".menubar.options.layout.cards.backs")
-        # delete all entries
-        submenu = mp[2]
-        submenu.delete(0, "last")
-        # insert new cardbacks
-        mbacks = self.app.images.getCardbacks()
-        cb = int(math.ceil(math.sqrt(len(mbacks))))
-        for i, mback in enumerate(mbacks):
-            columnbreak = i > 0 and (i % cb) == 0
-            submenu.add_radiobutton(
-                label=mback.name, image=mback.menu_image,
-                variable=self.tkopt.cardback, value=i,
-                command=self.mOptCardback, columnbreak=columnbreak,
-                indicatoron=0, hidemargin=0)
+        # the card backs are in the Settings window
+        if getattr(self, "_settings", None):
+            self._settings.refresh()
+
+    def mOptSettings(self, *args):
+        if self._settings:
+            self._settings.show()
+            return
+        from pysollib.tile.settingswindow import SettingsWindow
+        self._settings = SettingsWindow(self)
+        self._settings.show()
 
     #
     # menu updates

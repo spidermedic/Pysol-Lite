@@ -30,9 +30,6 @@ from pysollib.pysolrandom import construct_random
 from pysollib.pysoltk import GameInfoDialog
 from pysollib.pysoltk import MfxMessageDialog, MfxSimpleEntry
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
-from pysollib.pysoltk import ASSIST_GAME_OPTIONS, ASSIST_OPTIONS
-from pysollib.pysoltk import AUTOMATIC_PLAY_OPTIONS, PLAY_OPTIONS
-from pysollib.pysoltk import ChecklistDialog
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
 from pysollib.pysoltk import create_full_picture_dialog
@@ -182,7 +179,8 @@ class PysolMenubar(PysolMenubarTk):
         self._autoplay_usable = {
             'autofaceup': bool(ms.autofaceup), 'autodrop': bool(ms.autodrop),
             'autodeal': bool(ms.autodeal), 'quickplay': bool(ms.quickplay)}
-        self.setMenuState(ms.cardbackground, "options.layout.cards.backs")
+        if getattr(self, "_settings", None):
+            self._settings.refresh()
         # Help menu
         self.setMenuState(ms.rules, "help.rulesforthisgame")
         # Toolbar
@@ -478,34 +476,6 @@ class PysolMenubar(PysolMenubarTk):
                     return
         # self.app.demo_counter = 0
         self.game.startDemo(mixed=mixed)
-
-    def mOptPlayOptions(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        # Automatic play options that do not apply to the current game are
-        # greyed out.
-        usable = getattr(self, '_autoplay_usable', {})
-        disabled = [key for key, label, handler in AUTOMATIC_PLAY_OPTIONS
-                    if not usable.get(key, True)]
-        self._applyChecklist(
-            _("Play options"),
-            (AUTOMATIC_PLAY_OPTIONS, ASSIST_OPTIONS, PLAY_OPTIONS,
-             ASSIST_GAME_OPTIONS),
-            disabled)
-
-    def _applyChecklist(self, title, groups, disabled=()):
-        # Show the options as check boxes and apply the changed ones with
-        # the same handlers the menu items used.
-        options = [o for group in groups for o in group]
-        current = dict((key, getattr(self.tkopt, key).get())
-                       for key, label, handler in options)
-        d = ChecklistDialog(self.top, title, groups, current, disabled)
-        if d.status != 0 or d.button != 0:
-            return
-        for key, label, handler in options:
-            if d.values[key] != current[key]:
-                getattr(self.tkopt, key).set(d.values[key])
-                getattr(self, handler)()
 
     def mOptToolbarButtons(self, *args):
         if self._cancelDrag(break_pause=False):
