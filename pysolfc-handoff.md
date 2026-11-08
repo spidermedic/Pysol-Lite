@@ -461,3 +461,15 @@ Installed app rebuilt after commit "Help menu: show About on every platform" (12
 - **Help menu** is now PySolFC Help (added by Tk on macOS; Contents on Windows and Linux), Rules for this game (F1), a divider, License terms, a divider, About PySol 26. On macOS About also stays in the app menu.
 - **Verification (light):** py_compile; the installed app passes `--version` and `codesign -v`. The menu was not opened by hand.
 - **Still open:** as in section 42.
+
+## 44. Update: Settings window replaces the Options menu (2026-11-08)
+
+Installed app rebuilt after commit "macOS: put Settings in the app menu" (120 MB, arm64, ad-hoc signed).
+
+- **Settings window** (new `pysollib/tile/settingswindow.py`, class `SettingsWindow`): one non-modal window, live-applied, with tabs General (Click to move cards, Confirm before quitting, Sound, Animation speed Off/Slow/Medium/Fast), Assist (Automatic play, Shade legal moves, the per-game options; inapplicable ones greyed out per game), Appearance (Deck name plus Choose, card Backs as thumbnail buttons, Background color swatch plus Choose, Spread stacks) and Toolbar (Position, Icon size, Button style, Visible buttons). It binds the existing `tkopt` variables and calls the existing menubar handlers (`mOptSound`, `mOptAnimations`, `mOptToolbarSize`, `mSelectCardsetDialog`, ...), so saved options are unchanged. `refresh()` re-reads the current state; it runs on window focus, from `updateMenus` (autoplay greying) and from `updateBackgroundImagesMenu` (rebuilds the Backs row when the deck changes). One instance is kept in `menubar._settings`; `mOptSettings` opens or raises it.
+- **Menus:** the Options menu is gone on macOS. Settings (Cmd-comma, also bound in the app) is in the custom `apple` app menu under About, because that custom menu replaces Tk's own Preferences item (`tk::mac::ShowPreferences` is not used). Windows and Linux get an Options menu with only Settings (Ctrl-comma). `createToolbarMenu` stays because the toolbar's right-click menu uses it.
+- **Removed:** `mOptPlayOptions` and `_applyChecklist` in `actions.py` (the Play options dialog; `ChecklistDialog` and the option tables in `tkconst.py` remain, the tables feed the new window), and the `options.layout.cards.backs` menu path.
+- **Help:** `settings.html` rewritten for the window; `assist_options.html` and `faq.html` point at Settings.
+- **Mistake and fix:** the first build had no Settings item on macOS because the custom app menu hid Tk's built-in one; fixed by adding the item to that menu. A stray empty `data/html 3` (iCloud) was in the first installed bundle and was removed from it.
+- **Verification (light):** a scripted source run opened the window and changed animation speed, toolbar side, icon size and button style and set sound, all applied; the installed app passes `--version` and `codesign -v`. The window and the app menu were not looked at by eye; Deck, Background color and Visible buttons buttons and the autoplay greying were not exercised.
+- **Still open:** as in section 42, plus the unused option tables if the Play options dialog is never coming back.
