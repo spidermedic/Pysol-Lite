@@ -132,14 +132,6 @@ samerank_2 = string
 not_matching = string
 keyboard_sel = string
 
-[timeouts]
-highlight_samerank = float(0.2, 9.9)
-raise_card = float(0.2, 9.9)
-demo = float(0.2, 9.9)
-highlight_cards = float(0.2, 9.9)
-hint = float(0.2, 9.9)
-highlight_piles = float(0.2, 9.9)
-
 [cardsets]
 0 = string_list(min=2, max=2)
 1 = string_list(min=2, max=2)
@@ -335,6 +327,7 @@ class Options:
             'keyboard_sel': '#bf40bf',
             }
         # delays
+        # delays in seconds: fixed (not saved or loaded)
         self.timeouts = {
             'hint':               1.0,
             'demo':               1.0,
@@ -544,8 +537,6 @@ class Options:
         # colors: only the background color can be changed
         config['colors'] = {'table': self.colors['table']}
 
-        # timeouts
-        config['timeouts'] = self.timeouts
 
         # cardsets
         for key, val in self.cardset.items():
@@ -609,7 +600,6 @@ class Options:
         for section in (
             'general',
             'colors',
-            'timeouts',
             'cardsets',
             'games_geometry',
                 ):
@@ -695,12 +685,6 @@ class Options:
             val = self._getOption('colors', key, 'str')
             if val is not None:
                 self.colors[key] = val
-
-        # timeouts
-        for key in self.timeouts:
-            val = self._getOption('timeouts', key, 'float')
-            if val is not None:
-                self.timeouts[key] = val
 
         # cardsets
         for key, cur_cardset in self.cardset.items():

@@ -42,7 +42,6 @@ from pysollib.pysoltk import Status_StatsDialog, Top_StatsDialog
 from pysollib.pysoltk import ASSIST_GAME_OPTIONS, ASSIST_OPTIONS
 from pysollib.pysoltk import AUTOMATIC_PLAY_OPTIONS
 from pysollib.pysoltk import ChecklistDialog
-from pysollib.pysoltk import TimeoutsDialog
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
 from pysollib.pysoltk import create_full_picture_dialog
@@ -823,28 +822,6 @@ class PysolMenubar(PysolMenubarTk):
             for w, visible in d.visible.items():
                 if bool(self.app.opt.toolbar_vars.get(w)) != visible:
                     self.toolbarConfig(w, visible)
-
-    def mOptTimeouts(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        wasPaused = False
-        if not self.game.pause:
-            self.game.doPause()
-            wasPaused = True
-        d = TimeoutsDialog(self.top, _("Set timeouts"), self.app)
-        if self.game.pause:
-            if wasPaused:
-                self.game.doPause()
-        if d.status == 0 and d.button == 0:
-            self.app.opt.timeouts['demo'] = d.demo_timeout
-            self.app.opt.timeouts['hint'] = d.hint_timeout
-            self.app.opt.timeouts['raise_card'] = d.raise_card_timeout
-            self.app.opt.timeouts['highlight_piles'] = \
-                d.highlight_piles_timeout
-            self.app.opt.timeouts['highlight_cards'] = \
-                d.highlight_cards_timeout
-            self.app.opt.timeouts['highlight_samerank'] = \
-                d.highlight_samerank_timeout
 
     #
     # Help menu

@@ -34,7 +34,6 @@ from pysollib.tile.edittextdialog import *  # noqa: F401,F403
 from pysollib.tile.tkstats import *  # noqa: F401,F403
 from pysollib.tile.playeroptionsdialog import *  # noqa: F401,F403
 from pysollib.tile.checklistdialog import *  # noqa: F401,F403
-from pysollib.tile.timeoutsdialog import *  # noqa: F401,F403
 from pysollib.tile.toolbarbuttonsdialog import *  # noqa: F401,F403
 from pysollib.tile.solverdialog import *  # noqa: F401,F403
 from pysollib.tile.gameinfodialog import *  # noqa: F401,F403
