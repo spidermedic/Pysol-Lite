@@ -71,7 +71,14 @@ kw = {
     'description': 'a Python solitaire game collection',
     'classifiers': [
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
     ],
+    'python_requires': '>=3.10',
     'install_requires': [
         'attrs>=18.2.0',
         'configobj',
