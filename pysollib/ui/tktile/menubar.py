@@ -460,7 +460,7 @@ class PysolMenubarTkCommon:
         # cardsets
         submenu = MfxMenu(menu, label=n_("&Layout"))
         submenu.add_command(
-            label=n_("Table c&olor..."),
+            label=n_("&Background color..."),
             command=self.mSelectTableColor)
         if USE_PIL:
             submenu.add_checkbutton(
@@ -1446,7 +1446,7 @@ Unsupported game for import.
         try:
             color = askcolor(parent=self.top,
                              initialcolor=self.app.opt.colors['table'],
-                             title=_("Select table color"))
+                             title=_("Select background color"))
         finally:
             if self.game.pause and wasPaused:
                 self.game.doPause()
