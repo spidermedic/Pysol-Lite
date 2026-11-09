@@ -29,7 +29,6 @@ import time
 from io import BytesIO
 
 from pysollib.mfxutil import destruct
-from pysollib.pysolrandom import construct_random
 from pysollib.settings import DEBUG, FCS_COMMAND
 from pysollib.util import KING
 
@@ -942,18 +941,6 @@ class SpiderType_Hint(DefaultHint):
     pass
 
 
-class PySolHintLayoutImportError(Exception):
-
-    def __init__(self, msg, cards, line_num):
-        """docstring for __init__"""
-        self.msg = msg
-        self.cards = cards
-        self.line_num = line_num
-
-    def format(self):
-        return self.msg + ":\n\n" + ', '.join(self.cards)
-
-
 class Base_Solver_Hint:
     def __init__(self, game, dialog, **game_type):
         self.game = game
@@ -1053,19 +1040,6 @@ class Base_Solver_Hint:
             raise RuntimeError('Solver exited with {}'.format(p.returncode))
         return BytesIO(pout), BytesIO(perr)
 
-    def importFile(solver, fh, s_game, self):
-        s_game.endGame()
-        s_game.random = construct_random('Custom')
-        s_game.newGame(
-            shuffle=True,
-            random=construct_random('Custom'),
-            dealer=lambda: solver.importFileHelper(fh, s_game))
-        s_game.random = construct_random('Custom')
-
-    def importFileHelper(solver, fh, s_game):
-        pass
-
-
 use_fc_solve_lib = False
 
 try:
@@ -1106,105 +1080,6 @@ class FreeCellSolver_Hint(Base_Solver_Hint):
     def _addPrefixLine(self, prefix, b):
         if b:
             self._addBoardLine(prefix + b)
-
-    def importFileHelper(solver, fh, s_game):
-        game = s_game.s
-        stack_idx = 0
-
-        RANKS_S = "A23456789TJQK"
-        RANKS0_S = '0' + RANKS_S
-        RANKS_RE = '(?:' + '[' + RANKS_S + ']' + '|10)'
-        SUITS_S = "CSHD"
-        SUITS_RE = '[' + SUITS_S + ']'
-        CARD_RE = r'(?:' + RANKS_RE + SUITS_RE + ')'
-        line_num = 0
-
-        def cards():
-            return game.talon.cards
-
-        def put(target, suit, rank):
-            ret = [i for i, c in enumerate(cards())
-                   if c.suit == suit and c.rank == rank]
-            if len(ret) < 1:
-                raise PySolHintLayoutImportError(
-                    "Duplicate cards in input",
-                    [solver.card2str1_(rank, suit)],
-                    line_num
-                )
-
-            ret = ret[0]
-            game.talon.cards = \
-                cards()[0:ret] + cards()[(ret+1):] + [cards()[ret]]
-            s_game.flipMove(game.talon)
-            s_game.moveMove(1, game.talon, target, frames=0)
-
-        def put_str(target, str_):
-            put(target, SUITS_S.index(str_[-1]),
-                (RANKS_S.index(str_[0]) if len(str_) == 2 else 9))
-
-        def my_find_re(RE, m, msg):
-            s = m.group(1)
-            if not re.match(r'^\s*(?:' + RE + r')?(?:\s+' + RE + r')*\s*$', s):
-                raise PySolHintLayoutImportError(
-                    msg,
-                    [],
-                    line_num
-                )
-            return re.findall(r'\b' + RE + r'\b', s)
-
-        # Based on https://stackoverflow.com/questions/8898294 - thanks!
-        def mydecode(s):
-            for encoding in "utf-8-sig", "utf-8":
-                try:
-                    return s.decode(encoding)
-                except UnicodeDecodeError:
-                    continue
-            return s.decode("latin-1")  # will always work
-
-        mytext = mydecode(fh.read())
-        for line_p in mytext.splitlines():
-            line_num += 1
-            line = line_p.rstrip('\r\n')
-            m = re.match(r'^(?:Foundations:|Founds?:)\s*(.*)', line)
-            if m:
-                for gm in my_find_re(
-                        r'(' + SUITS_RE + r')-([' + RANKS0_S + r'])', m,
-                        "Invalid Foundations line"):
-                    for foundat in game.foundations:
-                        suit = foundat.cap.suit
-                        if SUITS_S[suit] == gm[0]:
-                            rank = gm[1]
-                            if len(rank) == 1:
-                                lim = RANKS0_S.index(rank)
-                            else:
-                                lim = 10
-                            for r in range(lim):
-                                put(foundat, suit, r)
-                            break
-                continue
-            m = re.match(r'^(?:FC:|Freecells:)\s*(.*)', line)
-            if m:
-                g = my_find_re(r'(' + CARD_RE + r'|\-)', m,
-                               "Invalid Freecells line")
-                while len(g) < len(game.reserves):
-                    g.append('-')
-                for i, gm in enumerate(g):
-                    str_ = gm
-                    if str_ != '-':
-                        put_str(game.reserves[i], str_)
-                continue
-            m = re.match(r'^:?\s*(.*)', line)
-            for str_ in my_find_re(r'(' + CARD_RE + r')', m,
-                                   "Invalid column text"):
-                put_str(game.rows[stack_idx], str_)
-
-            stack_idx += 1
-        if len(cards()) > 0:
-            raise PySolHintLayoutImportError(
-                "Missing cards in input",
-                [solver.card2str1(c) for c in cards()],
-                -1
-            )
 
     def calcBoardString(self):
         game = self.game
@@ -1428,86 +1303,6 @@ class FreeCellSolver_Hint(Base_Solver_Hint):
 
 class BlackHoleSolver_Hint(Base_Solver_Hint):
     BLACK_HOLE_SOLVER_COMMAND = 'black-hole-solve'
-
-    def importFileHelper(solver, fh, s_game):
-        game = s_game.s
-        stack_idx = 0
-        found_idx = 0
-
-        RANKS_S = "A23456789TJQK"
-        RANKS_RE = '(?:' + '[' + RANKS_S + ']' + '|10)'
-        SUITS_S = "CSHD"
-        SUITS_RE = '[' + SUITS_S + ']'
-        CARD_RE = r'(?:' + RANKS_RE + SUITS_RE + ')'
-        line_num = 0
-
-        def cards():
-            return game.talon.cards
-
-        def put(target, suit, rank):
-            ret = [i for i, c in enumerate(cards())
-                   if c.suit == suit and c.rank == rank]
-            if len(ret) < 1:
-                raise PySolHintLayoutImportError(
-                    "Duplicate cards in input",
-                    [solver.card2str1_(rank, suit)],
-                    line_num
-                )
-
-            ret = ret[0]
-            game.talon.cards = \
-                cards()[0:ret] + cards()[(ret+1):] + [cards()[ret]]
-            s_game.flipMove(game.talon)
-            s_game.moveMove(1, game.talon, target, frames=0)
-
-        def put_str(target, str_):
-            put(target, SUITS_S.index(str_[-1]),
-                (RANKS_S.index(str_[0]) if len(str_) == 2 else 9))
-
-        def my_find_re(RE, m, msg):
-            s = m.group(1)
-            if not re.match(r'^\s*(?:' + RE + r')?(?:\s+' + RE + r')*\s*$', s):
-                raise PySolHintLayoutImportError(
-                    msg,
-                    [],
-                    line_num
-                )
-            return re.findall(r'\b' + RE + r'\b', s)
-
-        # Based on https://stackoverflow.com/questions/8898294 - thanks!
-        def mydecode(s):
-            for encoding in "utf-8-sig", "utf-8":
-                try:
-                    return s.decode(encoding)
-                except UnicodeDecodeError:
-                    continue
-            return s.decode("latin-1")  # will always work
-
-        mytext = mydecode(fh.read())
-        for line_p in mytext.splitlines():
-            line_num += 1
-            line = line_p.rstrip('\r\n')
-            m = re.match(r'^(?:Foundations:|Founds?:)\s*(.*)', line)
-            if m:
-                for gm in my_find_re(r'(' + CARD_RE + r')', m,
-                                     "Invalid Foundations line"):
-                    put_str(game.foundations[found_idx], gm)
-                    found_idx += 1
-                continue
-            m = re.match(r'^:?\s*(.*)', line)
-            for str_ in my_find_re(r'(' + CARD_RE + r')', m,
-                                   "Invalid column text"):
-                put_str(game.rows[stack_idx], str_)
-
-            stack_idx += 1
-        if len(cards()) > 0:
-            # A bit hacky, but normally, this move would require an internal.
-            # We don't want to have to add an internal stack to all Black
-            # Hole Solver games just for the import.
-            s_game.moveMove(1, game.foundations[0], game.rows[0], frames=0)
-            s_game.moveMove(len(cards()), game.talon, game.foundations[0],
-                            frames=0)
-            s_game.moveMove(1, game.rows[0], game.foundations[0], frames=0)
 
     def calcBoardString(self):
         board = ''

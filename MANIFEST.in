@@ -27,7 +27,6 @@ recursive-include tests/ *.pm *.py *.t *.yml
 exclude tests/individually-importing/*
 include tests/individually-importing/PLACEHOLDER
 
-recursive-include tests/unit/data *
 
 include .tidyallrc
 ##
