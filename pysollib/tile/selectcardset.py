@@ -247,8 +247,7 @@ class SelectCardsetDialogWithPreview(MfxDialog):
                 xf = yf = min(xf, yf)
                 if self.app.opt.center_layout:
                     cx, cy = self.app.images.getCenterOffset(vw - 10, vh - 10,
-                                                             iw, ih, xf, yf,
-                                                             True)
+                                                             iw, ih, xf, yf)
                     cx = int(cx * xf)
                     cy = int(cy * yf)
                     x += cx

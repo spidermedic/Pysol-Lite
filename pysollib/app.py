@@ -203,7 +203,6 @@ class Application:
         self.fn = Struct(
             opt=os.path.join(self.dn.config, "options.dat"),
             opt_cfg=os.path.join(self.dn.config, "options.cfg"),
-            comments=os.path.join(self.dn.config, "comments.dat"),
         )
         for k, v in self.dn.__dict__.items():
             if os.name == "nt":

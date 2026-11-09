@@ -724,9 +724,6 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             return
         if not self.app:
             return
-        if (not self.app.opt.auto_scale and
-                not self.app.opt.preview_scale):
-            return
         if self._resizeHandlerID:
             self.preview.canvas.after_cancel(self._resizeHandlerID)
         self._resizeHandlerID = self.preview.canvas.after(300,
@@ -790,10 +787,7 @@ class SelectGameDialogWithPreview(SelectGameDialog):
         cardset = self.app.cardset_manager.getByName(
                 self.app.opt.cardset[gi.category][gi.subcategory][0])
         images, simages = self.loadCardsetForPreview(cardset)
-        if self.app.opt.auto_scale and self.app.opt.preview_scale:
-            self.preview_app.images = images
-        else:
-            self.preview_app.images = simages
+        self.preview_app.images = images
 
         self.preview_app.audio = None    # turn off audio for initial dealing
         if animations >= 0:
@@ -817,14 +811,7 @@ class SelectGameDialogWithPreview(SelectGameDialog):
             self.preview_game.restoreGameFromBookmark(self.bookmark)
         else:
             self.preview_game.newGame(random=random, autoplay=1)
-        if (not self.app.opt.auto_scale and
-                not self.app.opt.preview_scale):
-            gw, gh = self.preview_game.width, self.preview_game.height
-            canvas.config(scrollregion=(0, 0, gw, gh))
-            canvas.xview_moveto(0)
-            canvas.yview_moveto(0)
-        else:
-            canvas.config(scrollregion=(0, 0, 0, 0))
+        canvas.config(scrollregion=(0, 0, 0, 0))
         #
         self.preview_app.audio = self.app.audio
         if self.app.opt.animations:

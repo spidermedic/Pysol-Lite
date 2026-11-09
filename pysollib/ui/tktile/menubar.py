@@ -1044,16 +1044,10 @@ class PysolMenubarTkCommon:
                 self.app.canvas.winfo_height())
         self.app.opt.game_geometry = geom
         self.app.game.resizeGame(card_size_manually=True)
-        if self.app.opt.auto_scale or self.app.opt.spread_stacks:
-            w, h = self.app.opt.game_geometry
-            self.app.canvas.setInitialSize(w, h, scrollregion=False)
-            # Resize a second time to auto scale
-            self.app.game.resizeGame(card_size_manually=False)
-        else:
-            w = int(round(self.app.game.width * self.app.opt.scale_x))
-            h = int(round(self.app.game.height * self.app.opt.scale_y))
-            self.app.canvas.setInitialSize(w, h)
-            self.app.top.wm_geometry("")    # cancel user-specified geometry
+        w, h = self.app.opt.game_geometry
+        self.app.canvas.setInitialSize(w, h, scrollregion=False)
+        # Resize a second time to auto scale
+        self.app.game.resizeGame(card_size_manually=False)
         # self.app.top.update_idletasks()
         self.app.setTile(self.app.tabletile_index)
         self.tkopt.tabletile.set(self.app.tabletile_index)

@@ -837,7 +837,7 @@ class Stack:
                            num_face_up * yoffset +
                            cardh)
         visible_height = self.canvas.winfo_height()
-        if USE_PIL and self.game.app.opt.auto_scale:
+        if USE_PIL:
             # use visible_height only
             game_height = 0
         else:

@@ -537,19 +537,9 @@ class Game:
             w, h = self.app.opt.games_geometry[self.id]
             self.canvas.config(width=w, height=h)
         if USE_PIL:
-            if self.app.opt.auto_scale:
-                w, h = self.app.opt.game_geometry
-                self.canvas.setInitialSize(w, h, margins=False,
-                                           scrollregion=False)
-                # self.canvas.config(width=w, height=h)
-                # dx, dy = self.canvas.xmargin, self.canvas.ymargin
-                # self.canvas.config(scrollregion=(-dx, -dy, dx, dy))
-            else:
-                if not mycond:
-                    w = int(round(self.width * self.app.opt.scale_x))
-                    h = int(round(self.height * self.app.opt.scale_y))
-                    self.canvas.setInitialSize(w, h)
-                self.top.wm_geometry("")    # cancel user-specified geometry
+            w, h = self.app.opt.game_geometry
+            self.canvas.setInitialSize(w, h, margins=False,
+                                       scrollregion=False)
             # preserve texts positions
             for t in ('info', 'help', 'misc', 'score', 'base_rank'):
                 item = getattr(self.texts, t)
@@ -920,47 +910,31 @@ class Game:
         # requested size of canvas (createGame -> setSize)
         iw, ih = self.init_size
 
-        # resizing images and cards
-        if (self.app.opt.auto_scale or
-                (self.app.opt.spread_stacks and not manually)):
-            # calculate factor of resizing
-            xf = float(vw)/iw
-            yf = float(vh)/ih
-            if self.app.opt.preserve_aspect_ratio:
-                if self.app.opt.spread_stacks:
-                    # layout uses full xf, yf; images use uniform scale
-                    xf_img, yf_img = min(xf, yf), min(xf, yf)
-                else:
-                    xf = yf = min(xf, yf)
-                    xf_img, yf_img = xf, yf
-            else:
-                xf_img, yf_img = xf, yf
+        # resizing images and cards: calculate factor of resizing
+        xf = float(vw)/iw
+        yf = float(vh)/ih
+        if self.app.opt.spread_stacks:
+            # layout uses full xf, yf; images use uniform scale
+            xf_img, yf_img = min(xf, yf), min(xf, yf)
         else:
-            xf, yf = self.app.opt.scale_x, self.app.opt.scale_y
+            xf = yf = min(xf, yf)
             xf_img, yf_img = xf, yf
 
-        if (not self.app.opt.center_layout or self.app.opt.spread_stacks or
-                (self.app.opt.auto_scale and not
-                 self.app.opt.preserve_aspect_ratio)):
+        if not self.app.opt.center_layout or self.app.opt.spread_stacks:
             self.center_offset = 0, 0
         else:
             self.center_offset = self.app.images.getCenterOffset(
-                vw, vh, iw, ih, xf, yf, self.app.opt.auto_scale)
+                vw, vh, iw, ih, xf, yf)
 
-        if (not self.app.opt.spread_stacks or self.app.opt.auto_scale
-                or manually):
-            # images
-            self.app.images.resize(xf_img, yf_img,
-                                   resample=self.app.opt.resampling)
+        # images
+        self.app.images.resize(xf_img, yf_img,
+                               resample=self.app.opt.resampling)
         # cards
         for card in self.cards:
             card.update(card.id, card.deck, card.suit, card.rank, self)
         return xf, yf, self.app.images._xfactor, self.app.images._yfactor
 
     def resizeGame(self, card_size_manually=False):
-        if self.preview and (not self.app.opt.auto_scale or
-                             not self.app.opt.preview_scale):
-            return
         # if self.busy:
         # return
         if not USE_PIL:
@@ -976,9 +950,8 @@ class Game:
                 # 'empty cross' and 'redeal' figures)
                 # But in that case,
                 # games with talon not placed top-left corner
-                # will get it misplaced when auto_scale
+                # will get it misplaced when the layout is scaled
                 # e.g. Suit Elevens
-                # => player can fix that issue by setting auto_scale false
                 if stack is self.s.talon:
                     # stack.init_coord=(x, y)
                     if card_size_manually:
@@ -1455,10 +1428,6 @@ class Game:
         if not self.app:
             return
         if not self.canvas:
-            return
-        if (not self.app.opt.auto_scale and
-                not self.app.opt.spread_stacks and
-                not self.app.opt.center_layout):
             return
         if self.preview:
             return

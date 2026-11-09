@@ -334,10 +334,7 @@ class Options:
         self.scale_cards = False
         self.scale_x = 1.0
         self.scale_y = 1.0
-        self.auto_scale = True
-        self.preview_scale = True
         self.spread_stacks = False
-        self.preserve_aspect_ratio = True
         self.tabletile_scale_method = 0
         self.resampling = 0
         if USE_PIL:
