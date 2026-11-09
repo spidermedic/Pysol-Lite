@@ -273,7 +273,6 @@ class CustomGame(Game):
         if s['found_base_card'] == ANY_RANK and s['found_equal']:
             for stack in self.s.foundations:
                 stack.acceptsCards = stack.varyAcceptsCards
-                stack.getBaseCard = stack.varyGetBaseCard
 
         # getBottomImage
         if s['deal_face_down'] + s['deal_face_up'] == 0:

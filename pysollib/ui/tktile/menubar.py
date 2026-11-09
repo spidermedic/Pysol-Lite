@@ -332,16 +332,10 @@ class PysolMenubarTkCommon:
         menu.add_command(
             label="Sh&ow full picture",
             command=self.mFullPicture)
-        menu.add_command(
-            label="Piles &description",
-            command=self.mStackDesk, accelerator="F2")
         menu.add_separator()
         menu.add_command(
             label="De&mo",
             command=self.mDemo, accelerator=m+"D")
-        menu.add_command(
-            label="Select game by nu&mber",
-            command=self.mSelectGameById, accelerator=m+"M")
 
         if self.progress:
             self.progress.update(step=1)
@@ -409,7 +403,6 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "n", self.mNewGame)
         self._bindKey(ctrl, "w", self.mSelectGameDialog)
         self._bindKey(ctrl, "v", self.mSelectGameDialogWithPreview)
-        self._bindKey(ctrl, "m", self.mSelectGameById)
         self._bindKey(ctrl, "o", self.mOpen)
         self._bindKey(ctrl, "comma", self.mOptSettings)
         if sys.platform != "darwin":
@@ -448,7 +441,6 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "k", self.mUndo)
         self._bindKey("",   "j", self.mDeal)
 
-        self._bindKey("",   "F2", self.mStackDesk)
         #
         # undocumented, devel
         self._bindKey("", "slash", self.mGameInfo)
@@ -1207,15 +1199,3 @@ class PysolMenubarTkCommon:
         self.app.opt.toolbar_vars[w] = v
         self.app.toolbar.config(w, v)
         self.top.update_idletasks()
-
-    #
-    # stacks descriptions
-    #
-
-    def mStackDesk(self, *event):
-        if self.game.stackdesc_list:
-            self.game.deleteStackDesc()
-        else:
-            if self._cancelDrag(break_pause=True):
-                return
-            self.game.showStackDesc()

@@ -34,7 +34,7 @@ from pysollib.pysoltk import get_text_width
 from pysollib.pysoltk import markImage
 from pysollib.settings import DEBUG
 from pysollib.util import ACE, KING
-from pysollib.util import ANY_RANK, ANY_SUIT, NO_RANK
+from pysollib.util import ANY_RANK, ANY_SUIT
 
 # ************************************************************************
 # * Let's start with some test methods for cards.
@@ -1244,7 +1244,7 @@ class Stack:
                     self.current_cursor = CURSOR_DOWN_ARROW
                     self.cursor_changed = True
         else:
-            help = self.getHelp()  # +' '+self.getBaseCard(),
+            help = self.getHelp()
             if DEBUG:
                 help = repr(self)
             after_idle(self.canvas, self.game.showHelp,
@@ -1592,34 +1592,6 @@ class Stack:
     def getHelp(self):
         return str(self)  # debug
 
-    def getBaseCard(self):
-        return ''
-
-    def _getBaseCard(self, rank=None):
-        # FIXME: no-french games
-        if self.cap.max_accept == 0:
-            return ''
-        if rank is None:
-            br = self.cap.base_rank
-        else:
-            br = rank
-        s = 'Base card - %s.'
-        if br == NO_RANK:
-            s = 'Empty row cannot be filled.'
-        elif br == -1:
-            s = s % 'any card'
-        elif br == 10:
-            s = s % 'Jack'
-        elif br == 11:
-            s = s % 'Queen'
-        elif br == 12:
-            s = s % 'King'
-        elif br == 0:
-            s = s % 'Ace'
-        else:
-            s = s % str(br+1)
-        return s
-
     def getNumCards(self):
         n = len(self.cards)
         if n == 0:
@@ -1956,9 +1928,6 @@ class TalonStack(Stack,
             nredeals = ('%d redeal' if n == 1 else '%d redeals') % n
         # round = _('Round #%d.') % self.round
         return 'Talon.'+' '+nredeals  # +' '+round
-
-    # def getBaseCard(self):
-    #    return self._getBaseCard()
 
     def resize(self, xf, yf, widthpad=0, heightpad=0):
         self._addRedealImage()
@@ -2298,9 +2267,6 @@ class AbstractFoundationStack(OpenStack):
 
     getBottomImage = Stack._getSuitBottomImage
 
-    def getBaseCard(self):
-        return self._getBaseCard()
-
     def closeStack(self):
         if len(self.cards) == self.cap.max_cards:
             self.is_filled = True
@@ -2323,14 +2289,6 @@ class AbstractFoundationStack(OpenStack):
                 base_card = s.cards[0]
                 return base_card.rank == cards[0].rank
         return True                     # all foundations is empty
-
-    def varyGetBaseCard(self):
-        rank = None
-        for s in self.game.s.foundations:
-            if s.cards:
-                rank = s.cards[0].rank
-        return self._getBaseCard(rank=rank)
-
 
 # A SameSuit_FoundationStack is the typical Foundation stack.
 # It builds up in rank and suit.
@@ -2530,9 +2488,6 @@ class BasicRowStack(OpenStack):
             return 'Tableau. No building.'
         return ''
 
-    # def getBaseCard(self):
-    #    return self._getBaseCard()
-
     def spiderCanDropCards(self, stacks):
         # print('spiderCanDropCards()', stacks)
         # drop whole sequence
@@ -2555,10 +2510,6 @@ class SequenceRowStack(SequenceStack_StackMethods, BasicRowStack):
     def __init__(self, x, y, game, **cap):
         kwdefault(cap, max_move=999999, max_accept=999999)
         BasicRowStack.__init__(self, x, y, game, **cap)
-
-    def getBaseCard(self):
-        return self._getBaseCard()
-
 
 # ************************************************************************
 # * Row stacks (the main playing stacks on the Tableau).
@@ -2758,10 +2709,6 @@ class Yukon_AC_RowStack(BasicRowStack):
                     'can move any face-up cards regardless of sequence.')
         return ('Tableau. Build by same rank, can move '
                 'any face-up cards regardless of sequence.')
-
-    def getBaseCard(self):
-        return self._getBaseCard()
-
 
 # A Yukon_SameSuit_RowStack builds down by rank and suit,
 # but can move any face-up cards regardless of sequence.

@@ -59,12 +59,6 @@ class Terrace_AC_Foundation(AC_FoundationStack):
             return from_stack in self.game.s.rows
         return AC_FoundationStack.acceptsCards(self, from_stack, cards)
 
-    def getBaseCard(self):
-        if self.game.getState() == 0:
-            return 'Base card - %s.' % 'any card'
-        return AC_FoundationStack.getBaseCard(self)
-
-
 class Terrace_SS_Foundation(SS_FoundationStack):
     def __init__(self, x, y, game, suit, **cap):
         kwdefault(cap, mod=13, min_cards=1, max_move=0)
@@ -78,12 +72,6 @@ class Terrace_SS_Foundation(SS_FoundationStack):
                 return False
             return from_stack in self.game.s.rows
         return SS_FoundationStack.acceptsCards(self, from_stack, cards)
-
-    def getBaseCard(self):
-        if self.game.getState() == 0:
-            return 'Base card - %s.' % 'any card'
-        return SS_FoundationStack.getBaseCard(self)
-
 
 class Terrace_RowStack(AC_RowStack):
     def __init__(self, x, y, game, **cap):

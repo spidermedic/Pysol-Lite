@@ -535,10 +535,6 @@ class CloverLeaf_RowStack(UD_SS_RowStack):
             return cards[0].rank in (ACE, KING)
         return True
 
-    def _getBaseCard(self):
-        return 'Base card - Ace or King.'
-
-
 class CloverLeaf(Game):
     Hint_Class = Fan_Hint
 

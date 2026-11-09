@@ -364,41 +364,6 @@ class PysolAboutDialog(MfxMessageDialog):
 # *
 # ************************************************************************
 
-class MfxSimpleEntry(MfxDialog):
-    def __init__(self, parent, title, label, value, **kw):
-        kw = self.initKw(kw)
-        MfxDialog.__init__(self, parent, title, kw.resizable, kw.default)
-        top_frame, bottom_frame = self.createFrames(kw)
-        self.createBitmaps(top_frame, kw)
-        #
-        self.value = value
-        labeltext = label
-        if label:
-            label = ttk.Label(top_frame, text=label, takefocus=0)
-            label.pack(pady=5)
-        w = kw.get("e_width", 0)    # width in characters
-        self.var = PysolEntry(top_frame, exportselection=1, width=w,
-                              fieldname=labeltext)
-        self.var.insert(0, value)
-        self.var.pack(side='top', padx=kw.padx, pady=kw.pady)
-        #
-        focus = self.createButtons(bottom_frame, kw)
-        focus = self.var
-        self.mainloop(focus, kw.timeout)
-
-    def initKw(self, kw):
-        kw = KwStruct(kw,
-                      strings=("&OK", "&Cancel"), default=0,
-                      separator=False,
-                      )
-        return MfxDialog.initKw(self, kw)
-
-    def mDone(self, button):
-        self.button = button
-        self.value = self.var.get()
-        raise SystemExit
-
-
 # ************************************************************************
 # * a simple tooltip
 # ************************************************************************
@@ -736,49 +701,6 @@ class MfxScrolledCanvas:
 # ************************************************************************
 # *
 # ************************************************************************
-
-class StackDesc:
-
-    def __init__(self, game, stack):
-        self.game = game
-        self.stack = stack
-        self.canvas = game.canvas
-        self.bindings = []
-
-        font = game.app.getFont('canvas_small')
-        # print self.app.cardset.CARDW, self.app.images.CARDW
-        cardw = game.app.images.getSize()[0]
-        x, y = stack.x+cardw//2, stack.y
-        text = stack.getHelp()+'\n'+stack.getBaseCard()
-        text = text.strip()
-        if text:
-            frame = tkinter.Frame(self.canvas)
-            self.frame = frame
-            label = tkinter.Message(frame, font=font, text=text,
-                                    width=cardw-8, relief='solid',
-                                    fg='#000000', bg='#ffffe0', bd=1)
-            label.pack()
-            self.label = label
-            self.id = self.canvas.create_window(x, y, window=frame, anchor='n')
-            self.bindings.append(label.bind('<ButtonPress>',
-                                            self._buttonPressEvent))
-            # self.bindings.append(label.bind('<Enter>', self._enterEvent))
-        else:
-            self.id = None
-
-    def _buttonPressEvent(self, *event):
-        # self.game.deleteStackDesc()
-        self.frame.tkraise()
-
-    def _enterEvent(self, *event):
-        self.frame.tkraise()
-
-    def delete(self):
-        if self.id:
-            self.canvas.delete(self.id)
-            for b in self.bindings:
-                self.label.unbind('<ButtonPress>', b)
-
 
 # ************************************************************************
 # * ttk.Scale workaround (label and resolution)

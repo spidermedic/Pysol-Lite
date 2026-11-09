@@ -25,9 +25,7 @@ import os
 
 from pysollib.help import help_about, help_html
 from pysollib.mfxutil import Struct
-from pysollib.pysolrandom import construct_random
 from pysollib.pysoltk import GameInfoDialog
-from pysollib.pysoltk import MfxMessageDialog, MfxSimpleEntry
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
@@ -235,61 +233,6 @@ class PysolMenubar(PysolMenubarTk):
                 return
         self.game.endGame()
         self.game.quitGame(id, random=random)
-
-    def _mNewGameBySeed(self, seed, origin):
-        try:
-            random = construct_random(seed)
-            if random is None:
-                return
-            id = self.game.id
-            if not self.app.getGameInfo(id):
-                raise ValueError
-        except (ValueError, TypeError):
-            MfxMessageDialog(self.top, title="Invalid game number",
-                             text="Invalid game number\n" + str(seed),
-                             bitmap="error")
-            return
-        f = self.game.nextGameFlags(id, random)
-        if f & 17 == 0:
-            return
-        random.origin = origin
-        if f & 15 == 0:
-            self.game.endGame()
-            self.game.newGame(random=random)
-        else:
-            self.game.endGame()
-            self.game.quitGame(id, random=random)
-
-    def mNewGameWithNextId(self, *args):
-        if self._cancelDrag():
-            return
-        if self.changed():
-            if not self.game.areYouSure("Select next game number"):
-                return
-        r = self.game.random
-        seed = r.increaseSeed(r.initial_seed)
-        seed = r.str(seed)
-        self._mNewGameBySeed(seed, self.game.random.ORIGIN_NEXT_GAME)
-
-    def mSelectGameById(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        f = self.game.getGameNumber(format=0)
-        d = MfxSimpleEntry(self.top, "Select new game number",
-                           "\n\nEnter new game number", f,
-                           strings=("&OK", "&Next number", "&Cancel"),
-                           default=0, e_width=25)
-        if d.status != 0:
-            return
-        if d.button == 2:
-            return
-        if d.button == 1:
-            self.mNewGameWithNextId()
-            return
-        if self.changed():
-            if not self.game.areYouSure("Select new game number"):
-                return
-        self._mNewGameBySeed(d.value, self.game.random.ORIGIN_SELECTED)
 
     def _mSelectNextGameFromList(self, gl, step):
         if self._cancelDrag():

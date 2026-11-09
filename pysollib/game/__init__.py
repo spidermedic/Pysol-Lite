@@ -480,7 +480,6 @@ class Game:
         self.allstacks = []
         self.sn_groups = []  # snapshot groups; list of list of similar stacks
         self.snapshots = []
-        self.stackdesc_list = []
         self.keyboard_selected_stack = None
         self.keyboard_select_count = 1
         self.keyboard_selector = None
@@ -968,7 +967,6 @@ class Game:
         # return
         if not USE_PIL:
             return
-        self.deleteStackDesc()
         xf, yf, xf0, yf0 = \
             self.resizeImages(manually=card_size_manually)
         cw, ch = self.center_offset[0], self.center_offset[1]
@@ -1382,7 +1380,6 @@ class Game:
         if break_pause and self.pause:
             self.doPause()
         self.interruptSleep()
-        self.deleteStackDesc()
         if self.busy:
             return 1
         if self.drag.stack:
@@ -3361,32 +3358,6 @@ class Game:
             self.app.statusbar.updateText(info=kw['info'])
         if 'help' in kw and self.app.opt.statusbar:
             self.app.statusbar.updateText(help=kw['help'])
-
-    #
-    # Piles descriptions
-    #
-
-    def showStackDesc(self):
-        from pysollib.pysoltk import StackDesc
-        from pysollib.stack import InitialDealTalonStack
-        sd_list = []
-        for s in self.allstacks:
-            sd = (s.__class__.__name__, s.cap.base_rank, s.cap.dir)
-            if sd in sd_list:
-                # one of each uniq pile
-                continue
-            if isinstance(s, InitialDealTalonStack):
-                continue
-            self.stackdesc_list.append(StackDesc(self, s))
-            sd_list.append(sd)
-
-    def deleteStackDesc(self):
-        if self.stackdesc_list:
-            for sd in self.stackdesc_list:
-                sd.delete()
-            self.stackdesc_list = []
-            return True
-        return False
 
     # for find_card_dialog
     def canFindCard(self):

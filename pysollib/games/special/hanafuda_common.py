@@ -93,9 +93,6 @@ class Flower_FoundationStack(AbstractFoundationStack):
             b = 2
         return a, b
 
-    def getBaseCard(self):
-        return ''                       # FIXME
-
     def getHelp(self):
         return ''                       # FIXME
 
