@@ -629,3 +629,12 @@ Commit `c047752e`. Not rebuilt or installed. Sections 33 and 37 mention these tw
 - **Verification:** unit tests unchanged (19, the one known `--version` error); flake8 clean on the touched files (two unused imports it flagged were removed); all 169 modules import with `DeprecationWarning` as error; a scripted run printed the new Play menu, found no F2 or Cmd-M binding and called `getHelp` on every stack; Klondike, Terrace, Fan, Spider and Big Easy (Hanafuda, 12356) start, and Klondike and Big Easy played moves with undo and redo, no error and no dialog. Nothing was looked at on screen.
 - **Test note:** an app started with `timeout 7` (SIGTERM) once did not die and sat idle for six minutes; it died to `kill -9`. The same game behaves the same on the previous commit. Use `timeout -s KILL` for launch checks.
 - **Still open:** as in section 57.
+
+## 59. Update: rebuilt and installed with the settings-folder rename, no stuck dialog, and the two Play items removed (2026-11-08)
+
+Installed app rebuilt from commit `38abd267` (120 MB, arm64, ad-hoc signed, `codesign -v` passes, `--version` prints `PySol 26 version 26.11`). It adds sections 56 to 58 to what section 54 installed: the `~/.pysol` settings folder, no stuck detection or "No moves left" dialog, and no Select game by number or Piles description. The bundle's compiled code contains none of `updateStuck`, `showStackDesc`, `mSelectGameById` or `mStackDesk`. No `data/html N` duplicates appeared this build, and no copy of the app was running.
+
+- **Settings folder:** the user had already launched the previous build, so `~/.PySolFC` has been moved to `~/.pysol` (options, savegames, cardsets, plugins and the old empty `boards` folder came along). `~/.PySolFC` no longer exists. The user said they would delete `~/.pysol/boards` themselves; the app no longer creates it.
+- **Not looked at on screen by the assistant:** the Play menu, the missing stuck indicator in the status bar, and the first play of a game on the new build.
+- **Local only:** commits after `92fa8520` are not pushed (the folder rename, the stuck removal, the two Play items removal and their handoff notes).
+- **Still open:** the logos that say "PySol Fan Club"; the dead code listed in sections 46 and 57 (solver window and hooks, wizard and custom game files and plugin loading, comment field, hint import/export, `auto_scale` branches, stuck hint level); the slow canvas redraw (section 13); Windows and Linux paths never run.
