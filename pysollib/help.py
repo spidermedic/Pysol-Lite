@@ -71,28 +71,6 @@ For more information about this application visit''') %
     if d.status == 0 and d.button == 1:
         viewer = help_html(app, "credits.html", "html")
         viewer.parent.after(2, viewer.parent.focus_force)
-        # help_credits(app, sound=sound)
-    return d.status
-
-
-def help_credits(app, timeout=0, sound=True):
-    if sound:
-        app.audio.playSample("credits")
-    t = "Tcl/Tk"
-    d = MfxMessageDialog(
-        app.top, title="Credits", timeout=timeout,
-        text=('''%(app)s credits go to:
-
-Volker Weidner for getting me into Solitaire
-Guido van Rossum for the initial example program
-T. Kirk for lots of contributed games and cardsets
-The Gnome AisleRiot team for parts of the documentation
-Natascha
-
-The Python, %(gui_library)s, SDL & Linux crews
-for making this program possible''') % {'app': TITLE, 'gui_library': t},
-        image=app.gimages.logos[3], image_side="right",
-        separator=True)
     return d.status
 
 

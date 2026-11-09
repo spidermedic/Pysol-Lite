@@ -102,9 +102,6 @@ class ResourceManager:
     def getByName(self, key):
         return self._objects_cache_name.get(key)
 
-    def getByBasename(self, key):
-        return self._objects_cache_basename.get(key)
-
     def getAll(self):
         return tuple(self._objects)
 
@@ -495,10 +492,6 @@ class Cardset(Resource):
         if isinstance(backindex, int):
             self.backindex = backindex % len(self.backnames)
         self.backname = self.backnames[self.backindex]
-
-    def saveSettings(self):
-        print('saveSettings')
-
 
 class CardsetManager(ResourceManager):
     def __init__(self):

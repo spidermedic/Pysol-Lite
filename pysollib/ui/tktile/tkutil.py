@@ -511,12 +511,6 @@ def createBottom(maskimage, color='white', backfile=None):
     return PIL_Image(image=out)
 
 
-def resizeBottom(image, maskimage, color='white', backfile=None):
-    maskimage = maskimage._pil_image
-    out = _createBottomImage(maskimage, color, backfile)
-    image['image'] = out
-
-
 # ************************************************************************
 # * font utils
 # ************************************************************************

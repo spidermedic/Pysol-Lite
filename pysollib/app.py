@@ -590,13 +590,6 @@ class Application:
             interface_is_dark(self.top))
         return dirname
 
-    def refreshToolbarImages(self):
-        toolbar = getattr(self, 'toolbar', None)
-        if toolbar is None or not hasattr(toolbar, 'updateImages'):
-            return False
-        dirname = self.getToolbarImagesDir()
-        return bool(toolbar.updateImages(dirname, self.opt.toolbar_size))
-
     def setTile(self, i, scaling=-1, force=0):
         if scaling == -1:
             scaling = self.opt.tabletile_scale_method
@@ -993,12 +986,6 @@ class Application:
         if gi is None:
             return None
         return gi.name
-
-    def getGameMenuitemName(self, id):
-        gi = self.gdb.get(id)
-        if gi is None:
-            return None
-        return gi.short_name
 
     def getGameRulesFilename(self, id):
         gi = self.gdb.get(id)

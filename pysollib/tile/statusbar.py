@@ -152,13 +152,6 @@ class PysolStatusbar(MfxStatusbar):
         self._createSizegrip()
 
 
-class HelpStatusbar(MfxStatusbar):
-    def __init__(self, top):
-        MfxStatusbar.__init__(self, top, row=3, column=0, columnspan=3)
-        label = self._createLabel('info', expand=True)
-        label.config(justify='left', anchor='w', padding=(8, 0))
-
-
 class HtmlStatusbar(MfxStatusbar):
     def __init__(self, top, row, column, columnspan):
         MfxStatusbar.__init__(self, top, row=row, column=column,

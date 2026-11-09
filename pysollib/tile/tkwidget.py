@@ -813,15 +813,7 @@ class MyPysolScale:
         self.variable.set(v)
 
 
-class TkinterScale(tkinter.Scale):
-    def __init__(self, parent, **kw):
-        if 'value' in kw:
-            del kw['value']
-        tkinter.Scale.__init__(self, parent, **kw)
-
-
 PysolScale = MyPysolScale
-# PysolScale = TkinterScale
 
 
 # ************************************************************************
@@ -913,36 +905,6 @@ class PysolCheckbutton(ttk.Checkbutton):
     def _focus(self, event):
         self.speech.speak(self.field_name + " " + "Check box" + " " +
                           str(self.value.get()))
-
-
-class PysolRadiobutton(ttk.Radiobutton):
-    def __init__(self, master=None, **kw):
-        self.speech = Speech()
-        if 'prefixtext' in kw:
-            prefixtext = kw['prefixtext']
-            del kw['prefixtext']
-        else:
-            prefixtext = None
-
-        self.myvalue = kw.get('value', tkinter.StringVar())
-        self.value = kw.get('variable', tkinter.StringVar())
-        kw['variable'] = self.value
-        ttk.Radiobutton.__init__(self, master, **kw)
-
-        if 'text' in kw:
-            if prefixtext is not None:
-                self.field_name = prefixtext + " - " + kw['text']
-            else:
-                self.field_name = kw['text']
-        elif prefixtext is not None:
-            self.field_name = prefixtext
-        else:
-            self.field_name = ''
-        self.bind('<FocusIn>', self._focus)
-
-    def _focus(self, event):
-        self.speech.speak(self.field_name + " " + "Radio button" + " " +
-                          str(self.value.get() == self.myvalue))
 
 
 class PysolEntry(ttk.Entry):

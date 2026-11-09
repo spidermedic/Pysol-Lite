@@ -1533,11 +1533,6 @@ class Game:
                 return False
         return True
 
-    def notYetImplemented(self):
-        MfxMessageDialog(self.top, title="Not yet implemented",
-                         text="This function is\nnot yet implemented.",
-                         bitmap="error")
-
     # main animation method
     def animatedMoveTo(self, from_stack, to_stack, cards, x, y,
                        tkraise=1, frames=-1, shadow=-1):
@@ -2420,141 +2415,12 @@ class Game:
         self.busy = False
         self.updateMenus()
 
-    #
-    # Replay - restart same deal and play back recorded moves via redo()
-    #
-
-    def startReplay(self):
-        if not self.top or self.preview or self.demo:
-            return
-        if self.moves.index == 0:
-            return
-        # If the game was already over, replaying must not award another win
-        # (restart clears local hint/demo counters, which could upgrade a
-        # helped finish into a scored win).
-        skip_win = bool(
-            self.finished or self.isGameWon() or self.gstats.updated < 0)
-        # Capture history up to the current position before restart wipes it
-        script = list(self.moves.history[:self.moves.index])
-        random = self.random
-        self.endGame(restart=1)
-        self.newGame(restart=1, random=random, autoplay=0)
-        self.moves.history = script
-        self.moves.index = 0
-        self.demo = Struct(
-            level=2,
-            mixed=0,
-            sleep=self.app.opt.timeouts['demo'],
-            last_deal=[],
-            snapshots=[],
-            hint=None,
-            keypress=None,
-            start_demo_moves=self.stats.demo_moves,
-            info_text=None,
-            replay=True,
-            skip_win=skip_win,
-        )
-        self.hints.list = None
-        self.createDemoInfoText()
-        after_idle(self.top, self.replayEvent)
-
-    def replayEvent(self):
-        # Note: other events are allowed to stop self.demo at any time
-        if not self.demo or self.demo.keypress:
-            self.stopDemo()
-            return
-        if self.moves.index >= len(self.moves.history):
-            self.stopDemo()
-            return
-        # Match demo pacing: hint arrow + pause before the move (not after)
-        self._showReplayHint()
-        if not self.demo or self.demo.keypress:
-            self.stopDemo()
-            return
-        # Only rewrite drag moves (frames=-2). Preserve game-level overrides
-        # such as Match Three's frames=0 swap helpers, cascade, and fills.
-        step = self.moves.history[self.moves.index]
-        saved_frames = []
-        for am in step:
-            if getattr(am, 'frames', None) == -2:
-                saved_frames.append((am, am.frames))
-                am.frames = -1
-        try:
-            self.redo()
-        finally:
-            for am, frames in saved_frames:
-                am.frames = frames
-        self.top.update_idletasks()
-        if self.isGameWon():
-            skip_win = getattr(self.demo, 'skip_win', False)
-            self.stopDemo()
-            if skip_win:
-                # Already finished before Replay — restore finished state only
-                self.finished = True
-                self.updateMenus()
-                return
-            self.checkForWin()
-            return
-        if self.demo and not self.demo.keypress:
-            self.top.busyUpdate()
-            after_idle(self.top, self.replayEvent)
-        else:
-            self.stopDemo()
-
-    def _isTalonDealAtomic(self, am):
-        """True for Klondike-like deals from the talon onto the waste."""
-        if not isinstance(am, (AMoveMove, AFlipAndMoveMove)):
-            return False
-        s = getattr(self, 's', None)
-        if not s:
-            return False
-        talon, waste = getattr(s, 'talon', None), getattr(s, 'waste', None)
-        if not talon or not waste:
-            return False
-        return (am.from_stack_id == talon.id and
-                am.to_stack_id == waste.id)
-
-    def _showReplayHint(self):
-        """Pause before the next replay move, with a hint arrow when useful.
-
-        Prefer the first animated stack-to-stack move (frames != 0). Instant
-        helper moves (frames=0) are skipped so games like Match Three show the
-        visible swap, not the cascade. Talon deals stay quick (no pause).
-
-        Steps with no arrow, like flips (Lights Out) and instant slides
-        (Matrix), still sleep so the replay is watchable when the game has no
-        demo.
-        """
-        demo = self.demo
-        if not demo or demo.sleep <= 0:
-            return
-        step = self.moves.history[self.moves.index]
-        for am in step:
-            if isinstance(am, (AMoveMove, AFlipAndMoveMove)):
-                if getattr(am, 'frames', -1) == 0:
-                    continue
-                if self._isTalonDealAtomic(am):
-                    return
-                from_stack = self.allstacks[am.from_stack_id]
-                to_stack = self.allstacks[am.to_stack_id]
-                ncards = am.ncards if isinstance(am, AMoveMove) else 1
-                self.drawHintArrow(from_stack, to_stack, ncards, demo.sleep)
-                return
-        # No arrow. Still pause, except for a quick talon deal.
-        if any(self._isTalonDealAtomic(am) for am in step):
-            return
-        self.sleep(demo.sleep)
-
     # demo event - play one demo move and check for win/loss
     def demoEvent(self):
         # note: other events are allowed to stop self.demo at any time
         if not self.demo or self.demo.keypress:
             self.stopDemo()
             # self.updateMenus()
-            return
-        # Replay uses its own event loop; never run AI demo moves during replay
-        if getattr(self.demo, 'replay', False):
-            after_idle(self.top, self.replayEvent)
             return
         finished = self.playOneDemoMove(self.demo)
         self.finishMove()
@@ -3057,8 +2923,6 @@ class Game:
             p = _alt_unpickler(file)
             game = self._undumpGame(p, self.app)
             assert game.id == self.id
-            # save state for undoGotoBookmark
-            self.setBookmark(-1, confirm=0)
         except Exception:
             del self.gsaveinfo.bookmarks[n]
             self.setCursor(cursor=self.app.top_cursor)
@@ -3068,9 +2932,6 @@ class Game:
                 self.gstats.goto_bookmark_moves += 1
             self.restoreGame(game, reset=0)
             destruct(game)
-
-    def undoGotoBookmark(self):
-        self.gotoBookmark(-1, update_stats=0)
 
     def loadGame(self, filename):
         if self.changed():

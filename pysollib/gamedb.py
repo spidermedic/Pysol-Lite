@@ -931,11 +931,6 @@ class GameManager:
             self.__games_by_altname = tuple(i[1:] for i in l3)
         return self.__games_by_name
 
-    def getGamesIdSortedByShortName(self):
-        if self.__games_by_name is None:
-            self.getGamesIdSortedByName()
-        return self.__games_by_short_name
-
     # note: this contains tuples as entries
     def getGamesTuplesSortedByAlternateName(self):
         if self.__games_by_name is None:
