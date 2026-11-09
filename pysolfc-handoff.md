@@ -638,3 +638,7 @@ Installed app rebuilt from commit `38abd267` (120 MB, arm64, ad-hoc signed, `cod
 - **Not looked at on screen by the assistant:** the Play menu, the missing stuck indicator in the status bar, and the first play of a game on the new build.
 - **Local only:** commits after `92fa8520` are not pushed (the folder rename, the stuck removal, the two Play items removal and their handoff notes).
 - **Still open:** the logos that say "PySol Fan Club"; the dead code listed in sections 46 and 57 (solver window and hooks, wizard and custom game files and plugin loading, comment field, hint import/export, `auto_scale` branches, stuck hint level); the slow canvas redraw (section 13); Windows and Linux paths never run.
+
+## 60. Deferred on purpose (2026-11-08)
+
+The user parked three items to revisit in about two weeks (around 2026-11-22): the slow canvas redraw (section 13; Python 3.14.9 and Tk 9.0.5 may fix it, a build change), the Windows and Linux code paths (never run since the toolkit removal), and bringing translations back (no translation functions exist now, section 53). Do not start these before then unless the user asks. The user checked the installed app (section 59) and was satisfied. Open and active: the dead-code pass (sections 46 and 57) and a new logo (the logos under `html-src/images` still say "PySol Fan Club").
