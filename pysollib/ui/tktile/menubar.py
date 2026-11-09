@@ -213,7 +213,6 @@ class PysolMenubarTkCommon:
             self._connect_game_full_picture_dialog(game)
         else:
             self._destroy_full_picture_dialog()
-        self._connect_game_solver_dialog(game)
 
     # create a GTK-like path
     def _addPath(self, path, menu, index, submenu):

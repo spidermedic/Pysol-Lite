@@ -67,7 +67,6 @@ from pysollib.settings import VERSION, VERSION_TUPLE
 from pysollib.struct_new import NewStruct
 from pysollib.util import COLORS, RANKS, SUITS_PL
 
-from pysollib.ui.tktile.solverdialog import reset_solver_dialog
 
 # See: https://github.com/shlomif/PySolFC/issues/159 .
 # 'factory=' is absent from older versions.
@@ -741,7 +740,6 @@ class Game:
             stack.updateText()
         self.updateText()
         self.updateStatus(moves=(0, 0))
-        reset_solver_dialog()
         # unhide toplevel when we use a progress bar
         if not self.preview:
             wm_map(self.top, maximized=self.app.opt.wm_maximized,
@@ -2992,7 +2990,6 @@ class Game:
         self.updateStatus(moves=(moves.index, self.stats.total_moves))
         self.updateMenus()
         self.updatePlayTime(do_after=0)
-        reset_solver_dialog()
 
         return 1
 
@@ -3014,7 +3011,6 @@ class Game:
         self.updateText()
         self.updateStatus(moves=(self.moves.index, self.stats.total_moves))
         self.updateMenus()
-        reset_solver_dialog()
 
     def redo(self):
         assert self.canRedo()
@@ -3035,7 +3031,6 @@ class Game:
         self.updateText()
         self.updateStatus(moves=(self.moves.index, self.stats.total_moves))
         self.updateMenus()
-        reset_solver_dialog()
 
     #
     # subclass hooks

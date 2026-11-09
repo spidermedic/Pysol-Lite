@@ -53,10 +53,8 @@ from pysollib.pysoltk import destroy_full_picture_dialog
 from pysollib.pysoltk import loadImage, wm_withdraw
 from pysollib.pysoltk import raise_find_card_dialog
 from pysollib.pysoltk import raise_full_picture_dialog
-from pysollib.pysoltk import raise_solver_dialog
 from pysollib.pysoltk import unraise_find_card_dialog
 from pysollib.pysoltk import unraise_full_picture_dialog
-from pysollib.pysoltk import unraise_solver_dialog
 from pysollib.resource import CSI, CardsetManager
 from pysollib.resource import Sample, SampleManager
 from pysollib.resource import TileManager
@@ -65,7 +63,6 @@ from pysollib.settings import PACKAGE  # , WIN_SYSTEM
 from pysollib.speech import Speech
 from pysollib.util import IMAGE_EXTENSIONS
 from pysollib.winsystems import TkSettings
-from pysollib.ui.tktile.solverdialog import destroy_solver_dialog
 
 # The toolbar icon set (data/images/toolbar/<name>).
 DEFAULT_TOOLBAR_STYLE = 'phosphor'
@@ -291,7 +288,6 @@ class Application:
             destroy_help_html()
             destroy_find_card_dialog()
             destroy_full_picture_dialog()
-            destroy_solver_dialog()
             # update options
             self.opt.last_gameid = id_
             # save options
@@ -492,13 +488,11 @@ class Application:
     def raiseAll(self):
         raise_find_card_dialog(self.game)
         raise_full_picture_dialog(self.game)
-        raise_solver_dialog(self.game)
         raise_help_html(self.game)
 
     def unraiseAll(self):
         unraise_find_card_dialog()
         unraise_full_picture_dialog()
-        unraise_solver_dialog()
         unraise_help_html()
 
     def loadImages1(self):

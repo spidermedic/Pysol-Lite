@@ -28,7 +28,6 @@ from pysollib.ui.tktile.fullpicturedialog import \
     connect_game_full_picture_dialog
 from pysollib.ui.tktile.fullpicturedialog import destroy_full_picture_dialog
 from pysollib.ui.tktile.menubar import PysolMenubarTkCommon
-from pysollib.ui.tktile.solverdialog import connect_game_solver_dialog
 
 from .tkwidget import MfxMessageDialog
 
@@ -54,9 +53,6 @@ class PysolMenubarTk(PysolMenubarTkCommon):
 
     def _destroy_full_picture_dialog(self):
         return destroy_full_picture_dialog()
-
-    def _connect_game_solver_dialog(self, game):
-        return connect_game_solver_dialog(game)
 
     def _calcSelectGameDialog(self):
         from .selectgame import SelectGameDialog
