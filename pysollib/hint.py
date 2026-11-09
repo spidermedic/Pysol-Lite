@@ -34,29 +34,17 @@ from pysollib.util import KING
 
 FCS_VERSION = None
 
-# Hint levels form an ordinal capability ladder (except HINT_LEVEL_STUCK):
+# Hint levels form an ordinal capability ladder:
 #   >= HINT_LEVEL_DEBUG  step020/030 (split-pile setup moves)
 #   >= HINT_LEVEL_DEMO   flip, deal, demo loop guards
-# HINT_LEVEL_STUCK is outside that ladder and used only for stuck checks.
-HINT_LEVEL_STUCK = -1
 HINT_LEVEL_PLAYER = 0
 HINT_LEVEL_DEBUG = 1
 HINT_LEVEL_DEMO = 2
 HINT_LEVEL_SOLVER = 3
 
 
-def hint_level_is_stuck(level):
-    return level == HINT_LEVEL_STUCK
-
-
 def hint_level_is_demo_or_above(level):
     return level >= HINT_LEVEL_DEMO
-
-
-def hint_level_avoids_move_loops(level):
-    # Demo avoids reversible shuffles so it can stop; stuck must do the same
-    # or it will treat ping-pong tableau moves as "not stuck".
-    return hint_level_is_demo_or_above(level) or hint_level_is_stuck(level)
 
 
 # ************************************************************************
@@ -73,7 +61,6 @@ class HintInterface:
     # HINT_LEVEL_DEBUG: show hint and display score value (key `Ctrl-H')
     # HINT_LEVEL_DEMO: demo
     # HINT_LEVEL_SOLVER: solver dialog
-    # HINT_LEVEL_STUCK: stuck check only (not used by getHints())
     def __init__(self, game, level):
         pass
 
@@ -92,7 +79,7 @@ class HintInterface:
     #    in order to avoid endless loops during demo play.
     #
     # Deal may only happen if self.level >= HINT_LEVEL_DEMO (i.e. demo).
-    # Flip may happen at HINT_LEVEL_DEMO or HINT_LEVEL_STUCK.
+    # Flip may happen at HINT_LEVEL_DEMO.
     #
     # See Game.showHint() for more information.
     def getHints(self, taken_hint=None):
@@ -205,8 +192,7 @@ class AbstractHint(HintInterface):
         if taken_hint and taken_hint[6]:
             return [taken_hint[6]]
         # 2) try if we can flip a card
-        if hint_level_is_demo_or_above(self.level) or \
-                hint_level_is_stuck(self.level):
+        if hint_level_is_demo_or_above(self.level):
             for r in game.allstacks:
                 if r.canFlipCard():
                     self.addHint(self.SCORE_FLIP, 1, r, r)
@@ -269,12 +255,12 @@ class AbstractHint(HintInterface):
             return 0
         return 1
 
-    # same, but only check for loops in demo / stuck checks
+    # same, but only check for loops in demo
     def _cautiousDemoShallMovePile(self, from_stack, to_stack, pile, rpile):
         if from_stack is to_stack or not \
                 to_stack.acceptsCards(from_stack, pile):
             return 0
-        if hint_level_avoids_move_loops(self.level):
+        if hint_level_is_demo_or_above(self.level):
             return self._cautiousShallMovePile(
                 from_stack, to_stack, pile, rpile)
         return 1
@@ -477,41 +463,23 @@ class DefaultHint(AbstractHint):
     # compute hints - main hint intelligence
     #
 
-    def shallMovePile(self, from_stack, to_stack, pile, rpile):
-        # Klondike-family stuck must ignore reversible shuffles (same idea as
-        # CautiousDefaultHint / demo loop avoidance), or dead deals never get
-        # marked stuck while Autopilot still stops.
-        if hint_level_is_stuck(self.level):
-            return AbstractHint._cautiousShallMovePile(
-                self, from_stack, to_stack, pile, rpile)
-        return AbstractHint._defaultShallMovePile(
-            self, from_stack, to_stack, pile, rpile)
-
     def computeHints(self):
         game = self.game
-        stuck = hint_level_is_stuck(self.level)
 
         # 1) check Tableau piles
         self.step010(game.sg.dropstacks, game.s.rows)
 
         # 2) try if we can move part of a pile within the RowStacks
         #    so that we can drop a card afterwards
-        # Stuck mirrors demo/debug gating (only when nothing found yet).
-        # Forcing these steps invented pointless moves and hid real stuck.
-        if not self.hints and (stuck or self.level >= HINT_LEVEL_DEBUG):
+        if not self.hints and self.level >= HINT_LEVEL_DEBUG:
             self.step020(game.s.rows, game.s.foundations)
 
         # 3) try if we should move a card from a Foundation to a RowStack
-        if (not stuck and not self.hints and
-                self.level >= HINT_LEVEL_DEBUG):
+        if not self.hints and self.level >= HINT_LEVEL_DEBUG:
             self.step030(game.s.foundations, game.s.rows, game.sg.dropstacks)
 
-        # 4/5) reserves: player always; stuck/demo only if still empty
-        if stuck:
-            if not self.hints:
-                self.step040(game.s.rows, game.sg.reservestacks)
-                self.step050(game.sg.reservestacks, game.s.rows)
-        elif not self.hints or self.level == HINT_LEVEL_PLAYER:
+        # 4/5) reserves: player always; demo only if still empty
+        if not self.hints or self.level == HINT_LEVEL_PLAYER:
             self.step040(game.s.rows, game.sg.reservestacks)
             self.step050(game.sg.reservestacks, game.s.rows)
 
@@ -680,7 +648,7 @@ class DefaultHint(AbstractHint):
             for t in reservestacks:
                 if t is r or not t.acceptsCards(r, pile):
                     continue
-                if hint_level_avoids_move_loops(self.level):
+                if hint_level_is_demo_or_above(self.level):
                     if rr.acceptsCards(t, pile):
                         # the pile we are going to move from r to t
                         # could be moved back from t ro r - this is
@@ -705,7 +673,7 @@ class DefaultHint(AbstractHint):
             for t in rows:
                 if t is r or not t.acceptsCards(r, pile):
                     continue
-                if hint_level_avoids_move_loops(self.level):
+                if hint_level_is_demo_or_above(self.level):
                     tt = self.ClonedStack(t, stackcards=t.cards[:])
                     if tt.acceptsCards(r, pile):
                         continue
@@ -739,24 +707,6 @@ class KlondikeType_Hint(DefaultHint):
 
 # this works for Yukon, but not too well for Russian Solitaire
 class YukonType_Hint(CautiousDefaultHint):
-    # Bound the stuck search. Hitting the cap keeps the hints, so a long
-    # real line is not reported as stuck; only a fully explored dead
-    # shuffle graph is. Layouts with nothing left to flip or drop are
-    # decided before the search.
-    _YUKON_STUCK_STATE_CAP = 80
-
-    def getHints(self, taken_hint=None):
-        hints = super().getHints(taken_hint)
-        # Any face-up card can move, so one-step reversibility still leaves
-        # closed shuffle graphs looking playable. Stuck is when none of
-        # those moves can reach a drop or a flip.
-        if (taken_hint or not hints or
-                not hint_level_is_stuck(self.level)):
-            return hints
-        if not self._yukon_stuck_can_progress():
-            return []
-        return hints
-
     def step010b_getPiles(self, stack):
         # return all moveable piles for this stack, longest one first
         p = stack.getPile()
@@ -765,143 +715,6 @@ class YukonType_Hint(CautiousDefaultHint):
             piles.append(p)
             p = p[1:]       # note: we need a fresh shallow copy
         return piles
-
-    def _yukon_sources(self):
-        return list(self.game.sg.dropstacks)
-
-    def _yukon_targets(self):
-        targets = list(self.game.s.rows)
-        for stack in self.game.s.reserves or []:
-            if stack not in targets:
-                targets.append(stack)
-        return targets
-
-    def _yukon_key(self):
-        parts = []
-        stacks = self._yukon_sources() + list(self.game.s.foundations)
-        for stack in stacks:
-            parts.append((stack.id, tuple(
-                (card.id, card.face_up) for card in stack.cards)))
-        return tuple(parts)
-
-    def _yukon_capture(self):
-        snap = []
-        stacks = self._yukon_sources() + list(self.game.s.foundations)
-        for stack in stacks:
-            snap.append((stack, list(stack.cards),
-                         [card.face_up for card in stack.cards]))
-        return snap
-
-    def _yukon_restore(self, snap):
-        for stack, cards, faces in snap:
-            stack.cards[:] = cards
-            for card, face in zip(stack.cards, faces):
-                card.face_up = face
-
-    def _yukon_apply(self, src, dst, pile):
-        n = len(pile)
-        del src.cards[-n:]
-        dst.cards.extend(pile)
-
-    def _yukon_unapply(self, src, dst, pile):
-        n = len(pile)
-        del dst.cards[-n:]
-        src.cards.extend(pile)
-
-    def _yukon_position_progress(self):
-        # A flip or a foundation drop is forward motion. Tableau yanks
-        # that never reach either are the shuffles that hid stuck games.
-        founds = self.game.s.foundations
-        for src in self._yukon_sources():
-            if src.canFlipCard():
-                return True
-            if src.canDropCards(founds)[0]:
-                return True
-        return False
-
-    def _yukon_iter_moves(self):
-        founds = self.game.s.foundations
-        targets = self._yukon_targets()
-        for src in self._yukon_sources():
-            if not src.cards:
-                continue
-            drop, n = src.canDropCards(founds)
-            if drop and n:
-                yield src, drop, list(src.cards[-n:])
-            start = None
-            for i, card in enumerate(src.cards):
-                if card.face_up:
-                    start = i
-                    break
-            if start is None:
-                continue
-            for i in range(start, len(src.cards)):
-                pile = list(src.cards[i:])
-                if not src.canMoveCards(pile):
-                    continue
-                for dst in targets:
-                    if dst is src or not dst.acceptsCards(src, pile):
-                        continue
-                    yield src, dst, pile
-
-    def _yukon_search_progress(self):
-        cap = self._YUKON_STUCK_STATE_CAP
-        seen = {self._yukon_key()}
-        queue = [self._yukon_capture()]
-        scanned = 0
-        while queue:
-            if scanned >= cap:
-                return True
-            self._yukon_restore(queue.pop())
-            scanned += 1
-            for src, dst, pile in list(self._yukon_iter_moves()):
-                self._yukon_apply(src, dst, pile)
-                try:
-                    if self._yukon_position_progress():
-                        return True
-                    key = self._yukon_key()
-                    if key not in seen:
-                        seen.add(key)
-                        queue.append(self._yukon_capture())
-                finally:
-                    self._yukon_unapply(src, dst, pile)
-        return False
-
-    def _yukon_future_drop_or_flip(self):
-        # Spider-style rows drop a whole suit, so a lone card is not
-        # evidence. Single-card foundations (Yukon) are stuck when no
-        # card left in play is the next foundation card and nothing is
-        # face down.
-        from pysollib.stack import OpenStack
-        sources = self._yukon_sources()
-        for src in sources:
-            if type(src).canDropCards is not OpenStack.canDropCards:
-                return True
-            if any(not card.face_up for card in src.cards):
-                return True
-        founds = self.game.s.foundations
-        for src in sources:
-            saved = src.cards[:]
-            try:
-                for card in saved:
-                    src.cards[:] = [card]
-                    if src.canDropCards(founds)[0]:
-                        return True
-            finally:
-                src.cards[:] = saved
-        return False
-
-    def _yukon_stuck_can_progress(self):
-        if self._yukon_position_progress():
-            return True
-        if not self._yukon_future_drop_or_flip():
-            return False
-        root = self._yukon_capture()
-        try:
-            return self._yukon_search_progress()
-        finally:
-            self._yukon_restore(root)
-
 
 class Yukon_Hint(YukonType_Hint):
     BONUS_FLIP_CARD = 9000

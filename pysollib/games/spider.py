@@ -30,7 +30,6 @@ from pysollib.hint import (
     HINT_LEVEL_DEBUG,
     SpiderType_Hint,
     YukonType_Hint,
-    hint_level_is_stuck,
 )
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
@@ -98,10 +97,6 @@ class Spider_Hint(SpiderType_Hint):
             # Uncovering a run that can drop is progress, not a shuffle.
             if rr.canDropCards(self.game.s.foundations)[0]:
                 return True
-            # Stuck must not accept reversible whole-pile shuffles, even
-            # though player hints (level <= 1) are more lenient.
-            if hint_level_is_stuck(self.level):
-                return False
             if self.level <= HINT_LEVEL_DEBUG and len(rpile) == 0:
                 return True
             return False
