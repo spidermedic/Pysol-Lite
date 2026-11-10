@@ -40,11 +40,8 @@ files = [
     ('credits.html', 'PySol Credits'),
     ('credits_old.html', 'PySol Credits'),
     ('faq.html', 'PySol - FAQ'),
-    ('ganjifa.html', 'PySol - General Ganjifa Card Rules'),
     ('general_rules.html', 'PySol - General Rules'),
     ('glossary.html', 'PySol - Glossary'),
-    ('hanafuda.html', 'PySol - Rules for General Flower Card Rules'),
-    ('hexadeck.html', 'PySol - General Hex A Deck Card Rules'),
     ('howtoplay.html', 'How to Use PySol'),
     ('accessibility.html', 'PySol - Accessibility'),
     ('index.html', 'PySol - a Solitaire Game Collection'),
@@ -197,14 +194,6 @@ def gen_rules_html():
         if rules_fn not in files_list:
             title = 'PySol - Rules for ' + gi.name
             s = ''
-            if gi.si.game_type == GI.GT_HANAFUDA:
-                s = '<a href="../hanafuda.html">General Hanafuda rules</a>'
-            elif gi.si.game_type == GI.GT_DASHAVATARA_GANJIFA or \
-                    gi.si.game_type == GI.GT_MUGHAL_GANJIFA:
-                s = '<a href="../ganjifa.html">About Ganjifa</a>'
-            elif gi.si.game_type == GI.GT_HEXADECK:
-                s = '<a href="../hexadeck.html">General Hex A Deck rules</a>'
-
             rules_list.append((rules_dir, rules_fn, title, s))
         files_list.append(rules_fn)
         # rules_list.append((rules_fn, gi.name))
