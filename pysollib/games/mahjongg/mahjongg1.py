@@ -44,7 +44,7 @@ r(5034, "Traditional", layout="0acaaeaagaaiaaka" +
     "umacoaeoagoaioak" +
     "oamoaooaqoasoauo" +
     "awoayoCnh")
-r(5250, "Pyramid 1", layout="0aagaaiaceacghch" +
+r(5250, "Pyramid", layout="0aagaaiaceacghch" +
     "aciackaecbeebegb" +
     "eibekaemagabgcbg" +
     "ecggcgibgkbgmago" +
@@ -59,7 +59,7 @@ r(5250, "Pyramid 1", layout="0aagaaiaceacghch" +
     "cbsebsgbsibskasm" +
     "aueaughuhauiauka" +
     "wgawi")
-r(5013, "Butterfly 1", layout="0dmadqaaabaebayb" +
+r(5013, "Butterfly", layout="0dmadqaaabaebayb" +
     "aCbagccocawcaada" +
     "edaidaudaydaCdac" +
     "eageakedoeaseawe" +
@@ -122,7 +122,7 @@ r(5603, "Hourglass", layout="0aaaacaaeaagaaia" +
     "fvahvyhvajvyjval" +
     "vylCaeCyeCagCygC" +
     "aiCyiCakCyk")
-r(5203, "Bridge 1", layout="0aaaaacaaeaagaai" +
+r(5203, "Bridge", layout="0aaaaacaaeaagaai" +
     "hbahbchbehbghbio" +
     "caoccoceocgociwd" +
     "avdcvdevdgwdioeb" +
@@ -160,7 +160,7 @@ r(5206, "Cross", layout="0baebagbaiaccdce" +
     "mmaoacocdoebogdo" +
     "icokaomaqcdqebqg" +
     "dqiaqkbsebsgbsi")
-r(5002, "Arena 1", layout="0eaadcaceabgaaia" +
+r(5002, "Arena", layout="0eaadcaceabgaaia" +
     "aqabsacuadwaeyad" +
     "accccbecagcakcbm" +
     "caocascbuccwcdyc" +
