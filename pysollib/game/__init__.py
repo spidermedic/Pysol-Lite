@@ -3186,8 +3186,7 @@ class Game:
 
     # for find_card_dialog
     def canFindCard(self):
-        return self.gameinfo.category not in (GI.GC_MATCHING, GI.GC_PUZZLE) \
-            and self.gameinfo.si.game_type != GI.GT_SAMEGAME
+        return self.gameinfo.category not in (GI.GC_MATCHING, GI.GC_PUZZLE)
 
     def canShowFullPicture(self):
         return self.gameinfo.category == GI.GC_PUZZLE

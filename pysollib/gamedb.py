@@ -79,28 +79,19 @@ class GI:
     GT_GOLF = 11
     GT_GYPSY = 12
     GT_HANAFUDA = 13
-    GT_HANOI = 35
     GT_HEXADECK = 14
-    GT_ISHIDO = 39
     GT_KLONDIKE = 15
-    GT_LIGHTS_OUT = 38
     GT_MAHJONGG = 16
-    GT_MATCH_THREE = 43
-    GT_MATRIX = 17
-    GT_MEMORY = 18
     GT_MONTANA = 19
     GT_MUGHAL_GANJIFA = 20
     GT_NAPOLEON = 21
     GT_NAVAGRAHA_GANJIFA = 22
     GT_NUMERICA = 23
     GT_PAIRING_TYPE = 24
-    GT_PEGGED = 36
     GT_PICTURE_GALLERY = 41
     GT_POKER_TYPE = 25
-    GT_PUZZLE_TYPE = 26
     GT_RAGLAN = 27
     GT_ROW_TYPE = 28
-    GT_SAMEGAME = 42
     GT_SHISEN_SHO = 34
     GT_SIMPLE_TYPE = 29
     GT_SPIDER = 30
@@ -162,18 +153,9 @@ class GI:
 
         GT_CRIBBAGE_TYPE:       "Cribbage",
         GT_HEXADECK:            "Hex A Deck",
-        GT_ISHIDO:              "Ishido",
-        GT_LIGHTS_OUT:          "Lights Out",
-        GT_MATCH_THREE:         "Match Three",
-        GT_MATRIX:              "Matrix",
-        GT_MEMORY:              "Memory",
-        GT_PEGGED:              "Pegged",
         GT_POKER_TYPE:          "Poker",
-        GT_PUZZLE_TYPE:         "Puzzle",
-        GT_SAMEGAME:            "Samegame",
         GT_SHISEN_SHO:          "Shisen-Sho",
         GT_TAROCK:              "Tarock",
-        GT_HANOI:               "Tower of Hanoi",
 
         GT_CUSTOM:              "Custom",
     }
@@ -284,24 +266,10 @@ class GI:
             lambda gi, gt=GT_CRIBBAGE_TYPE: gi.si.game_type == gt),
         ("Hex A Deck type",
             lambda gi, gt=GT_HEXADECK: gi.si.game_type == gt),
-        ("Ishido type", lambda gi, gt=GT_ISHIDO: gi.si.game_type == gt),
-        ("Lights Out type",
-            lambda gi, gt=GT_LIGHTS_OUT: gi.si.game_type == gt),
-        ("Match Three type",
-            lambda gi, gt=GT_MATCH_THREE: gi.si.game_type == gt),
-        ("Matrix type", lambda gi, gt=GT_MATRIX: gi.si.game_type == gt),
-        ("Memory type", lambda gi, gt=GT_MEMORY: gi.si.game_type == gt),
-        ("Pegged type", lambda gi, gt=GT_PEGGED: gi.si.game_type == gt),
         ("Poker type", lambda gi, gt=GT_POKER_TYPE: gi.si.game_type == gt),
-        ("Puzzle type",
-            lambda gi, gt=GT_PUZZLE_TYPE: gi.si.game_type == gt),
-        ("Samegame type",
-            lambda gi, gt=GT_SAMEGAME: gi.si.game_type == gt),
         ("Shisen-Sho type",
             lambda gi, gt=GT_SHISEN_SHO: gi.si.game_type == gt),
         ("Tarock type", lambda gi, gt=GT_TAROCK: gi.si.game_type == gt),
-        ("Tower of Hanoi type",
-            lambda gi, gt=GT_HANOI: gi.si.game_type == gt),
     )
 
     # These obsolete gameids have been used in previous versions of

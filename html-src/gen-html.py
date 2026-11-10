@@ -58,19 +58,12 @@ files = [
     ]
 
 rules_files = [
-    ('hanoipuzzle.html', 'PySol - Rules for Hanoi Puzzle'),
     ('mahjongg.html', 'PySol - Rules for Mahjongg'),
-    ('matrix.html', 'PySol - Rules for Matrix'),
     ('notshisensho.html', 'PySol - Rules for Not Shisen-Sho'),
-    ('pegged.html', 'PySol - Rules for Pegged'),
     ('shisensho.html', 'PySol - Rules for Shisen-Sho'),
     ('spider.html', 'PySol - Rules for Spider'),
     ('freecell.html', 'PySol - Rules for FreeCell'),
-    ('lightsout.html', 'PySol - Rules for Lights Out'),
     ('fourrivers.html', 'PySol - Rules for Four Rivers'),
-    ('tilepuzzle.html', 'PySol - Rules for Tile Puzzle'),
-    ('samegame.html', 'PySol - Rules for Samegame'),
-    ('matchthree.html', 'PySol - Rules for Match Three'),
     ]
 
 

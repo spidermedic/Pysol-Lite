@@ -54,11 +54,7 @@ GAME_BY_TYPE = {
     GI.GT_3DECK_TYPE: "Three-Deck game",
     GI.GT_4DECK_TYPE: "Four-Deck game",
 
-    GI.GT_LIGHTS_OUT: "Lights Out",
-    GI.GT_MATRIX: "Matrix",
-    GI.GT_MEMORY: "Memory",
     GI.GT_POKER_TYPE: "Poker",
-    GI.GT_PUZZLE_TYPE: "Puzzle",
     GI.GT_TAROCK: "Tarock",
     GI.GT_HEXADECK: "Hex A Deck",
     GI.GT_HANAFUDA: "Hanafuda",
@@ -66,12 +62,7 @@ GAME_BY_TYPE = {
     GI.GT_MAHJONGG: "Mahjongg",
     GI.GT_MUGHAL_GANJIFA: "Mughal Ganjifa",
     GI.GT_SHISEN_SHO: "Shisen-Sho",
-    GI.GT_HANOI: "Tower of Hanoi",
-    GI.GT_PEGGED: "Pegged",
     GI.GT_CRIBBAGE_TYPE: "Cribbage",
-    GI.GT_ISHIDO: "Ishido",
-    GI.GT_SAMEGAME: "Samegame",
-    GI.GT_MATCH_THREE: "Match Three",
 }
 
 

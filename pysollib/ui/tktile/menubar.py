@@ -140,9 +140,7 @@ class PysolMenubarTkCommon:
             quickplay=tkinter.BooleanVar(),
             mahjongg_show_removed=tkinter.BooleanVar(),
             shisen_show_hint=tkinter.BooleanVar(),
-            match_three_cascade=tkinter.BooleanVar(),
             accordion_deal_all=tkinter.BooleanVar(),
-            pegged_auto_remove=tkinter.BooleanVar(),
             sound=tkinter.BooleanVar(),
             spread_stacks=tkinter.BooleanVar(),
             cardback=tkinter.IntVar(),
@@ -173,9 +171,7 @@ class PysolMenubarTkCommon:
         tkopt.quickplay.set(opt.quickplay)
         tkopt.mahjongg_show_removed.set(opt.mahjongg_show_removed)
         tkopt.shisen_show_hint.set(opt.shisen_show_hint)
-        tkopt.match_three_cascade.set(opt.match_three_cascade)
         tkopt.accordion_deal_all.set(opt.accordion_deal_all)
-        tkopt.pegged_auto_remove.set(opt.pegged_auto_remove)
         tkopt.sound.set(opt.sound)
         tkopt.spread_stacks.set(opt.spread_stacks)
         tkopt.cardback.set(self.app.cardset.backindex)
@@ -1021,22 +1017,10 @@ class PysolMenubarTkCommon:
         self.app.opt.shisen_show_hint = self.tkopt.shisen_show_hint.get()
         # self.game.updateMenus()
 
-    def mOptMatchThreeCascade(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.match_three_cascade = self.tkopt.match_three_cascade.get()
-        # self.game.updateMenus()
-
     def mOptAccordionDealAll(self, *args):
         if self._cancelDrag(break_pause=False):
             return
         self.app.opt.accordion_deal_all = self.tkopt.accordion_deal_all.get()
-        # self.game.updateMenus()
-
-    def mOptPeggedAutoRemove(self, *args):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.app.opt.pegged_auto_remove = self.tkopt.pegged_auto_remove.get()
         # self.game.updateMenus()
 
     def _updateCardSize(self):

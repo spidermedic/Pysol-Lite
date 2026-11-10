@@ -76,12 +76,8 @@ PLAY_OPTIONS = (
 ASSIST_GAME_OPTIONS = (
     ('shisen_show_hint', 'Show hint arrow (in Shisen-Sho games)',
      'mOptShisenShowHint'),
-    ('match_three_cascade', 'Show cascade (in Match Three games)',
-     'mOptMatchThreeCascade'),
     ('accordion_deal_all', 'Deal all cards (in Accordion type games)',
      'mOptAccordionDealAll'),
-    ('pegged_auto_remove', 'Auto-remove first card (in Pegged games)',
-     'mOptPeggedAutoRemove'),
     ('mahjongg_show_removed', 'Show removed tiles (in Mahjongg games)',
      'mOptMahjonggShowRemoved'),
 )

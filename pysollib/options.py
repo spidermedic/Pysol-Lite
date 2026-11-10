@@ -67,7 +67,6 @@ mahjongg_show_removed = boolean
 mahjongg_create_solvable = integer(0, 2)
 shisen_show_hint = boolean
 shisen_show_matching = boolean
-match_three_cascade = boolean
 animations = integer(0, 5)
 shade = boolean
 toolbar = integer(0, 4)
@@ -157,9 +156,7 @@ class Options:
         ('mahjongg_create_solvable', 'int'),
         ('shisen_show_hint', 'bool'),
         ('shisen_show_matching', 'bool'),
-        ('match_three_cascade', 'bool'),
         ('accordion_deal_all', 'bool'),
-        ('pegged_auto_remove', 'bool'),
         ('animations', 'int'),
         ('shade', 'bool'),
         ('toolbar', 'int'),
@@ -231,10 +228,8 @@ class Options:
         self.mahjongg_show_removed = False
         self.mahjongg_create_solvable = 2  # 0 - none, 1 - easy, 2 - hard
         self.accordion_deal_all = True
-        self.pegged_auto_remove = True
         self.shisen_show_hint = True
         self.shisen_show_matching = False
-        self.match_three_cascade = True
         # 0 none, 1 fast, 2 medium, 3 slow
         self.animations = 2             # default to Medium
         self.shadow = True              # fixed: not saved or loaded
