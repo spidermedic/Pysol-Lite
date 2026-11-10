@@ -577,24 +577,10 @@ class PysolMenubarTkCommon:
         mahjongg_games.sort(key=sort_func)
         #
         menu = MfxMenu(menu, label="&Mahjongg games")
-        n, d = 0, self.cb_max
-        i = 0
-        while True:
-            if self.progress:
-                self.progress.update(step=1)
-            columnbreak = i > 0 and (i % d) == 0
-            i += 1
-            if not mahjongg_games[n:n + d]:
-                break
-            m = min(n + d - 1, len(mahjongg_games) - 1)
-            label = mahjongg_games[n].short_name[:3].strip() + ' - ' + \
-                mahjongg_games[m].short_name[:3].strip()
-            submenu = MfxMenu(menu, label=label, name=None)
-            self._addSelectGameSubSubMenu(mahjongg_games[n:n + d], submenu,
-                                          command, variable, short_name=True)
-            n += d
-            if columnbreak:
-                menu.entryconfigure(i, columnbreak=columnbreak)
+        if self.progress:
+            self.progress.update(step=1)
+        self._addSelectGameSubSubMenu(mahjongg_games, menu, command, variable,
+                                      short_name=True)
 
     def _addSelectPopularGameSubMenu(self, games, menu, command, variable):
         def select_func(gi):
