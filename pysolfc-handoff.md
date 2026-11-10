@@ -670,3 +670,44 @@ Five commits (`c743c4c5`, `2e635559`, `f8b16940`, `0a33adfa`, `845ac123`), 34 fi
 - `options.dat` fallback in `app.py` (reads an old pickled options file); old option keys that are ignored on load.
 - **Process notes:** one test launched `pkill -9 -x PySol` after the staged `--version` check without first looking for a running copy, which would also have stopped the user's own copy if it was open (it is allowed when replacing the install, but the install did not happen). `timeout` (SIGTERM) can leave an idle app running; use `timeout -s KILL`.
 - **Still open:** the "PySol Fan Club" logos; the deferred items in section 60.
+
+## 62. Update: game set cut from 1,390 to 941 (2026-11-09)
+
+Goal stated by the user: get rid of lower quality games. Seven commits after `3b2f3454`; the first six were pushed to `origin/master` up to `b12d15b3`, the last two (`10faa864`, `ce989d60`) and this note are local only. Count is the number of registered games in a full import of `pysollib.games`, `.special` and `.mahjongg`.
+
+| Commit | What went | Games after |
+|---|---|---|
+| `2c7c4d49` | Sudoku (4 levels, generator, rules page, game type) | 1,386 |
+| `e6135dfe` | Non-card puzzles: Lights Out, Match Three, Samegame, Pegged, Tower of Hanoi, Tile Puzzle, Matrix, Ishido, Memory; options `match_three_cascade`, `pegged_auto_remove` | 1,300 |
+| `04390cfb` | Five special-deck families: Hanafuda, Tarock, Hex A Deck, Dashavatara Ganjifa, Mughal Ganjifa (136 games, incl. the deck variants of Lara's Game); Oriental games menu | 1,164 |
+| `10faa864` | Mahjongg solitaire layouts 221 -> 10 | 953 |
+| `ce989d60` | Shisen-Sho variants: No Gravity, Not Shisen-Sho, Four Rivers (12 games) | 941 |
+
+- **Rollback tag:** `before-special-decks` (pushed) is `e6135dfe`, the state with the puzzles removed and the special decks still in. `3b2f3454` is the last state with all 1,390 games.
+- **Mahjongg kept (10):** Traditional (5034, the Turtle), Pyramid 1 (5250), Butterfly 1 (5013), Castle (5014), Hourglass (5603), Bridge 1 (5203), Cross (5206), Arena 1 (5002), Spider (5415), Altar (5001). They were picked by drawing each layout from its data and by name recognition; nothing was play-tested. The four layout files were merged into `pysollib/games/mahjongg/mahjongg1.py`. Backups if any should be swapped: Five Pyramids 1, Dragon 2, Wedges, Fortress Towers, X-Shape.
+- **Shisen-Sho kept (3):** the plain ones, 14x6, 18x8, 24x12 (ids 11001 to 11003). They have gravity (tiles slide down). Assumption: "original" meant the plain-named games; the No Gravity ones were removed. The gravity and adjacency switches and the `NotShisen_Hint` class were folded into the single behavior (`AbstractShisenGame` used `NotShisen_Hint` by default, so `Shisen_Hint` now scores like it did).
+- **Wrong turn caught:** `pysollib/games/larasgame.py` registers three French-deck games (Lara's Game, Relaxed, Doubled). It was deleted by mistake with the special-deck files, noticed because the count was 1,161 instead of 1,164, and restored. Lesson: compare the id list against the tag, not just the count.
+- **Checks used each time:** all `pysollib` modules import with `DeprecationWarning` as error; unit tests (13, one known `--version` failure); flake8 (only the old unused `math` import in `ui/tktile/menubar.py` and a long line in `scripts/prune_card_backs.py`); source runs of several games with a copy of the real `options.cfg` in a temporary `HOME`. The Shisen-Sho hint class was not exercised beyond launching (a scripted hint check failed on a bug in the check itself).
+
+## 63. Update: cardsets and cardset types removed (2026-11-09)
+
+Commit `b12d15b3`. Only `cardset-standard` (French, 54 cards, seven backs) and `cardset-uni-mahjongg` (42 tiles) remain.
+
+- **Deleted cardsets (local folders under `data/`, not tracked):** Hanafuda, Tarock, Hex, two Ganjifa, Next Matrix, Matching XL, Simple Ishido XL and the eight picture-puzzle sets (3x3 to 10x10). `scripts/prune_card_backs.py` (`KEEP_CARDSETS`), `scripts/cardsets_to_bundle` and `MANIFEST.in` were trimmed to match.
+- **Cardset types:** only `TYPE_FRENCH` (1) and `TYPE_MAHJONGG` (4) remain in `CSI` (`pysollib/resource.py`); the type numbers were not renumbered. The puzzle size subtypes, the cardset style names for removed decks, the per-type default cardsets in `options.py`, the "needs 100 cards" check and the matching branches in `app.py` and `gamedb.py` are gone. `GI.NUM_CATEGORIES` is `CSI.TYPE_MAHJONGG`.
+- **Show full picture** (menu item, `ui/tktile/fullpicturedialog.py`, hooks in `actions.py`, `app.py`, both menubars, `pysoltk.py`) was removed: only the picture puzzles used it. `Game.canFindCard()` now always returns True.
+- **Old option files** keep stale `[cardsets]` keys (types 2, 3, 5 to 12). The loader only reads keys that exist in the defaults, so they are ignored and dropped on the next save.
+- **Menus:** the Oriental games menu and tree node are gone; the Special games menu used to test the Oriental list by mistake and now tests its own (Cribbage, Poker, Shisen-Sho).
+
+## 64. Update: help pages after the removals (2026-11-09)
+
+Commit `1e126b32` plus the cardset guide in `b12d15b3`. Deleted `ganjifa.html`, `hanafuda.html`, `hexadeck.html`, the unreferenced `html-src/all.htm` (213 KB of old rules text) and the rules pages of every removed game (exact set from comparing each game's rules file name; 136 for the special decks alone). Glossary entries for removed decks are gone, the intro says "more than 1,100" games (now fewer: update it if the count matters), and `gen-html.py` no longer references removed game types. Six old broken links remain (typos such as `austalianpatience.html`); two links caused by the removals were fixed. Some rules pages are orphaned from before this work (`concentration`, `families`, `glenwood`, wikipedia `agnes` and `treasuretrove`) and were left.
+
+## 65. Update: rebuilt and installed (2026-11-09)
+
+Installed app rebuilt from commit `ce989d60` (101 MB, arm64, ad-hoc signed, `codesign -v` passes, `--version` prints `PySol 26 version 26.11`; bundle holds 914 rules pages, only the two cardsets, and no special-deck, `mahjongg2/3/L` or full-picture modules; no `data/html N` duplicate). No copy of the app was running. Same procedure as sections 14, 16 and 59 (`make rules`, py2app `--arch arm64`, thin to arm64, `ditto --norsrc --noextattr --noqtn` to a scratch folder, ad-hoc sign, install).
+
+- **Not looked at on screen by the assistant:** the cardset dialog, the Special games menu, the Select Game tree, a Mahjongg game and a Shisen-Sho game in the installed app.
+- **Left on purpose:** stale ids in `gamedb.py` tables (the Mahjongg compatibility groups, `GAMES_BY_PYSOL_VERSION`, the obsolete-id remap block) do nothing now; saved games and statistics for removed games in `~/.pysol` are orphaned and cannot be loaded; the plugin and custom-game code from section 61.
+- **Local only:** `10faa864`, `ce989d60` and this note are not pushed; the user asked to hold the push.
+- **Still open:** the "PySol Fan Club" logos; the deferred items in section 60 (about 2026-11-22); further quality cuts among the French-deck games were discussed as a possible next step but no rule was chosen.
