@@ -72,7 +72,6 @@ GAME_BY_TYPE = {
     GI.GT_ISHIDO: "Ishido",
     GI.GT_SAMEGAME: "Samegame",
     GI.GT_MATCH_THREE: "Match Three",
-    GI.GT_SUDOKU: "Sudoku",
 }
 
 
