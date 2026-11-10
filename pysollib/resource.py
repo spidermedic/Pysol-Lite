@@ -173,89 +173,44 @@ class CSI:
     # cardset types
     TYPE_FRENCH = 1
     TYPE_MAHJONGG = 4
-    TYPE_TRUMP_ONLY = 9
-    TYPE_MATCHING = 10
-    TYPE_PUZZLE = 11
-    TYPE_ISHIDO = 12
 
     # cardset subtypes
     # (french)
     SUBTYPE_NONE = 0
     SUBTYPE_JOKER_DECK = 1
-    # (puzzle)
-    SUBTYPE_3X3 = 3
-    SUBTYPE_4X4 = 4
-    SUBTYPE_5X5 = 5
-    SUBTYPE_6X6 = 6
-    SUBTYPE_7X7 = 7
-    SUBTYPE_8X8 = 8
-    SUBTYPE_9X9 = 9
-    SUBTYPE_10X10 = 10
 
     TYPE = {
         1:  "French type (52-54 cards)",
         4:  "Mahjongg type (42 tiles)",
-        9:  "Trumps only type (variable cards)",
-        10: "Matching type (variable cards)",
-        11: "Puzzle type (variable pieces)",
-        12: "Ishido type (36 tiles)"
     }
 
     TYPE_NAME = {
         1:  "French",
         4:  "Mahjongg",
-        9:  "Trumps only",
-        10: "Matching",
-        11: "Puzzle",
-        12: "Ishido"
     }
 
     SUBTYPE_NAME = {
-        1:  {0: "No Jokers", 1: "Joker Deck"},
-        11: {3: "3x3",
-             4: "4x4",
-             5: "5x5",
-             6: "6x6",
-             7: "7x7",
-             8: "8x8",
-             9: "9x9",
-             10: "10x10"}
+        1:  {0: "No Jokers", 1: "Joker Deck"}
     }
 
     TYPE_ID = {
         1:  "french",
         4:  "mahjongg",
-        9:  "trumps-only",
-        10: "matching",
-        11: "puzzle",
-        12: "ishido"
     }
 
     TYPE_SUITS = {
         1:  "cshd",
         4:  "abc",
-        9:  "",
-        10: "",
-        11: "",
-        12: "abcdef"
     }
 
     TYPE_RANKS = {
         1:  list(range(13)),
         4:  list(range(10)),
-        9:  list(range(0)),
-        10: list(range(0)),
-        11: list(range(0)),
-        12: list(range(6))
     }
 
     TYPE_TRUMPS = {
         1:  (),
         4:  list(range(12)),
-        9:  (),
-        10: (),
-        11: (),
-        12: ()
     }
 
     # cardset styles
@@ -274,16 +229,10 @@ class CSI:
         10:  "Engines",              #
         11:  "Fantasy",              #
         37:  "Four Color",           #
-        30:  "Ganjifa",              #
-        12:  "Hanafuda",             #
-        29:  "Hex A Deck",           #
         13:  "Holiday",              #
-        34:  "Ishido",               #
         28:  "Mahjongg",             #
-        32:  "Matching",             #
         38:  "Monochrome",           #
         14:  "Movies",               #
-        31:  "Matrix",               #
         15:  "Music",                #
         16:  "Nature",               #
         17:  "Operating Systems",    # e.g. cards with Linux logos
@@ -291,11 +240,9 @@ class CSI:
         20:  "Places",               #
         21:  "Plain",                #
         22:  "Products",             #
-        33:  "Puzzle",               #
         18:  "Round Cardsets",       #
         23:  "Science Fiction",      #
         24:  "Sports",               #
-        27:  "Tarock",               #
         25:  "Vehicles",             #
         26:  "Video Games",          #
     }
@@ -430,8 +377,6 @@ class Cardset(Resource):
         pnames = []
         ranks, suits = self.ranks, self.suits
         lr, ls = len(ranks), len(suits)
-        if lr == 0 or ls == 0:     # TYPE_TRUMP_ONLY
-            return names[:16], 4
         if lr >= 4:
             ls = min(ls, 4)
         low_ranks, high_ranks = 1, 3
@@ -456,7 +401,6 @@ class CardsetManager(ResourceManager):
         ResourceManager.__init__(self)
         self.registered_types = {}
         self.registered_subtypes = {}
-        self.type_max_cards = {}
         self.registered_sizes = {}
         self.registered_styles = {}
         self.registered_nationalities = {}
@@ -481,25 +425,6 @@ class CardsetManager(ResourceManager):
                 cs.nbottoms = 8
         elif s == CSI.TYPE_MAHJONGG:
             cs.nbottoms = 0
-            cs.nletters = 0
-            cs.nshadows = 0
-        elif s == CSI.TYPE_TRUMP_ONLY:
-            cs.nbottoms = 1
-            cs.nletters = 0
-            cs.nshadows = 0
-            cs.trumps = list(range(cs.ncards))
-        elif s == CSI.TYPE_MATCHING:
-            cs.nbottoms = 1
-            cs.nletters = 0
-            cs.nshadows = 0
-            cs.trumps = list(range(cs.ncards))
-        elif s == CSI.TYPE_PUZZLE:
-            cs.nbottoms = 1
-            cs.nletters = 0
-            cs.nshadows = 0
-            cs.trumps = list(range(cs.ncards))
-        elif s == CSI.TYPE_ISHIDO:
-            cs.nbottoms = 1
             cs.nletters = 0
             cs.nshadows = 0
         else:
@@ -552,8 +477,6 @@ class CardsetManager(ResourceManager):
         ss = cs.si.subtype
         self.registered_subtypes[s][ss] = \
             self.registered_subtypes.get(s, 0).get(ss, 0) + 1
-        if s not in self.type_max_cards or self.type_max_cards[s] < cs.ncards:
-            self.type_max_cards[s] = cs.ncards
         s = cs.si.size
         self.registered_sizes[s] = self.registered_sizes.get(s, 0) + 1
         cs.updateCardback()
@@ -568,21 +491,6 @@ class CardsetManager(ResourceManager):
                 CSI.SUBTYPE_JOKER_DECK
             },
             CSI.TYPE_MAHJONGG: {},
-            CSI.TYPE_TRUMP_ONLY: {},
-            CSI.TYPE_PUZZLE: {
-                CSI.SUBTYPE_3X3,
-                CSI.SUBTYPE_4X4,
-                CSI.SUBTYPE_5X5,
-                CSI.SUBTYPE_6X6,
-                CSI.SUBTYPE_7X7,
-                CSI.SUBTYPE_8X8,
-                CSI.SUBTYPE_9X9,
-                CSI.SUBTYPE_10X10
-            },
-            CSI.TYPE_ISHIDO: {}
-        }
-        required_cards_needed = {
-            CSI.TYPE_TRUMP_ONLY: 100
         }
         for t, t_v in required_types.items():
             if t not in self.registered_types:
@@ -593,11 +501,6 @@ class CardsetManager(ResourceManager):
                         if tt not in self.registered_subtypes[t]:
                             missing.append(CSI.TYPE_NAME[t] + " (" +
                                            CSI.SUBTYPE_NAME[t][tt] + ")")
-                if t in required_cards_needed:
-                    if self.type_max_cards[t] < required_cards_needed[t]:
-                        missing.append(CSI.TYPE_NAME[t] + " (" +
-                                       ("With %(cards)d or more cards" + ")")
-                                       % {'cards': required_cards_needed[t]})
 
         return sorted(missing)
 

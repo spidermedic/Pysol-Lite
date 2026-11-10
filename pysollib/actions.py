@@ -29,9 +29,7 @@ from pysollib.pysoltk import GameInfoDialog
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
-from pysollib.pysoltk import create_full_picture_dialog
 from pysollib.pysoltk import raise_find_card_dialog
-from pysollib.pysoltk import raise_full_picture_dialog
 from pysollib.settings import TITLE
 
 
@@ -62,7 +60,6 @@ class PysolMenubar(PysolMenubarTk):
             demo=0,
             highlight_piles=0,
             find_card=0,
-            full_picture=0,
             rules=0,
             pause=0,
         )
@@ -138,8 +135,6 @@ class PysolMenubar(PysolMenubarTk):
             ms.highlight_piles = 1
         if game.canFindCard():
             ms.find_card = 1
-        if game.canShowFullPicture():
-            ms.full_picture = 1
         if game.app.getGameRulesFilename(game.id):  # note: this may return ""
             ms.rules = 1
         if not game.finished:
@@ -170,7 +165,6 @@ class PysolMenubar(PysolMenubarTk):
         self.setMenuState(ms.hint, "play.hint")
         self.setMenuState(ms.highlight_piles, "play.highlightpiles")
         self.setMenuState(ms.find_card, "play.findcard")
-        self.setMenuState(ms.full_picture, "play.showfullpicture")
         self.setMenuState(ms.demo, "play.demo")
         # Options menu
         self._autoplay_usable = {
@@ -362,11 +356,6 @@ class PysolMenubar(PysolMenubarTk):
             create_find_card_dialog(self.game.top, self.game,
                                     self.app.getFindCardImagesDir())
             raise_find_card_dialog(self.game)
-
-    def mFullPicture(self, *args):
-        if self.game.canShowFullPicture():
-            create_full_picture_dialog(self.game.top, self.game)
-            raise_full_picture_dialog(self.game)
 
     def mGameInfo(self, *args):
         wasPaused = False

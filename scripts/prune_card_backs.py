@@ -2,8 +2,7 @@
 """Trim the cardsets under data/.
 
 Only the cardsets named in KEEP_CARDSETS are kept (one per family of
-games, plus the picture puzzle sets); the other cardset folders are
-deleted.
+games); the other cardset folders are deleted.
 
 Every cardset keeps only its default back (line 5 of config.txt), except
 the ones listed in KEEP below, which also keep the backs named there. Backs that are dropped are removed from the list on line 6 of
@@ -18,22 +17,10 @@ import os
 import shutil
 import sys
 
-# One cardset per family. Games in a family work with any of its cardsets;
-# each picture puzzle size has exactly one cardset and needs it.
+# One cardset per family. Games in a family work with any of its cardsets.
 KEEP_CARDSETS = {
     'cardset-standard',               # 52/54 card French decks (jokers too)
     'cardset-uni-mahjongg',           # Mahjongg
-    'cardset-next-matrix',            # Matrix
-    'cardset-matching-xl',            # Matching
-    'cardset-simple-ishido-xl',       # Ishido
-    'cardset-dojouji-3x3',            # picture puzzles, one per size
-    'cardset-knave-of-hearts-4x4',
-    'cardset-victoria-falls-5x5',
-    'cardset-hokusai-6x6',
-    'cardset-blaren-7x7',
-    'cardset-mid-winter-eve-8x8',
-    'cardset-the-card-players-9x9',
-    'cardset-players-trumps-10x10',
 }
 
 # cardset directory -> backs to keep besides the default one.

@@ -47,19 +47,8 @@ graft data/sound
 ##
 ## data - cardsets
 ##
-graft data/cardset-blaren-7x7
-graft data/cardset-dojouji-3x3
-graft data/cardset-hokusai-6x6
-graft data/cardset-knave-of-hearts-4x4
-graft data/cardset-matching-xl
-graft data/cardset-mid-winter-eve-8x8
-graft data/cardset-next-matrix
-graft data/cardset-players-trumps-10x10
-graft data/cardset-simple-ishido-xl
 graft data/cardset-standard
-graft data/cardset-the-card-players-9x9
 graft data/cardset-uni-mahjongg
-graft data/cardset-victoria-falls-5x5
 ##
 ## exclude dirs
 ##

@@ -409,17 +409,6 @@ class Options:
                 0:                  {0: ("Standard", "")},
                 CSI.TYPE_FRENCH:    {0: ("Standard", ""), 1: ("Standard", "")},
                 CSI.TYPE_MAHJONGG:  {0: ("Uni Mahjongg", "")},
-                CSI.TYPE_TRUMP_ONLY: {0: ("Next Matrix", "")},
-                CSI.TYPE_MATCHING: {0: ("Matching XL", "")},
-                CSI.TYPE_PUZZLE: {3: ("Dojouji Ukiyo E (3x3)", ""),
-                                  4: ("Knave of Hearts (4x4)", ""),
-                                  5: ("Victoria Falls (5x5)", ""),
-                                  6: ("Hokusai Ukiyo E (6x6)", ""),
-                                  7: ("Blaren (7x7)", ""),
-                                  8: ("Mid Winter's Eve (8x8)", ""),
-                                  9: ("The Card Players (9x9)", ""),
-                                  10: ("Players Trumps (10x10)", "")},
-                CSI.TYPE_ISHIDO: {0: ("Simple Ishido XL", "")},
             }
         else:
             self.cardset = {
@@ -427,17 +416,6 @@ class Options:
                 0:                  {0: (c, "")},
                 CSI.TYPE_FRENCH:    {0: (c, ""), 1: (c, "")},
                 CSI.TYPE_MAHJONGG:  {0: (m, "")},
-                CSI.TYPE_TRUMP_ONLY: {0: ("Matrix", "")},
-                CSI.TYPE_MATCHING: {0: (c, "")},
-                CSI.TYPE_PUZZLE: {3: ("Dojouji Ukiyo E (3x3)", ""),
-                                  4: ("Knave of Hearts (4x4)", ""),
-                                  5: ("Victoria Falls (5x5)", ""),
-                                  6: ("Hokusai Ukiyo E (6x6)", ""),
-                                  7: ("Blaren (7x7)", ""),
-                                  8: ("Mid Winter's Eve (8x8)", ""),
-                                  9: ("The Card Players (9x9)", ""),
-                                  10: ("Players Trumps (10x10)", "")},
-                CSI.TYPE_ISHIDO: {0: ("Simple Ishido", "")},
             }
 
     # not changeable options

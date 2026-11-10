@@ -4,7 +4,6 @@ import os
 import sys
 
 from pysollib.gamedb import GAME_DB
-from pysollib.gamedb import GI
 from pysollib.mfxutil import latin1_normalize
 from pysollib.settings import VERSION
 # outdir = '../html'

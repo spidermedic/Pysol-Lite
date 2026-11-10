@@ -49,12 +49,9 @@ from pysollib.pysoltk import PysolStatusbar
 from pysollib.pysoltk import SelectCardsetDialogWithPreview
 from pysollib.pysoltk import SelectDialogTreeData
 from pysollib.pysoltk import destroy_find_card_dialog
-from pysollib.pysoltk import destroy_full_picture_dialog
 from pysollib.pysoltk import loadImage, wm_withdraw
 from pysollib.pysoltk import raise_find_card_dialog
-from pysollib.pysoltk import raise_full_picture_dialog
 from pysollib.pysoltk import unraise_find_card_dialog
-from pysollib.pysoltk import unraise_full_picture_dialog
 from pysollib.resource import CSI, CardsetManager
 from pysollib.resource import Sample, SampleManager
 from pysollib.resource import TileManager
@@ -286,7 +283,6 @@ class Application:
             #
             destroy_help_html()
             destroy_find_card_dialog()
-            destroy_full_picture_dialog()
             # update options
             self.opt.last_gameid = id_
             # save options
@@ -486,12 +482,10 @@ class Application:
 
     def raiseAll(self):
         raise_find_card_dialog(self.game)
-        raise_full_picture_dialog(self.game)
         raise_help_html(self.game)
 
     def unraiseAll(self):
         unraise_find_card_dialog()
-        unraise_full_picture_dialog()
         unraise_help_html()
 
     def loadImages1(self):
@@ -772,24 +766,6 @@ class Application:
             t0 = "Mahjongg"
             if cs_type not in (CSI.TYPE_MAHJONGG,):
                 t1 = t0
-        elif gc == GI.GC_TRUMP_ONLY:
-            t0 = "Trump only"
-            if cs_type not in (CSI.TYPE_TRUMP_ONLY,):
-                t1 = t0
-            elif len(cs.trumps) < gi.ncards:    # not enough cards
-                t1 = t0
-        elif gc == GI.GC_MATCHING:
-            t0 = "Matching"
-            if cs is None or cs.ncards < (gi.ncards / 2):  # no/too few cards
-                t1 = t0
-        elif gc == GI.GC_PUZZLE:
-            t0 = "Puzzle"
-            if cs_type not in (CSI.TYPE_PUZZLE,) or cs_subtype != gs:
-                t1 = t0
-        elif gc == GI.GC_ISHIDO:
-            t0 = "Ishido"
-            if cs_type not in (CSI.TYPE_ISHIDO,):
-                t1 = t0
         else:
             # we should not come here
             t0 = t1 = "Unknown"
@@ -846,10 +822,6 @@ class Application:
         if self.isSubcategoryRelevant(gi):
             subcategoryLabel = ("(%s) ") % self.getSubcategoryName(gi)
 
-        cardCountLabel = ''
-        if self.isCardCountRelevant(gi):
-            cardCountLabel = "(with %d or more cards)" % gi.ncards
-
         MfxMessageDialog(
             self.top, title="Incompatible cardset",
             bitmap="warning",
@@ -858,17 +830,13 @@ class Application:
         %(game)s
 
         Please select a %(correct_type)s %(subcategory)stype cardset.
-        %(cardcount)s
         ''') % {'cardset': cardset.name, 'game': gi.name,
-                'correct_type': t[0], 'subcategory': subcategoryLabel,
-                'cardcount': cardCountLabel},
+                'correct_type': t[0], 'subcategory': subcategoryLabel},
             strings=("&OK",), default=0)
 
     def isSubcategoryRelevant(self, gi):
         if (gi.category == GI.GC_FRENCH):
             return gi.subcategory == GI.GS_JOKER_DECK
-        if (gi.category == GI.GC_PUZZLE):
-            return True
         return False
 
     def getSubcategoryName(self, gi):
@@ -876,10 +844,6 @@ class Application:
         if not by_type:
             return ""
         return by_type.get(gi.subcategory, "")
-
-    def isCardCountRelevant(self, gi):
-        return (gi.category == GI.GC_TRUMP_ONLY or
-                gi.category == GI.GC_MATCHING)
 
     def selectCardset(self, title, key):
         wasPaused = False

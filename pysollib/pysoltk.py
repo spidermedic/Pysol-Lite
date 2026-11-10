@@ -27,7 +27,6 @@ from pysollib.ui.tktile.card import *  # noqa: F401,F403
 from pysollib.ui.tktile.tkcanvas import *  # noqa: F401,F403
 from pysollib.ui.tktile.tkwrap import *  # noqa: F401,F403
 from pysollib.ui.tktile.findcarddialog import *  # noqa: F401,F403
-from pysollib.ui.tktile.fullpicturedialog import *  # noqa: F401,F403
 from pysollib.tile.tkwidget import *  # noqa: F401,F403
 from pysollib.tile.tkhtml import *  # noqa: F401,F403
 from pysollib.tile.toolbarbuttonsdialog import *  # noqa: F401,F403
