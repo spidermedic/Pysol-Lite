@@ -711,3 +711,13 @@ Installed app rebuilt from commit `ce989d60` (101 MB, arm64, ad-hoc signed, `cod
 - **Left on purpose:** stale ids in `gamedb.py` tables (the Mahjongg compatibility groups, `GAMES_BY_PYSOL_VERSION`, the obsolete-id remap block) do nothing now; saved games and statistics for removed games in `~/.pysol` are orphaned and cannot be loaded; the plugin and custom-game code from section 61.
 - **Local only:** `10faa864`, `ce989d60` and this note are not pushed; the user asked to hold the push.
 - **Still open:** the "PySol Fan Club" logos; the deferred items in section 60 (about 2026-11-22); further quality cuts among the French-deck games were discussed as a possible next step but no rule was chosen.
+
+## 66. Update: flat Mahjongg menu, layout renames, rebuilt and installed (2026-11-09)
+
+Installed app rebuilt from commit `a1147d71` (101 MB, arm64, ad-hoc signed, `codesign -v` passes, `--version` prints `PySol 26 version 26.11`, no `data/html N` duplicate). No copy of the app was running. Same procedure as section 65.
+
+- **Games > Mahjongg games** (commit `1ff9f03e`, `_addSelectMahjonggGameSubMenu` in `ui/tktile/menubar.py`) lists the 10 games directly, sorted by short name, instead of alphabetical range submenus. Read back from a source run: Altar, Arena, Bridge, Butterfly, Castle, Cross, Hourglass, Pyramid, Spider, Traditional. Shisen-Sho is not in this menu; it is under Games > Special games > Shisen-Sho type.
+- **Renames** (commit `a1147d71`): Pyramid 1, Butterfly 1, Bridge 1, Arena 1 lost the "1" (now Mahjongg Pyramid, Butterfly, Bridge, Arena). Ids 5250, 5013, 5203, 5002 are unchanged, so saves and statistics still match; recent-games and favorites store ids and show the new names. All 941 game names are unique.
+- **Not looked at on screen by the assistant:** the installed app's Games menu, the cardset dialog, a Mahjongg game and a Shisen-Sho game.
+- **Local only:** everything after `b12d15b3` is unpushed (the Mahjongg cut `10faa864`, the Shisen-Sho cut `ce989d60`, the handoff notes, `1ff9f03e`, `a1147d71` and this note). The user asked to hold the push.
+- **Still open:** as in section 65.
