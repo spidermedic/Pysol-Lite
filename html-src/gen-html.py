@@ -55,11 +55,9 @@ files = [
 
 rules_files = [
     ('mahjongg.html', 'PySol - Rules for Mahjongg'),
-    ('notshisensho.html', 'PySol - Rules for Not Shisen-Sho'),
     ('shisensho.html', 'PySol - Rules for Shisen-Sho'),
     ('spider.html', 'PySol - Rules for Spider'),
     ('freecell.html', 'PySol - Rules for FreeCell'),
-    ('fourrivers.html', 'PySol - Rules for Four Rivers'),
     ]
 
 

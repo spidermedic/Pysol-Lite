@@ -36,7 +36,6 @@ from pysollib.util import ANY_SUIT
 
 
 class Shisen_Hint(AbstractHint):
-    TOP_MATCHING = False
     # FIXME: no intelligence whatsoever is implemented here
 
     def computeHints(self):
@@ -53,16 +52,9 @@ class Shisen_Hint(AbstractHint):
                 # if game.cardsMatch(r.cards[0], t.cards[0]):
                 if r.acceptsCards(t, t.cards):
                     # simple scoring...
-                    if self.TOP_MATCHING:
-                        score = 2000 - r.rown - t.rown
-                    else:
-                        score = 1000 + r.rown + t.rown
+                    score = 2000 - r.rown - t.rown
                     self.addHint(score, 1, r, t)
             i += 1
-
-
-class NotShisen_Hint(Shisen_Hint):
-    TOP_MATCHING = True
 
 
 # ************************************************************************
@@ -91,8 +83,6 @@ class Shisen_Foundation(AbstractFoundationStack):
 
 
 class Shisen_RowStack(Mahjongg_RowStack):
-    allowAdjacent = True
-
     def basicIsBlocked(self):
         return 0
 
@@ -111,9 +101,7 @@ class Shisen_RowStack(Mahjongg_RowStack):
             a.append([5]*(rows+2))
 
         def can_move(x, y, nx, ny, direct, d, direct_chng_cnt):
-            if (nx == x2 and ny == y2 and (self.allowAdjacent or
-                                           (abs(dx) > 1 and abs(dy) > 1)
-                                           or direct_chng_cnt > 0)):
+            if nx == x2 and ny == y2:
                 return 1
             if nx < 0 or ny < 0 or nx > cols+1 or ny > rows+1:
                 return 0
@@ -297,11 +285,10 @@ class Shisen_RowStack(Mahjongg_RowStack):
 
 
 class AbstractShisenGame(AbstractMahjonggGame):
-    Hint_Class = NotShisen_Hint  # Shisen_Hint
+    Hint_Class = Shisen_Hint
     RowStack_Class = Shisen_RowStack
 
     # NCARDS = 144
-    GRAVITY = True
 
     def createGame(self):
         cols, rows = self.L
@@ -380,8 +367,6 @@ class AbstractShisenGame(AbstractMahjonggGame):
         l.defaultStackGroups()
 
     def fillStack(self, stack):
-        if not self.GRAVITY:
-            return
         to_stack = stack
         for from_stack in self.cols[stack.coln][stack.rown+1::-1]:
             if not from_stack.cards:
@@ -461,106 +446,11 @@ class Shisen_24x12(AbstractShisenGame):
     NCARDS = 288
 
 
-class Shisen_18x8_NoGravity(AbstractShisenGame):
-    L = (18, 8)
-    GRAVITY = False
-
-
-class Shisen_14x6_NoGravity(AbstractShisenGame):
-    L = (14, 6)
-    NCARDS = 84
-    GRAVITY = False
-
-
-class Shisen_24x12_NoGravity(AbstractShisenGame):
-    L = (24, 12)
-    NCARDS = 288
-    GRAVITY = False
-
-
-# ************************************************************************
-# * Not Shisen-Sho
-# ************************************************************************
-
-class NotShisen_RowStack(Shisen_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not self.game.cardsMatch(self.cards[0], cards[-1]):
-            return 0
-        if self.coln != from_stack.coln and self.rown != from_stack.rown:
-            return 0
-        return [(self.coln+1, self.rown+1),
-                (from_stack.coln+1, from_stack.rown+1)]
-
-
-class NotShisen_14x6(AbstractShisenGame):
-    Hint_Class = NotShisen_Hint
-    RowStack_Class = NotShisen_RowStack
-    L = (14, 6)
-    NCARDS = 84
-
-
-class NotShisen_18x8(AbstractShisenGame):
-    Hint_Class = NotShisen_Hint
-    RowStack_Class = NotShisen_RowStack
-    L = (18, 8)
-
-
-class NotShisen_24x12(AbstractShisenGame):
-    Hint_Class = NotShisen_Hint
-    RowStack_Class = NotShisen_RowStack
-    L = (24, 12)
-    NCARDS = 288
-
-
-# ************************************************************************
-# * Four Rivers
-# ************************************************************************
-class FourRivers_RowStack(Shisen_RowStack):
-    allowAdjacent = False
-
-
-class FourRivers_14x6(AbstractShisenGame):
-    RowStack_Class = FourRivers_RowStack
-    L = (14, 6)
-    NCARDS = 84
-
-
-class FourRivers_18x8(AbstractShisenGame):
-    RowStack_Class = FourRivers_RowStack
-    L = (18, 8)
-
-
-class FourRivers_24x12(AbstractShisenGame):
-    RowStack_Class = FourRivers_RowStack
-    L = (24, 12)
-    NCARDS = 288
-
-
-class FourRivers_14x6_NoGravity(AbstractShisenGame):
-    RowStack_Class = FourRivers_RowStack
-    L = (14, 6)
-    NCARDS = 84
-    GRAVITY = False
-
-
-class FourRivers_18x8_NoGravity(AbstractShisenGame):
-    RowStack_Class = FourRivers_RowStack
-    L = (18, 8)
-    GRAVITY = False
-
-
-class FourRivers_24x12_NoGravity(AbstractShisenGame):
-    RowStack_Class = FourRivers_RowStack
-    L = (24, 12)
-    NCARDS = 288
-    GRAVITY = False
-
-
 # ************************************************************************
 # * register a Shisen-Sho type game
 # ************************************************************************
 
-def r(id, gameclass, name, rules_filename="shisensho.html"):
+def r(id, gameclass, name):
     decks, ranks, trumps = comp_cardset(gameclass.NCARDS)
     gi = GameInfo(id, gameclass, name,
                   GI.GT_SHISEN_SHO, 4*decks, 0, GI.SL_MOSTLY_SKILL,
@@ -569,7 +459,7 @@ def r(id, gameclass, name, rules_filename="shisensho.html"):
                   trumps=list(range(trumps)),
                   si={"decks": decks, "ncards": gameclass.NCARDS})
     gi.ncards = gameclass.NCARDS
-    gi.rules_filename = rules_filename
+    gi.rules_filename = "shisensho.html"
     registerGame(gi)
     return gi
 
@@ -577,20 +467,5 @@ def r(id, gameclass, name, rules_filename="shisensho.html"):
 r(11001, Shisen_14x6, "Shisen-Sho 14x6")
 r(11002, Shisen_18x8, "Shisen-Sho 18x8")
 r(11003, Shisen_24x12, "Shisen-Sho 24x12")
-r(11004, Shisen_14x6_NoGravity, "Shisen-Sho (No Gravity) 14x6")
-r(11005, Shisen_18x8_NoGravity, "Shisen-Sho (No Gravity) 18x8")
-r(11006, Shisen_24x12_NoGravity, "Shisen-Sho (No Gravity) 24x12")
-r(11011, NotShisen_14x6, "Not Shisen-Sho 14x6", "notshisensho.html")
-r(11012, NotShisen_18x8, "Not Shisen-Sho 18x8", "notshisensho.html")
-r(11013, NotShisen_24x12, "Not Shisen-Sho 24x12", "notshisensho.html")
-r(11014, FourRivers_14x6, "Four Rivers 14x6", "fourrivers.html")
-r(11015, FourRivers_18x8, "Four Rivers 18x8", "fourrivers.html")
-r(11016, FourRivers_24x12, "Four Rivers 24x12", "fourrivers.html")
-r(11017, FourRivers_14x6_NoGravity, "Four Rivers (No Gravity) 14x6",
-  "fourrivers.html")
-r(11018, FourRivers_18x8_NoGravity, "Four Rivers (No Gravity) 18x8",
-  "fourrivers.html")
-r(11019, FourRivers_24x12_NoGravity, "Four Rivers (No Gravity) 24x12",
-  "fourrivers.html")
 
 del r
