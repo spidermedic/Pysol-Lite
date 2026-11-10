@@ -725,3 +725,15 @@ Installed app rebuilt from commit `a1147d71` (101 MB, arm64, ad-hoc signed, `cod
 ## 67. Update: everything pushed (2026-11-09)
 
 `origin/master` now has all the game-cut work, from `3b2f3454` through the Mahjongg cut, the Shisen-Sho cut, the flat Mahjongg menu, the layout renames and the handoff notes. The `before-special-decks` tag (`e6135dfe`) was pushed earlier. The installed app is the build from `a1147d71` (section 66). Earlier notes that call these commits local or unpushed are historical.
+
+## 68. Update: app size breakdown, slimming parked (2026-11-09)
+
+Installed app is 101 MB (`Contents/Resources` 76 MB, `Frameworks` 24 MB). Of `Resources`, `lib` is 64 MB and `data` is 11 MB. History: 229 MB first arm64 build, 182 MB after arm64 thinning, 154 MB before the dead-code pass, 120 MB before the cardset removal, 101 MB now.
+
+`lib` breakdown (measured on the installed bundle):
+- `python3.13/` 50 MB: `pygame` 30 MB (docs 6.7, tests 5.6, examples 2.8, hidden `.dylibs` 10 for SDL2 and audio/image codecs, about 5 of native modules and icons); `lib-dynload` 12 MB (PIL native 5.3, sqlite 1.1, unicodedata 0.7, plus `_testcapi` and `_testlimitedcapi`); `setuptools` 6.9; `ctypes` 0.3.
+- `python313.zip` 14 MB compressed (37.5 MB unpacked): PIL 4.4, stdlib `test` package 3.1, `pysollib` 1.4, `accessible_output2` 0.8, the rest about 4.
+
+**Parked by the user ("leave it for now").** Candidate trim, about 26 MB (101 MB to about 75 MB), not tried or tested: delete pygame `docs`, `tests`, `examples` (about 15 MB, nothing imports them); drop `setuptools` (about 7 MB; check nothing imports `pkg_resources`); drop the stdlib `test` package (about 3 MB); drop `accessible_output2` (0.8 MB; its VoiceOver backend already fails to load and speech is off); drop `_testcapi` and `_testlimitedcapi` (0.4 MB). Plan was a post-build trim step so a normal build still works, then check the app starts and deals games. Keep pygame `.dylibs` (sound) and PIL (card images).
+
+**State at the end of the session:** the installed app is the build from `a1147d71` (section 66) and matches `origin/master` apart from handoff-only commits; the working tree is clean. This note is the only local commit if it has not been pushed. Next candidates: the size trim above, more quality cuts among the French-deck games (no rule chosen yet), the "PySol Fan Club" logos, and the items deferred to about 2026-11-22 (section 60).
