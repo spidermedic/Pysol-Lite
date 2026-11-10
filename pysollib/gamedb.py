@@ -37,13 +37,7 @@ from pysollib.resource import CSI, getNaturalSortKey
 class GI:
     # game category - these *must* match the cardset CSI.TYPE_xxx
     GC_FRENCH = CSI.TYPE_FRENCH
-    GC_HANAFUDA = CSI.TYPE_HANAFUDA
-    GC_TAROCK = CSI.TYPE_TAROCK
     GC_MAHJONGG = CSI.TYPE_MAHJONGG
-    GC_HEXADECK = CSI.TYPE_HEXADECK
-    GC_MUGHAL_GANJIFA = CSI.TYPE_MUGHAL_GANJIFA
-    GC_NAVAGRAHA_GANJIFA = CSI.TYPE_NAVAGRAHA_GANJIFA
-    GC_DASHAVATARA_GANJIFA = CSI.TYPE_DASHAVATARA_GANJIFA
     GC_TRUMP_ONLY = CSI.TYPE_TRUMP_ONLY
     GC_MATCHING = CSI.TYPE_MATCHING
     GC_PUZZLE = CSI.TYPE_PUZZLE
@@ -72,20 +66,15 @@ class GI:
     GT_BELEAGUERED_CASTLE = 5
     GT_CANFIELD = 6
     GT_CRIBBAGE_TYPE = 37
-    GT_DASHAVATARA_GANJIFA = 7
     GT_FAN_TYPE = 8
     GT_FORTY_THIEVES = 9
     GT_FREECELL = 10
     GT_GOLF = 11
     GT_GYPSY = 12
-    GT_HANAFUDA = 13
-    GT_HEXADECK = 14
     GT_KLONDIKE = 15
     GT_MAHJONGG = 16
     GT_MONTANA = 19
-    GT_MUGHAL_GANJIFA = 20
     GT_NAPOLEON = 21
-    GT_NAVAGRAHA_GANJIFA = 22
     GT_NUMERICA = 23
     GT_PAIRING_TYPE = 24
     GT_PICTURE_GALLERY = 41
@@ -95,7 +84,6 @@ class GI:
     GT_SHISEN_SHO = 34
     GT_SIMPLE_TYPE = 29
     GT_SPIDER = 30
-    GT_TAROCK = 31
     GT_TERRACE = 32
     GT_YUKON = 33
 
@@ -147,15 +135,10 @@ class GI:
         GT_4DECK_TYPE:          "Four-Deck games",
 
         GT_MAHJONGG:            "Mahjongg",
-        GT_HANAFUDA:            "Hanafuda",
-        GT_MUGHAL_GANJIFA:      "Mughal Ganjifa",
-        GT_DASHAVATARA_GANJIFA: "Dashavatara Ganjifa",
 
         GT_CRIBBAGE_TYPE:       "Cribbage",
-        GT_HEXADECK:            "Hex A Deck",
         GT_POKER_TYPE:          "Poker",
         GT_SHISEN_SHO:          "Shisen-Sho",
-        GT_TAROCK:              "Tarock",
 
         GT_CUSTOM:              "Custom",
     }
@@ -212,64 +195,19 @@ class GI:
     )
 
     SELECT_ORIGINAL_GAME_BY_TYPE = (
-        ("French type", lambda gi, gf=GT_ORIGINAL,
-            gt=(
-                GT_HANAFUDA,
-                GT_HEXADECK, GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
-                GT_DASHAVATARA_GANJIFA, GT_TAROCK,): gi.si.game_flags & gf and
-            gi.si.game_type not in gt),
-        ("Ganjifa type", lambda gi, gf=GT_ORIGINAL,
-            gt=(GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
-                GT_DASHAVATARA_GANJIFA,): gi.si.game_flags & gf and
-            gi.si.game_type in gt),
-        ("Hanafuda type", lambda gi, gf=GT_ORIGINAL, gt=GT_HANAFUDA:
-            gi.si.game_flags & gf and gi.si.game_type == gt),
-        ("Hex A Deck type", lambda gi, gf=GT_ORIGINAL, gt=GT_HEXADECK:
-            gi.si.game_flags & gf and gi.si.game_type == gt),
-        ("Tarock type", lambda gi, gf=GT_ORIGINAL, gt=GT_TAROCK:
-            gi.si.game_flags & gf and gi.si.game_type == gt),
+        ("French type", lambda gi, gf=GT_ORIGINAL: gi.si.game_flags & gf),
     )
 
     SELECT_CONTRIB_GAME_BY_TYPE = (
-        ("French type", lambda gi, gf=GT_CONTRIB,
-            gt=(GT_HANAFUDA, GT_HEXADECK, GT_MUGHAL_GANJIFA,
-                GT_NAVAGRAHA_GANJIFA, GT_DASHAVATARA_GANJIFA, GT_TAROCK,):
-            gi.si.game_flags & gf and gi.si.game_type not in gt),
-        ("Ganjifa type", lambda gi, gf=GT_CONTRIB,
-            gt=(GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
-                GT_DASHAVATARA_GANJIFA,):
-            gi.si.game_flags & gf and gi.si.game_type in gt),
-        ("Hanafuda type", lambda gi, gf=GT_CONTRIB, gt=GT_HANAFUDA:
-            gi.si.game_flags & gf and gi.si.game_type == gt),
-        ("Hex A Deck type", lambda gi, gf=GT_CONTRIB, gt=GT_HEXADECK:
-            gi.si.game_flags & gf and gi.si.game_type == gt),
-        ("Tarock type", lambda gi, gf=GT_CONTRIB, gt=GT_TAROCK:
-            gi.si.game_flags & gf and gi.si.game_type == gt),
-    )
-
-    SELECT_ORIENTAL_GAME_BY_TYPE = (
-        ("Dashavatara Ganjifa type", lambda gi, gt=GT_DASHAVATARA_GANJIFA:
-            gi.si.game_type == gt),
-        ("Ganjifa type", lambda gi,
-            gt=(GT_MUGHAL_GANJIFA, GT_NAVAGRAHA_GANJIFA,
-                GT_DASHAVATARA_GANJIFA,): gi.si.game_type in gt),
-        ("Hanafuda type",
-            lambda gi, gt=GT_HANAFUDA: gi.si.game_type == gt),
-        ("Mughal Ganjifa type",
-            lambda gi, gt=GT_MUGHAL_GANJIFA: gi.si.game_type == gt),
-        ("Navagraha Ganjifa type",
-            lambda gi, gt=GT_NAVAGRAHA_GANJIFA: gi.si.game_type == gt),
+        ("French type", lambda gi, gf=GT_CONTRIB: gi.si.game_flags & gf),
     )
 
     SELECT_SPECIAL_GAME_BY_TYPE = (
         ("Cribbage type",
             lambda gi, gt=GT_CRIBBAGE_TYPE: gi.si.game_type == gt),
-        ("Hex A Deck type",
-            lambda gi, gt=GT_HEXADECK: gi.si.game_type == gt),
         ("Poker type", lambda gi, gt=GT_POKER_TYPE: gi.si.game_type == gt),
         ("Shisen-Sho type",
             lambda gi, gt=GT_SHISEN_SHO: gi.si.game_type == gt),
-        ("Tarock type", lambda gi, gt=GT_TAROCK: gi.si.game_type == gt),
     )
 
     # These obsolete gameids have been used in previous versions of
@@ -713,20 +651,8 @@ class GameInfo(Struct):
             altnames = [n for n in altnames]
         #
         if not (1 <= category <= GI.NUM_CATEGORIES):
-            if game_type == GI.GT_HANAFUDA:
-                category = GI.GC_HANAFUDA
-            elif game_type == GI.GT_TAROCK:
-                category = GI.GC_TAROCK
-            elif game_type == GI.GT_MAHJONGG:
+            if game_type == GI.GT_MAHJONGG:
                 category = GI.GC_MAHJONGG
-            elif game_type == GI.GT_HEXADECK:
-                category = GI.GC_HEXADECK
-            elif game_type == GI.GT_MUGHAL_GANJIFA:
-                category = GI.GC_MUGHAL_GANJIFA
-            elif game_type == GI.GT_NAVAGRAHA_GANJIFA:
-                category = GI.GC_NAVAGRAHA_GANJIFA
-            elif game_type == GI.GT_DASHAVATARA_GANJIFA:
-                category = GI.GC_DASHAVATARA_GANJIFA
             else:
                 category = GI.GC_FRENCH
         #

@@ -763,43 +763,14 @@ class Application:
         t0, t1 = None, None
         if gc == GI.GC_FRENCH:
             t0 = "French"
-            if cs_type not in (CSI.TYPE_FRENCH,
-                               # CSI.TYPE_TAROCK,
-                               ):
+            if cs_type not in (CSI.TYPE_FRENCH,):
                 t1 = t0
             if (cs_subtype == CSI.SUBTYPE_NONE
                     and gs == CSI.SUBTYPE_JOKER_DECK):
                 t1 = t0
-        elif gc == GI.GC_HANAFUDA:
-            t0 = "Hanafuda"
-            if cs_type not in (CSI.TYPE_HANAFUDA,):
-                t1 = t0
-        elif gc == GI.GC_TAROCK:
-            t0 = "Tarock"
-            if cs_type not in (CSI.TYPE_TAROCK,):
-                t1 = t0
         elif gc == GI.GC_MAHJONGG:
             t0 = "Mahjongg"
             if cs_type not in (CSI.TYPE_MAHJONGG,):
-                t1 = t0
-        elif gc == GI.GC_HEXADECK:
-            t0 = "Hex A Deck"
-            if cs_type not in (CSI.TYPE_HEXADECK,):
-                t1 = t0
-        elif gc == GI.GC_MUGHAL_GANJIFA:
-            t0 = "Mughal Ganjifa"
-            if cs_type not in (CSI.TYPE_MUGHAL_GANJIFA,
-                               CSI.TYPE_NAVAGRAHA_GANJIFA,
-                               CSI.TYPE_DASHAVATARA_GANJIFA,):
-                t1 = t0
-        elif gc == GI.GC_NAVAGRAHA_GANJIFA:
-            t0 = "Navagraha Ganjifa"
-            if cs_type not in (CSI.TYPE_NAVAGRAHA_GANJIFA,
-                               CSI.TYPE_DASHAVATARA_GANJIFA,):
-                t1 = t0
-        elif gc == GI.GC_DASHAVATARA_GANJIFA:
-            t0 = "Dashavatara Ganjifa"
-            if cs_type not in (CSI.TYPE_DASHAVATARA_GANJIFA,):
                 t1 = t0
         elif gc == GI.GC_TRUMP_ONLY:
             t0 = "Trump only"

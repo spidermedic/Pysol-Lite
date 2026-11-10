@@ -17,13 +17,7 @@ from PIL import Image, ImageTk
 
 cardset_type = {
     '1': 'French',
-    '2': 'Hanafuda',
-    '3': 'Tarock',
     '4': 'Mahjongg',
-    '5': 'Hexadeck',
-    '6': 'Mughal Ganjifa',
-    '7': 'Navagraha Ganjifa',
-    '8': 'Dashavatara Ganjifa',
     '9': 'Trump only',
     '10': 'Matching',
     '11': 'Puzzle',

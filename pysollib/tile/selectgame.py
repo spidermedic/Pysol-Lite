@@ -84,11 +84,9 @@ class SelectGameData(SelectDialogTreeData):
             app.gdb.getGamesIdSortedByName()))
         self.no_games = [SelectGameLeaf(None, None, "(no games)", None), ]
         #
-        s_by_type = s_oriental = s_special = s_original = s_contrib = \
-            s_mahjongg = None
+        s_by_type = s_special = s_original = s_contrib = s_mahjongg = None
         g = []
         for data in (GI.SELECT_GAME_BY_TYPE,
-                     GI.SELECT_ORIENTAL_GAME_BY_TYPE,
                      GI.SELECT_SPECIAL_GAME_BY_TYPE,
                      GI.SELECT_ORIGINAL_GAME_BY_TYPE,
                      GI.SELECT_CONTRIB_GAME_BY_TYPE,
@@ -113,18 +111,15 @@ class SelectGameData(SelectDialogTreeData):
             s_by_type = SelectGameNode(None, "French Games",
                                        tuple(g[0]), expanded=1)
         if g[1]:
-            s_oriental = SelectGameNode(None, "Oriental Games",
-                                        tuple(g[1]))
-        if g[2]:
             s_special = SelectGameNode(None, "Special Games",
-                                       tuple(g[2]))
-        if g[3]:
+                                       tuple(g[1]))
+        if g[2]:
             s_original = SelectGameNode(None, "Original Games",
-                                        tuple(g[3]))
-        # if g[4]:
-        #   s_contrib = SelectGameNode(None, "Contributed Games", tuple(g[4]))
-        if g[5]:
-            s_mahjongg = g[5]
+                                        tuple(g[2]))
+        # if g[3]:
+        #   s_contrib = SelectGameNode(None, "Contributed Games", tuple(g[3]))
+        if g[4]:
+            s_mahjongg = g[4]
         #
         s_by_compatibility, gg = None, []
         for name, games in GI.GAMES_BY_COMPATIBILITY:
@@ -172,7 +167,6 @@ class SelectGameData(SelectDialogTreeData):
                            lambda gi: gi.si.game_flags & GI.GT_POPULAR),
             s_by_type,
             s_mahjongg,
-            s_oriental,
             s_special,
             SelectGameNode(None, "Custom Games",
                            lambda gi: gi.si.game_type == GI.GT_CUSTOM),
@@ -912,7 +906,6 @@ class SearchCriteria:
 
         categoryOptions = {-1: ""}
         categoryOptions.update(CSI.TYPE_NAME)
-        del categoryOptions[7]  # Navagraha Ganjifa is unused.
         self.categoryOptions = dict((v, k) for k, v in categoryOptions.items())
 
         self.subcategoryOptions = {"": -1}

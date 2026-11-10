@@ -55,12 +55,7 @@ GAME_BY_TYPE = {
     GI.GT_4DECK_TYPE: "Four-Deck game",
 
     GI.GT_POKER_TYPE: "Poker",
-    GI.GT_TAROCK: "Tarock",
-    GI.GT_HEXADECK: "Hex A Deck",
-    GI.GT_HANAFUDA: "Hanafuda",
-    GI.GT_DASHAVATARA_GANJIFA: "Dashavatara Ganjifa",
     GI.GT_MAHJONGG: "Mahjongg",
-    GI.GT_MUGHAL_GANJIFA: "Mughal Ganjifa",
     GI.GT_SHISEN_SHO: "Shisen-Sho",
     GI.GT_CRIBBAGE_TYPE: "Cribbage",
 }

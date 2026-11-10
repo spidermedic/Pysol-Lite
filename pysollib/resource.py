@@ -172,13 +172,7 @@ class CSI:
 
     # cardset types
     TYPE_FRENCH = 1
-    TYPE_HANAFUDA = 2
-    TYPE_TAROCK = 3
     TYPE_MAHJONGG = 4
-    TYPE_HEXADECK = 5
-    TYPE_MUGHAL_GANJIFA = 6
-    TYPE_NAVAGRAHA_GANJIFA = 7
-    TYPE_DASHAVATARA_GANJIFA = 8
     TYPE_TRUMP_ONLY = 9
     TYPE_MATCHING = 10
     TYPE_PUZZLE = 11
@@ -200,13 +194,7 @@ class CSI:
 
     TYPE = {
         1:  "French type (52-54 cards)",
-        2:  "Hanafuda type (48 cards)",
-        3:  "Tarock type (78 cards)",
         4:  "Mahjongg type (42 tiles)",
-        5:  "Hex A Deck type (68 cards)",
-        6:  "Mughal Ganjifa type (96 cards)",
-        7:  "Navagraha Ganjifa type (108 cards)",
-        8:  "Dashavatara Ganjifa type (120 cards)",
         9:  "Trumps only type (variable cards)",
         10: "Matching type (variable cards)",
         11: "Puzzle type (variable pieces)",
@@ -215,13 +203,7 @@ class CSI:
 
     TYPE_NAME = {
         1:  "French",
-        2:  "Hanafuda",
-        3:  "Tarock",
         4:  "Mahjongg",
-        5:  "Hex A Deck",
-        6:  "Mughal Ganjifa",
-        7:  "Navagraha Ganjifa",
-        8:  "Dashavatara Ganjifa",
         9:  "Trumps only",
         10: "Matching",
         11: "Puzzle",
@@ -242,13 +224,7 @@ class CSI:
 
     TYPE_ID = {
         1:  "french",
-        2:  "hanafuda",
-        3:  "tarock",
         4:  "mahjongg",
-        5:  "hex-a-deck",
-        6:  "mughal-ganjifa",
-        7:  "navagraha-ganjifa",
-        8:  "dashavatara-ganjifa",
         9:  "trumps-only",
         10: "matching",
         11: "puzzle",
@@ -257,13 +233,7 @@ class CSI:
 
     TYPE_SUITS = {
         1:  "cshd",
-        2:  "abcdefghijkl",
-        3:  "cshd",
         4:  "abc",
-        5:  "cshd",
-        6:  "abcdefgh",
-        7:  "abcdefghi",
-        8:  "abcdefghij",
         9:  "",
         10: "",
         11: "",
@@ -272,13 +242,7 @@ class CSI:
 
     TYPE_RANKS = {
         1:  list(range(13)),
-        2:  list(range(4)),
-        3:  list(range(14)),
         4:  list(range(10)),
-        5:  list(range(16)),
-        6:  list(range(12)),
-        7:  list(range(12)),
-        8:  list(range(12)),
         9:  list(range(0)),
         10: list(range(0)),
         11: list(range(0)),
@@ -287,13 +251,7 @@ class CSI:
 
     TYPE_TRUMPS = {
         1:  (),
-        2:  (),
-        3:  list(range(22)),
         4:  list(range(12)),
-        5:  list(range(4)),
-        6:  (),
-        7:  (),
-        8:  (),
         9:  (),
         10: (),
         11: (),
@@ -521,22 +479,10 @@ class CardsetManager(ResourceManager):
             if cs.subtype == 1:
                 cs.trumps = list(range(2))
                 cs.nbottoms = 8
-        elif s == CSI.TYPE_HANAFUDA:
-            cs.nbottoms = 15
-        elif s == CSI.TYPE_TAROCK:
-            cs.nbottoms = 8
         elif s == CSI.TYPE_MAHJONGG:
             cs.nbottoms = 0
             cs.nletters = 0
             cs.nshadows = 0
-        elif s == CSI.TYPE_HEXADECK:
-            cs.nbottoms = 8
-        elif s == CSI.TYPE_MUGHAL_GANJIFA:
-            cs.nbottoms = 11
-        elif s == CSI.TYPE_NAVAGRAHA_GANJIFA:
-            cs.nbottoms = 12
-        elif s == CSI.TYPE_DASHAVATARA_GANJIFA:
-            cs.nbottoms = 13
         elif s == CSI.TYPE_TRUMP_ONLY:
             cs.nbottoms = 1
             cs.nletters = 0
@@ -621,12 +567,7 @@ class CardsetManager(ResourceManager):
             CSI.TYPE_FRENCH: {
                 CSI.SUBTYPE_JOKER_DECK
             },
-            CSI.TYPE_HANAFUDA: {},
-            CSI.TYPE_TAROCK: {},
             CSI.TYPE_MAHJONGG: {},
-            CSI.TYPE_HEXADECK: {},
-            CSI.TYPE_MUGHAL_GANJIFA: {},
-            CSI.TYPE_DASHAVATARA_GANJIFA: {},
             CSI.TYPE_TRUMP_ONLY: {},
             CSI.TYPE_PUZZLE: {
                 CSI.SUBTYPE_3X3,

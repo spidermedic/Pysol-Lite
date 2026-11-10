@@ -23,11 +23,6 @@ import sys
 KEEP_CARDSETS = {
     'cardset-standard',               # 52/54 card French decks (jokers too)
     'cardset-uni-mahjongg',           # Mahjongg
-    'cardset-louie-mantia-hanafuda',  # Hanafuda
-    'cardset-neo-tarock',             # Tarock
-    'cardset-neo-hex',                # Hex A Deck
-    'cardset-mughal-ganjifa-xl',      # Mughal Ganjifa
-    'cardset-dashavatara-ganjifa-xl',  # Dashavatara Ganjifa
     'cardset-next-matrix',            # Matrix
     'cardset-matching-xl',            # Matching
     'cardset-simple-ishido-xl',       # Ishido

@@ -48,16 +48,11 @@ graft data/sound
 ## data - cardsets
 ##
 graft data/cardset-blaren-7x7
-graft data/cardset-dashavatara-ganjifa-xl
 graft data/cardset-dojouji-3x3
 graft data/cardset-hokusai-6x6
 graft data/cardset-knave-of-hearts-4x4
-graft data/cardset-louie-mantia-hanafuda
 graft data/cardset-matching-xl
 graft data/cardset-mid-winter-eve-8x8
-graft data/cardset-mughal-ganjifa-xl
-graft data/cardset-neo-hex
-graft data/cardset-neo-tarock
 graft data/cardset-next-matrix
 graft data/cardset-players-trumps-10x10
 graft data/cardset-simple-ishido-xl

@@ -541,8 +541,6 @@ class PysolMenubarTkCommon:
             self.progress.update(step=1)
         self._addSelectMahjonggGameSubMenu(games, menu, self.mSelectGame,
                                            self.tkopt.gameid)
-        self._addSelectOrientalGameSubMenu(games, menu, self.mSelectGame,
-                                           self.tkopt.gameid)
         self._addSelectSpecialGameSubMenu(games, menu, self.mSelectGame,
                                           self.tkopt.gameid)
         if self.progress:
@@ -622,16 +620,8 @@ class PysolMenubarTkCommon:
         self._addSelectGameSubMenu(games, submenu, GI.SELECT_GAME_BY_TYPE,
                                    self.mSelectGame, self.tkopt.gameid)
 
-    def _addSelectOrientalGameSubMenu(self, games, menu, command, variable):
-        if self._getNumGames(games, GI.SELECT_ORIENTAL_GAME_BY_TYPE) == 0:
-            return
-        submenu = MfxMenu(menu, label="&Oriental games")
-        self._addSelectGameSubMenu(games, submenu,
-                                   GI.SELECT_ORIENTAL_GAME_BY_TYPE,
-                                   self.mSelectGame, self.tkopt.gameid)
-
     def _addSelectSpecialGameSubMenu(self, games, menu, command, variable):
-        if self._getNumGames(games, GI.SELECT_ORIENTAL_GAME_BY_TYPE) == 0:
+        if self._getNumGames(games, GI.SELECT_SPECIAL_GAME_BY_TYPE) == 0:
             return
         submenu = MfxMenu(menu, label="&Special games")
         self._addSelectGameSubMenu(games, submenu,
