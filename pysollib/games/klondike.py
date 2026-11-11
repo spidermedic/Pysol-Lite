@@ -444,7 +444,6 @@ class BlindAlleys(Eastcliff):
 
 # ************************************************************************
 # * Somerset
-# * Morehead
 # * Usk
 # ************************************************************************
 
@@ -465,11 +464,6 @@ class Somerset(Klondike):
         self.s.talon.dealRow(rows=self.s.rows[7:])
 
 
-class Morehead(Somerset):
-    RowStack_Class = StackWrapper(BO_RowStack, max_move=1)
-    Solver_Class = None
-
-
 class Usk(Somerset):
 
     Talon_Class = RedealTalonStack
@@ -487,21 +481,6 @@ class Usk(Somerset):
             self.s.talon.dealRowAvail(rows=self.s.rows[n:], frames=4)
             n += 1
 
-# ************************************************************************
-# * Wildcards
-# ************************************************************************
-
-
-class Wildcards_RowStack(SuperMoveAC_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not self.basicAcceptsCards(from_stack, cards):
-            return 0
-        stackcards = self.cards
-        if stackcards:
-            if (stackcards[-1].suit == 4 or cards[0].suit == 4):
-                return 1
-        return AC_RowStack.acceptsCards(self, from_stack, cards)
-
 
 class Wildcards_Foundation(SS_FoundationStack):
     def acceptsCards(self, from_stack, cards):
@@ -511,18 +490,6 @@ class Wildcards_Foundation(SS_FoundationStack):
                     return 0
             return 1
         return SS_FoundationStack.acceptsCards(self, from_stack, cards)
-
-
-class Wildcards(Somerset):
-    RowStack_Class = Wildcards_RowStack
-    Foundation_Class = Wildcards_Foundation
-
-    def startGame(self):
-        for i in range(7):
-            self.s.talon.dealRow(rows=self.s.rows[i:], frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.rows[7:])
-        self.s.talon.dealRow(rows=self.s.rows[8:])
 
 
 # ************************************************************************
@@ -552,7 +519,6 @@ class JokeKlonByThrees(KlondikeByThrees):
 # ************************************************************************
 # * Canister
 # * American Canister
-# * British Canister
 # ************************************************************************
 
 
@@ -574,11 +540,6 @@ class Canister(AmericanCanister):
     RowStack_Class = RK_RowStack
     Solver_Class = FreeCellSolverWrapper(sbb='rank', sm='unlimited')
     shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-class BritishCanister(AmericanCanister):
-    RowStack_Class = StackWrapper(KingAC_RowStack, max_move=1)
-    Solver_Class = FreeCellSolverWrapper(esf='kings')
 
 
 # ************************************************************************
@@ -1751,9 +1712,6 @@ registerGame(GameInfo(350, Q_C_, "Q.C.",
                       altnames=("K.C.",)))
 registerGame(GameInfo(361, NorthwestTerritory, "Northwest Territory",
                       GI.GT_RAGLAN, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(362, Morehead, "Morehead",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(388, Senate, "Senate",
                       GI.GT_RAGLAN, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(389, SenatePlus, "Senate +",
@@ -1802,12 +1760,6 @@ registerGame(GameInfo(585, LuckyThirteen, "Lucky Thirteen",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(586, LuckyPiles, "Lucky Piles",
                       GI.GT_FAN_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(601, AmericanCanister, "American Canister",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(602, BritishCanister, "British Canister",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(607, Legion, "Legion",
                       GI.GT_KLONDIKE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(627, QueenVictoria, "Queen Victoria",
@@ -1848,10 +1800,6 @@ registerGame(GameInfo(913, NineAcross, "Nine Across",
                       GI.GT_KLONDIKE, 1, -1, GI.SL_BALANCED))
 registerGame(GameInfo(930, KlondikeTerritory, "Klondike Territory",
                       GI.GT_RAGLAN, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(954, Wildcards, "Wildcards",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL,
-                      subcategory=GI.GS_JOKER_DECK, trumps=list(range(2))))
 registerGame(GameInfo(956, JokeKlon, "Joke Klon",
                       GI.GT_KLONDIKE, 1, -1, GI.SL_BALANCED,
                       subcategory=GI.GS_JOKER_DECK, trumps=list(range(2))))

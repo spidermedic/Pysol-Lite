@@ -23,29 +23,23 @@
 
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
-from pysollib.hint import CautiousDefaultHint, FreeCellType_Hint
+from pysollib.hint import CautiousDefaultHint
 from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.pysoltk import MfxCanvasText
-from pysollib.stack import \
-        InitialDealTalonStack, \
-        OpenStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        Spider_SS_RowStack, \
-        StackWrapper, \
-        SuperMoveRK_RowStack, \
-        TalonStack, \
-        UD_AC_RowStack, \
-        UD_RK_RowStack, \
-        UD_SS_RowStack, \
-        WasteStack, \
-        WasteTalonStack
-from pysollib.util import ACE, ANY_RANK, KING, NO_RANK, QUEEN, RANKS, \
-        UNLIMITED_ACCEPTS, UNLIMITED_MOVES
+from pysollib.stack import (
+    InitialDealTalonStack,
+    RK_RowStack,
+    ReserveStack,
+    SS_FoundationStack,
+    StackWrapper,
+    SuperMoveRK_RowStack,
+    UD_SS_RowStack,
+    WasteStack,
+    WasteTalonStack,
+)
+from pysollib.util import ANY_RANK, KING, RANKS
 
 
 class BeleagueredCastleType_Hint(CautiousDefaultHint):
@@ -151,7 +145,6 @@ class BeleagueredCastle(StreetsAndAlleys):
 
 # ************************************************************************
 # * Citadel
-# * Exiled Kings
 # ************************************************************************
 
 class Citadel(StreetsAndAlleys):
@@ -177,12 +170,6 @@ class Citadel(StreetsAndAlleys):
                     self.moveMove(1, talon, r, frames=frames)
                 if not talon.cards:
                     break
-
-
-class ExiledKings(Citadel):
-    Hint_Class = BeleagueredCastleType_Hint
-    Solver_Class = FreeCellSolverWrapper(sbb='rank', esf='kings')
-    RowStack_Class = StackWrapper(RK_RowStack, base_rank=KING)
 
 
 # ************************************************************************
@@ -233,8 +220,6 @@ class Fortress(Game):
 
 # ************************************************************************
 # * Bastion
-# * Ten by One
-# * Castles End
 # ************************************************************************
 
 class Bastion(Game):
@@ -281,102 +266,8 @@ class Bastion(Game):
     shallHighlightMatch = Game._shallHighlightMatch_SS
 
 
-class TenByOne(Bastion):
-    def createGame(self):
-        Bastion.createGame(self, reserves=1)
-
-    def startGame(self):
-        self._startDealNumRows(3)
-        for i in range(3):
-            self.s.talon.dealRowAvail()
-
-
-class CastlesEnd_Foundation(SS_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if self.game.getState() == 0:
-            if cards[0].suit != self.cap.base_suit:
-                return False
-            return True
-        return SS_FoundationStack.acceptsCards(self, from_stack, cards)
-
-
-class CastlesEnd_StackMethods:
-    def moveMove(self, ncards, to_stack, frames=-1, shadow=-1):
-        state = self.game.getState()
-        self.game.moveMove(ncards, self, to_stack,
-                           frames=frames, shadow=shadow)
-        if state == 0:
-            base_rank = to_stack.cards[0].rank
-            self.game.base_rank = base_rank
-            for s in self.game.s.foundations:
-                s.cap.base_rank = base_rank
-        self.fillStack()
-
-
-class CastlesEnd_RowStack(CastlesEnd_StackMethods, UD_AC_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if self.game.getState() == 0:
-            return False
-        return UD_AC_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class CastlesEnd_Reserve(CastlesEnd_StackMethods, OpenStack):
-    pass
-
-
-class CastlesEnd(Bastion):
-    Foundation_Class = StackWrapper(CastlesEnd_Foundation, min_cards=1, mod=13)
-    RowStack_Class = StackWrapper(CastlesEnd_RowStack, mod=13)
-    ReserveStack_Class = CastlesEnd_Reserve
-
-    def createGame(self):
-        lay = Bastion.createGame(self)
-        self.base_rank = None
-        tx, ty, ta, tf = lay.getTextAttr(self.s.foundations[-1], 'se')
-        font = self.app.getFont('canvas_default')
-        self.texts.info = MfxCanvasText(self.canvas, tx, ty,
-                                        anchor=ta, font=font)
-
-    def updateText(self):
-        if self.preview > 1:
-            return
-        if not self.texts.info:
-            return
-        if not self.getState():
-            t = ""
-        else:
-            t = RANKS[self.base_rank]
-        self.texts.info.config(text=t)
-
-    def getState(self):
-        for s in self.s.foundations:
-            if s.cards:
-                return 1
-        return 0
-
-    def _restoreGameHook(self, game):
-        self.base_rank = game.loadinfo.base_rank
-        for s in self.s.foundations:
-            s.cap.base_rank = game.loadinfo.base_rank
-
-    def _loadGameHook(self, p):
-        self.loadinfo.addattr(base_rank=p.load())
-
-    def _saveGameHook(self, p):
-        base_rank = NO_RANK
-        for s in self.s.foundations:
-            if s.cards:
-                base_rank = s.cards[0].rank
-                break
-        p.dump(base_rank)
-
-    shallHighlightMatch = Game._shallHighlightMatch_ACW
-
-
 # ************************************************************************
 # * Chessboard
-# * Lasker
-# * Morphy
 # ************************************************************************
 
 class Chessboard_Foundation(SS_FoundationStack):
@@ -424,425 +315,6 @@ class Chessboard(Fortress):
                 t = RANKS[s.cards[0].rank]
                 break
         self.texts.info.config(text=t)
-
-
-class Lasker(Chessboard):
-    RowStack_Class = StackWrapper(Chessboard_RowStack, mod=13,
-                                  max_move=UNLIMITED_MOVES,
-                                  max_accept=UNLIMITED_ACCEPTS)
-
-
-class Morphy_RowStack(UD_AC_RowStack):
-    def canDropCards(self, stacks):
-        if self.game.demo:
-            return UD_AC_RowStack.canDropCards(self, stacks)
-        for s in self.game.s.foundations:
-            if s.cards:
-                return UD_AC_RowStack.canDropCards(self, stacks)
-        return (None, 0)
-
-
-class Morphy(Chessboard):
-    RowStack_Class = StackWrapper(Morphy_RowStack, mod=13)
-
-
-# ************************************************************************
-# * Siegecraft
-# * Stronghold
-# * Private Lane
-# ************************************************************************
-
-class Siegecraft(BeleagueredCastle):
-    Hint_Class = FreeCellType_Hint
-    Solver_Class = FreeCellSolverWrapper(sbb='rank')
-
-    def createGame(self):
-        BeleagueredCastle.createGame(self, reserves=1)
-
-
-class Stronghold(StreetsAndAlleys):
-    Hint_Class = FreeCellType_Hint
-    Solver_Class = FreeCellSolverWrapper(sbb='rank')
-
-    def createGame(self):
-        StreetsAndAlleys.createGame(self, reserves=1)
-
-
-class PrivateLane(StreetsAndAlleys):
-    Hint_Class = FreeCellType_Hint
-    Solver_Class = FreeCellSolverWrapper(sbb='rank')
-
-    def createGame(self):
-        StreetsAndAlleys.createGame(self, reserves=2)
-
-
-# ************************************************************************
-# * Zerline
-# ************************************************************************
-
-class Zerline_ReserveStack(ReserveStack):
-    def acceptsCards(self, from_stack, cards):
-        if not ReserveStack.acceptsCards(self, from_stack, cards):
-            return False
-        return from_stack is not self.game.s.waste
-
-
-class Zerline(Game):
-    Hint_Class = BeleagueredCastleType_Hint
-
-    #
-    # game layout
-    #
-
-    def createGame(self, rows=8, playcards=13, reserve_max_cards=4):
-        # create layout
-        l, s = Layout(self), self.s
-        decks = self.gameinfo.decks
-
-        # set window
-        # (set size so that at least 13 cards are fully playable)
-        w = max(3*l.XS, l.XS+playcards*l.XOFFSET)
-        self.setSize(l.XM+2*w+decks*l.XS, l.YM+l.TEXT_HEIGHT+(rows//2+1)*l.YS)
-
-        # create stacks
-        y = l.YM
-        x = l.XM + w
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, "s")
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, "s")
-        x += l.XS
-        stack = Zerline_ReserveStack(x, y, self, max_cards=reserve_max_cards)
-        s.reserves.append(stack)
-        stack.CARD_XOFFSET, stack.CARD_YOFFSET = l.XOFFSET, 0
-        l.createText(stack, "s")
-        x = l.XM + w
-        for j in range(decks):
-            y = l.YM+l.TEXT_HEIGHT+l.YS
-            for i in range(4):
-                s.foundations.append(
-                    SS_FoundationStack(
-                        x, y, self, i,
-                        base_rank=KING, dir=1, max_move=0, mod=13))
-                y += l.YS
-            x += l.XS
-        x = l.XM
-        for j in range(2):
-            y = l.YM+l.TEXT_HEIGHT+l.YS
-            for i in range(rows//2):
-                stack = RK_RowStack(
-                    x, y, self, max_move=1, max_accept=1, base_rank=QUEEN)
-                stack.CARD_XOFFSET, stack.CARD_YOFFSET = l.XOFFSET, 0
-                s.rows.append(stack)
-                y += l.YS
-            x += l.XM+w+decks*l.XS
-
-        l.setRegion(
-            s.rows[:4], (-999, l.YM+l.YS+l.TEXT_HEIGHT-l.CH//2,
-                         w-l.CW//2, 999999))
-
-        # define stack-groups
-        l.defaultStackGroups()
-        # set regions
-        l.defaultRegions()
-
-    #
-    # game overrides
-    #
-
-    def startGame(self):
-        self._startDealNumRowsAndDealRowAndCards(4)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-    def getQuickPlayScore(self, ncards, from_stack, to_stack):
-        return int(to_stack in self.s.rows)
-
-
-class Zerline3Decks(Zerline):
-    def createGame(self):
-        Zerline.createGame(self, rows=8, reserve_max_cards=6)
-
-
-# ************************************************************************
-# * Chequers
-# ************************************************************************
-
-class Chequers(Fortress):
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        # (set size so that at least 7 cards are fully playable)
-        dx = l.XM+l.XS+7*l.XOFFSET
-        w = l.XM+max(5*dx, 9*l.XS+2*l.XM)
-        h = l.YM+6*l.YS
-        self.setSize(w, h)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        s.talon = TalonStack(x, y, self)
-        l.createText(s.talon, "se")
-        x = max(l.XS+3*l.XM, (self.width-l.XM-8*l.XS)//2)
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i))
-            x += l.XS
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                                    base_rank=KING, dir=-1))
-            x += l.XS
-        y = l.YM+l.YS
-        for i in range(5):
-            x = l.XM
-            for j in range(5):
-                stack = UD_SS_RowStack(x, y, self)
-                s.rows.append(stack)
-                stack.CARD_XOFFSET, stack.CARD_YOFFSET = l.XOFFSET, 0
-                x += dx
-            y += l.YS
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self._startDealNumRowsAndDealSingleRow(3)
-
-    def fillStack(self, stack):
-        if self.s.talon.cards and stack in self.s.rows and not stack.cards:
-            self.s.talon.dealToStacks([stack])
-
-
-# ************************************************************************
-# * Castle of Indolence
-# ************************************************************************
-
-class CastleOfIndolence(Game):
-    Hint_Class = BeleagueredCastleType_Hint
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        # (set size so that at least 13 cards are fully playable)
-        w = max(3*l.XS, l.XS+13*l.XOFFSET)
-        self.setSize(l.XM+2*w+2*l.XS, l.YM + 5*l.YS + l.TEXT_HEIGHT)
-
-        # create stacks
-        x, y = l.XM, l.YM+4*l.YS
-        s.talon = InitialDealTalonStack(x, y, self)
-        x, y = l.XM+w-l.XS, self.height-l.YS
-        for i in range(4):
-            stack = OpenStack(x, y, self, max_accept=0)
-            s.reserves.append(stack)
-            l.createText(stack, 'n')
-            x += l.XS
-
-        x = l.XM + w
-        for x in (l.XM + w, l.XM + w + l.XS):
-            y = l.YM
-            for i in range(4):
-                s.foundations.append(RK_FoundationStack(x, y, self,
-                                     max_move=0))
-                y += l.YS
-
-        for x in (l.XM, l.XM + w + 2*l.XS):
-            y = l.YM
-            for i in range(4):
-                stack = RK_RowStack(
-                    x, y, self, max_move=1, max_accept=1, base_rank=ANY_RANK)
-                stack.CARD_XOFFSET, stack.CARD_YOFFSET = l.XOFFSET, 0
-                s.rows.append(stack)
-                y += l.YS
-        l.setRegion(s.rows[:4], (-999, -999, w-l.CW//2, l.YM+4*l.YS-l.CH//2))
-
-        # define stack-groups
-        l.defaultStackGroups()
-        # set regions
-        l.defaultRegions()
-
-    def startGame(self):
-        for i in range(13):
-            self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        self._startDealNumRows(4)
-        self.s.talon.dealRow()
-        self.s.talon.dealRow()
-        self.s.talon.dealRowAvail()
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
-# * Rittenhouse
-# ************************************************************************
-
-class Rittenhouse_Foundation(RK_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not RK_FoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        if from_stack in self.game.s.rows:
-            ri = list(self.game.s.rows).index(from_stack)
-            fi = list(self.game.s.foundations).index(self)
-            if ri < 4:
-                return ri == fi
-            if ri == 4:
-                return True
-            return ri-1 == fi
-        return False
-
-
-class Rittenhouse(Game):
-    Hint_Class = BeleagueredCastleType_Hint
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM+9*l.XS, l.YM+3*l.YS+12*l.YOFFSET)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        for i in range(4):
-            s.foundations.append(
-                Rittenhouse_Foundation(x, y, self, max_move=0))
-            x += l.XS
-        x += l.XS
-        for i in range(4):
-            s.foundations.append(Rittenhouse_Foundation(x, y, self,
-                                 base_rank=KING, dir=-1, max_move=0))
-            x += l.XS
-        x, y = l.XM, l.YM+l.YS
-        for i in range(9):
-            s.rows.append(UD_RK_RowStack(x, y, self))
-            x += l.XS
-
-        s.talon = InitialDealTalonStack(l.XM, self.height-l.YS, self)
-
-        # default
-        l.defaultAll()
-
-    def startGame(self):
-        # move cards to the Foundations during dealing
-        talon = self.s.talon
-        self.startDealSample()
-        while talon.cards:
-            talon.dealRowAvail(frames=3)
-            self.fillAll()
-
-    def fillAll(self):
-        while True:
-            if not self._fillOne():
-                break
-
-    def _fillOne(self):
-        for r in self.s.rows:
-            for s in self.s.foundations:
-                if s.acceptsCards(r, r.cards[-1:]):
-                    self.moveMove(1, r, s)
-                    return 1
-        return 0
-
-    def fillStack(self, stack):
-        self.fillAll()
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
-# * Lightweight
-# * Castle Mount
-# * Palace
-# ************************************************************************
-
-class Lightweight(StreetsAndAlleys):
-    DEAL = (7, 1)
-    RowStack_Class = StackWrapper(RK_RowStack, base_rank=KING)
-    Solver_Class = FreeCellSolverWrapper(sbb='rank', esf='kings',
-                                         sm='unlimited')
-
-    def createGame(self, rows=12, playcards=20):
-        l, s = Layout(self), self.s
-        decks = self.gameinfo.decks
-        max_rows = max(decks*4, rows)
-        self.setSize(l.XM+max_rows*l.XS, l.YM+2*l.YS+playcards*l.YOFFSET)
-
-        x, y = l.XM+(max_rows-decks*4)*l.XS//2, l.YM
-        for i in range(4):
-            for j in range(decks):
-                s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                                        max_move=0))
-                x += l.XS
-        x, y = l.XM+(max_rows-rows)*l.XS//2, l.YM+l.YS
-        for i in range(rows):
-            s.rows.append(self.RowStack_Class(x, y, self))
-            x += l.XS
-        s.talon = InitialDealTalonStack(
-            self.width-l.XS, self.height-l.YS, self)
-
-        l.defaultAll()
-
-    def _shuffleHook(self, cards):
-        # move Aces to top of the Talon (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(cards,
-                                          lambda c: (c.rank == ACE, c.suit))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startDealNumRows(self.DEAL[0])
-        for i in range(self.DEAL[1]):
-            self.s.talon.dealRowAvail()
-
-
-class CastleMount(Lightweight):
-    DEAL = (11, 1)
-    RowStack_Class = Spider_SS_RowStack
-    Solver_Class = None
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-    getQuickPlayScore = Game._getSpiderQuickPlayScore
-
-
-class Palace(CastleMount):
-
-    def createGame(self):
-        Lightweight.createGame(self, rows=18, playcards=28)
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startDealNumRows(10)
-        self.s.talon.dealRowAvail()
-
-
-# ************************************************************************
-# * Selective Castle
-# ************************************************************************
-
-class SelectiveCastle_RowStack(RK_RowStack):
-    def canDropCards(self, stacks):
-        if self.game.demo:
-            return RK_RowStack.canDropCards(self, stacks)
-        for s in self.game.s.foundations:
-            if s.cards:
-                return RK_RowStack.canDropCards(self, stacks)
-        return (None, 0)
-
-
-class SelectiveCastle(StreetsAndAlleys, Chessboard):
-    Foundation_Class = Chessboard_Foundation
-    RowStack_Class = StackWrapper(SelectiveCastle_RowStack, mod=13)
-    Solver_Class = None
-
-    def createGame(self):
-        StreetsAndAlleys.createGame(self, texts=True)
-
-    def updateText(self):
-        Chessboard.updateText(self)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RKW
 
 
 # ************************************************************************
@@ -893,15 +365,6 @@ class Soother(Game):
         return int(to_stack in self.s.rows)
 
 
-# ************************************************************************
-# * Penelope's Web
-# ************************************************************************
-
-class PenelopesWeb(StreetsAndAlleys):
-    RowStack_Class = StackWrapper(RK_RowStack, base_rank=KING)
-    Solver_Class = FreeCellSolverWrapper(sbb='rank', esf='kings')
-
-
 # register the game
 registerGame(GameInfo(146, StreetsAndAlleys, "Streets and Alleys",
                       GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
@@ -919,60 +382,9 @@ registerGame(GameInfo(147, Fortress, "Fortress",
 registerGame(GameInfo(148, Chessboard, "Chessboard",
                       GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
                       GI.SL_SKILL))
-registerGame(GameInfo(300, Stronghold, "Stronghold",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(301, PrivateLane, "Private Lane",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL, altnames=('Fastness',)))
-registerGame(GameInfo(306, Zerline, "Zerline",
-                      GI.GT_BELEAGUERED_CASTLE, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(324, Bastion, "Bastion",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(325, TenByOne, "Ten by One",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(351, Chequers, "Chequers",
-                      GI.GT_BELEAGUERED_CASTLE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(393, CastleOfIndolence, "Castle of Indolence",
-                      GI.GT_BELEAGUERED_CASTLE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(395, Zerline3Decks, "Zerline (3 Decks)",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_ORIGINAL, 3, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(400, Rittenhouse, "Rittenhouse",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(507, Lightweight, "Lightweight",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN | GI.GT_ORIGINAL,
-                      2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(508, CastleMount, "Castle Mount",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 3, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(524, SelectiveCastle, "Selective Castle",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(535, ExiledKings, "Exiled Kings",
                       GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
                       GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(626, Soother, "Soother",
                       GI.GT_4DECK_TYPE | GI.GT_ORIGINAL, 4, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(650, CastlesEnd, "Castles End",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(665, PenelopesWeb, "Penelope's Web",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(831, Siegecraft, "Siegecraft",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(881, Lasker, "Lasker",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_SKILL, altnames=('Xantia',)))
-registerGame(GameInfo(951, Morphy, "Morphy",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 1, 0,
-                      GI.SL_SKILL))
-registerGame(GameInfo(986, Palace, "Palace",
-                      GI.GT_BELEAGUERED_CASTLE | GI.GT_OPEN, 4, 0,
                       GI.SL_MOSTLY_SKILL))
