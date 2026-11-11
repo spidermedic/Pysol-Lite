@@ -740,7 +740,7 @@ Installed app is 101 MB (`Contents/Resources` 76 MB, `Frameworks` 24 MB). Of `Re
 
 ## 69. Update: rebranded as PySol Lite, French category assessed (2026-11-10)
 
-**Rebrand (commit `e607c8ee`, pushed).** The app is now **PySol Lite**, replacing the "PySol 26" name from section 4x. `TITLE = 'PySol Lite'` in `pysollib/settings.py` (no year); versions stay YY.MM (26.11). Every user-visible "PySol", "PySolFC" and "PySol FC" in the app strings and help pages (`html-src`, `gen-html.py`) became "PySol Lite"; the About tagline is "A lighter PySol". Also updated: README, CONTRIBUTING, `docs/pysol.6`, `data/pysol.desktop`, `appdata.xml`.
+**Rebrand (commit `e607c8ee`, pushed).** The app is now **PySol Lite**, replacing the "PySol 26" name from section 42. `TITLE = 'PySol Lite'` in `pysollib/settings.py` (no year); versions stay YY.MM (26.11). Every user-visible "PySol", "PySolFC" and "PySol FC" in the app strings and help pages (`html-src`, `gen-html.py`) became "PySol Lite"; the About tagline is "A lighter PySol". Also updated: README, CONTRIBUTING, `docs/pysol.6`, `data/pysol.desktop`, `appdata.xml`.
 
 **Kept on purpose:** `PACKAGE = 'PySolFC'` (saved games and data directories), bundle ID `net.sourceforge.pysolfc`, the cardset file header `PySolFC solitaire cardset;...` (the parser reads it), the "Based on PySol, PySol Fan Club edition and PySolFC" credit and copyright lines, author credits, `credits_old.html`, upstream URLs, the FAQ's mentions of old PySolFC versions, NEWS, the CI workflows. `html-src/rules` and `html-src/wikipedia` were not checked or changed.
 
@@ -753,6 +753,6 @@ Installed app is 101 MB (`Contents/Resources` 76 MB, `Frameworks` 24 MB). Of `Re
 - Biggest families: Forty Thieves 82, Spider 72, Klondike 67, Pairing 54, FreeCell 49. About 300 games in the Klondike, Spider, Forty Thieves, Yukon and Gypsy families are small variants of each other, the most likely place for a further quality cut.
 - **Correction:** an earlier message said there were "63 three- and four-deck games" in the menu groups. That was the count of games using 3 or 4 decks across all types (41 + 22). The Three-Deck and Four-Deck menu groups hold only 6 games.
 - The "Simple games" bucket in `GI.SELECT_GAME_BY_TYPE` is always empty (dead definition).
-- No playability test was run; the earlier full-app smoke test hung (section 41x) and a per-game run would need one process per game.
+- No playability test was run; the earlier full-app smoke test hung (section 47) and a per-game run would need one process per game.
 
 **State at the end of the session:** `origin/master` is at `e607c8ee` plus this note; the installed app is the build of that commit. Next candidates: the parked size trim (section 68), further game cuts by family, and deciding on the name of this notes file (it still says "pysolfc").
