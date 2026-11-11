@@ -1,10 +1,10 @@
 [Desktop Entry]
-Name=PySol
+Name=PySol Lite
 Comment=More than 1200 solitaire card games
 Exec=pysol.py
 StartupWMClass=Pysol
 Terminal=false
 Type=Application
 Categories=Game;CardGame;
-Keywords=solitaire;patience;cards;pysolfc;klondike;
+Keywords=solitaire;patience;cards;pysol;klondike;
 Icon=pysol

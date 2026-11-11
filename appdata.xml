@@ -6,7 +6,7 @@
   <id>io.sourceforge.pysolfc.PySolFC</id>
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
-  <name>PySol</name>
+  <name>PySol Lite</name>
   <summary>Solitaire game compilation</summary>
   <description>
     <p>A collection of more than 1200 Solitaire games, using various deck types

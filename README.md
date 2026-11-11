@@ -1,11 +1,11 @@
-# PySol 26
+# PySol Lite
 
-A reimagining of PySolFC: more than 1,200 solitaire and patience games
+A lighter PySol: more than 1,200 solitaire and patience games
 written in Python with Tkinter. This fork focuses on macOS on Apple Silicon.
 The Windows and Linux code is kept but has not been run since the clean-up.
 The version number is the year and month (for example 26.11).
 
-PySol 26 is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
+PySol Lite is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
 edition and PySolFC (https://github.com/shlomif/PySolFC), and is licensed
 under the GNU General Public License. `pysolfc-handoff.md` is the working log
 of what has changed and why.

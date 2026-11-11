@@ -36,34 +36,34 @@ sys.path[0] = os.path.normpath(pysollib_path)
 
 
 files = [
-    ('credits.html', 'PySol Credits'),
-    ('credits_old.html', 'PySol Credits'),
-    ('faq.html', 'PySol - FAQ'),
-    ('general_rules.html', 'PySol - General Rules'),
-    ('glossary.html', 'PySol - Glossary'),
-    ('howtoplay.html', 'How to Use PySol'),
-    ('accessibility.html', 'PySol - Accessibility'),
-    ('index.html', 'PySol - a Solitaire Game Collection'),
-    ('intro.html', 'PySol - Introduction'),
+    ('credits.html', 'PySol Lite Credits'),
+    ('credits_old.html', 'PySol Lite Credits'),
+    ('faq.html', 'PySol Lite - FAQ'),
+    ('general_rules.html', 'PySol Lite - General Rules'),
+    ('glossary.html', 'PySol Lite - Glossary'),
+    ('howtoplay.html', 'How to Use PySol Lite'),
+    ('accessibility.html', 'PySol Lite - Accessibility'),
+    ('index.html', 'PySol Lite - a Solitaire Game Collection'),
+    ('intro.html', 'PySol Lite - Introduction'),
     ('license.html', 'PySol Software License'),
-    # ('rules_alternate.html', 'PySol - a Solitaire Game Collection'),
-    # ('rules.html', 'PySol - a Solitaire Game Collection'),
-    ('settings.html', 'PySol - Settings'),
-    ('assist_options.html', 'PySol - Assist Options'),
-    ('cardset_customization.html', 'PySol - Cardset Customization'),
+    # ('rules_alternate.html', 'PySol Lite - a Solitaire Game Collection'),
+    # ('rules.html', 'PySol Lite - a Solitaire Game Collection'),
+    ('settings.html', 'PySol Lite - Settings'),
+    ('assist_options.html', 'PySol Lite - Assist Options'),
+    ('cardset_customization.html', 'PySol Lite - Cardset Customization'),
     ]
 
 rules_files = [
-    ('mahjongg.html', 'PySol - Rules for Mahjongg'),
-    ('shisensho.html', 'PySol - Rules for Shisen-Sho'),
-    ('spider.html', 'PySol - Rules for Spider'),
-    ('freecell.html', 'PySol - Rules for FreeCell'),
+    ('mahjongg.html', 'PySol Lite - Rules for Mahjongg'),
+    ('shisensho.html', 'PySol Lite - Rules for Shisen-Sho'),
+    ('spider.html', 'PySol Lite - Rules for Spider'),
+    ('freecell.html', 'PySol Lite - Rules for FreeCell'),
     ]
 
 
 def _fmt(fmt, params):
     return fmt % merge_dicts(params, {'logo_url': "images/pysollogo03.png",
-                                      'logo_alt': "PySol FC Logo"})
+                                      'logo_alt': "PySol Lite Logo"})
 
 
 main_header = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
@@ -83,7 +83,7 @@ main_footer = '''
 <br>
 %(back_to_index_link)s
 <hr>
-<i>PySolFC Documentation - version ''' + VERSION + '''</i>
+<i>PySol Lite Documentation - version ''' + VERSION + '''</i>
 </body>
 </html>'''
 
@@ -112,7 +112,7 @@ rules_footer = '''
 <br>
 <a href="../rules.html">Back to individual game rules</a>
 <hr>
-<i>PySolFC Documentation - version ''' + VERSION + '''</i>
+<i>PySol Lite Documentation - version ''' + VERSION + '''</i>
 </body>
 </html>'''
 
@@ -164,7 +164,7 @@ def gen_rules_html():
 
     # open file of list of all rules
     out_rules = open(os.path.join('html', 'rules.html'), 'w', encoding='utf-8')
-    print(_fmt(main_header, {'title': 'PySol - a Solitaire Game Collection'}),
+    print(_fmt(main_header, {'title': 'PySol Lite - a Solitaire Game Collection'}),
           file=out_rules)
     with open('rules.html', 'r', encoding='utf-8') as file:
         print(file.read(), file=out_rules)
@@ -189,7 +189,7 @@ def gen_rules_html():
 
         # print '>>>', rules_fn
         if rules_fn not in files_list:
-            title = 'PySol - Rules for ' + gi.name
+            title = 'PySol Lite - Rules for ' + gi.name
             s = ''
             rules_list.append((rules_dir, rules_fn, title, s))
         files_list.append(rules_fn)
@@ -209,7 +209,7 @@ def gen_rules_html():
     # create file of altnames
     out_rules_alt = open(os.path.join('html', 'rules_alternate.html'), 'w',
                          encoding='utf-8')
-    print(_fmt(main_header, {'title': 'PySol - a Solitaire Game Collection'}),
+    print(_fmt(main_header, {'title': 'PySol Lite - a Solitaire Game Collection'}),
           file=out_rules_alt)
     with open('rules_alternate.html', 'r', encoding='utf-8') as file:
         print(file.read(), file=out_rules_alt)

@@ -39,7 +39,7 @@ from pysollib.settings import PACKAGE_URL, TITLE, VERSION
 def help_about(app, timeout=0, sound=True):
     if sound:
         app.audio.playSample("about")
-    t = "A reimagining of PySolFC"
+    t = "A lighter PySol"
     strings = ("&Nice", "&Credits")
     if timeout:
         strings = ("&Enjoy",)
@@ -55,7 +55,7 @@ Copyright (C) 1998 - 2003 Markus F.X.J. Oberhumer.
 Copyright (C) 2003 Mt. Hood Playing Card Co.
 Copyright (C) 2005 - 2009 Skomoroh.
 Copyright (C) 2020 - 2026 PySolFC contributors.
-Modifications Copyright (C) 2026 the PySol 26 authors.
+Modifications Copyright (C) 2026 the PySol Lite authors.
 All Rights Reserved.
 
 PySol is free software distributed under the terms

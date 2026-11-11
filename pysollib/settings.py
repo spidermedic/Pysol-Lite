@@ -27,7 +27,7 @@ import os
 # PACKAGE is stored in saved games and checked when loading them, and names
 # the data directories; keep it stable. The settings folder is ~/.pysol.
 PACKAGE = 'PySolFC'
-# The release is named after its year: PySol 26 is version 26.MM[.DD].
+# Releases are versioned by date: version 26.MM[.DD].
 # VERSION_TUPLE is (YY, MM) for a monthly release and (YY, MM, DD) for an
 # interim update in the same month.
 VERSION_TUPLE = (26, 11)
@@ -35,7 +35,7 @@ VERSION = '.'.join(['%d' % VERSION_TUPLE[0]] +
                    ['%02d' % x for x in VERSION_TUPLE[1:]])
 # Class name for the Tk windows and the X11 resource database (no year).
 TITLE_CLASS = 'PySol'
-TITLE = 'PySol %d' % VERSION_TUPLE[0]
+TITLE = 'PySol Lite'
 PACKAGE_URL = 'https://github.com/spidermedic/pysol'
 
 # Tk windowing system (auto set up in init.py)

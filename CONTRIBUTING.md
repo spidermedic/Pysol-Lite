@@ -1,4 +1,4 @@
-# Contributing to PySol 26
+# Contributing to PySol Lite
 
 You want to contribute? That's great! Welcome aboard.  Before submitting issues or PRs, please read the details below to make sure your contributions can be reviewed smoothly.  First of all see [these links](https://github.com/shlomif/Freenode-programming-channel-FAQ/blob/master/FAQ.mdwn#i-want-to-contribute-to-an-open-source-project-but-how-which-one-can-i-contribute-to)
 for general guidelines for contributing to open source.

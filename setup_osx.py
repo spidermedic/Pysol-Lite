@@ -12,7 +12,7 @@ from pysollib.settings import TITLE, VERSION
 
 # The bundle (PySol.app) and its executable keep the same name every year;
 # only the display name carries the year.
-BUNDLE = 'PySol'
+BUNDLE = 'PySol Lite'
 
 from setuptools import setup
 
@@ -59,7 +59,7 @@ try:
 except (OSError, CalledProcessError):
     pass
 
-GETINFO_STRING = "%s %s, a reimagining of PySolFC. \
+GETINFO_STRING = "%s %s, a lighter PySol. \
                 (C) 1998-2003 Markus F.X.J Oberhumer \
                 (C) 2005-2009 Skomoroh" % (TITLE, VERSION)
 PLIST = dict(
