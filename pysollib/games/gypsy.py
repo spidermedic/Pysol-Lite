@@ -23,8 +23,7 @@
 
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
-from pysollib.games.spider import Spider_Hint, Spider_RowStack, \
-        Spider_SS_Foundation
+from pysollib.games.spider import Spider_Hint
 from pysollib.hint import KlondikeType_Hint, YukonType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
@@ -667,28 +666,6 @@ class Trapdoor(Gypsy):
         self.s.talon.dealCards()
 
 
-class TrapdoorSpider(Trapdoor):
-    Foundation_Class = Spider_SS_Foundation
-    RowStack_Class = Spider_RowStack
-    Hint_Class = Spider_Hint
-
-    def createGame(self):
-        Trapdoor.createGame(self, rows=10)
-
-    def startGame(self, flip=0):
-        for i in range(3):
-            self.s.talon.dealRow(flip=flip, frames=0)
-        r = self.s.rows
-        rows = (r[0], r[3], r[6], r[9])
-        self.s.talon.dealRow(rows=rows, flip=flip, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-    getQuickPlayScore = Game._getSpiderQuickPlayScore
-
-
 # ************************************************************************
 # * Flamenco
 # ************************************************************************
@@ -1124,8 +1101,6 @@ registerGame(GameInfo(584, Eclipse, "Eclipse",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
 # registerGame(GameInfo(640, BrazilianPatience, "Brazilian Patience",
 #                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(666, TrapdoorSpider, "Trapdoor Spider",
-                      GI.GT_SPIDER | GI.GT_ORIGINAL, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(712, Leprechaun, "Leprechaun",
                       GI.GT_GYPSY | GI.GT_ORIGINAL, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(718, LockedCards, "Locked Cards",

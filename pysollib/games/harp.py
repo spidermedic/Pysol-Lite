@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.spider import Spider_Hint
-from pysollib.games.spider import Spider_RowStack, Spider_SS_Foundation
 from pysollib.hint import CautiousDefaultHint
 from pysollib.hint import KlondikeType_Hint
 from pysollib.layout import Layout
@@ -333,28 +332,6 @@ class ThievesOfEgypt(DoubleKlondike):
 
 
 # ************************************************************************
-# * Brush
-# ************************************************************************
-
-class Brush(DoubleKlondike):
-    Layout_Method = staticmethod(Layout.klondikeLayout)
-    Foundation_Class = Spider_SS_Foundation
-    RowStack_Class = Spider_RowStack
-    Hint_Class = Spider_Hint
-
-    def createGame(self):
-        DoubleKlondike.createGame(self, rows=10, max_rounds=1)
-
-    def startGame(self):
-        self._startDealNumRows(3)
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()        # deal first card to WasteStack
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-    getQuickPlayScore = Game._getSpiderQuickPlayScore
-
-
-# ************************************************************************
 # * Churchill Solitaire
 # ************************************************************************
 # https://boardgames.stackexchange.com/questions/29254/rules-for-churchill-solitaire
@@ -471,9 +448,6 @@ registerGame(GameInfo(668, DoubleKingsley, "Double Kingsley",
 registerGame(GameInfo(678, ThievesOfEgypt, "Thieves of Egypt",
                       GI.GT_KLONDIKE, 2, 1, GI.SL_BALANCED,
                       altnames=('Upside-Down Pyramid')))
-registerGame(GameInfo(689, Brush, "Brush",
-                      GI.GT_SPIDER | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(822, DoubleTrigon, "Double Trigon",
                       GI.GT_KLONDIKE, 2, -1, GI.SL_BALANCED))
 registerGame(GameInfo(828, Churchill, "Churchill",

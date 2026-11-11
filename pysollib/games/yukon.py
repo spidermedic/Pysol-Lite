@@ -576,72 +576,6 @@ class Queensland(Yukon):
 
 
 # ************************************************************************
-# * Russian Spider
-# * Double Russian Spider
-# ************************************************************************
-
-class RussianSpider_RowStack(Yukon_SS_RowStack):  # Spider_SS_RowStack
-    def canDropCards(self, stacks):
-        if len(self.cards) < 13:
-            return (None, 0)
-        cards = self.cards[-13:]
-        for s in stacks:
-            if s is not self and s.acceptsCards(self, cards):
-                return (s, 13)
-        return (None, 0)
-
-
-class RussianSpider(RussianSolitaire):
-    RowStack_Class = StackWrapper(RussianSpider_RowStack, base_rank=KING)
-    Foundation_Class = Spider_SS_Foundation
-
-    DIFF_SUITS = False
-
-
-class DoubleRussianSpider(RussianSpider, DoubleRussianSolitaire):
-    def createGame(self):
-        Yukon.createGame(self, rows=10)
-
-    def startGame(self):
-        DoubleRussianSolitaire.startGame(self)
-
-
-# ************************************************************************
-# * Kiev
-# * Dnieper
-# * Sevastopol
-# ************************************************************************
-
-class Kiev(RussianSpider):
-    RowStack_Class = RussianSpider_RowStack
-    Layout_Method = staticmethod(Layout.klondikeLayout)
-    Talon_Class = DealRowTalonStack
-
-    def createGame(self):
-        return Yukon.createGame(self, waste=0, texts=1)
-
-    def startGame(self):
-        for i in range(3):
-            self.s.talon.dealRow(flip=0, frames=0)
-        self._startAndDealRow()
-
-
-class Dnieper(Kiev):
-    RowStack_Class = StackWrapper(RussianSpider_RowStack, mod=13)
-
-
-class Sevastopol(Kiev):
-
-    def startGame(self):
-        for i in range(2):
-            self.s.talon.dealRow(flip=0, frames=0)
-        r = self.s.rows
-        rows = (r[1], r[3], r[5])
-        self.s.talon.dealRow(rows=rows, flip=0, frames=0)
-        self._startAndDealRow()
-
-
-# ************************************************************************
 # * Brisbane
 # ************************************************************************
 
@@ -919,11 +853,6 @@ registerGame(GameInfo(525, Queensland, "Queensland",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(526, OutbackPatience, "Outback Patience",
                       GI.GT_YUKON, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(530, RussianSpider, "Russian Spider",
-                      GI.GT_SPIDER, 1, 0, GI.SL_BALANCED,
-                      altnames=('Ukrainian Solitaire',)))
-registerGame(GameInfo(531, DoubleRussianSpider, "Double Russian Spider",
-                      GI.GT_SPIDER | GI.GT_ORIGINAL, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(603, Brisbane, "Brisbane",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(707, Hawaiian, "Hawaiian",
@@ -934,22 +863,14 @@ registerGame(GameInfo(826, YukonicPlague, "Yukonic Plague",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(857, TasmanianPatience, "Tasmanian Patience",
                       GI.GT_YUKON, 1, -1, GI.SL_BALANCED))
-registerGame(GameInfo(897, Kiev, "Kiev",
-                      GI.GT_SPIDER, 1, 0, GI.SL_BALANCED,
-                      altnames=('Kyiv',)))
 registerGame(GameInfo(914, Canberra, "Canberra",
                       GI.GT_YUKON, 1, 1, GI.SL_BALANCED))
-registerGame(GameInfo(919, Dnieper, "Dnieper",
-                      GI.GT_SPIDER, 1, 0, GI.SL_BALANCED,
-                      altnames=('Dnipro',)))
 registerGame(GameInfo(925, YukonCells, "Yukon Cells",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(936, YukonKings, "Yukon Kings",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(942, QuadrupleYukon, "Quadruple Yukon",
                       GI.GT_YUKON, 4, 0, GI.SL_BALANCED))
-registerGame(GameInfo(963, Sevastopol, "Sevastopol",
-                      GI.GT_SPIDER, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(964, RussianCell, "Russian Cell",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED,
                       altnames=('Finnish Solitaire',)))
