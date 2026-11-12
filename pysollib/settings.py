@@ -36,7 +36,7 @@ VERSION = '.'.join(['%d' % VERSION_TUPLE[0]] +
 # Class name for the Tk windows and the X11 resource database (no year).
 TITLE_CLASS = 'PySol'
 TITLE = 'PySol Lite'
-PACKAGE_URL = 'https://github.com/spidermedic/pysol'
+PACKAGE_URL = 'https://github.com/spidermedic/PySol-Lite'
 
 # Tk windowing system (auto set up in init.py)
 WIN_SYSTEM = 'x11'                      # win32, x11, aqua, classic
