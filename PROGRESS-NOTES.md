@@ -1,6 +1,6 @@
-# PySolFC on macOS 27: handoff
+# PySol Lite on macOS 27: progress notes
 
-Written 2026-11-07. Audience: another agent (or future session) continuing this work with no memory of it.
+Written 2026-11-07 as `pysolfc-handoff.md` and renamed `PROGRESS-NOTES.md` on 2026-11-11 (the project is now PySol Lite; sections 1 to 41 still use the old PySolFC names). Audience: another agent (or future session) continuing this work with no memory of it.
 Facts marked **(verified)** were observed on this Mac. Facts marked **(reported)** come from a CPython issue thread read by a fetch subagent, not seen directly.
 
 ## 1. Outcome in one paragraph
@@ -604,7 +604,7 @@ Asked by the user. Not rebuilt or installed: the installed app still uses `~/.Py
 - **Not changed:** `PACKAGE = 'PySolFC'` in `settings.py` is stored inside every saved game and checked on load (`game/__init__.py`), so changing it would make old saves "invalid or damaged". It also names the data directories (`/usr/share/PySolFC`, `share/PySolFC` in `setup.py`). The AppStream id and the bundle id are also unchanged. Error messages from `print_err` still start with `PySolFC:`.
 - **Docs and scripts updated:** README (cardset instructions), `docs/pysol.6` (FILES section), `scripts/linux-install.py`. Not updated: `contrib/help-pages-translation-to-french/howtoplay.html` (a stale French page about table tiles) and the history in earlier sections of this file, which still say `~/.PySolFC`.
 - **Verification:** throwaway homes only, never the real `~/.PySolFC`. Fresh run creates `.pysol` only; an old folder with `options.cfg` and a saved game is moved with both intact and the old folder is gone; with both present the old one is untouched; a failing rename falls back to the old folder (mocked). Unit tests unchanged (19, the one known `--version` error).
-- **Things that read the old name:** `pysolfc-handoff.md` sections 2 to 52 mention `~/.PySolFC` as the settings folder; read them as `~/.pysol` from now on. Standing rule for launch checks stays: use `HOME=<temp>` only with source runs.
+- **Things that read the old name:** `PROGRESS-NOTES.md` sections 2 to 52 mention `~/.PySolFC` as the settings folder; read them as `~/.pysol` from now on. Standing rule for launch checks stays: use `HOME=<temp>` only with source runs.
 
 ## 57. Update: stuck detection and the "No moves left" dialog removed (2026-11-08)
 
@@ -756,3 +756,31 @@ Installed app is 101 MB (`Contents/Resources` 76 MB, `Frameworks` 24 MB). Of `Re
 - No playability test was run; the earlier full-app smoke test hung (section 47) and a per-game run would need one process per game.
 
 **State at the end of the session:** `origin/master` is at `e607c8ee` plus this note; the installed app is the build of that commit. Next candidates: the parked size trim (section 68), further game cuts by family, and deciding on the name of this notes file (it still says "pysolfc").
+
+## 70. Update: five more type cuts, 941 to 808 games; GitHub repo renamed (2026-11-10 to 2026-11-11)
+
+Goal, as in section 62: fewer, better games. For each game type the user was shown the games grouped into families with a suggested keep list, then chose the keepers. Each cut removed the other games' registrations (`registerGame`), the classes and helper stacks only they used, leftover imports and `# * Name` section comments, and their rules pages in `html-src/rules`. Base classes that kept games need stay even when they stop being games.
+
+| Commit | Type | Kept | Removed | Games after |
+|---|---|---|---|---|
+| `fe19855d` | Spider | Spider, Spider (1 Suit), Spider (2 Suits), Scorpion, Spiderette, Simple Simon, Wasp, Grounds for a Divorce, Daddy Longlegs, Astrocyte, Spidercells, Trillium, Curds and Whey (13) | 59 | 882 |
+| `1fefb977` | Beleaguered Castle | Beleaguered Castle, Streets and Alleys, Citadel, Fortress, Bastion, Chessboard, Somerset, Canister (8) | 22 | 860 |
+| `e4400758` | Raglan | King Albert, Raglan, Flower Garden, Stonewall, Agnes Bernauer, Jane, Phoenix (7) | 15 | 845 |
+| `b3edab24` | Baker's Dozen | Baker's Dozen, Spanish Patience, Castles in Spain, Martha, Cruel, Perseverance, Bisley (7) | 18 | 827 |
+| `1eca2094` | Canfield | Canfield, Storehouse, Rainbow, Superior Canfield, Demon, Dutchess, Gate, Minerva (8) | 19 | 808 |
+
+Rollback tags (local only, never pushed): `before-spider-cut`, `before-bc-cut`, `before-raglan-cut`, `before-bakersdozen-cut`. The earlier pushed tag `before-special-decks` (`e6135dfe`) and the last all-games commit `3b2f3454` (1,390 games) still apply.
+
+**Things that went wrong or need knowing**
+- **Module deletion took an unrelated game.** Deleting `capricieuse.py` (all four of its Baker's Dozen-type games) also removed Choice (id 755, a 3-deck game of a different type). Caught because the count was one lower than expected (826, not 827). Restored the file with only Choice in it. Same lesson as section 62: compare the full id list against the previous state, not just the count. `bisley13.py` (Bisley 13 only) was deleted outright and its import removed from `pysollib/games/__init__.py`.
+- **Dead-class removal tool.** Classes were removed with a script that deletes a class when nothing references its name outside comments, repeated until nothing changes. It ignores classes that were already unreferenced before the cut. Names that also appear in strings or docstrings elsewhere survive and were removed by hand (Morehead, York, Capricieuse, Fifteen). `SimpleSimonII` (unregistered before this work) was left alone. `Little Gate` (Canfield) was removed but its class stays because Doorway, a different type, builds on it.
+- **Dangling help link.** `html-src/rules/demon.html` linked to the deleted Double Canfield page; its description now reads "Like Canfield, but with two decks, eight tableau piles...". The FAQ sentence pointing at Relaxed Spider was removed. The contrib French copy (`contrib/help-pages-translation-to-french`) still lists the removed games; unmaintained, left as is.
+- **Hard-kill in launch checks.** Launch checks use `timeout -s KILL 5 .build-venv/bin/python pysol.py --gameid N` with `HOME=<temp dir>`. A plain `timeout` (SIGTERM) once left a Somerset window idle for minutes. Tooling used: `pyflakes` and `pycodestyle` were pip-installed into `.build-venv` (not in the repo); system Python has neither.
+- **One commit split.** The Baker's Dozen and Canfield cuts were first committed together by mistake (the unstage did not take); the commit was undone locally before pushing and redone as two.
+- **Unit tests:** 12 of 13 pass; the failure is the old `--version` test (`./pysol.py` not found, exit 127) and predates all of this.
+
+**Remaining Select-menu types not yet reviewed:** Fan, Forty Thieves, FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon, plus the catch-all One-Deck and Two-Deck groups. Each is a family cut like the five above.
+
+**Repo renamed.** The GitHub repo is now `spidermedic/PySol-Lite` (GitHub turns the space into a hyphen). `origin` was changed to `git@github.com:spidermedic/PySol-Lite.git`; `PACKAGE_URL` in `pysollib/settings.py` and the two `git clone`/`cd` lines in README follow it (commit `afb23dc6`). The old address redirects. The local folder is still `~/Documents/Claude/pysol`, left alone on purpose (renaming it would move the Claude project path the saved memory lives under).
+
+**State at the end of the session:** `origin/master` is at `afb23dc6` plus this note; the installed app (`~/Applications/PySol Lite.app`, 100 MB, arm64, ad-hoc signed, version 26.11) is the build of `afb23dc6`. This file was renamed from `pysolfc-handoff.md`; README and the saved memory notes now point at `PROGRESS-NOTES.md`.

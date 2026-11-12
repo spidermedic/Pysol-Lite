@@ -7,7 +7,7 @@ The version number is the year and month (for example 26.11).
 
 PySol Lite is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
 edition and PySolFC (https://github.com/shlomif/PySolFC), and is licensed
-under the GNU General Public License. `pysolfc-handoff.md` is the working log
+under the GNU General Public License. `PROGRESS-NOTES.md` is the working log
 of what has changed and why.
 
 ## Requirements.
@@ -174,7 +174,7 @@ PYTHONPATH=. .build-venv/bin/python setup_osx.py py2app --arch arm64
 The bundled Python is still universal, so remove the x86_64 slices from
 every Mach-O file in `dist/PySol.app` with `lipo -thin arm64`, then
 ad-hoc sign it (copy it out of iCloud-synced folders first). See
-`pysolfc-handoff.md` for the complete, tested procedure.
+`PROGRESS-NOTES.md` for the complete, tested procedure.
 
 ## Install Extras.
 
