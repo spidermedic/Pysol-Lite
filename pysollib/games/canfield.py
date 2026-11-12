@@ -3,20 +3,18 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.pysoltk import MfxCanvasText
-from pysollib.stack import \
-        AC_RowStack, \
-        AbstractFoundationStack, \
-        KingAC_RowStack, \
-        OpenStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        StackWrapper, \
-        WasteStack, \
-        WasteTalonStack, \
-        isRankSequence
+from pysollib.stack import (
+    AC_RowStack,
+    KingAC_RowStack,
+    OpenStack,
+    RK_RowStack,
+    ReserveStack,
+    SS_FoundationStack,
+    SS_RowStack,
+    StackWrapper,
+    WasteStack,
+    WasteTalonStack,
+)
 from pysollib.util import KING, QUEEN, RANKS, UNLIMITED_REDEALS
 
 
@@ -247,15 +245,6 @@ class SuperiorCanfield(Canfield):
 
 
 # ************************************************************************
-# * Rainfall
-# ************************************************************************
-
-class Rainfall(Canfield):
-    def createGame(self):
-        Canfield.createGame(self, max_rounds=3, num_deal=1, round_text=True)
-
-
-# ************************************************************************
 # * Rainbow
 # ************************************************************************
 
@@ -298,163 +287,7 @@ class Storehouse(Canfield):
 
 
 # ************************************************************************
-# * Chameleon (aka Kansas)
-# ************************************************************************
-
-class Chameleon(Canfield):
-    RowStack_Class = StackWrapper(Canfield_RK_RowStack, mod=13)
-
-    INITIAL_RESERVE_CARDS = 12
-
-    def createGame(self):
-        Canfield.createGame(self, rows=3, max_rounds=1, num_deal=1)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RKW
-
-
-# ************************************************************************
-# * Double Canfield (Canfield with 2 decks and 5 rows)
-# ************************************************************************
-
-class DoubleCanfield(Canfield):
-    def createGame(self):
-        Canfield.createGame(self, rows=5)
-
-
-# ************************************************************************
-# * American Toad
-# ************************************************************************
-
-class AmericanToad(Canfield):
-    RowStack_Class = StackWrapper(Canfield_SS_RowStack, mod=13)
-
-    INITIAL_RESERVE_CARDS = 20
-    INITIAL_RESERVE_FACEUP = 1
-
-    def createGame(self):
-        Canfield.createGame(self, rows=8, max_rounds=2, num_deal=1,
-                            round_text=True)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SSW
-
-
-# ************************************************************************
-# * Variegated Canfield
-# ************************************************************************
-
-class VariegatedCanfield(Canfield):
-    RowStack_Class = Canfield_AC_RowStack
-
-    INITIAL_RESERVE_FACEUP = 1
-
-    def createGame(self):
-        Canfield.createGame(self, rows=5, max_rounds=3,
-                            text=False, round_text=True)
-
-    def _shuffleHook(self, cards):
-        # move Aces to top of the Talon (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(
-            cards, lambda c: (c.rank == 0, c.suit))
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.foundations[:7])
-        Canfield.startGame(self)
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-    def updateText(self):
-        pass
-
-    def parseGameInfo(self):
-        return ""
-
-
-# ************************************************************************
-# * Casino Canfield
-# ************************************************************************
-
-class CasinoCanfield(Canfield):
-    getGameScore = Game.getGameScoreCasino
-    getGameBalance = Game.getGameScoreCasino
-
-    def createGame(self, max_rounds=1, num_deal=1):
-        Canfield.createGame(self, max_rounds=max_rounds,
-                            num_deal=num_deal)
-        self.texts.score = MfxCanvasText(self.canvas,
-                                         8, self.height - 8, anchor="sw",
-                                         font=self.app.getFont("canvas_large"))
-
-    def updateText(self):
-        if self.preview > 1:
-            return
-        b1, b2 = self.app.gameid_balance, 0
-        if self.shallUpdateBalance():
-            b2 = self.getGameBalance()
-        t = "Balance $%d" % (b1 + b2)
-        self.texts.score.config(text=t)
-
-
-# ************************************************************************
-# * Eagle Wing
-# ************************************************************************
-
-class EagleWing_ReserveStack(OpenStack):
-    def canFlipCard(self):
-        return len(self.cards) == 1 and not self.cards[-1].face_up
-
-
-class EagleWing(Canfield):
-    RowStack_Class = StackWrapper(SS_RowStack, mod=13, max_move=1, max_cards=3)
-    ReserveStack_Class = EagleWing_ReserveStack
-
-    def createGame(self):
-        # Canfield.createGame(self, rows=8, max_rounds=3, num_deal=1)
-        # create layout
-        lay, s = Layout(self), self.s
-
-        # set window
-        self.setSize(lay.XM + 9*lay.XS + lay.XM, lay.YM + 4*lay.YS)
-
-        # extra settings
-        self.base_card = None
-
-        # create stacks
-        x, y = lay.XM, lay.YM
-        s.talon = WasteTalonStack(x, y, self, max_rounds=3, num_deal=1)
-        lay.createText(s.talon, "s")
-        lay.createRoundText(s.talon, 'ne', dx=lay.XS)
-        x += lay.XS
-        s.waste = WasteStack(x, y, self)
-        lay.createText(s.waste, "s")
-        for i in range(4):
-            x = lay.XM + (i+3)*lay.XS
-            s.foundations.append(
-                self.Foundation_Class(x, y, self, i, mod=13, max_move=0))
-        tx, ty, ta, tf = lay.getTextAttr(None, "se")
-        tx, ty = x + tx + lay.XM, y + ty
-        font = self.app.getFont("canvas_default")
-        self.texts.info = MfxCanvasText(
-            self.canvas, tx, ty, anchor=ta, font=font)
-        ry = lay.YM + 2*lay.YS
-        for i in range(8):
-            x = lay.XM + (i + (i >= 4))*lay.XS
-            y = ry - (0.2, 0.4, 0.6, 0.4, 0.4, 0.6, 0.4, 0.2)[i]*lay.CH
-            s.rows.append(self.RowStack_Class(x, y, self))
-        x, y = lay.XM + 4*lay.XS, ry
-        s.reserves.append(self.ReserveStack_Class(x, y, self))
-        # s.reserves[0].CARD_YOFFSET = 0
-        lay.createText(s.reserves[0], "s")
-
-        # define stack-groups
-        lay.defaultStackGroups()
-
-    shallHighlightMatch = Game._shallHighlightMatch_SSW
-
-
-# ************************************************************************
 # * Gate
-# * Little Gate
 # * Doorway
 # ************************************************************************
 
@@ -600,8 +433,6 @@ class Doorway(LittleGate):
 
 # ************************************************************************
 # * Minerva
-# * Munger
-# * Mystique
 # ************************************************************************
 
 class Minerva(Canfield):
@@ -638,151 +469,6 @@ class Minerva(Canfield):
         pass
 
 
-class Munger(Minerva):
-    INITIAL_RESERVE_CARDS = 7
-
-    def createGame(self):
-        Canfield.createGame(self, rows=7, max_rounds=1, num_deal=1, text=False)
-
-
-class Mystique(Munger):
-    RowStack_Class = AC_RowStack
-    INITIAL_RESERVE_CARDS = 9
-
-
-# ************************************************************************
-# * Candike
-# ************************************************************************
-
-class Candike(Canfield):
-    RowStack_Class = AC_RowStack
-
-    def createGame(self):
-        Canfield.createGame(self, rows=7)
-
-    def startGame(self):
-        Canfield.startGame(self, num_rows=2)
-
-
-# ************************************************************************
-# * Triple Canfield
-# ************************************************************************
-
-class TripleCanfield(Canfield):
-    INITIAL_RESERVE_CARDS = 26
-
-    def createGame(self):
-        Canfield.createGame(self, rows=7)
-
-
-# ************************************************************************
-# * Quadruple Canfield
-# ************************************************************************
-
-class QuadrupleCanfield(Canfield):
-    INITIAL_RESERVE_CARDS = 39
-
-    def createGame(self):
-        Canfield.createGame(self, rows=8)
-
-
-# ************************************************************************
-# * Acme
-# ************************************************************************
-
-class Acme(Canfield):
-    Foundation_Class = SS_FoundationStack
-    RowStack_Class = StackWrapper(SS_RowStack, max_move=1)
-    Hint_Class = Canfield_Hint
-
-    def createGame(self):
-        Canfield.createGame(self, max_rounds=2, num_deal=1, round_text=True)
-
-    def _shuffleHook(self, cards):
-        # move Aces to top of the Talon (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(
-            cards, lambda c: (c.rank == 0, c.suit))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self.startDealSample()
-        for i in range(13):
-            self.moveMove(
-                1, self.s.talon, self.s.reserves[0], frames=4, shadow=0)
-        self.flipMove(self.s.reserves[0])
-        self.s.talon.dealRow(reverse=1)
-        self.s.talon.dealCards()
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-    def updateText(self):
-        pass
-
-    def parseGameInfo(self):
-        return ""
-
-    def _restoreGameHook(self, game):
-        pass
-
-    def _loadGameHook(self, p):
-        pass
-
-    def _saveGameHook(self, p):
-        pass
-
-
-# ************************************************************************
-# * Duke
-# ************************************************************************
-
-class Duke(Game):
-    Foundation_Class = SS_FoundationStack
-    ReserveStack_Class = OpenStack
-    RowStack_Class = AC_RowStack
-
-    def createGame(self):
-        lay, s = Layout(self), self.s
-
-        w, h = lay.XM + 6*lay.XS + 4*lay.XOFFSET, \
-            lay.YM + lay.TEXT_HEIGHT + 2*lay.YS + 12*lay.YOFFSET
-        self.setSize(w, h)
-
-        x, y = lay.XM, lay.YM
-        s.talon = WasteTalonStack(x, y, self, max_rounds=3)
-        lay.createText(s.talon, 's')
-        lay.createRoundText(s.talon, 'ne', dx=lay.XS)
-        x += lay.XS
-        s.waste = WasteStack(x, y, self)
-        lay.createText(s.waste, 's')
-        x += lay.XS+4*lay.XOFFSET
-        y = lay.YM
-        for i in range(4):
-            s.foundations.append(self.Foundation_Class(x, y, self, suit=i))
-            x += lay.XS
-        x0, y0, w = lay.XM, lay.YM+lay.YS+2*lay.TEXT_HEIGHT, \
-            lay.XS+2*lay.XOFFSET
-        for i, j in ((0, 0), (0, 1), (1, 0), (1, 1)):
-            x, y = x0+i*w, y0+j*lay.YS
-            stack = self.ReserveStack_Class(x, y, self, max_accept=0)
-            stack.CARD_XOFFSET, stack.CARD_YOFFSET = lay.XOFFSET, 0
-            s.reserves.append(stack)
-        x, y = lay.XM+2*lay.XS+4*lay.XOFFSET, lay.YM+lay.YS
-        for i in range(4):
-            s.rows.append(self.RowStack_Class(x, y, self))
-            x += lay.XS
-
-        lay.defaultStackGroups()
-
-    def startGame(self):
-        for i in range(3):
-            self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
 # ************************************************************************
 # * Demon
 # ************************************************************************
@@ -804,14 +490,6 @@ class CanfieldRush_Talon(WasteTalonStack):
     def dealCards(self, sound=False):
         self.num_deal = 4-self.round
         return WasteTalonStack.dealCards(self, sound=sound)
-
-
-class CanfieldRush(Canfield):
-    Talon_Class = CanfieldRush_Talon
-    # RowStack_Class = StackWrapper(AC_RowStack, mod=13)
-
-    def createGame(self):
-        Canfield.createGame(self, max_rounds=3, round_text=True)
 
 
 # ************************************************************************
@@ -955,200 +633,27 @@ class Club(Game):
         self.s.talon.dealCards()
 
 
-# ************************************************************************
-# * Lafayette
-# ************************************************************************
-
-class Lafayette(Game):
-    def createGame(self):
-        lay, s = Layout(self), self.s
-        self.setSize(lay.XM+8*lay.XS, lay.YM+2*lay.YS+12*lay.YOFFSET)
-
-        x, y = lay.XM, lay.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i))
-            s.foundations.append(SS_FoundationStack(x+4*lay.XS, y, self,
-                                 suit=i,
-                                 base_rank=KING, dir=-1))
-            x += lay.XS
-        x, y = lay.XM, lay.YM+lay.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=UNLIMITED_REDEALS,
-                                  num_deal=3)
-        lay.createText(s.talon, 'ne')
-        y += lay.YS
-        s.waste = WasteStack(x, y, self)
-        lay.createText(s.waste, 'ne')
-        x, y = lay.XM+2*lay.XS, lay.YM+lay.YS
-        for i in range(4):
-            s.rows.append(AC_RowStack(x, y, self, base_rank=6))
-            x += lay.XS
-        x += lay.XS
-        stack = OpenStack(x, y, self)
-        s.reserves.append(stack)
-        stack.CARD_YOFFSET = lay.YOFFSET
-
-        lay.defaultStackGroups()
-
-    def startGame(self):
-        for i in range(13):
-            self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            if self.s.reserves[0].cards:
-                old_state = self.enterState(self.S_FILL)
-                self.s.reserves[0].moveMove(1, stack)
-                self.leaveState(old_state)
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
-# ************************************************************************
-# * Beehive
-# ************************************************************************
-
-class Beehive_RowStack(RK_RowStack):
-    def canDropCards(self, stacks):
-        if len(self.cards) < 4:
-            return (None, 0)
-        cards = self.cards[-4:]
-        for s in stacks:
-            if s is not self and s.acceptsCards(self, cards):
-                return (s, 4)
-        return (None, 0)
-
-
-class Beehive_Foundation(AbstractFoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if len(cards) < 4:
-            return False
-        return isRankSequence(cards, dir=0)
-
-
-class Beehive(Canfield):
-    Foundation_Class = Beehive_Foundation
-    RowStack_Class = Beehive_RowStack
-
-    SEPARATE_FOUNDATIONS = False
-
-    def createGame(self):
-        Canfield.createGame(self, rows=6, dir=0)
-
-    def _restoreGameHook(self, game):
-        pass
-
-    def _loadGameHook(self, p):
-        pass
-
-    def _saveGameHook(self, p):
-        pass
-
-    def parseGameInfo(self):
-        return ""
-
-
-# ************************************************************************
-# * The Plot
-# ************************************************************************
-
-class ThePlot_RowStack(RK_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if len(self.cards) == 0:
-            if (len(self.game.s.foundations[0].cards) < 13 and
-                    cards[0].rank != self.game.s.foundations[0].cap.base_rank):
-                return False
-            if from_stack != self.game.s.waste:
-                return False
-        if from_stack in self.game.s.reserves:
-            return False
-        return RK_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class ThePlot_Foundation(RK_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if (len(self.game.s.foundations[0].cards) < 13 and
-                len(self.cards) == 0):
-            return False
-        return RK_FoundationStack.acceptsCards(self, from_stack, cards)
-
-
-class ThePlot(Canfield):
-    Foundation_Class = ThePlot_Foundation
-    RowStack_Class = StackWrapper(ThePlot_RowStack, mod=13, max_move=1)
-
-    FILL_EMPTY_ROWS = 0
-    ALIGN_FOUNDATIONS = False
-
-    def createGame(self):
-        Canfield.createGame(self, rows=12, max_rounds=1, num_deal=1,
-                            round_text=False)
-
-
 # register the game
 registerGame(GameInfo(105, Canfield, "Canfield",                # was: 262
                       GI.GT_CANFIELD | GI.GT_CONTRIB, 1, -1, GI.SL_BALANCED))
 registerGame(GameInfo(101, SuperiorCanfield, "Superior Canfield",
                       GI.GT_CANFIELD, 1, -1, GI.SL_BALANCED))
-registerGame(GameInfo(99, Rainfall, "Rainfall",
-                      GI.GT_CANFIELD | GI.GT_ORIGINAL, 1, 2, GI.SL_BALANCED))
 registerGame(GameInfo(108, Rainbow, "Rainbow",
                       GI.GT_CANFIELD, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(100, Storehouse, "Storehouse",
                       GI.GT_CANFIELD, 1, 2, GI.SL_BALANCED,
                       altnames=("Provisions", "Straight Up", "Thirteen Up",
                                 "The Reserve")))
-registerGame(GameInfo(43, Chameleon, "Chameleon",
-                      GI.GT_CANFIELD, 1, 0, GI.SL_BALANCED,
-                      altnames="Kansas"))
-registerGame(GameInfo(106, DoubleCanfield, "Double Canfield",   # was: 22
-                      GI.GT_CANFIELD, 2, -1, GI.SL_BALANCED))
-registerGame(GameInfo(103, AmericanToad, "American Toad",
-                      GI.GT_CANFIELD, 2, 1, GI.SL_BALANCED))
-registerGame(GameInfo(102, VariegatedCanfield, "Variegated Canfield",
-                      GI.GT_CANFIELD, 2, 2, GI.SL_BALANCED))
-registerGame(GameInfo(112, EagleWing, "Eagle Wing",
-                      GI.GT_CANFIELD, 1, 2, GI.SL_BALANCED,
-                      altnames="Thirteen Down"))
 registerGame(GameInfo(315, Gate, "Gate",
                       GI.GT_CANFIELD, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(316, LittleGate, "Little Gate",
-                      GI.GT_CANFIELD, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(360, Munger, "Munger",
-                      GI.GT_CANFIELD, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(396, TripleCanfield, "Triple Canfield",
-                      GI.GT_CANFIELD, 3, -1, GI.SL_BALANCED))
-registerGame(GameInfo(403, Acme, "Acme",
-                      GI.GT_CANFIELD, 1, 1, GI.SL_BALANCED))
-registerGame(GameInfo(413, Duke, "Duke",
-                      GI.GT_CANFIELD, 1, 2, GI.SL_BALANCED))
 registerGame(GameInfo(422, Minerva, "Minerva",
                       GI.GT_CANFIELD, 1, 1, GI.SL_BALANCED))
 registerGame(GameInfo(476, Demon, "Demon",
                       GI.GT_CANFIELD, 2, -1, GI.SL_BALANCED))
-registerGame(GameInfo(494, Mystique, "Mystique",
-                      GI.GT_CANFIELD, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(521, CanfieldRush, "Canfield Rush",
-                      GI.GT_CANFIELD, 1, 2, GI.SL_BALANCED))
 registerGame(GameInfo(527, Doorway, "Doorway",
                       GI.GT_KLONDIKE, 1, 0, GI.SL_BALANCED,
                       altnames=('Solstice',)))
 registerGame(GameInfo(605, Skippy, "Skippy",
                       GI.GT_FAN_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(642, Lafayette, "Lafayette",
-                      GI.GT_CANFIELD, 1, -1, GI.SL_BALANCED))
-registerGame(GameInfo(789, Beehive, "Beehive",
-                      GI.GT_CANFIELD, 1, -1, GI.SL_BALANCED))
-registerGame(GameInfo(835, CasinoCanfield, "Casino Canfield",
-                      GI.GT_CANFIELD | GI.GT_SCORE, 1, 0, GI.SL_BALANCED,
-                      altnames="Reno"))
-registerGame(GameInfo(896, ThePlot, "The Plot",
-                      GI.GT_CANFIELD, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(922, QuadrupleCanfield, "Quadruple Canfield",
-                      GI.GT_CANFIELD, 4, -1, GI.SL_BALANCED))
 registerGame(GameInfo(947, Club, "Club",
                       GI.GT_FAN_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(989, Candike, "Candike",
-                      GI.GT_CANFIELD, 1, -1, GI.SL_BALANCED))
