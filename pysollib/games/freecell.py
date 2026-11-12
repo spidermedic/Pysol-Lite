@@ -24,27 +24,25 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.spider import Spider_AC_Foundation
-from pysollib.hint import DefaultHint
 from pysollib.hint import FreeCellSolverWrapper, FreeCellType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.stack import \
-        AC_FoundationStack, \
-        AC_RowStack, \
-        BasicRowStack, \
-        FreeCell_AC_RowStack, \
-        FreeCell_SS_RowStack, \
-        InitialDealTalonStack, \
-        KingAC_RowStack, \
-        OpenStack, \
-        RK_FoundationStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        Stack, \
-        StackWrapper, \
-        SuperMoveAC_RowStack, \
-        SuperMoveRK_RowStack, \
-        isAlternateColorSequence
+from pysollib.stack import (
+    AC_FoundationStack,
+    AC_RowStack,
+    BasicRowStack,
+    FreeCell_AC_RowStack,
+    FreeCell_SS_RowStack,
+    InitialDealTalonStack,
+    RK_FoundationStack,
+    ReserveStack,
+    SS_FoundationStack,
+    Stack,
+    StackWrapper,
+    SuperMoveAC_RowStack,
+    SuperMoveRK_RowStack,
+    isAlternateColorSequence,
+)
 from pysollib.util import ACE, ANY_SUIT, KING, NO_RANK, UNLIMITED_CARDS
 
 # ************************************************************************
@@ -678,25 +676,6 @@ class Headquarters(Game):
 
 
 # ************************************************************************
-# * Can Can
-# ************************************************************************
-
-class CanCan(FreeCell):
-    Hint_Class = DefaultHint
-    Solver_Class = None
-    RowStack_Class = KingAC_RowStack
-    ReserveStack_Class = StackWrapper(OpenStack, max_accept=0)
-
-    def createGame(self):
-        FreeCell.createGame(self, rows=13, reserves=3)
-
-    def startGame(self):
-        self._startDealNumRows(3)
-        self.s.talon.dealRow(rows=self.s.reserves)
-        self.s.talon.dealRowAvail()
-
-
-# ************************************************************************
 # * Limpopo
 # ************************************************************************
 
@@ -805,8 +784,6 @@ registerGame(GameInfo(542, KingCell, "KingCell",
 registerGame(GameInfo(648, Headquarters, "Headquarters",
                       GI.GT_FREECELL | GI.GT_OPEN | GI.GT_ORIGINAL, 2, 0,
                       GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(698, CanCan, "Can Can",
-                      GI.GT_RAGLAN | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(746, Limpopo, "Limpopo",
                       GI.GT_FREECELL | GI.GT_OPEN | GI.GT_ORIGINAL, 2, 0,
                       GI.SL_MOSTLY_SKILL))
