@@ -28,14 +28,13 @@ from . import bakersdozen  # noqa: F401
 from . import bakersgame  # noqa: F401
 from . import beleagueredcastle  # noqa: F401
 from . import bisley  # noqa: F401
-from . import bisley13  # noqa: F401
 from . import braid  # noqa: F401
 from . import bristol  # noqa: F401
 from . import buffalobill  # noqa: F401
 from . import calculation  # noqa: F401
 from . import camelot  # noqa: F401
-from . import canfield  # noqa: F401
 from . import capricieuse  # noqa: F401
+from . import canfield  # noqa: F401
 from . import clearthedungeon  # noqa: F401
 from . import crossword  # noqa: F401
 from . import curdsandwhey  # noqa: F401

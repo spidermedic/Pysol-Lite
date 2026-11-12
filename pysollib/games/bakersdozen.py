@@ -27,22 +27,19 @@ from pysollib.hint import CautiousDefaultHint
 from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.stack import \
-        AC_FoundationStack, \
-        AC_RowStack, \
-        InitialDealTalonStack, \
-        InvisibleStack, \
-        RK_RowStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        StackWrapper, \
-        SuperMoveAC_RowStack, \
-        TalonStack, \
-        UD_AC_RowStack, \
-        UD_SS_RowStack
-from pysollib.util import ACE, ANY_RANK, KING, NO_RANK, \
-        UNLIMITED_ACCEPTS, \
-        UNLIMITED_MOVES
+from pysollib.stack import (
+    AC_FoundationStack,
+    AC_RowStack,
+    InitialDealTalonStack,
+    InvisibleStack,
+    RK_RowStack,
+    SS_FoundationStack,
+    SS_RowStack,
+    StackWrapper,
+    SuperMoveAC_RowStack,
+    TalonStack,
+)
+from pysollib.util import KING, NO_RANK, UNLIMITED_ACCEPTS, UNLIMITED_MOVES
 
 
 # ************************************************************************
@@ -91,7 +88,6 @@ class CastlesInSpain(Game):
 
 # ************************************************************************
 # * Martha
-# * Stewart
 # ************************************************************************
 
 class Martha_RowStack(AC_RowStack):
@@ -117,10 +113,6 @@ class Martha(CastlesInSpain):
     def startGame(self):
         CastlesInSpain.startGame(self, flip=(0, 1, 0))
         self.s.talon.dealRow(rows=self.s.foundations)
-
-
-class Stewart(Martha):
-    RowStack_Class = StackWrapper(AC_RowStack, max_move=1, max_accept=1)
 
 
 # ************************************************************************
@@ -156,15 +148,8 @@ class BakersDozen(CastlesInSpain):
     shallHighlightMatch = Game._shallHighlightMatch_RK
 
 
-class BakersDozen2Decks(BakersDozen):
-
-    def createGame(self):
-        CastlesInSpain.createGame(self, rows=26, playcards=13)
-
-
 # ************************************************************************
 # * Spanish Patience
-# * Portuguese Solitaire
 # ************************************************************************
 
 class SpanishPatience(BakersDozen):
@@ -172,61 +157,8 @@ class SpanishPatience(BakersDozen):
     Solver_Class = None
 
 
-class PortugueseSolitaire(BakersDozen):
-    RowStack_Class = StackWrapper(RK_RowStack, base_rank=KING, max_move=1)
-    Solver_Class = FreeCellSolverWrapper(sbb='rank', esf='kings')
-
-    def _shuffleHook(self, cards):
-        return cards
-
-
-class SpanishPatienceII(PortugueseSolitaire):
-    RowStack_Class = StackWrapper(RK_RowStack, max_move=1)
-    Solver_Class = FreeCellSolverWrapper(sbb='rank')
-
-
-# ************************************************************************
-# * Good Measure
-# * Vineyard
-# ************************************************************************
-
-class GoodMeasure(BakersDozen):
-    Solver_Class = FreeCellSolverWrapper(preset='good_measure')
-
-    def createGame(self):
-        CastlesInSpain.createGame(self, rows=10)
-
-    def _shuffleHook(self, cards):
-        cards = BakersDozen._shuffleHook(self, cards)
-        # move 2 Aces to bottom of the Talon (i.e. last cards to be dealt)
-        return self._shuffleHookMoveToBottom(
-            cards, lambda c: (c.rank == 0, c.suit), 2)
-
-    def startGame(self):
-        CastlesInSpain.startGame(self, flip=(1, 1, 1, 1))
-        for i in range(2):
-            c = self.s.talon.cards[-1]
-            assert c.rank == ACE
-            self.flipMove(self.s.talon)
-            self.moveMove(1, self.s.talon, self.s.foundations[c.suit])
-
-
-class Vineyard(CastlesInSpain):
-    RowStack_Class = StackWrapper(AC_RowStack, max_move=1, max_accept=1,
-                                  base_rank=ANY_RANK)
-
-    def createGame(self):
-        CastlesInSpain.createGame(self, rows=10)
-
-    def startGame(self):
-        CastlesInSpain.startGame(self, flip=(1, 1, 1, 1))
-        self.s.talon.dealRow(self.s.rows[0:2])
-
-
 # ************************************************************************
 # * Cruel
-# * Relaxed Cruel
-# * Unusual
 # ************************************************************************
 
 class Cruel_Talon(TalonStack):
@@ -311,55 +243,6 @@ class Cruel(CastlesInSpain):
     shallHighlightMatch = Game._shallHighlightMatch_SS
 
 
-class RelaxedCruel(Cruel):
-    RowStack_Class = StackWrapper(SS_RowStack, base_rank=NO_RANK)
-
-
-class Unusual(Cruel):
-
-    def createGame(self):
-        return CastlesInSpain.createGame(self, rows=24)
-
-
-# ************************************************************************
-# * Royal Family
-# * Indefatigable
-# ************************************************************************
-
-class RoyalFamily(Cruel):
-    Foundation_Class = StackWrapper(SS_FoundationStack, base_rank=KING, dir=-1)
-    Talon_Class = StackWrapper(Cruel_Talon, max_rounds=2)
-    RowStack_Class = UD_AC_RowStack
-
-    def createGame(self):
-        lay = Cruel.createGame(self)
-        lay.createRoundText(self.s.talon, 'sw')
-
-    def _shuffleHook(self, cards):
-        # move Kings to bottom of the Talon (i.e. last cards to be dealt)
-        return self._shuffleHookMoveToBottom(
-            cards, lambda c: (c.rank == KING, c.suit))
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
-class Indefatigable(Cruel):
-    Foundation_Class = StackWrapper(SS_FoundationStack, max_move=0)
-    Talon_Class = StackWrapper(Cruel_Talon, max_rounds=3)
-    RowStack_Class = UD_SS_RowStack
-
-    def createGame(self):
-        lay = Cruel.createGame(self)
-        lay.createRoundText(self.s.talon, 'sw')
-
-    def _shuffleHook(self, cards):
-        # move Aces to bottom of the Talon (i.e. last cards to be dealt)
-        return self._shuffleHookMoveToBottom(
-            cards, lambda c: (c.rank == ACE, c.suit))
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
 # ************************************************************************
 # * Perseverance
 # ************************************************************************
@@ -386,35 +269,6 @@ class Perseverance(Cruel, BakersDozen):
 #          Cruel.dealCards(self, sound)
 
 
-# ************************************************************************
-# * Ripple Fan
-# ************************************************************************
-
-class RippleFan(CastlesInSpain):
-    Solver_Class = None
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-        Layout.bakersDozenLayout(l, rows=13)
-        self.setSize(l.size[0], l.size[1])
-        # create stacks
-        s.talon = Cruel_Talon(l.s.talon.x, l.s.talon.y, self, max_rounds=-1)
-        for r in l.s.foundations:
-            s.foundations.append(
-                SS_FoundationStack(r.x, r.y, self, suit=r.suit))
-        for r in l.s.rows:
-            s.rows.append(SS_RowStack(r.x, r.y, self, base_rank=NO_RANK))
-        # default
-        self.s.internals.append(InvisibleStack(self))
-        l.defaultAll()
-
-    def startGame(self):
-        CastlesInSpain.startGame(self, flip=(1, 1, 1))
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
 # register the game
 registerGame(GameInfo(83, CastlesInSpain, "Castles in Spain",
                       GI.GT_BAKERS_DOZEN, 1, 0, GI.SL_BALANCED))
@@ -426,38 +280,7 @@ registerGame(GameInfo(31, BakersDozen, "Baker's Dozen",
 registerGame(GameInfo(85, SpanishPatience, "Spanish Patience",
                       GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 0,
                       GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(86, GoodMeasure, "Good Measure",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(104, Cruel, "Cruel",
                       GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, -1, GI.SL_BALANCED))
-registerGame(GameInfo(291, RoyalFamily, "Royal Family",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 1,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(308, PortugueseSolitaire, "Portuguese Solitaire",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(404, Perseverance, "Perseverance",
                       GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 2, GI.SL_BALANCED))
-registerGame(GameInfo(369, RippleFan, "Ripple Fan",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, -1,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(515, Indefatigable, "Indefatigable",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 2,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(664, SpanishPatienceII, "Spanish Patience II",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(823, Unusual, "Unusual",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 2, -1, GI.SL_BALANCED))
-registerGame(GameInfo(860, BakersDozen2Decks, "Baker's Dozen (2 Decks)",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(876, Vineyard, "Vineyard",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(907, Martha, "Stewart",
-                      GI.GT_BAKERS_DOZEN, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(977, RelaxedCruel, "Relaxed Cruel",
-                      GI.GT_BAKERS_DOZEN | GI.GT_OPEN | GI.GT_RELAXED, 1, -1,
-                      GI.SL_BALANCED))
