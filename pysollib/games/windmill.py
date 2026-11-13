@@ -23,22 +23,20 @@
 
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
-from pysollib.games.golf import BlackHole_Foundation
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AC_RowStack, \
-        AbstractFoundationStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        Stack, \
-        StackWrapper, \
-        UD_RK_RowStack, \
-        WasteStack, \
-        WasteTalonStack
-from pysollib.util import ACE, ANY_SUIT, KING, UNLIMITED_CARDS
+    AC_RowStack, \
+    AbstractFoundationStack, \
+    RK_FoundationStack, \
+    RK_RowStack, \
+    ReserveStack, \
+    SS_FoundationStack, \
+    Stack, \
+    StackWrapper, \
+    WasteStack, \
+    WasteTalonStack
+from pysollib.util import ACE, ANY_SUIT, KING
 
 # ************************************************************************
 # *
@@ -62,7 +60,6 @@ class Windmill_RowStack(ReserveStack):
 
 # ************************************************************************
 # * Windmill
-# * Dutch Solitaire
 # ************************************************************************
 
 class Windmill(Game):
@@ -148,49 +145,6 @@ class Windmill(Game):
     def getAutoStacks(self, event=None):
         # disable auto drop - this would ruin the whole gameplay
         return ((), (), ())
-
-
-class DutchSolitaire_RowStack(UD_RK_RowStack):
-    getBottomImage = Stack._getReserveBottomImage
-
-
-class DutchSolitaire(Windmill):
-    Hint_Class = CautiousDefaultHint
-    Foundation_Classes = [
-        StackWrapper(BlackHole_Foundation, suit=ANY_SUIT, mod=13,
-                     max_cards=UNLIMITED_CARDS, min_cards=1),
-        StackWrapper(BlackHole_Foundation, suit=ANY_SUIT, mod=13,
-                     max_cards=UNLIMITED_CARDS, min_cards=1),
-        ]
-    RowStack_Class = DutchSolitaire_RowStack
-
-    FOUNDATIONS_LAYOUT = ((1, 1), (3, 1), (1, 3), (3, 3))
-    ROWS_LAYOUT = ((2, 0.5), (-0.5, 2), (0.5, 2), (3.5, 2), (4.5, 2), (2, 3.5))
-    FILL_STACK = False
-
-    def createGame(self):
-        Windmill.createGame(self, card_x_space=10)
-
-    def _shuffleHook(self, cards):
-        # move 5 Aces to top of the Talon (i.e. first cards to be dealt)
-        def select_cards(c):
-            if c.rank == ACE:
-                if c.suit in (0, 1):
-                    return True, c.suit
-                if c.suit == 3 and c.deck == 0:
-                    return True, c.suit
-            return False, None
-        return self._shuffleHookMoveToTop(cards, select_cards)
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startDealNumRows(8)
-        self.s.talon.dealRow()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()          # deal first card to WasteStack
-
-    def getAutoStacks(self, event=None):
-        return (self.sg.dropstacks, self.sg.dropstacks, self.sg.dropstacks)
 
 
 # ************************************************************************
@@ -460,7 +414,5 @@ registerGame(GameInfo(484, FourSeasons, "Four Seasons",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK,
                       altnames=('Corner Card', 'Vanishing Cross',
                                 'Cross Currents')))
-registerGame(GameInfo(561, DutchSolitaire, "Dutch Solitaire",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(696, FlorentinePatience, "Florentine Patience",
                       GI.GT_1DECK_TYPE, 1, 1, GI.SL_MOSTLY_LUCK))

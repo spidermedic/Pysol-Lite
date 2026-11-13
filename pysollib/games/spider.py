@@ -31,30 +31,26 @@ from pysollib.hint import (
 )
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.stack import (
-    AC_FoundationStack,
-    AC_RowStack,
-    AutoDealTalonStack,
-    BasicRowStack,
-    DealRowTalonStack,
-    InitialDealTalonStack,
-    KingAC_RowStack,
-    OpenStack,
-    RK_RowStack,
-    ReserveStack,
-    SS_FoundationStack,
-    Spider_AC_Foundation,
-    Spider_SS_Foundation,
-    Spider_SS_RowStack,
-    StackWrapper,
-    SuperMoveStack_StackMethods,
-    TalonStack,
-    WasteStack,
-    Yukon_AC_RowStack,
-    Yukon_SS_RowStack,
-    isAlternateColorSequence,
-    isRankSequence,
-)
+from pysollib.stack import \
+    AC_FoundationStack, \
+    AC_RowStack, \
+    BasicRowStack, \
+    DealRowTalonStack, \
+    InitialDealTalonStack, \
+    KingAC_RowStack, \
+    OpenStack, \
+    ReserveStack, \
+    Spider_AC_Foundation, \
+    Spider_SS_Foundation, \
+    Spider_SS_RowStack, \
+    StackWrapper, \
+    SuperMoveStack_StackMethods, \
+    TalonStack, \
+    WasteStack, \
+    Yukon_AC_RowStack, \
+    Yukon_SS_RowStack, \
+    isAlternateColorSequence, \
+    isRankSequence
 from pysollib.util import ANY_RANK, ANY_SUIT, KING
 
 
@@ -390,57 +386,6 @@ class Trillium(Game):
 
 
 # ************************************************************************
-# * Bebop
-# ************************************************************************
-
-class Bebop(Game):
-
-    def createGame(self):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+10*l.XS, l.YM+2*l.YS+18*l.YOFFSET)
-
-        x, y = l.XM+2*l.XS, l.YM
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i//2))
-            x += l.XS
-        x, y = l.XM+l.XS, l.YM+l.YS
-        for i in range(8):
-            s.rows.append(RK_RowStack(x, y, self))
-            x += l.XS
-        x, y = l.XM, l.YM
-        s.talon = AutoDealTalonStack(x, y, self)
-        l.createText(s.talon, 'ne')
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        for i in range(len(self.s.rows)-1):
-            self.s.talon.dealRow(frames=0, flip=0)
-        self._startAndDealRow()
-
-    def fillStack(self, stack):
-        if stack in self.s.rows:
-            if len(stack.cards) == len(self.s.rows)-1:
-                for c in stack.cards:
-                    if c.face_up:
-                        return
-                old_state = self.enterState(self.S_FILL)
-                for s in self.s.rows:
-                    if s is stack:
-                        continue
-                    stack.flipMove()
-                    stack.moveMove(1, s, frames=4)
-                for i in range(len(self.s.rows)-1):
-                    if self.s.talon.cards:
-                        self.s.talon.dealRow(rows=[stack], frames=4, flip=0)
-                if self.s.talon.cards:
-                    self.s.talon.dealRow(rows=[stack])
-                self.leaveState(old_state)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
 # * Astrocyte
 # ************************************************************************
 
@@ -512,9 +457,6 @@ registerGame(GameInfo(270, Spider2Suits, "Spider (2 Suits)",
                       rules_filename="spider.html"))
 registerGame(GameInfo(342, Trillium, "Trillium",
                       GI.GT_SPIDER, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(710, Bebop, "Bebop",
-                      GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
 # registerGame(GameInfo(000, SimpleSimonII, "Simple Simon II",
 #                      GI.GT_SPIDER | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(917, Astrocyte, "Astrocyte",

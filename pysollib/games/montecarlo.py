@@ -1043,21 +1043,6 @@ class DerLetzteMonarch(Game):
         return diff in (-13, -1, 1, 13)
 
 
-class TheLastMonarchII(DerLetzteMonarch):
-    Talon_Class = AutoDealTalonStack
-
-    def createGame(self):
-        DerLetzteMonarch.createGame(self, texts=True)
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            if self.s.talon.cards:
-                old_state = self.enterState(self.S_FILL)
-                self.s.talon.flipMove()
-                self.s.talon.moveMove(1, stack)
-                self.leaveState(old_state)
-
-
 # ************************************************************************
 # * Doublets
 # ************************************************************************
@@ -1234,9 +1219,6 @@ registerGame(GameInfo(368, Vertical, "Vertical",
                       GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(649, DoubletsII, "Doublets II",
                       GI.GT_PAIRING_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(663, TheLastMonarchII, "The Last Monarch II",
-                      GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(727, RightAndLeft, "Right and Left",
                       GI.GT_PAIRING_TYPE, 2, -1, GI.SL_LUCK))
 registerGame(GameInfo(801, DoubleNestor, "Double Nestor",

@@ -26,23 +26,25 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint, FreeCellType_Hint
 from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
-from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
-        AC_RowStack, \
-        AbstractFoundationStack, \
-        FreeCell_AC_RowStack, \
-        InitialDealTalonStack, \
-        OpenStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        StackWrapper, \
-        TalonStack, \
-        WasteStack, \
-        WasteTalonStack
-from pysollib.util import ACE, ANY_RANK, ANY_SUIT, KING, NO_RANK, \
-        QUEEN, RANKS, UNLIMITED_ACCEPTS
+    AC_RowStack, \
+    AbstractFoundationStack, \
+    FreeCell_AC_RowStack, \
+    InitialDealTalonStack, \
+    OpenStack, \
+    RK_FoundationStack, \
+    ReserveStack, \
+    SS_FoundationStack, \
+    StackWrapper, \
+    TalonStack
+from pysollib.util import \
+    ACE, \
+    ANY_RANK, \
+    ANY_SUIT, \
+    KING, \
+    NO_RANK, \
+    QUEEN, \
+    UNLIMITED_ACCEPTS
 
 
 class DerKatzenschwanz_Hint(FreeCellType_Hint):
@@ -393,122 +395,7 @@ class Deep(DerKatzenschwanz):
 
 
 # ************************************************************************
-# * Faerie Queen
-# ************************************************************************
-
-class FaerieQueen_RowStack(RK_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if self.game.s.talon.cards:
-            return False
-        if len(self.cards) == 1:
-            return True
-        return RK_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class FaerieQueen(SalicLaw):
-
-    Talon_Class = SalicLaw_Talon
-    Foundation_Classes = [
-        StackWrapper(RK_FoundationStack, max_move=0, max_cards=12)
-        ]
-    RowStack_Class = StackWrapper(
-        FaerieQueen_RowStack, min_cards=1, max_move=1)
-
-    def _shuffleHook(self, cards):
-        for c in cards[:]:
-            if c.rank == KING:
-                cards.remove(c)
-                break
-        cards.append(c)
-        return cards
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(self.s.rows[:1])  # deal King
-
-    def isGameWon(self):
-        if self.s.talon.cards:
-            return False
-        for s in self.s.foundations:
-            if len(s.cards) != 12:
-                return False
-        return True
-
-    def getQuickPlayScore(self, ncards, from_stack, to_stack):
-        return int(len(to_stack.cards) > 1)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
-# * Xerxes
-# * Zingara
-# ************************************************************************
-
-class Xerxes_RowStack(OpenStack):
-    def acceptsCards(self, from_stack, cards):
-        if len(self.cards) == 0:
-            return True
-        return False
-
-
-class Xerxes(SalicLaw):
-    Talon_Class = InitialDealTalonStack
-    Foundation_Classes = [
-        StackWrapper(RK_FoundationStack, max_move=0, max_cards=6, mod=13)
-    ]
-    RowStack_Class = StackWrapper(Xerxes_RowStack, max_move=1)
-    ROW_BASE_RANK = 8
-    DEAL_ALL = True
-    HEIGHT = 4
-    AUTO_DEAL_RANK = 8
-
-    def startGame(self):
-        self.startDealSample()
-        i = -1
-        while self.s.talon.cards:
-            if self.s.talon.cards[-1].rank == self.ROW_BASE_RANK:
-                i += 1
-                self.s.talon.dealRow(rows=[self.s.foundations[i]], frames=4)
-            else:
-                played = False
-                if self.s.talon.cards[-1].rank <= self.AUTO_DEAL_RANK:
-                    for f in range(i + 1):
-                        if self.s.foundations[f].cards[-1].rank == \
-                                self.s.talon.cards[-1].rank - 1:
-                            self.s.talon.dealRow(rows=[self.s.foundations[f]],
-                                                 frames=4)
-                            played = True
-                            break
-                if not played:
-                    self.s.talon.dealRow(rows=[self.s.rows[i]], frames=4)
-
-    def _shuffleHook(self, cards):
-        for c in cards[:]:
-            if c.rank == self.ROW_BASE_RANK:
-                cards.remove(c)
-                break
-        cards.append(c)
-        return cards
-
-    def isGameWon(self):
-        return Game.isGameWon(self)
-
-    def getAutoStacks(self, event=None):
-        return ((), (), self.sg.dropstacks)
-
-
-class Zingara(Xerxes):
-    Foundation_Classes = [
-        StackWrapper(RK_FoundationStack, max_move=0, max_cards=8, mod=13)
-    ]
-    ROW_BASE_RANK = 6
-
-
-# ************************************************************************
 # * Intrigue
-# * Laggard Lady
-# * Glencoe
 # ************************************************************************
 
 class Intrigue_RowStack(OpenStack):
@@ -551,253 +438,6 @@ class Intrigue(SalicLaw):
         return True
 
 
-class LaggardLady_Foundation(RK_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not RK_FoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        c = cards[0]
-        if c.rank in (4, 5):
-            i = list(self.game.s.foundations).index(self) % 8
-            r = self.game.s.rows[i]
-            if not r.cards:
-                return False
-        return True
-
-
-class LaggardLady(Intrigue):
-    Foundation_Classes = [
-        StackWrapper(LaggardLady_Foundation, base_rank=5, max_cards=6),
-        StackWrapper(
-            LaggardLady_Foundation, base_rank=4, max_cards=6, dir=-1, mod=13),
-        ]
-
-
-class Glencoe_Foundation(RK_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not RK_FoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        c = cards[0]
-        if c.rank in (4, 5):
-            i = list(self.game.s.foundations).index(self) % 8
-            r = self.game.s.rows[i]
-            if not r.cards:
-                return False
-            return c.suit == r.cards[0].suit
-        return True
-
-
-class Glencoe(Intrigue):
-    Foundation_Classes = [
-        StackWrapper(Glencoe_Foundation, base_rank=5, max_cards=6),
-        StackWrapper(
-            Glencoe_Foundation, base_rank=4, max_cards=6, dir=-1, mod=13),
-        ]
-
-
-# ************************************************************************
-# * Step-Up
-# ************************************************************************
-
-class StepUp_Foundation(SS_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not SS_FoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        if (from_stack in self.game.s.reserves or
-                from_stack == self.game.s.waste):
-            return True
-        for r in self.game.s.reserves:
-            if not r.cards:
-                return True
-        return False
-
-
-class StepUp_Talon(WasteTalonStack):
-    def canDealCards(self):
-        if not WasteTalonStack.canDealCards(self):
-            return False
-        if self.game.draws_with_open < 3:
-            return True
-        for r in self.game.s.reserves:
-            if not r.cards:
-                return False
-        return True
-
-    def dealCards(self, sound=False, shuffle=False):
-        old_state = self.game.enterState(self.game.S_FILL)
-        self.game.saveStateMove(2 | 16)  # for undo
-        empties = False
-        for r in self.game.s.reserves:
-            if not r.cards:
-                empties = True
-        if empties:
-            self.game.draws_with_open += 1
-        else:
-            self.game.draws_with_open = 0
-        self.game.saveStateMove(1 | 16)  # for redo
-        self.game.leaveState(old_state)
-        WasteTalonStack.dealCards(self, sound, shuffle)
-
-
-class StepUp_RowStack(AC_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not AC_RowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if (from_stack in self.game.s.reserves or
-                from_stack in self.game.s.foundations):
-            return False
-        return True
-
-
-class StepUp(Game):
-    Hint_Class = CautiousDefaultHint
-    GAME_VERSION = 2
-
-    def createGame(self):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+13*l.XS, l.YM+7*l.YS)
-        self.base_rank = ANY_RANK
-        self.draws_with_open = 0
-
-        x, y = l.XM+2.5*l.XS, l.YM
-        for i in range(8):
-            s.foundations.append(StepUp_Foundation(x, y, self,
-                                 suit=i % 4, mod=13, base_rank=ANY_RANK))
-            x += l.XS
-        tx, ty, ta, tf = l.getTextAttr(s.foundations[0], "sw")
-        font = self.app.getFont("canvas_default")
-        self.texts.info = MfxCanvasText(self.canvas, tx, ty,
-                                        anchor=ta, font=font)
-
-        x, y = l.XM, l.YM+l.YS
-        for i in range(13):
-            s.reserves.append(ReserveStack(x, y, self))
-            x += l.XS
-        x, y = l.XM+2*l.XS, l.YM+2*l.YS
-        for i in range(9):
-            s.rows.append(StepUp_RowStack(x, y, self, max_move=1, mod=13))
-            x += l.XS
-
-        x, y = l.XM, l.YM+2.5*l.YS
-        s.talon = StepUp_Talon(x, y, self, max_rounds=1)
-        l.createText(s.talon, 'se')
-        y += l.YS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'se')
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        c = self.s.talon.cards[-1]
-        self.base_rank = c.rank
-        self.draws_with_open = 0
-        self.s.talon.flipMove()
-        self.s.talon.moveMove(1, self.s.foundations[c.suit], frames=0)
-        for s in self.s.foundations:
-            s.cap.base_rank = c.rank
-        self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    def updateText(self):
-        if self.preview > 1:
-            return
-        base_rank = self.base_rank
-        if base_rank == ANY_RANK:
-            t = ''
-        else:
-            t = RANKS[base_rank]
-        self.texts.info.config(text=t)
-
-    def _restoreGameHook(self, game):
-        self.base_rank = game.loadinfo.dval.get('BaseRank')
-        self.draws_with_open = game.loadinfo.dval.get('DrawsWithOpen')
-
-    def _loadGameHook(self, p):
-        self.loadinfo.addattr(dval=p.load())
-
-    def _saveGameHook(self, p):
-        dval = {'BaseRank': self.base_rank,
-                'DrawsWithOpen': self.draws_with_open}
-        p.dump(dval)
-
-    def setState(self, state):
-        # restore saved vars (from undo/redo)
-        self.draws_with_open = state[0]
-
-    def getState(self):
-        # save vars (for undo/redo)
-        return [self.draws_with_open]
-
-    shallHighlightMatch = Game._shallHighlightMatch_ACW
-
-
-# ************************************************************************
-# * Kentish
-# ************************************************************************
-
-class Kentish(Kings):
-    Solver_Class = FreeCellSolverWrapper(sbb='rank', sm='unlimited')
-
-    def createGame(self, rows=8):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set size
-        self.setSize(l.XM + (rows+2)*l.XS, l.YM + 5*l.YS)
-
-        #
-        playcards = 4*l.YS // l.YOFFSET
-        xoffset, yoffset = [], []
-        for i in range(playcards):
-            xoffset.append(0)
-            yoffset.append(l.YOFFSET)
-        for i in range(104-playcards):
-            xoffset.append(l.XOFFSET)
-            yoffset.append(0)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        for i in range(rows):
-            stack = RK_RowStack(x, y, self)
-            stack.CARD_XOFFSET = xoffset
-            stack.CARD_YOFFSET = yoffset
-            s.rows.append(stack)
-            x += l.XS
-        x, y = l.XM + rows*l.XS, l.YM
-        for suit in range(4):
-            for i in range(2):
-                s.foundations.append(RK_FoundationStack(x+i*l.XS, y, self,
-                                                        suit=suit))
-            y += l.YS
-        self.setRegion(self.s.foundations,
-                       (x - l.CW // 2, -999, 999999, y), priority=1)
-        x, y = self.width-3*l.XS//2, self.height-l.YS
-        s.talon = InitialDealTalonStack(x, y, self)
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        for c in cards[:]:
-            if c.rank == ACE:
-                cards.remove(c)
-                break
-        cards.insert(0, c)
-        return cards
-
-    def startGame(self):
-        self.startDealSample()
-        i = 0
-        while self.s.talon.cards:
-            r = self.s.talon.cards[-1].rank
-            self.s.talon.dealRow(rows=[self.s.rows[i]], frames=4)
-            if r == ACE:
-                i += 1
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
 # register the game
 registerGame(GameInfo(141, DerKatzenschwanz, "Cat's Tail",
                       GI.GT_FREECELL | GI.GT_OPEN, 2, 0, GI.SL_MOSTLY_SKILL,
@@ -818,20 +458,3 @@ registerGame(GameInfo(442, Deep, "Deep",
                       GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(523, Intrigue, "Intrigue",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(611, FaerieQueen, "Faerie Queen",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(612, Glencoe, "Glencoe",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(616, LaggardLady, "Laggard Lady",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(624, StepUp, "Step-Up",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(766, Kentish, "Kentish",
-                      GI.GT_2DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(967, Xerxes, "Xerxes",
-                      GI.GT_2DECK_TYPE | GI.GT_OPEN | GI.GT_STRIPPED, 2, 0,
-                      GI.SL_BALANCED, ranks=(0, 8, 9, 10, 11, 12),))
-registerGame(GameInfo(968, Zingara, "Zingara",
-                      GI.GT_2DECK_TYPE | GI.GT_OPEN | GI.GT_STRIPPED, 2, 0,
-                      GI.SL_BALANCED, ranks=(0, 6, 7, 8, 9, 10, 11, 12),))

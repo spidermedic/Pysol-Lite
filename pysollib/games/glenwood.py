@@ -24,17 +24,14 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.canfield import Canfield_Hint
-from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
-        AC_RowStack, \
-        AbstractFoundationStack, \
-        OpenStack, \
-        RedealTalonStack, \
-        SS_RowStack, \
-        WasteStack, \
-        WasteTalonStack
+    AC_RowStack, \
+    AbstractFoundationStack, \
+    OpenStack, \
+    WasteStack, \
+    WasteTalonStack
 from pysollib.util import ANY_RANK, RANKS
 
 # ************************************************************************
@@ -186,157 +183,7 @@ class Glenwood(Game):
         return [self.base_rank]
 
 
-# ************************************************************************
-# * Double Fives
-# ************************************************************************
-
-class DoubleFives_Talon(RedealTalonStack):
-
-    def moveToStock(self):
-        stock = self.game.s.stock
-        for r in self.game.s.reserves[:5]:
-            if r.cards:
-                r.moveMove(1, stock)
-                stock.flipMove()
-
-    def canDealCards(self):
-        if self.game.base_rank is None:
-            return False
-        if self.round == self.max_rounds:
-            return len(self.cards) != 0
-        return not self.game.isGameWon()
-
-    def dealCards(self, sound=False):
-        old_state = self.game.enterState(self.game.S_DEAL)
-        num_cards = 0
-        if self.round == 1:
-            if sound:
-                self.game.startDealSample()
-            self.moveToStock()
-            if not self.cards:
-                num_cards += self.redealCards(rows=[self.game.s.stock],
-                                              frames=4, sound=False)
-            else:
-                num_cards += self.dealRowAvail(rows=self.game.s.reserves[:5],
-                                               sound=False)
-            if sound:
-                self.game.stopSamples()
-        else:
-            if sound and not self.game.demo:
-                self.game.playSample("dealwaste")
-            self.game.flipMove(self)
-            self.game.moveMove(1, self, self.game.s.reserves[0],
-                               frames=4, shadow=0)
-            num_cards += 1
-        self.game.leaveState(old_state)
-        return num_cards
-
-
-class DoubleFives_RowStack(SS_RowStack):
-    def moveMove(self, ncards, to_stack, frames=-1, shadow=-1):
-        SS_RowStack.moveMove(self, ncards, to_stack, frames, shadow)
-        if self.game.base_rank is None and to_stack in self.game.s.foundations:
-            old_state = self.game.enterState(self.game.S_FILL)
-            self.game.saveStateMove(2 | 16)            # for undo
-            self.game.base_rank = to_stack.cards[-1].rank
-            self.game.saveStateMove(1 | 16)            # for redo
-            self.game.leaveState(old_state)
-
-
-class DoubleFives_WasteStack(WasteStack):
-    def updateText(self):
-        if self.game.s.talon.round == 2:
-            WasteStack.updateText(self)
-        elif self.texts.ncards:
-            self.texts.ncards.config(text='')
-
-
-class DoubleFives_Stock(WasteStack):
-    def canFlipCard(self):
-        return False
-
-    def updateText(self):
-        if self.cards:
-            WasteStack.updateText(self)
-        elif self.texts.ncards is not None:
-            # self.texts.ncards is None in playable preview
-            self.texts.ncards.config(text='')
-
-
-class DoubleFives(Glenwood):
-    Hint_Class = CautiousDefaultHint
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM+11*l.XS, l.YM+3*l.YS+16*l.YOFFSET)
-
-        # create stacks
-        #
-        x, y = l.XM, self.height - l.YS - l.TEXT_HEIGHT
-        s.talon = DoubleFives_Talon(x, y, self, max_rounds=2, num_deal=1)
-        l.createText(s.talon, "s")
-        l.createRoundText(self.s.talon, 'n')
-        x += l.XS
-        for i in range(5):
-            s.reserves.append(DoubleFives_WasteStack(x, y, self))
-            x += l.XS
-        l.createText(s.reserves[0], 's')
-        #
-        x = self.width-l.XS
-        s.addattr(stock=None)      # register extra stack variable
-        s.stock = DoubleFives_Stock(x, y, self)
-        l.createText(s.stock, "s")
-        #
-        x, y = l.XM, l.YM
-        s.reserves.append(Glenwood_ReserveStack(x, y, self))
-        x += l.XS
-        s.reserves.append(Glenwood_ReserveStack(x, y, self))
-        #
-        x += 2*l.XS
-        for i in range(8):
-            s.foundations.append(Glenwood_Foundation(x, y, self, suit=i//2,
-                                 mod=13, base_rank=ANY_RANK, max_move=0))
-            x += l.XS
-        tx, ty, ta, tf = l.getTextAttr(None, "ss")
-        tx, ty = x - l.XS + tx, y + ty
-        font = self.app.getFont("canvas_default")
-        self.texts.info = MfxCanvasText(self.canvas, tx, ty,
-                                        anchor=ta, font=font)
-        x, y = l.XM+l.XS//2, l.YM+l.YS+l.TEXT_HEIGHT
-        for i in range(10):
-            s.rows.append(DoubleFives_RowStack(x, y, self, mod=13, max_move=1))
-            x += l.XS
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def shuffle(self):
-        self.shuffleSeparateDecks()
-
-    def startGame(self):
-        self.base_rank = None
-        self._startDealNumRows(4)
-        self.s.talon.dealRow()
-        self.s.talon.dealRow(rows=self.s.reserves[-2:])
-
-    def _autoDeal(self, sound=True):
-        waste_cards = 0
-        for r in self.s.reserves[:5]:
-            waste_cards += len(r.cards)
-        if waste_cards == 0 and self.canDealCards():
-            return self.dealCards(sound=sound)
-        return 0
-
-    shallHighlightMatch = Game._shallHighlightMatch_SSW
-
-
 # register the game
 registerGame(GameInfo(282, Glenwood, "Dutchess",
                       GI.GT_CANFIELD, 1, 1, GI.SL_BALANCED,
                       altnames=("Duchess", "Glenwood",)))
-registerGame(GameInfo(587, DoubleFives, "Double Fives",
-                      GI.GT_2DECK_TYPE | GI.GT_SEPARATE_DECKS,
-                      2, 1, GI.SL_BALANCED))

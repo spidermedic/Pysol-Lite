@@ -31,25 +31,31 @@ from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
-        AbstractFoundationStack, \
-        AutoDealTalonStack, \
-        BasicRowStack, \
-        DealRowTalonStack, \
-        InitialDealTalonStack, \
-        OpenStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        Stack, \
-        StackWrapper, \
-        UD_RK_RowStack, \
-        WasteStack, \
-        WasteTalonStack, \
-        isSameSuitSequence
-from pysollib.util import ACE, ANY_RANK, ANY_SUIT, DIAMOND, KING, NO_RANK, \
-        RANKS, SUITS, UNLIMITED_REDEALS
+    AbstractFoundationStack, \
+    AutoDealTalonStack, \
+    BasicRowStack, \
+    InitialDealTalonStack, \
+    OpenStack, \
+    RK_FoundationStack, \
+    RK_RowStack, \
+    ReserveStack, \
+    SS_FoundationStack, \
+    SS_RowStack, \
+    Stack, \
+    StackWrapper, \
+    UD_RK_RowStack, \
+    WasteStack, \
+    WasteTalonStack, \
+    isSameSuitSequence
+from pysollib.util import \
+    ACE, \
+    ANY_RANK, \
+    ANY_SUIT, \
+    DIAMOND, \
+    KING, \
+    NO_RANK, \
+    RANKS, \
+    UNLIMITED_REDEALS
 
 
 class Golf_Hint(AbstractHint):
@@ -1007,78 +1013,7 @@ class DoubleDolphin(Dolphin):
 
 
 # ************************************************************************
-# * Waterfall
-# ************************************************************************
-
-class Waterfall_Foundation(AbstractFoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not AbstractFoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        c1 = cards[0]
-        if not self.cards:
-            return c1.rank == ACE and c1.suit == 0
-        c2 = self.cards[-1]
-        if c2.rank == KING:
-            suit = (c2.suit+1) % 4
-            rank = ACE
-        else:
-            suit = c2.suit
-            rank = c2.rank+1
-        return c1.suit == suit and c1.rank == rank
-
-
-class Waterfall(Game):
-
-    def createGame(self):
-        rows = 8
-        layout, s = Layout(self), self.s
-        self.setSize(layout.XM + rows * layout.XS,
-                     layout.YM + 2 * layout.YS + 30 * layout.YOFFSET)
-
-        x, y = layout.XM, layout.YM
-        for i in range(rows):
-            s.rows.append(RK_RowStack(x, y, self))
-            x += layout.XS
-        x, y = layout.XM+(rows-1)*layout.XS//2, self.height-layout.YS
-        s.foundations.append(Waterfall_Foundation(x, y, self, suit=ANY_SUIT,
-                                                  max_cards=104))
-        stack = s.foundations[0]
-        tx, ty, ta, tf = layout.getTextAttr(stack, 'se')
-        font = self.app.getFont('canvas_default')
-        stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
-                                         anchor=ta, font=font)
-        x, y = self.width-layout.XS, self.height-layout.YS
-        s.talon = DealRowTalonStack(x, y, self)
-        layout.createText(s.talon, 'sw')
-
-        layout.defaultStackGroups()
-
-    def startGame(self):
-        self._startDealNumRowsAndDealSingleRow(3)
-
-    def updateText(self):
-        if self.preview > 1:
-            return
-        f = self.s.foundations[0]
-        if len(f.cards) == 104:
-            t = ''
-        elif len(f.cards) == 0:
-            t = SUITS[0]
-        else:
-            c = f.cards[-1]
-            if c.rank == KING:
-                suit = (c.suit+1) % 4
-            else:
-                suit = c.suit
-            t = SUITS[suit]
-        f.texts.misc.config(text=t)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
 # * Vague
-# * Thirty-Two Cards
 # ************************************************************************
 
 class Vague_RowStack(BasicRowStack):
@@ -1147,18 +1082,6 @@ class Vague(Game):
             return ((), (), self.sg.dropstacks)
         # rightclickHandler
         return ((), self.sg.dropstacks, self.sg.dropstacks)
-
-
-class ThirtyTwoCards(Vague):
-    Foundation_Classes = [
-        SS_FoundationStack,
-        StackWrapper(SS_FoundationStack, base_rank=KING, dir=-1)]
-
-    def createGame(self):
-        Vague.createGame(self, rows=4, columns=8)
-
-    def startGame(self):
-        self._startAndDealRow()
 
 
 # ************************************************************************
@@ -1645,16 +1568,11 @@ registerGame(GameInfo(661, Dolphin, "Dolphin",
 registerGame(GameInfo(662, DoubleDolphin, "Double Dolphin",
                       GI.GT_GOLF | GI.GT_OPEN | GI.GT_ORIGINAL, 2, 0,
                       GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(709, Waterfall, "Waterfall",
-                      GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(720, Vague, "Vague",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(723, DevilsSolitaire, "Devil's Solitaire",
                       GI.GT_2DECK_TYPE, 2, 2, GI.SL_BALANCED,
                       altnames=('Banner',)))
-registerGame(GameInfo(728, ThirtyTwoCards, "Thirty-Two Cards",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_LUCK))
 registerGame(GameInfo(731, ThreeFirTrees, "Three Fir-trees",
                       GI.GT_GOLF, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(733, NapoleonTakesMoscow, "Napoleon Takes Moscow",

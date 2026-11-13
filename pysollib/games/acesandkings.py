@@ -29,13 +29,9 @@ from pysollib.stack import \
     BasicRowStack, \
     OpenStack, \
     RK_FoundationStack, \
-    StackWrapper, \
-    UD_RK_RowStack, \
     WasteStack, \
     WasteTalonStack
-from pysollib.util import ACE, KING, NO_RANK, QUEEN, RANKS, \
-    UNLIMITED_ACCEPTS, \
-    UNLIMITED_CARDS
+from pysollib.util import ACE, KING, RANKS
 
 
 # ************************************************************************
@@ -148,22 +144,6 @@ class AcesAndKings(Game):
 
 
 # ************************************************************************
-# * Acey and Kingsley
-# ************************************************************************
-
-class AceyAndKingsley(AcesAndKings):
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (ACE, KING) and c.deck == 0,
-                       (c.rank, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        AcesAndKings.startGame(self)
-
-
-# ************************************************************************
 # * Racing Aces
 # ************************************************************************
 
@@ -173,27 +153,8 @@ class RacingAces(AcesAndKings):
     FOUNDATION_SETS = ((ACE, KING), (6, 5))
 
 
-# ************************************************************************
-# * Deuces and Queens
-# ************************************************************************
-
-class DeucesAndQueens(AcesAndKings):
-    RowStack_Class = StackWrapper(UD_RK_RowStack, max_accept=UNLIMITED_ACCEPTS,
-                                  max_cards=UNLIMITED_CARDS, mod=13,
-                                  base_rank=NO_RANK)
-    Foundation_Class = StackWrapper(RK_FoundationStack, max_cards=13)
-
-    NUM_RESERVES = 3
-    FOUNDATION_SETS = ((1, QUEEN),)
-    PLAYCARDS = 12
-
-
 # register the game
 registerGame(GameInfo(800, AcesAndKings, "Aces and Kings",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(814, AceyAndKingsley, "Acey and Kingsley",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(820, RacingAces, "Racing Aces",
                       GI.GT_3DECK_TYPE, 3, 0, GI.SL_BALANCED))
-registerGame(GameInfo(911, DeucesAndQueens, "Deuces and Queens",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))

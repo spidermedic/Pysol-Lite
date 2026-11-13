@@ -26,17 +26,14 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AC_RowStack, \
-        BasicRowStack, \
-        InitialDealTalonStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        StackWrapper, \
-        UD_AC_RowStack, \
-        UD_RK_RowStack, \
-        UD_SS_RowStack, \
-        WasteStack, \
-        WasteTalonStack
+    InitialDealTalonStack, \
+    SS_FoundationStack, \
+    StackWrapper, \
+    UD_AC_RowStack, \
+    UD_RK_RowStack, \
+    UD_SS_RowStack, \
+    WasteStack, \
+    WasteTalonStack
 from pysollib.util import ACE, KING, NO_RANK, UNLIMITED_REDEALS
 
 
@@ -96,59 +93,6 @@ class Bisley(Game):
             cards, lambda c: (c.rank == ACE, c.suit))
 
     shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-# ************************************************************************
-# * Gloria
-# ************************************************************************
-
-class Gloria(Game):
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        w, h = l.XM+12*l.XS, l.YM+2*l.YS+2*(l.YS+5*l.YOFFSET)
-        self.setSize(w, h)
-
-        # create stacks
-        y = l.YM+2*l.YS
-        for i in range(2):
-            x = l.XM
-            for j in range(12):
-                s.rows.append(BasicRowStack(x, y, self, max_accept=0))
-                x += l.XS
-            y += l.YS+5*l.YOFFSET
-
-        x = l.XM+2*l.XS
-        for j in range(2):
-            for i in range(4):
-                y = l.YM
-                s.foundations.append(
-                    SS_FoundationStack(x, y, self, suit=j*2+i//2))
-                y += l.YS
-                s.foundations.append(SS_FoundationStack(x, y, self,
-                                     suit=j*2+i//2, base_rank=KING, dir=-1))
-                x += l.XS
-
-        s.reserves.append(ReserveStack(l.XM, l.YM, self))
-        s.reserves.append(ReserveStack(w-l.XS, l.YM, self))
-
-        s.talon = InitialDealTalonStack(l.XM, l.YM+l.YS, self)
-
-        # default
-        l.defaultAll()
-
-    def startGame(self):
-        self._startDealNumRows(3)
-        self.s.talon.dealRow()
-        self.s.talon.dealRow(rows=self.s.foundations[1::2])
-
-    def _shuffleHook(self, cards):
-        # move Kings to bottom of the Talon (i.e. last cards to be dealt)
-        return self._shuffleHookMoveToBottom(
-            cards, lambda c: (c.rank == KING, c.suit))
 
 
 # ************************************************************************
@@ -235,62 +179,10 @@ class HospitalPatience(Game):
         self.s.talon.dealCards()      # deal first card to WasteStack
 
 
-# ************************************************************************
-# * Cringle
-# ************************************************************************
-
-class Cringle(Game):
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM + 8.5*l.XS, l.YM + 3*l.YS + 14*l.XOFFSET)
-
-        # create stacks
-        x, y, = l.XM, l.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i))
-            x += l.XS
-        x += l.XS//2
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                                    base_rank=KING, dir=-1))
-            x += l.XS
-
-        x, y = l.XM, l.YM+l.YS
-        for j in range(4):
-            s.rows.append(AC_RowStack(x, y, self))
-            x += l.XS
-        x += l.XS//2
-        for j in range(4):
-            s.rows.append(AC_RowStack(x, y, self, dir=1))
-            x += l.XS
-
-        x, y = self.width-l.XS, self.height-l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 'n')
-        x -= l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'n')
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self._startDealNumRowsAndDealRowAndCards(4)
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
 # register the game
 registerGame(GameInfo(290, Bisley, "Bisley",
                       GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 0,
                       GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(373, Gloria, "Gloria",
-                      GI.GT_2DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL,
-                      2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(374, Realm, "Realm",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL,
                       1, 0, GI.SL_MOSTLY_SKILL))
@@ -299,5 +191,3 @@ registerGame(GameInfo(375, Mancunian, "Mancunian",
                       1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(686, HospitalPatience, "Hospital Patience",
                       GI.GT_1DECK_TYPE, 1, -1, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(747, Cringle, "Cringle",
-                      GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 0, GI.SL_BALANCED))

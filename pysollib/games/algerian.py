@@ -33,7 +33,7 @@ from pysollib.stack import (
     StackWrapper,
     UD_SS_RowStack,
 )
-from pysollib.util import ACE, KING
+from pysollib.util import ACE
 
 # ************************************************************************
 # * Carthage
@@ -121,31 +121,8 @@ class Carthage(Game):
     shallHighlightMatch = Game._shallHighlightMatch_SSW
 
 
-# ************************************************************************
-# * Algerian Patience
-# ************************************************************************
-
-# Algerian Patience is a variation of Carthage with different rules
-# for dealing and card movement.
-
-
-class AlgerianPatience(Carthage):
-
-    # Different foundation rules for stacking cards
-    Foundation_Classes = (SS_FoundationStack,
-                          StackWrapper(SS_FoundationStack, base_rank=KING,
-                                       dir=-1))
-    RowStack_Class = StackWrapper(UD_SS_RowStack, mod=13)
-
-    # Hook for modifying the shuffle process, moves 4 Kings to the
-    # top of the Talon.
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards, lambda c: (c.rank == KING and c.deck == 0, c.suit))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations[4:], frames=0)
-        Carthage.startGame(self)
+# Algerian Patience (3 Decks) is a variation of Carthage with different
+# rules for dealing and card movement.
 
 
 class AlgerianPatience3(Carthage):
@@ -170,11 +147,8 @@ class AlgerianPatience3(Carthage):
         Carthage.startGame(self)
 
 
-# Register the Carthage, Algerian Patience, and Algerian
-# Patience (3 Decks) games in the system.
+# Register the Carthage and Algerian Patience (3 Decks) games in the system.
 registerGame(GameInfo(321, Carthage, "Carthage",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(322, AlgerianPatience, "Algerian Patience",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(457, AlgerianPatience3, "Algerian Patience (3 Decks)",
                       GI.GT_3DECK_TYPE | GI.GT_ORIGINAL, 3, 0,

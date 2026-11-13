@@ -26,30 +26,23 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AC_FoundationStack, \
-        AbstractFoundationStack, \
-        AutoDealTalonStack, \
-        BasicRowStack, \
-        DealRowRedealTalonStack, \
-        DealRowTalonStack, \
-        InitialDealTalonStack, \
-        InvisibleStack, \
-        KingAC_RowStack, \
-        OpenStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        RedealTalonStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        Stack, \
-        StackWrapper, \
-        UD_AC_RowStack, \
-        UD_SS_RowStack, \
-        WasteStack, \
-        WasteTalonStack
-from pysollib.util import ACE, ANY_SUIT, JACK, KING, NO_RANK, QUEEN, \
-        UNLIMITED_REDEALS
+    AbstractFoundationStack, \
+    AutoDealTalonStack, \
+    BasicRowStack, \
+    DealRowTalonStack, \
+    InitialDealTalonStack, \
+    OpenStack, \
+    RK_FoundationStack, \
+    RK_RowStack, \
+    ReserveStack, \
+    SS_FoundationStack, \
+    SS_RowStack, \
+    Stack, \
+    StackWrapper, \
+    UD_AC_RowStack, \
+    WasteStack, \
+    WasteTalonStack
+from pysollib.util import ACE, ANY_SUIT, JACK, KING, NO_RANK, QUEEN
 
 
 # ************************************************************************
@@ -131,74 +124,6 @@ class Sultan(Game):
         return (self.sg.dropstacks, (), self.sg.dropstacks)
 
 
-class SultanPlus(Sultan):
-    def createGame(self):
-        Sultan.createGame(self, reserves=8)
-
-
-# ************************************************************************
-# * Boudoir
-# ************************************************************************
-
-class Boudoir(Game):
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+5.5*l.XS, l.YM+4*l.YS)
-
-        x, y = l.XM, l.YM+l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=3)
-        l.createText(s.talon, 'ne')
-        l.createRoundText(s.talon, 'nn')
-        y += l.YS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'ne')
-
-        x, y = l.XM+1.5*l.XS, l.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                                    max_cards=13))
-            x += l.XS
-
-        x = l.XM+1.5*l.XS
-        y += l.YS
-        for i in range(4):
-            s.rows.append(AbstractFoundationStack(x, y, self, suit=i,
-                          max_cards=1, max_move=0, base_rank=QUEEN))
-            x += l.XS
-
-        x = l.XM+1.5*l.XS
-        y += l.YS
-        for i in range(4):
-            s.rows.append(AbstractFoundationStack(x, y, self, suit=i,
-                          max_cards=1, max_move=0, base_rank=JACK))
-            x += l.XS
-
-        x = l.XM+1.5*l.XS
-        y += l.YS
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                 mod=13, max_cards=11, base_rank=9, dir=-1))
-            x += l.XS
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        # move 4 Queens to top of the Talon (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank == QUEEN and c.deck == 0, c.suit))
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.rows[:4])
-        self.s.talon.dealCards()          # deal first card to WasteStack
-
-    def isGameWon(self):
-        return (len(self.s.talon.cards) + len(self.s.waste.cards)) == 0
-
-
 # ************************************************************************
 # * Captive Queens
 # ************************************************************************
@@ -247,115 +172,7 @@ class CaptiveQueens(Game):
 
 
 # ************************************************************************
-# * Contradance
-# ************************************************************************
-
-class Contradance(Game):
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+8*l.XS, l.YM+4*l.YS)
-
-        x, y = l.XM, l.YM
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i//2,
-                                 base_rank=4, dir=-1, mod=13, max_cards=6))
-            x += l.XS
-        x, y = l.XM, l.YM+l.YS
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i//2,
-                                 base_rank=5, max_cards=7))
-            x += l.XS
-
-        x, y = l.XM+3*l.XS, l.YM+3*l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=2)
-        l.createText(s.talon, 'sw')
-        l.createRoundText(self.s.talon, 'n')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'se')
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        # move 5's and 6's to top of the Talon (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (4, 5), (c.rank, c.suit)))
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.foundations)
-        self.s.talon.dealCards()          # deal first card to WasteStack
-
-
-# ************************************************************************
-# * Idle Aces
-# ************************************************************************
-
-class IdleAces_AceFoundation(AbstractFoundationStack):
-
-    def getBottomImage(self):
-        return self.game.app.images.getLetter(ACE)
-
-
-class IdleAces(Game):
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+7*l.XS, l.YM+4*l.YS)
-
-        x, y = l.XM, l.YM
-        s.talon = WasteTalonStack(x, y, self, max_rounds=3)
-        l.createText(s.talon, 's')
-        l.createRoundText(s.talon, 'ne', dx=l.XS)
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 's')
-        x0, y0 = l.XM+2*l.XS, l.YM
-        k = 0
-        for i, j in ((2, 0), (0, 1.5), (4, 1.5), (2, 3)):
-            x, y = x0+i*l.XS, y0+j*l.YS
-            s.foundations.append(
-                RK_FoundationStack(
-                    x, y, self,
-                    # suit=ANY_SUIT,
-                    base_rank=KING, dir=-1, max_move=0))
-            k += 1
-        k = 0
-        for i, j in ((2, 1), (1, 1.5), (3, 1.5), (2, 2)):
-            x, y = x0+i*l.XS, y0+j*l.YS
-            s.foundations.append(
-                RK_FoundationStack(
-                    x, y, self,
-                    # suit=ANY_SUIT,
-                    base_rank=1, max_move=0, max_cards=12))
-            k += 1
-        k = 0
-        for i, j in ((1, 0.2), (3, 0.2), (1, 2.8), (3, 2.8)):
-            x, y = x0+i*l.XS, y0+j*l.YS
-            s.foundations.append(IdleAces_AceFoundation(x, y, self,
-                                 suit=k, max_cards=1, max_move=0))
-            k += 1
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (1, KING) and c.deck == 0, (-c.rank, c.suit)))
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.foundations[:8])
-        self.s.talon.dealCards()
-
-
-# ************************************************************************
 # * Lady of the Manor
-# * Archway
 # ************************************************************************
 
 class LadyOfTheManor_RowStack(BasicRowStack):
@@ -442,56 +259,6 @@ class LadyOfTheManor(Game):
             else:
                 r = self.s.reserves[c.rank - 1]
             self.moveMove(1, self.s.talon, r, frames=4)
-
-
-class Archway_Talon(RedealTalonStack):
-
-    def dealCards(self, sound=False):
-        old_state = self.game.enterState(self.game.S_DEAL)
-        ncards = 0
-        intern1, intern2 = self.game.s.internals
-        if sound and self.game.app.opt.animations:
-            self.game.startDealSample()
-        for r in self.game.s.reserves:
-            if len(r.cards) <= 1:
-                continue
-            ncards += len(r.cards)
-            # move cards to internal stacks
-            while len(r.cards) != 1:
-                self.game.moveMove(1, r, intern1, frames=0)
-            self.game.moveMove(1, r, intern2, frames=0)
-            # move back
-            while intern1.cards:
-                self.game.moveMove(1, intern1, r, frames=0)
-            self.game.moveMove(1, intern2, r, frames=0)
-        self.game.nextRoundMove(self)
-        if sound:
-            self.game.stopSamples()
-        self.game.leaveState(old_state)
-        return ncards
-
-
-class Archway(LadyOfTheManor):
-    Foundation_Class_1 = SS_FoundationStack
-    Foundation_Class_2 = StackWrapper(SS_FoundationStack, dir=-1)
-    Talon_Class = StackWrapper(Archway_Talon, max_rounds=-1)
-
-    ACE_STACK = True
-
-    def createGame(self):
-        LadyOfTheManor.createGame(self)
-
-        self.s.internals.append(InvisibleStack(self))
-        self.s.internals.append(InvisibleStack(self))
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (ACE, KING) and c.deck == 0,
-                       (c.rank, c.suit)))
-
-    def startGame(self):
-        LadyOfTheManor.startGame(self, flip=True)
 
 
 # ************************************************************************
@@ -588,7 +355,6 @@ class Matrimony(Game):
 
 # ************************************************************************
 # * Picture Patience
-# * Patriarchs
 # ************************************************************************
 
 class PicturePatience(Game):
@@ -647,135 +413,6 @@ class PicturePatience(Game):
                 self.s.waste.moveMove(1, stack)
 
 
-class Patriarchs(PicturePatience):
-    def createGame(self):
-        PicturePatience.createGame(self, max_rounds=2)
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (ACE, KING) and c.deck == 0,
-                       (c.rank, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-
-# ************************************************************************
-# * Sixes and Sevens
-# * Two Rings
-# ************************************************************************
-
-class SixesAndSevens(Game):
-
-    def createGame(self, max_rounds=2):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+8*l.XS, l.YM+4*l.YS)
-
-        y = l.YM
-        for i in range(2):
-            x = l.XM
-            for j in range(4):
-                s.foundations.append(SS_FoundationStack(x, y, self,
-                                     suit=j, base_rank=6, max_cards=7))
-                x += l.XS
-            y += l.YS
-        for i in range(2):
-            x = l.XM
-            for j in range(4):
-                s.foundations.append(SS_FoundationStack(x, y, self, suit=j,
-                                     base_rank=5, dir=-1, max_cards=6))
-                x += l.XS
-            y += l.YS
-        y = l.YM
-        for i in range(3):
-            x = l.XM+5*l.XS
-            for j in range(3):
-                s.rows.append(ReserveStack(x, y, self))
-                x += l.XS
-            y += l.YS
-        x, y = l.XM+5*l.XS, l.YM+3*l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 'sw')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'se')
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (5, 6), (-c.rank, c.deck, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-
-class TwoRings(Game):
-
-    def createGame(self, max_rounds=2):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+10*l.XS, l.YM+5*l.YS)
-
-        lay = (
-            (1.5, 0),
-            (2.5, 0.3),
-            (3,   1.3),
-            (2.5, 2.3),
-            (1.5, 2.6),
-            (0.5, 2.3),
-            (0,   1.3),
-            (0.5, 0.3),
-            )
-
-        suit = 0
-        x0, y0 = l.XM+l.XS, l.YM
-        for xx, yy in lay:
-            x, y = x0+xx*l.XS, y0+yy*l.YS
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=suit//2,
-                                 base_rank=6, max_cards=7))
-            suit += 1
-        suit = 0
-        x0, y0 = l.XM+5*l.XS, l.YM
-        for xx, yy in lay:
-            x, y = x0+xx*l.XS, y0+yy*l.YS
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=suit//2,
-                                 base_rank=5, dir=-1, max_cards=6))
-            suit += 1
-
-        x, y = l.XM, l.YM+4*l.YS
-        for i in range(8):
-            stack = BasicRowStack(x, y, self)
-            stack.CARD_YOFFSET = 0
-            s.rows.append(stack)
-            x += l.XS
-
-        x += l.XS
-        s.talon = DealRowRedealTalonStack(x, y, self, max_rounds=2)
-        l.createText(s.talon, 'nw')
-        l.createRoundText(s.talon, 'sw')
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (5, 6), (-c.rank, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startAndDealRow()
-
-
 # ************************************************************************
 # * Corner Suite
 # ************************************************************************
@@ -830,125 +467,6 @@ class CornerSuite(Game):
 
 
 # ************************************************************************
-# * Marshal
-# ************************************************************************
-
-class Marshal_Hint(CautiousDefaultHint):
-    def _getDropCardScore(self, score, color, r, t, ncards):
-        return 93000, color
-
-
-class Marshal(Game):
-
-    Hint_Class = Marshal_Hint
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+9*l.XS, l.YM+5*l.YS)
-
-        x, y = l.XM, l.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i))
-            y += l.YS
-        x, y = self.width-l.XS, l.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self,
-                                 suit=i, base_rank=KING, dir=-1))
-            y += l.YS
-        x, y = (self.width-l.XS)//2, self.height-l.YS
-        s.talon = DealRowTalonStack(x, y, self)
-        l.createText(s.talon, 'se')
-        y = l.YM
-        for i in range(4):
-            x = l.XM+l.XS*3//2
-            for j in range(6):
-                stack = UD_SS_RowStack(x, y, self, base_rank=NO_RANK)
-                s.rows.append(stack)
-                stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, 0
-                x += l.XS
-            y += l.YS
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self._startAndDealRow()
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            if self.s.talon.cards:
-                old_state = self.enterState(self.S_FILL)
-                self.flipMove(self.s.talon)
-                self.moveMove(1, self.s.talon, stack)
-                self.leaveState(old_state)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-# ************************************************************************
-# * Royal Aids
-# ************************************************************************
-
-class RoyalAids(Game):
-
-    Hint_Class = CautiousDefaultHint
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+8*l.XS, l.YM+4*l.YS+l.TEXT_HEIGHT)
-
-        x0 = l.XM+1.5*l.XS
-        for k in (0, 1):
-            suit = 0
-            for i, j in ((1, 0), (0, 0.5), (2, 0.5), (1, 1)):
-                x, y = x0+i*l.XS, l.YM+j*l.YS
-                s.foundations.append(AC_FoundationStack(x, y, self, suit=suit))
-                suit += 1
-            x0 += 3.5*l.XS
-
-        x, y = l.XM, l.YM+l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=UNLIMITED_REDEALS)
-        l.createText(s.talon, 'se')
-        y += l.YS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'se')
-
-        x, y = l.XM+3.75*l.XS, l.YM+2*l.YS
-        for i in (0, 1):
-            stack = KingAC_RowStack(x, y, self, max_move=1)
-            stack.getBottomImage = stack._getReserveBottomImage
-            s.rows.append(stack)
-            stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, 0
-            x += l.XS
-        x, y = l.XM+2.75*l.XS, l.YM+3*l.YS
-        for i in range(4):
-            stack = BasicRowStack(x, y, self)
-            s.reserves.append(stack)
-            stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, 0
-            l.createText(stack, 's')
-            x += l.XS
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank == ACE, (c.deck, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        for i in range(6):
-            self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        self.startDealSample()
-        for i in range(4):
-            self.s.talon.dealRow(rows=self.s.reserves)
-        self.s.talon.dealCards()
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
-# ************************************************************************
 # * Circle Eight
 # ************************************************************************
 
@@ -995,166 +513,6 @@ class CircleEight(Game):
 
 
 # ************************************************************************
-# * Adela
-# ************************************************************************
-
-class Adela_Foundation(SS_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not SS_FoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        index = list(self.game.s.foundations).index(self)
-        index %= 8
-        return len(self.game.s.foundations[index].cards) > 0
-
-
-class Adela(Game):
-    Hint_Class = CautiousDefaultHint
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+9.5*l.XS, l.YM+4*l.YS)
-
-        x, y = l.XM+l.XS, l.YM
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i % 4,
-                                 base_rank=JACK, dir=-1, max_cards=11))
-            x += l.XS
-        x, y = l.XM+l.XS, l.YM+l.YS
-        for i in range(8):
-            s.foundations.append(Adela_Foundation(x, y, self, suit=i % 4,
-                                 base_rank=QUEEN, max_cards=1))
-            x += l.XS
-        x, y = l.XM+l.XS, l.YM+2*l.YS
-        for i in range(8):
-            s.foundations.append(Adela_Foundation(x, y, self, suit=i % 4,
-                                 base_rank=KING, max_cards=1))
-            x += l.XS
-        x, y = l.XM, l.YM+l.YS
-        s.talon = DealRowTalonStack(x, y, self)
-        l.createText(s.talon, 'n')
-        x, y = l.XM+l.XS//2, l.YM+3*l.YS
-        for i in range(9):
-            stack = SS_RowStack(x, y, self, max_move=1, dir=1)
-            s.rows.append(stack)
-            stack.CARD_YOFFSET = 0
-            x += l.XS
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self._startAndDealRow()
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            if self.s.talon.cards:
-                old_state = self.enterState(self.S_FILL)
-                self.flipMove(self.s.talon)
-                self.moveMove(1, self.s.talon, stack)
-                self.leaveState(old_state)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-# ************************************************************************
-# * Toni
-# ************************************************************************
-
-class Toni(Game):
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+8.5*l.XS, l.YM+4*l.YS)
-
-        y = l.YM
-        suit = 0
-        for i in (0, 1, 3, 4):
-            x = l.XM+(2+i)*l.XS
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=suit))
-            suit += 1
-
-        x, y = l.XM+4*l.XS, l.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                                    base_rank=KING, dir=-1))
-            y += l.YS
-
-        for i, j in ((0, 0), (1, 0), (2, 0), (5, 0), (6, 0), (7, 0),
-                     (0, 1), (1, 1), (2, 1), (5, 1), (6, 1), (7, 1),
-                     ):
-            x, y = l.XM+(0.5+i)*l.XS, l.YM+(1.5+j)*l.YS
-            stack = BasicRowStack(x, y, self, max_accept=0)
-            s.rows.append(stack)
-            stack.CARD_YOFFSET = 0
-
-        x, y = l.XM, l.YM
-        s.talon = DealRowRedealTalonStack(x, y, self, max_rounds=3)
-        l.createText(s.talon, 'se')
-        l.createRoundText(s.talon, 'ne')
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (ACE, KING) and c.deck == 0,
-                       (c.rank, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startAndDealRow()
-
-
-# ************************************************************************
-# * Khedive
-# ************************************************************************
-
-class Khedive(Game):
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+10*l.XS, l.YM+5*l.YS)
-
-        x, y = l.XM, l.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i))
-            s.foundations.append(SS_FoundationStack(x+6*l.XS, y, self, suit=i))
-            x += l.XS
-
-        x, y = l.XM+4*l.XS, l.YM
-        r = list(range(11))
-        for i in range(5, 0, -1):
-            for j in r[i:-i]:
-                x, y = l.XM+(j-0.5)*l.XS, l.YM+(5-i)*l.YS
-                s.rows.append(BasicRowStack(x, y, self, max_accept=0))
-
-        x, y = l.XM, l.YM+1.5*l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 'ne')
-        y += l.YS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'ne')
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(frames=4)
-        self.s.talon.dealCards()
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            old_state = self.enterState(self.S_FILL)
-            if not self.s.waste.cards:
-                self.s.talon.dealCards()
-            if self.s.waste.cards:
-                self.s.waste.moveMove(1, stack)
-            self.leaveState(old_state)
-
-
-# ************************************************************************
 # * Phalanx
 # ************************************************************************
 
@@ -1198,9 +556,7 @@ class Phalanx(Game):
 
 
 # ************************************************************************
-# * Grandee
 # * Turncoats
-# * Voracious
 # ************************************************************************
 
 class Grandee(Game):
@@ -1272,217 +628,27 @@ class Turncoats(Grandee):
     shallHighlightMatch = Game._shallHighlightMatch_AC
 
 
-class Voracious(Grandee):
-    Talon_Class = StackWrapper(WasteTalonStack, max_rounds=1)
-    RowStack_Class = StackWrapper(SS_RowStack, base_rank=NO_RANK)
-
-    def createGame(self):
-        Grandee.createGame(self, waste=True, rows=12)
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    def fillStack(self, stack):
-        if not stack.cards:
-            if stack in self.s.rows:
-                old_state = self.enterState(self.S_FILL)
-                if not self.s.waste.cards:
-                    self.s.talon.dealCards()
-                if self.s.waste.cards:
-                    self.s.waste.moveMove(1, stack)
-                self.leaveState(old_state)
-
-
-# ************************************************************************
-# * Desert Island
-# ************************************************************************
-
-class DesertIsland(Game):
-
-    def createGame(self):
-
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM+8*l.XS, l.YM+5*l.YS)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self,
-                                                    suit=i//2, max_cards=10))
-            x += l.XS
-
-        y = l.YM+l.YS
-        for i in range(3):
-            x = l.XM
-            for j in range(8):
-                # stack = SS_RowStack(x, y, self, max_move=1)
-                stack = ReserveStack(x, y, self)
-                stack.CARD_YOFFSET = 0
-                s.rows.append(stack)
-                x += l.XS
-            y += l.YS
-
-        x, y = self.width-l.XS, self.height-l.YS
-        s.talon = DealRowTalonStack(x, y, self)
-        l.createText(s.talon, 'sw')
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank == ACE, c.suit))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startAndDealRow()
-
-    def isGameWon(self):
-        for s in self.s.foundations:
-            if len(s.cards) != 10:
-                return False
-        return True
-
-
-# ************************************************************************
-# * Catherine the Great
-# ************************************************************************
-
-class CatherineTheGreat(Game):
-    Hint_Class = CautiousDefaultHint
-
-    def createGame(self, reserves=6):
-
-        l, s = Layout(self), self.s
-        w, h = 3*l.XM+5*l.XS, l.YM+5*l.YS
-        self.setSize(w, h)
-
-        lay = ((0, 2, 0, QUEEN, -1),
-               (0, 1, 0, QUEEN, -1),
-               (0, 0, 1, QUEEN, -1),
-               (2, 0, 1, QUEEN, -1),
-               (1, 0, 2, QUEEN, -1),
-               (2, 1, 3, QUEEN, -1),
-               (2, 2, 3, QUEEN, -1),
-               (1, 1, 2, KING, 1),
-               )
-        for xx, yy, suit, base_rank, dir in lay:
-            x, y = 2*l.XM+l.XS+xx*l.XS, l.YM+yy*l.YS
-            stack = SS_FoundationStack(x, y, self, suit=suit,
-                                       max_move=0, base_rank=base_rank,
-                                       dir=dir, mod=13)
-            s.foundations.append(stack)
-
-        for x, y in ((l.XM,          l.YM),
-                     (3*l.XM+4*l.XS, l.YM)):
-            for i in range(5):
-                stack = RK_RowStack(x, y, self, dir=1,
-                                    base_rank=NO_RANK,
-                                    max_move=1, mod=13)
-                stack.CARD_YOFFSET = 0
-                s.rows.append(stack)
-                y += l.YS
-
-        x, y = 2*l.XM+1.5*l.XS, l.YM+4*l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 'n')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'n')
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        def select_func(card):
-            if card.rank == KING and card.suit == 2 and card.deck == 0:
-                return (True, 999)
-            if card.rank == QUEEN:
-                if card.suit == 2 and card.deck == 0:
-                    return (False, 0)
-                return (True, card.suit)
-            return (False, 0)
-        cards = self._shuffleHookMoveToTop(
-            cards, select_func)
-        return cards
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startAndDealRowAndCards()
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            old_state = self.enterState(self.S_FILL)
-            if not self.s.waste.cards:
-                self.s.talon.dealCards()
-            if self.s.waste.cards:
-                self.s.waste.moveMove(1, stack)
-            self.leaveState(old_state)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RKW
-
-
 # register the game
 registerGame(GameInfo(330, Sultan, "Sultan",
                       GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK,
                       altnames=("Sultan of Turkey",
                                 "Emperor of Germany")))
-registerGame(GameInfo(331, SultanPlus, "Sultan +",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(354, Boudoir, "Boudoir",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(410, CaptiveQueens, "Captive Queens",
                       GI.GT_1DECK_TYPE, 1, 2, GI.SL_LUCK,
                       altnames=("Quadrille", "La Francaise",
                                 "Partners")))
-registerGame(GameInfo(418, Contradance, "Contradance",
-                      GI.GT_2DECK_TYPE, 2, 1, GI.SL_LUCK,
-                      altnames=("Cotillion", "Round Dance")))
-registerGame(GameInfo(419, IdleAces, "Idle Aces",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(423, LadyOfTheManor, "Lady of the Manor",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_LUCK,
                       altnames=("Vassal", "La Chatelaine")))
 registerGame(GameInfo(424, Matrimony, "Matrimony",
                       GI.GT_2DECK_TYPE, 2, 16, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(429, Patriarchs, "Patriarchs",
-                      GI.GT_2DECK_TYPE, 2, 1, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(438, SixesAndSevens, "Sixes and Sevens",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(477, CornerSuite, "Corner Suite",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(559, Marshal, "Marshal",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(565, RoyalAids, "Royal Aids",
-                      GI.GT_2DECK_TYPE, 2, UNLIMITED_REDEALS, GI.SL_BALANCED))
 registerGame(GameInfo(598, PicturePatience, "Picture Patience",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(635, CircleEight, "Circle Eight",
                       GI.GT_1DECK_TYPE, 1, 1, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(646, Adela, "Adela",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(660, Toni, "Toni",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(691, Khedive, "Khedive",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(729, TwoRings, "Two Rings",
-                      GI.GT_2DECK_TYPE, 2, 1, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(730, Phalanx, "Phalanx",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(742, Grandee, "Grandee",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(743, Turncoats, "Turncoats",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(744, Voracious, "Voracious",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(745, DesertIsland, "Desert Island",
-                      GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(761, CatherineTheGreat, "Catherine the Great",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(844, Archway, "Archway",
-                      GI.GT_2DECK_TYPE, 2, -1, GI.SL_MOSTLY_LUCK))

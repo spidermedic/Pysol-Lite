@@ -537,11 +537,6 @@ class Manx(TabbyCat):
     ReserveStack_Class = ReserveStack
 
 
-class MaineCoon(TabbyCat):
-    def createGame(self):
-        TabbyCat.createGame(self, playcards=26)
-
-
 # register the game
 registerGame(GameInfo(903, AcesUp, "Aces Up",                   # was: 52
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK,
@@ -566,8 +561,6 @@ registerGame(GameInfo(756, TabbyCat, "Tabby Cat",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(757, Manx, "Manx",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(758, MaineCoon, "Maine Coon",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(934, Valentine, "Valentine",
                       GI.GT_1DECK_TYPE, 1, -1, GI.SL_LUCK))
 registerGame(GameInfo(984, JokerBombs, "Joker Bombs",

@@ -28,14 +28,13 @@ from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.stack import \
-        AbstractFoundationStack, \
-        OpenStack, \
-        Stack, \
-        StackWrapper, \
-        UD_SS_RowStack, \
-        WasteStack, \
-        WasteTalonStack
-from pysollib.util import ACE, ANY_RANK, NO_RANK
+    AbstractFoundationStack, \
+    OpenStack, \
+    Stack, \
+    StackWrapper, \
+    WasteStack, \
+    WasteTalonStack
+from pysollib.util import ANY_RANK
 
 
 # ************************************************************************
@@ -134,84 +133,8 @@ class UnionSquare(pysollib.game.StartDealRowAndCards, Game):
         return ()
 
 
-# ************************************************************************
-# * Solid Square
-# ************************************************************************
-
-class SolidSquare(UnionSquare):
-    RowStack_Class = StackWrapper(UD_SS_RowStack, base_rank=NO_RANK,
-                                  max_accept=1,  max_move=1, mod=13)
-
-    def createGame(self):
-        UnionSquare.createGame(self, rows=20)
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank == ACE and c.deck == 0, c.suit))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        UnionSquare.startGame(self)
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            old_state = self.enterState(self.S_FILL)
-            if not self.s.waste.cards:
-                self.s.talon.dealCards()
-            if self.s.waste.cards:
-                self.s.waste.moveMove(1, stack)
-            self.leaveState(old_state)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SSW
-
-
-# ************************************************************************
-# * Boomerang
-# ************************************************************************
-
-class Boomerang_Foundation(AbstractFoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not AbstractFoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        # check the rank
-        # 7, 8, 9, 10, J, Q, K, A, K, Q, J, 10, 9, 8, 7, A
-        if len(self.cards) < 7:
-            return cards[0].rank - 6 == len(self.cards)
-        if len(self.cards) == 7:
-            return cards[0].rank == ACE
-        if len(self.cards) < 15:
-            return cards[0].rank == 20 - len(self.cards)
-        # len(self.cards) == 15
-        return cards[0].rank == ACE
-
-
-class Boomerang(UnionSquare):
-    Foundation_Class = StackWrapper(Boomerang_Foundation,
-                                    base_rank=6, max_cards=16)
-    RowStack_Class = StackWrapper(UnionSquare_RowStack, base_rank=NO_RANK)
-
-    def createGame(self):
-        UnionSquare.createGame(self, rows=12)
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            old_state = self.enterState(self.S_FILL)
-            if not self.s.waste.cards:
-                self.s.talon.dealCards()
-            if self.s.waste.cards:
-                self.s.waste.moveMove(1, stack)
-            self.leaveState(old_state)
-
-
 # register the game
 registerGame(GameInfo(35, UnionSquare, "Union Square",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL,
                       altnames=('British Square',),
-                      ))
-registerGame(GameInfo(439, SolidSquare, "Solid Square",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(738, Boomerang, "Boomerang",
-                      GI.GT_2DECK_TYPE | GI.GT_STRIPPED, 2, 0,
-                      GI.SL_BALANCED, ranks=(0, 6, 7, 8, 9, 10, 11, 12),
                       ))

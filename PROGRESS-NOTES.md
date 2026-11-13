@@ -784,3 +784,17 @@ Rollback tags (pushed 2026-11-11): `before-spider-cut`, `before-bc-cut`, `before
 **Repo renamed.** The GitHub repo is now `spidermedic/Pysol-Lite` (GitHub's own spelling, with a lowercase y; the user typed it that way). `origin`, `PACKAGE_URL` and the README use `PySol-Lite`, which still works because GitHub ignores case in repo names; changing them to the exact spelling is a pending optional cleanup (a rebuild is needed for the About link). `origin` was changed to `git@github.com:spidermedic/PySol-Lite.git`; `PACKAGE_URL` in `pysollib/settings.py` and the two `git clone`/`cd` lines in README follow it (commit `afb23dc6`). The old address redirects. The local folder is still `~/Documents/Claude/pysol`, left alone on purpose (renaming it would move the Claude project path the saved memory lives under).
 
 **State at the end of the session (2026-11-11):** `origin/master` is at `afb23dc6` plus this note and the commit that records the repo spelling; the installed app (`~/Applications/PySol Lite.app`, 100 MB, arm64, ad-hoc signed, version 26.11) is the build of `afb23dc6`. This file was renamed from `pysolfc-handoff.md`; README and the saved memory notes now point at `PROGRESS-NOTES.md`.
+
+## 71. Update: Two-Deck games group cut, 782 to 705 games by id (2026-11-12)
+
+The Select Game > Two-Deck games catch-all group had 109 games. The user was shown 21 families by code lineage with a suggested keep list and approved it. 32 kept, 77 removed (registrations, 126 dead classes, rules pages, unused imports, `# * Name` section comments). Rollback tag (local only, not pushed): `before-twodeck-cut`.
+
+**Kept (32):** Sultan, Lady of the Manor, Matrimony, Picture Patience, Royal Cotillion, British Constitution, Alhambra, Boxing the Compass, Salic Law, Intrigue, St. Helena, Tournament, Kingsdown Eights, Union Square, Precedence, German Patience, Eight Packs, Carthage, Buffalo Bill, Senior Wrangler, Locked Cards, Devil's Solitaire, Heads and Tails, Windmill, Zodiac, Big Ben, Parallels, Aces and Kings, Lara's Game, Accordion (2 Decks), Well, Matriarchy.
+
+**Counting note:** the 782 / 705 figures count ids from `GAME_DB.getGamesIdSortedById()`. Do not use `getGamesIdSortedByName()` for counts: it repeats ids that have altnames. The 808 in section 70 was counted some other way and is not comparable. The earlier chat message said "37 kept / 72 removed" by mistake; the real figures are 32 / 77.
+
+**Verification:** id list compared with the saved before-list: exactly the 77 expected ids gone, nothing else. Every `pysollib/games` module imports on its own. `--gameid` launch checks on 12 kept games stayed open until killed. `pyflakes` clean for the games modules apart from the usual `__init__.py` imports. `run-tests.pl` could not run (needs the Perl module Env::Path).
+
+**Things to know:** `dieboesesieben.py` (Bad Seven only) was deleted outright with its import. `AlgerianPatience3` (3 decks, id 457) stays and builds on the kept Carthage. Four rules pages that linked to removed games (Algerian Patience 3 Decks, Locked Cards, Carthage, Picture Patience) now show the name without a link. `html-src/wikipedia` pages for removed games were left alone. The installed app is NOT rebuilt yet.
+
+**Remaining Select-menu types not yet reviewed:** Fan, Forty Thieves, FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon, and the One-Deck group.

@@ -26,15 +26,13 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AC_RowStack, \
-        BasicRowStack, \
-        DealRowRedealTalonStack, \
-        DealRowTalonStack, \
-        OpenStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        Stack
+    AC_RowStack, \
+    BasicRowStack, \
+    DealRowRedealTalonStack, \
+    DealRowTalonStack, \
+    OpenStack, \
+    ReserveStack, \
+    SS_FoundationStack
 from pysollib.util import ACE, JACK, KING, QUEEN
 
 # ************************************************************************
@@ -141,9 +139,6 @@ class Tournament(Game):
                 self.stopSamples()
 
 
-class LaNivernaise(Tournament):
-    ROW_YOFFSET = False
-
 # ************************************************************************
 # * Kingsdown Eights
 # ************************************************************************
@@ -213,59 +208,6 @@ class KingsdownEights(Game):
 
 
 # ************************************************************************
-# * Saxony
-# ************************************************************************
-
-class Saxony_Reserve(SS_RowStack):
-    getBottomImage = Stack._getReserveBottomImage
-
-    def getHelp(self):
-        return 'Reserve. Build down by suit.'
-
-
-class Saxony_Talon(DealRowTalonStack):
-    def dealCards(self, sound=False):
-        return self.dealRowAvail(rows=self.game.s.reserves[:8], sound=sound)
-
-
-class Saxony(Game):
-
-    def createGame(self):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+11*l.XS, 2*l.YM+max(2*l.YS+12*l.YOFFSET, 5*l.YS))
-
-        x, y, = l.XM+1.5*l.XS, l.YM
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i % 4))
-            x += l.XS
-        x, y = l.XM+1.5*l.XS, 2*l.YM+l.YS
-        for i in range(8):
-            s.reserves.append(
-                BasicRowStack(x, y, self, max_move=1, max_accept=0))
-            x += l.XS
-        x, y = l.XM, 2*l.YM+l.YS
-        for i in range(4):
-            stack = Saxony_Reserve(x, y, self, max_move=1)
-            self.s.rows.append(stack)
-            stack.CARD_YOFFSET = 0
-            y += l.YS
-        x, y = self.width-l.XS, 2*l.YM+l.YS
-        for i in range(4):
-            self.s.reserves.append(ReserveStack(x, y, self))
-            y += l.YS
-        s.talon = Saxony_Talon(l.XM, l.YM, self)
-        l.createText(s.talon, "ne")
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.reserves[8:], frames=0)
-        self.s.talon.dealRow(frames=0)
-        self.startDealSample()
-        self.s.talon.dealCards()
-
-
-# ************************************************************************
 # * Ladies Battle
 # ************************************************************************
 
@@ -327,12 +269,7 @@ class LadiesBattle(Game):
 registerGame(GameInfo(303, Tournament, "Tournament",
                       GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK,
                       altnames=("Marechal Saxe", ),))
-registerGame(GameInfo(304, LaNivernaise, "La Nivernaise",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK,
-                      altnames=("Napoleon's Flank", ),))
 registerGame(GameInfo(386, KingsdownEights, "Kingsdown Eights",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(645, Saxony, "Saxony",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(652, LadiesBattle, "Ladies Battle",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))

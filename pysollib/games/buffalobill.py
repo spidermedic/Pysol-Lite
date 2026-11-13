@@ -90,18 +90,6 @@ class BuffaloBill(Game):
         self._startDealNumRowsAndDealSingleRow(3)
 
 
-class LittleBillie(BuffaloBill):
-    def createGame(self):
-        # BuffaloBill.createGame(self, rows=(8, 8, 8))
-        BuffaloBill.createGame(self, rows=(6, 6, 6, 6))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        BuffaloBill.startGame(self)
-
-
 # register the game
 registerGame(GameInfo(338, BuffaloBill, "Buffalo Bill",
-                      GI.GT_2DECK_TYPE | GI.GT_OPEN, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(421, LittleBillie, "Little Billie",
                       GI.GT_2DECK_TYPE | GI.GT_OPEN, 2, 0, GI.SL_MOSTLY_SKILL))

@@ -107,77 +107,12 @@ class Precedence(Game):
 # ************************************************************************
 
 
-class PrecedenceNoKing(Precedence):
-
-    def _shuffleHook(self, cards):
-        return cards
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealCards()
-
-
 # ************************************************************************
 # * Display
 # ************************************************************************
-
-class Display_Talon(WasteTalonStack):
-    def _redeal(self):
-        game, num_cards = self.game, len(self.cards)
-        if len(self.waste.cards) > 0:
-            game.moveMove(1, self.waste, game.s.reserves[0], frames=2)
-        for r in reversed(game.s.reserves):
-            while r.cards:
-                num_cards = num_cards + 1
-                game.moveMove(1, r, self, frames=2)
-                if self.cards[-1].face_up:
-                    game.flipMove(self)
-        assert len(self.cards) == num_cards
-        self.game.nextRoundMove(self)
-
-    def canDealCards(self):
-        return ((self.round > 1 and len(self.cards) > 0)
-                or (self.round == 1 and len(self.cards) == 0)
-                or (len(self.waste.cards) == 0))
-
-    def dealCards(self, sound=False):
-        if self.cards:
-            return WasteTalonStack.dealCards(self, sound=sound)
-        if sound:
-            self.game.startDealSample()
-        self._redeal()
-        if sound:
-            self.game.stopSamples()
-        return
-
-
-class Display_ReserveStack(ReserveStack):
-    def acceptsCards(self, from_stack, cards):
-        return self.game.s.talon.round == 1 and from_stack == self.game.s.waste
-
-
-class Display(Precedence):
-    FOUNDATIONS = 13
-    RESERVES = 3
-    NUM_ROUNDS = 2
-
-    TALON_STACK = Display_Talon
-    RESERVE_STACK = Display_ReserveStack
-
-    def _shuffleHook(self, cards):
-        return cards
-
-    def _autoDeal(self, sound=True):
-        # only autodeal if there are cards in the talon.
-        if len(self.s.talon.cards) > 0:
-            return Game._autoDeal(self, sound=sound)
 
 
 # register the game
 registerGame(GameInfo(790, Precedence, "Precedence",
                       GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK,
                       altnames=("Order of Precedence", "Succession")))
-registerGame(GameInfo(791, PrecedenceNoKing, "Precedence (No King)",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(832, Display, "Display",
-                      GI.GT_2DECK_TYPE, 2, 1, GI.SL_BALANCED))

@@ -21,7 +21,6 @@
 #
 # ---------------------------------------------------------------------------
 
-import pysollib.game
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint, CautiousDefaultHint
@@ -44,14 +43,7 @@ from pysollib.stack import (
     isRankSequence,
     isSameSuitSequence,
 )
-from pysollib.util import (
-    ACE,
-    BLACK,
-    KING,
-    RED,
-    UNLIMITED_ACCEPTS,
-    UNLIMITED_MOVES,
-)
+from pysollib.util import BLACK, KING, RED, UNLIMITED_ACCEPTS, UNLIMITED_MOVES
 
 # ************************************************************************
 # * Curds and Whey
@@ -132,7 +124,6 @@ class CurdsAndWhey(Game):
 # ************************************************************************
 # * Dumfries
 # * Galloway
-# * Robin
 # ************************************************************************
 
 class Dumfries_TalonStack(OpenTalonStack):
@@ -194,14 +185,8 @@ class Galloway(Dumfries):
         Dumfries.createGame(self, rows=7)
 
 
-class Robin(Dumfries):
-    def createGame(self):
-        Dumfries.createGame(self, rows=12)
-
-
 # ************************************************************************
 # * German Patience
-# * Bavarian Patience
 # ************************************************************************
 
 class GermanPatience(Game):
@@ -244,11 +229,6 @@ class GermanPatience(Game):
         return True
 
     shallHighlightMatch = Game._shallHighlightMatch_RKW
-
-
-class BavarianPatience(GermanPatience):
-    def createGame(self, rows=10):
-        GermanPatience.createGame(self, rows=10)
 
 
 # ************************************************************************
@@ -354,39 +334,7 @@ class SweetSixteen(TrustyTwelve):
 
 
 # ************************************************************************
-# * Glacier
-# ************************************************************************
-
-class Glacier(pysollib.game.StartDealRowAndCards, Game):
-
-    def createGame(self, rows=12):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+rows*l.XS, l.YM+2*l.YS+l.TEXT_HEIGHT+20*l.YOFFSET)
-
-        x, y = l.XM+(rows-4)//2*l.XS, l.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                 mod=13, max_cards=26))
-            x += l.XS
-        x, y = l.XM, l.YM+l.YS+l.TEXT_HEIGHT
-        for i in range(rows):
-            s.rows.append(RK_RowStack(x, y, self, mod=13))
-            x += l.XS
-        x, y = l.XM, l.YM
-        s.talon = WasteTalonStack(x, y, self, num_deal=2, max_rounds=1)
-        l.createText(s.talon, 's')
-        x = x + l.XS
-        s.waste = WasteStack(x, y, self, max_cards=2)
-        s.waste.CARD_XOFFSET = l.XOFFSET
-
-        l.defaultStackGroups()
-
-    shallHighlightMatch = Game._shallHighlightMatch_RKW
-
-
-# ************************************************************************
 # * Eight Packs (ex. Four Packs)
-# * Four Packs
 # ************************************************************************
 
 class EightPacks(Game):
@@ -429,31 +377,6 @@ class EightPacks(Game):
         return True
 
     shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-class FourPacks_RowStack(SS_RowStack):
-    def canMoveCards(self, cards):
-        if not self.basicCanMoveCards(cards):
-            return False
-        return len(cards) == len(self.cards)
-
-
-class FourPacks(EightPacks):
-    RowStack_Class = StackWrapper(FourPacks_RowStack, mod=13)
-
-    def createGame(self):
-        EightPacks.createGame(self, max_rounds=2, width=12, playcards=18)
-
-    def isGameWon(self):
-        if self.s.talon.cards or self.s.waste.cards:
-            return False
-        for s in self.s.rows:
-            if s.cards:
-                if s.cards[0].rank != ACE:
-                    return False
-                if len(s.cards) != 26:
-                    return False
-        return True
 
 
 # ************************************************************************
@@ -510,12 +433,7 @@ registerGame(GameInfo(311, Dumfries, "Dumfries",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(312, Galloway, "Galloway",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(313, Robin, "Robin",
-                      GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(414, GermanPatience, "German Patience",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(415, BavarianPatience, "Bavarian Patience",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(480, TrustyTwelve, "Trusty Twelve",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
@@ -523,13 +441,9 @@ registerGame(GameInfo(481, KnottyNines, "Knotty Nines",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(482, SweetSixteen, "Sweet Sixteen",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(687, Glacier, "Glacier",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(724, EightPacks, "Eight Packs",
                       GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 2,
                       GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(762, FourPacks, "Four Packs",
-                      GI.GT_2DECK_TYPE, 2, 1, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(830, FireAndIce, "Fire and Ice",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_SKILL))
 registerGame(GameInfo(833, UpAndUp, "Up and Up",

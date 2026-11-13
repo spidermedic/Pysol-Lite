@@ -1539,6 +1539,3 @@ registerGame(GameInfo(956, JokeKlon, "Joke Klon",
 registerGame(GameInfo(957, JokeKlonByThrees, "Joke Klon (Draw 3)",
                       GI.GT_KLONDIKE, 1, -1, GI.SL_MOSTLY_LUCK,
                       subcategory=GI.GS_JOKER_DECK, trumps=list(range(2))))
-registerGame(GameInfo(982, Eights, "Eights",
-                      GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED,
-                      altnames=("Les Huits",)))

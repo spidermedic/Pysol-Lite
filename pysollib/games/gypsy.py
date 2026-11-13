@@ -790,7 +790,6 @@ class Leprechaun(Game):
 
 # ************************************************************************
 # * Locked Cards
-# * Topsy-Turvy Queens
 # ************************************************************************
 
 class LockedCards_Reserve(OpenStack):
@@ -857,28 +856,6 @@ class LockedCards(Game):
         self._startDealNumRowsAndDealRowAndCards(rows-1)
 
     shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
-class TopsyTurvyQueens(LockedCards):
-    Foundation_Class = StackWrapper(LockedCards_Foundation,
-                                    base_rank=KING, mod=13)
-    RowStack_Class = StackWrapper(SS_RowStack, mod=13)
-
-    def startGame(self):
-        LockedCards.startGame(self, rows=4)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SSW
-
-
-class KingsSecrets(LockedCards):
-    Foundation_Class = StackWrapper(LockedCards_Foundation,
-                                    base_rank=KING, mod=13)
-    RowStack_Class = StackWrapper(SS_RowStack, mod=13, base_rank=11)
-
-    def startGame(self):
-        LockedCards.startGame(self, rows=5)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SSW
 
 
 # ************************************************************************
@@ -1109,11 +1086,6 @@ registerGame(GameInfo(718, LockedCards, "Locked Cards",
 registerGame(GameInfo(721, Thirty, "Thirty",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_STRIPPED, 1, 0,
                       GI.SL_MOSTLY_SKILL, ranks=(0, 6, 7, 8, 9, 10, 11, 12)))
-registerGame(GameInfo(725, TopsyTurvyQueens, "Topsy-Turvy Queens",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_BALANCED))
-registerGame(GameInfo(792, KingsSecrets, "King's Secrets",
-                      GI.GT_2DECK_TYPE, 2, 2, GI.SL_BALANCED,
-                      altnames=('Royal Secrets', "King's Captives")))
 registerGame(GameInfo(842, SwissPatience, "Swiss Patience",
                       GI.GT_GYPSY, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(890, YeastDough, "Yeast Dough",
