@@ -28,12 +28,11 @@ from pysollib.stack import \
         AbstractFoundationStack, \
         BasicRowStack, \
         DealRowTalonStack
-from pysollib.util import ANY_RANK, CLUB, HEART
+from pysollib.util import ANY_RANK, CLUB
 
 
 # ************************************************************************
 # * Knockout
-# * Knockout +
 # ************************************************************************
 
 class Knockout_Talon(DealRowTalonStack):
@@ -169,29 +168,8 @@ class Knockout(Game):
         return [self.cards_dealt]
 
 
-class KnockoutPlus(Knockout):
-    DEALS_BEFORE_SHUFFLE = 8
-
-
-# ************************************************************************
-# * Herz zu Herz
-# ************************************************************************
-
-class HerzZuHerz(Knockout):
-    FOUNDATION_SUIT = HEART
-
-    def fillStack(self, stack):
-        pass
-
-
 # register the game
 registerGame(GameInfo(850, Knockout, "Knockout",
                       GI.GT_1DECK_TYPE | GI.GT_STRIPPED, 1, 2, GI.SL_LUCK,
                       altnames=("Hope Deferred", "Hope"),
                       ranks=(0, 6, 7, 8, 9, 10, 11, 12)))
-registerGame(GameInfo(851, HerzZuHerz, "Herz zu Herz",
-                      GI.GT_1DECK_TYPE | GI.GT_STRIPPED, 1, 2, GI.SL_LUCK,
-                      ranks=(0, 6, 7, 8, 9, 10, 11, 12)))
-registerGame(GameInfo(872, KnockoutPlus, "Knockout +",
-                      GI.GT_1DECK_TYPE, 1, 2, GI.SL_LUCK,
-                      altnames=("Abandon Hope",)))

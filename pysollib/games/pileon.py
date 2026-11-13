@@ -133,16 +133,6 @@ class PileOn(Game):
         return card1.rank == card2.rank
 
 
-class SmallPileOn(PileOn):
-    TWIDTH = 3
-    NSTACKS = 11
-    PLAYCARDS = 4
-
-
-class RelaxedPileOn(PileOn):
-    EXTRACELL = True
-
-
 #  class PileOn2Decks(PileOn):
 #      TWIDTH = 4
 #      NSTACKS = 15
@@ -201,18 +191,6 @@ class Foursome(Game):
         self.leaveState(old_state)
 
     shallHighlightMatch = Game._shallHighlightMatch_ACW
-
-
-class Quartets(Foursome):
-    Talon_Class = InitialDealTalonStack
-
-    def createGame(self):
-        Foursome.createGame(self, rows=8, texts=False)
-
-    def startGame(self):
-        self._startDealNumRows(5)
-        self.s.talon.dealRow()
-        self.s.talon.dealRowAvail()
 
 
 # ************************************************************************
@@ -395,25 +373,11 @@ class DoubleFootling(Footling):
 registerGame(GameInfo(41, PileOn, "PileOn",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Fifteen Puzzle", "Fan Fifteen", "Beeswax")))
-registerGame(GameInfo(289, SmallPileOn, "Small PileOn",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL |
-                      GI.GT_STRIPPED, 1, 0,
-                      GI.SL_MOSTLY_SKILL,
-                      ranks=(0, 5, 6, 7, 8, 9, 10, 11, 12),
-                      rules_filename="pileon.html"))
 registerGame(GameInfo(554, Foursome, "Foursome",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(555, Quartets, "Quartets",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(703, FourByFour, "Four by Four",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(740, Footling, "Footling",
                       GI.GT_FREECELL | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 0,
                       GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(741, DoubleFootling, "Double Footling",
                       GI.GT_FREECELL | GI.GT_OPEN | GI.GT_ORIGINAL, 2, 0,
                       GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(793, RelaxedPileOn, "Relaxed PileOn",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_RELAXED, 1, 0,
-                      GI.SL_MOSTLY_SKILL, altnames=("Fifteen Puzzle Cell")))

@@ -25,15 +25,13 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AC_RowStack, \
-        AbstractFoundationStack, \
-        BasicRowStack, \
-        InitialDealTalonStack, \
-        OpenStack, \
-        Stack, \
-        StackWrapper, \
-        UD_RK_RowStack, \
-        isAlternateColorSequence
+    AbstractFoundationStack, \
+    BasicRowStack, \
+    InitialDealTalonStack, \
+    OpenStack, \
+    Stack, \
+    StackWrapper, \
+    UD_RK_RowStack
 from pysollib.util import ANY_RANK, ANY_SUIT, JACK, KING, QUEEN
 
 # ************************************************************************
@@ -100,51 +98,6 @@ class TakeAway(Game):
         self._startDealNumRows(10)
         for i in range(3):
             self.s.talon.dealRow()
-
-
-# ************************************************************************
-# * Four Stacks
-# ************************************************************************
-
-class FourStacks_RowStack(AC_RowStack):
-    getBottomImage = Stack._getReserveBottomImage
-
-
-class FourStacks(Game):
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        w, h = l.XM+10*l.XS, l.YM+l.YS+16*l.YOFFSET
-        self.setSize(w, h)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        for i in range(10):
-            s.rows.append(FourStacks_RowStack(x, y, self))
-            x += l.XS
-        s.talon = InitialDealTalonStack(w-l.XS, h-l.YS, self)
-
-        # default
-        l.defaultAll()
-
-    def startGame(self):
-        rows = self.s.rows[:4]
-        for i in range(10):
-            self.s.talon.dealRow(rows=rows, frames=0)
-        self.startDealSample()
-        for i in range(3):
-            self.s.talon.dealRow(rows=rows)
-
-    def isGameWon(self):
-        for s in self.s.rows:
-            if s.cards:
-                if len(s.cards) != 13 or not isAlternateColorSequence(s.cards):
-                    return False
-        return True
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
 
 
 # ************************************************************************
@@ -243,8 +196,6 @@ class TakeAway8(TakeAway):
 registerGame(GameInfo(334, TakeAway, "Take Away",
                       GI.GT_GOLF | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Eliminator", "Wolfpack", "Strip")))
-registerGame(GameInfo(335, FourStacks, "Four Stacks",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(654, Striptease, "Striptease",
                       GI.GT_GOLF, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(784, TakeAway8, "Take Away 8",

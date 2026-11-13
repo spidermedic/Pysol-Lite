@@ -25,25 +25,17 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.montecarlo import MonteCarlo_RowStack
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AbstractFoundationStack, \
-        AutoDealTalonStack, \
-        BasicRowStack, \
-        DealRowTalonStack, \
-        InvisibleStack, \
-        OpenStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        SS_RowStack, \
-        Spider_RK_Foundation, \
-        Stack, \
-        StackWrapper, \
-        WasteStack, \
-        WasteTalonStack, \
-        isRankSequence, \
-        isSameSuitSequence
-from pysollib.util import ACE, ANY_RANK, ANY_SUIT, NO_RANK, \
-        UNLIMITED_ACCEPTS, \
-        UNLIMITED_MOVES
+    AbstractFoundationStack, \
+    AutoDealTalonStack, \
+    BasicRowStack, \
+    DealRowTalonStack, \
+    OpenStack, \
+    RK_RowStack, \
+    Spider_RK_Foundation, \
+    Stack, \
+    StackWrapper, \
+    isRankSequence
+from pysollib.util import ACE, ANY_RANK, ANY_SUIT, NO_RANK
 
 
 # ************************************************************************
@@ -140,72 +132,6 @@ class AcesUp(Game):
 
 
 # ************************************************************************
-# * Fortunes
-# ************************************************************************
-
-class Fortunes(AcesUp):
-    RowStack_Class = StackWrapper(
-        AcesUp_RowStack, max_move=UNLIMITED_MOVES,
-        max_accept=UNLIMITED_ACCEPTS)
-
-
-# ************************************************************************
-# * Russian Aces
-# ************************************************************************
-
-class RussianAces_Talon(DealRowTalonStack):
-    def dealCards(self, sound=False):
-        rows = [s for s in self.game.s.rows if not s.cards]
-        if not rows:
-            rows = self.game.s.rows
-        return self.dealRowAvail(rows=rows, sound=sound)
-
-
-class RussianAces(AcesUp):
-    Talon_Class = RussianAces_Talon
-
-
-# ************************************************************************
-# * Joker Bombs
-# ************************************************************************
-
-class JokerBombs_Foundation(AcesUp_Foundation):
-    def acceptsCards(self, from_stack, cards):
-        if cards[0].suit == 4:
-            return True
-
-        return AcesUp_Foundation.acceptsCards(self, from_stack, cards)
-
-
-class JokerBombs_RowStack(AcesUp_RowStack):
-    def moveMove(self, ncards, to_stack, frames=-1, shadow=-1):
-        if self.cards[-1].suit == 4:
-            BasicRowStack.moveMove(self, ncards, to_stack, frames=frames,
-                                   shadow=shadow)
-
-            old_state = self.game.enterState(self.game.S_FILL)
-            self.game.saveStateMove(2 | 16)  # for undo
-
-            self.game.startDealSample()
-            while self.cards:
-                self.game.flipMove(self)
-                self.game.moveMove(1, self, self.game.s.talon, frames=frames)
-            self.game.stopSamples()
-            self.game.shuffleStackMove(self.game.s.talon)
-
-            self.game.saveStateMove(1 | 16)  # for redo
-            self.game.leaveState(old_state)
-        else:
-            BasicRowStack.moveMove(self, ncards, to_stack,
-                                   frames=frames, shadow=shadow)
-
-
-class JokerBombs(AcesUp):
-    RowStack_Class = StackWrapper(JokerBombs_RowStack, max_accept=1)
-    Foundation_Class = JokerBombs_Foundation
-
-
-# ************************************************************************
 # * Perpetual Motion
 # ************************************************************************
 
@@ -297,115 +223,6 @@ class PerpetualMotion(Game):
         return card1.rank == card2.rank
 
 
-# ************************************************************************
-# * Valentine
-# ************************************************************************
-
-class Valentine_Talon(WasteTalonStack):
-    def canDealCards(self):
-        # FIXME: this is to avoid loops in the demo
-        if self.game.demo and self.game.moves.index >= 500:
-            return False
-        return not self.game.isGameWon()
-
-    def dealCards(self, sound=False):
-        if not self.game.s.waste.cards and self.cards:
-            return WasteTalonStack.dealCards(self, sound=sound)
-        game, num_cards = self.game, len(self.cards)
-        rows = list(reversed(game.s.rows))
-        for r in rows:
-            while r.cards:
-                num_cards = num_cards + 1
-                game.moveMove(1, r, game.s.internals[0], frames=0)
-                if game.s.internals[0].cards[-1].face_up:
-                    game.flipMove(game.s.internals[0])
-        if len(self.cards) > 0:
-            game.moveMove(len(self.cards), self, game.s.internals[0], frames=0)
-        game.moveMove(len(game.s.internals[0].cards), game.s.internals[0],
-                      self, frames=0)
-        rows.reverse()
-        game.startDealSample()
-        for r in rows:
-            game.fillStack(r)
-        WasteTalonStack.dealCards(self, sound=sound)
-        game.stopSamples()
-
-
-class Valentine(Game):
-
-    #
-    # game layout
-    #
-
-    def createGame(self, **layout):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM + 6.5 * l.XS, l.YM + l.YS + (13 * l.YOFFSET))
-
-        self.s.internals.append(InvisibleStack(self))
-
-        # create stacks
-        x, y, = l.XM, l.YM
-        s.talon = Valentine_Talon(x, y, self, max_rounds=-1)
-        l.createText(s.talon, "s")
-        x += l.XS
-        s.waste = WasteStack(x, y, self, max_cards=1)
-        x += 1.5 * l.XS
-        for i in range(4):
-            s.rows.append(SS_RowStack(x, y, self, base_rank=NO_RANK))
-            x = x + l.XS
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    #
-    # game overrides
-    #
-
-    def startGame(self):
-        self._startAndDealRow()
-        self.s.talon.dealCards()
-
-    def fillStack(self, stack):
-        if not stack.cards:
-            if stack in self.s.rows:
-                if self.s.waste.cards:
-                    old_state = self.enterState(self.S_FILL)
-                    self.s.waste.moveMove(1, stack)
-                    self.leaveState(old_state)
-                elif self.s.talon.cards:
-                    old_state = self.enterState(self.S_FILL)
-                    self.s.talon.flipMove()
-                    self.s.talon.moveMove(1, stack)
-                    self.leaveState(old_state)
-
-    def isGameWon(self):
-        for s in self.s.rows:
-            if len(s.cards) != 13 or not isSameSuitSequence(s.cards):
-                return False
-        return True
-
-
-# ************************************************************************
-# * Aces Up 5
-# ************************************************************************
-
-class AcesUp5(AcesUp):
-
-    def createGame(self):
-        AcesUp.createGame(self, rows=5)
-
-    def isGameWon(self):
-        return len(self.s.foundations[0].cards) == 48
-
-
-# ************************************************************************
-# * Cover
-# * Deck
-# ************************************************************************
-
 class Cover_RowStack(MonteCarlo_RowStack):
     def acceptsCards(self, from_stack, cards):
         if not OpenStack.acceptsCards(self, from_stack, cards):
@@ -446,27 +263,7 @@ class Deck(Cover):
 
 
 # ************************************************************************
-# * Firing Squad
-# ************************************************************************
-
-class FiringSquad_Foundation(AcesUp_Foundation):
-    def acceptsCards(self, from_stack, cards):
-        if not AcesUp_Foundation.acceptsCards(self, from_stack, cards):
-            return False
-        return from_stack in self.game.s.rows
-
-
-class FiringSquad(AcesUp):
-    Foundation_Class = FiringSquad_Foundation
-    ReserveStack_Class = ReserveStack
-
-    def createGame(self):
-        AcesUp.createGame(self, reserve=True)
-
-
-# ************************************************************************
 # * Tabby Cat
-# * Manx
 # * Maine Coon
 # ************************************************************************
 
@@ -533,36 +330,12 @@ class TabbyCat(Game):
     shallHighlightMatch = Game._shallHighlightMatch_RKW
 
 
-class Manx(TabbyCat):
-    ReserveStack_Class = ReserveStack
-
-
 # register the game
 registerGame(GameInfo(903, AcesUp, "Aces Up",                   # was: 52
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK,
                       altnames=("Aces High", "Drivel", "Discard")))
-registerGame(GameInfo(206, Fortunes, "Fortunes",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(213, RussianAces, "Russian Aces",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(130, PerpetualMotion, "Perpetual Motion",
                       GI.GT_1DECK_TYPE, 1, -1, GI.SL_MOSTLY_LUCK,
                       altnames=("First Law", "Narcotic")))
-registerGame(GameInfo(353, AcesUp5, "Aces Up 5",
-                      GI.GT_1DECK_TYPE | GI.GT_CHILDREN, 1, 0, GI.SL_LUCK))
-registerGame(GameInfo(552, Cover, "Cover",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_LUCK))
-registerGame(GameInfo(583, FiringSquad, "Firing Squad",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(684, Deck, "Deck",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_LUCK,
-                      altnames=('Affinity', 'Suits Up')))
 registerGame(GameInfo(756, TabbyCat, "Tabby Cat",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(757, Manx, "Manx",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(934, Valentine, "Valentine",
-                      GI.GT_1DECK_TYPE, 1, -1, GI.SL_LUCK))
-registerGame(GameInfo(984, JokerBombs, "Joker Bombs",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK,
-                      subcategory=GI.GS_JOKER_DECK, trumps=list(range(2))))

@@ -1030,49 +1030,6 @@ class Amphibian(Game):
 # * Aglet
 # ************************************************************************
 
-class Aglet(Game):
-
-    def createGame(self, playcards=20, rows=8, reserves=1):
-
-        decks = self.gameinfo.decks
-        l, s = Layout(self), self.s
-        self.setSize(l.XM + (reserves + 0.5+rows) * l.XS,
-                     l.YM + max(2 * l.YS + 7 * l.YOFFSET,
-                                l.YS + playcards * l.YOFFSET))
-
-        x, y = l.XM, self.height-l.YS
-        s.talon = InitialDealTalonStack(x, y, self)
-
-        x, y = l.XM, l.YM
-        for i in range(reserves):
-            stack = ReserveStack(x, y, self, max_cards=UNLIMITED_CARDS)
-            stack.CARD_YOFFSET = l.YOFFSET
-            s.reserves.append(stack)
-            x += l.XS
-
-        x, y = l.XM + (reserves + 0.5 + (rows-decks * 4) / 2.0) * l.XS, l.YM
-        for i in range(4):
-            s.foundations.append(RK_FoundationStack(x, y, self, suit=ANY_SUIT))
-            x += l.XS
-
-        x, y = l.XM+(reserves + 0.5) * l.XS, l.YM + l.YS
-        for i in range(rows):
-            s.rows.append(BasicRowStack(x, y, self, base_rank=NO_RANK))
-            x += l.XS
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        # move Aces to top of the Talon (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(
-            cards, lambda c: (c.rank == ACE, c.suit))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startDealNumRows(4)
-        self.s.talon.dealRowAvail()
-        self.s.talon.dealRowAvail()
-
 
 # ************************************************************************
 # * Ladybug
@@ -1235,121 +1192,6 @@ class Ladybug(Game):
 # * The Bogey
 # ************************************************************************
 
-class TheBogey_Foundation(SS_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not self.cards:
-            return 1
-        return (self.cards[-1].rank > cards[0].rank
-                and self.cards[-1].suit == cards[0].suit)
-
-    def canMoveCards(self, cards):
-        return False
-
-
-class TheBogey_BogeyDraw(OpenStack):
-    def moveMove(self, ncards, to_stack, frames=-1, shadow=-1):
-        OpenStack.moveMove(self, ncards, to_stack, frames=frames,
-                           shadow=shadow)
-        rows = [r for r in self.game.s.rows if not len(r.cards) > 0]
-        self.game.startDealSample()
-        self.game.s.talon.dealRowAvail(rows=rows)
-        rows2 = [r for r in self.game.s.rows if not len(r.cards) > 0]
-        if len(rows2) > 0:
-            self.game.s.talon.redeal(sound=False)
-            self.game.s.talon.dealRowAvail(rows=rows2)
-        self.game.stopSamples()
-
-
-class TheBogey_RowStack(OpenStack):
-
-    def canMoveCards(self, cards):
-        if len(self.game.s.reserves[0].cards) > 0:
-            return False
-        return OpenStack.canMoveCards(self, cards)
-
-
-class TheBogey_Talon(TalonStack):
-    def canDealCards(self):
-        return (len(self.game.s.reserves[0].cards) < 1 and
-                (len(self.cards) > 0 or
-                 len(self.game.s.reserves[0].cards) > 0))
-
-    def dealCards(self, sound=False):
-        if len(self.cards) < 1:
-            self.redeal(sound=sound)
-        if sound:
-            self.game.playSample("dealwaste")
-        self.flipMove()
-        self.moveMove(1, self.game.s.reserves[0])
-
-    def redeal(self, sound=False):
-        if len(self.game.s.reserves[1].cards) > 0:
-            assert len(self.cards) == 0
-            if sound:
-                self.game.playSample("turnwaste", priority=20)
-            self.game.turnStackMove(self.game.s.reserves[1], self)
-            self.game.shuffleStackMove(self)
-            self.game.nextRoundMove(self)
-
-
-class TheBogey_Discard(OpenStack):
-    getBottomImage = Stack._getReserveBottomImage
-
-    def acceptsCards(self, from_stack, cards):
-        return len(self.game.s.reserves[0].cards) < 1
-
-    def canMoveCards(self, cards):
-        return False
-
-
-class TheBogey(Game):
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM + 12 * l.XS, l.YM + 2 * l.YS + 13 * l.YOFFSET)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        for i in range(12):
-            s.foundations.append(TheBogey_Foundation(x, y, self, dir=-1,
-                                                     suit=ANY_SUIT))
-            s.foundations[i].CARD_YOFFSET = l.YOFFSET
-            x += l.XS
-
-        x, y = l.XM, self.height - l.YS
-
-        s.talon = TheBogey_Talon(x, y, self, max_rounds=-1)
-        l.createText(s.talon, 'n')
-
-        x += l.XS
-        s.reserves.append(TheBogey_BogeyDraw(x, y, self))
-
-        x += 3 * l.XS
-
-        for i in range(5):
-            s.rows.append(TheBogey_RowStack(x, y, self, max_cards=1,
-                                            max_accept=0))
-            x += l.XS
-
-        x += 2 * l.XS
-        s.reserves.append(TheBogey_Discard(x, y, self))
-        l.createText(s.reserves[1], 'n')
-
-        self.setRegion(s.reserves, (-999, y - l.CH // 2, 999999, 999999))
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.rows)
-
-    def getAutoStacks(self, event=None):
-        return (), (), ()
-
 
 # ************************************************************************
 # * Ninety-One
@@ -1487,15 +1329,10 @@ registerGame(GameInfo(644, DoubleMeasure, "Double Measure",
 registerGame(GameInfo(754, Amphibian, "Amphibian",
                       GI.GT_NUMERICA | GI.GT_ORIGINAL, 2, 0,
                       GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(760, Aglet, "Aglet",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(836, Ladybug, "Ladybug",
                       GI.GT_1DECK_TYPE, 1, -2, GI.SL_BALANCED))
 registerGame(GameInfo(899, Housefly, "Housefly",
                       GI.GT_NUMERICA, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(931, TheBogey, "The Bogey",
-                      GI.GT_1DECK_TYPE, 1, -1, GI.SL_BALANCED))
 registerGame(GameInfo(958, NinetyOne, "Ninety-One",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(972, Colours, "Colours",

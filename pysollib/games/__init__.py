@@ -36,7 +36,6 @@ from . import camelot  # noqa: F401
 from . import capricieuse  # noqa: F401
 from . import canfield  # noqa: F401
 from . import clearthedungeon  # noqa: F401
-from . import crossword  # noqa: F401
 from . import curdsandwhey  # noqa: F401
 from . import daddylonglegs  # noqa: F401
 from . import demonsandthieves  # noqa: F401
@@ -44,7 +43,6 @@ from . import diplomat  # noqa: F401
 from . import doublets  # noqa: F401
 from . import eiffeltower  # noqa: F401
 from . import fan  # noqa: F401
-from . import fission  # noqa: F401
 from . import fortythieves  # noqa: F401
 from . import freecell  # noqa: F401
 from . import glenwood  # noqa: F401
@@ -77,11 +75,9 @@ from . import precedence  # noqa: F401
 from . import pushpin  # noqa: F401
 from . import pyramid  # noqa: F401
 from . import royalcotillion  # noqa: F401
-from . import royaleast  # noqa: F401
 from . import sanibel  # noqa: F401
 from . import scoundrel  # noqa: F401
 from . import siebenbisas  # noqa: F401
-from . import simplex  # noqa: F401
 from . import spider  # noqa: F401
 from . import sthelena  # noqa: F401
 from . import sultan  # noqa: F401

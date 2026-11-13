@@ -28,16 +28,14 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import DefaultHint
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AbstractFoundationStack, \
-        AutoDealTalonStack, \
-        BasicRowStack, \
-        DealRowRedealTalonStack, \
-        InitialDealTalonStack, \
-        OpenStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        StackWrapper, \
-        TalonStack
+    AbstractFoundationStack, \
+    AutoDealTalonStack, \
+    BasicRowStack, \
+    DealRowRedealTalonStack, \
+    InitialDealTalonStack, \
+    OpenStack, \
+    StackWrapper, \
+    TalonStack
 from pysollib.util import ANY_RANK, ANY_SUIT, JACK, KING, NO_RANK, \
     QUEEN, UNLIMITED_REDEALS
 
@@ -376,143 +374,11 @@ class SimpleTens(BlockTen):
         return len(self.s.foundations[0].cards) == 36
 
 
-# ************************************************************************
-# * Crispy
-# ************************************************************************
-
 PICTURE_DESTS = {
     KING: (1, 2, 13, 14),
     QUEEN: (4, 7, 8, 11),
     JACK: (0, 3, 12, 15),
 }
-
-
-class Crispy_Hint(MonteCarlo_Hint):
-    def step010_movePile(self, r, pile, rows):
-        lp = len(pile)
-        lr = len(r.cards)
-        assert 1 <= lp <= lr
-        rpile = r.cards[: (lr - lp)]
-
-        empty_row_seen = 0
-        r_is_waste = r in self.game.sg.talonstacks
-
-        for t in rows:
-            score, color = 0, None
-            if not self.shallMovePile(r, t, pile, rpile):
-                continue
-
-            if r_is_waste:
-                score, color = self._getMoveWasteScore(
-                    score,
-                    color,
-                    r,
-                    t,
-                    pile,
-                    rpile,
-                )
-            else:
-                if not t.cards:
-                    if lp != lr:
-                        continue
-
-                    rank = pile[-1].rank
-                    if rank not in (JACK, QUEEN, KING):
-                        continue
-
-                    dest_ids = PICTURE_DESTS[rank]
-
-                    if t.id not in dest_ids:
-                        continue
-
-                    if r.id in dest_ids:
-                        continue
-
-                    if empty_row_seen:
-                        continue
-
-                    score = 90000
-                    empty_row_seen = 1
-                else:
-                    score = 80000
-
-                score, color = self._getMovePileScore(
-                    score,
-                    color,
-                    r,
-                    t,
-                    pile,
-                    rpile,
-                )
-
-            self.addHint(score, lp, r, t, color)
-
-
-class Crispy_Talon(MonteCarlo_Talon):
-    def canDealCards(self):
-        if len(self.cards) == 0:
-            return False
-        return MonteCarlo_Talon.canDealCards(self)
-
-
-class Crispy_RowStack(MonteCarlo_RowStack):
-    getBottomImage = BasicRowStack._getReserveBottomImage
-
-    def acceptsCards(self, from_stack, cards):
-        cr = cards[0].rank
-        if len(self.cards) == 0:
-            if cr == KING:
-                return self.id in PICTURE_DESTS[KING]
-            if cr == QUEEN:
-                return self.id in PICTURE_DESTS[QUEEN]
-            if cr == JACK:
-                return self.id in PICTURE_DESTS[JACK]
-        if cr in (JACK, QUEEN, KING):
-            return False
-        return MonteCarlo_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class Crispy(SimpleCarlo):
-    Talon_Class = Crispy_Talon
-    RowStack_Class = Crispy_RowStack
-    Hint_Class = Crispy_Hint
-    FILL_STACKS_AFTER_DROP = False
-    FILL_STACKS_BEFORE_SHIFT = True
-
-    def createGame(self):
-        MonteCarlo.createGame(self, rows=4, cols=4)
-
-    def isGameWon(self):
-        for i in (1, 2, 13, 14):
-            if (
-                len(self.s.rows[i].cards) != 0
-                and self.s.rows[i].cards[0].rank != KING
-            ):
-                return False
-        for i in (4, 7, 8, 11):
-            if (
-                len(self.s.rows[i].cards) != 0
-                and self.s.rows[i].cards[0].rank != QUEEN
-            ):
-                return False
-        for i in (0, 3, 12, 15):
-            if (
-                len(self.s.rows[i].cards) != 0
-                and self.s.rows[i].cards[0].rank != JACK
-            ):
-                return False
-        for i in (5, 6, 9, 10):
-            if len(self.s.rows[i].cards) != 0:
-                return False
-        return len(self.s.talon.cards) == 0
-
-    def shiftCards(self):
-        free = 0
-        for r in self.s.rows:
-            assert len(r.cards) <= 1
-            if not r.cards:
-                free += 1
-        return free
 
 
 # ************************************************************************
@@ -899,154 +765,6 @@ class PatientPairsOpen(TheWishOpen):
 # ************************************************************************
 
 
-class DerLetzteMonarch_Foundation(SS_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if cards is None:
-            # special hack for _getDropStack() below
-            return SS_FoundationStack.acceptsCards(
-                self, from_stack, from_stack.cards)
-        #
-        if not SS_FoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        # We only accept cards from a Reserve. Other cards will get
-        # delivered by _handlePairMove.
-        return from_stack in self.game.s.reserves
-
-
-class DerLetzteMonarch_RowStack(ReserveStack):
-    def canDropCards(self, stacks):
-        return (None, 0)
-
-    def acceptsCards(self, from_stack, cards):
-        if not ReserveStack.acceptsCards(self, from_stack, cards):
-            return False
-        # must be neighbours
-        if not self.game.isNeighbour(from_stack, self):
-            return False
-        # must be able to move our card to the foundations or reserves
-        return self._getDropStack() is not None
-
-    def _getDropStack(self):
-        if len(self.cards) != 1:
-            return None
-        for s in self.game.s.foundations:
-            if s.acceptsCards(self, None):      # special hack
-                return s
-        for s in self.game.s.reserves:
-            if not s.cards:
-                return s
-        return None
-
-    def moveMove(self, ncards, to_stack, frames=-1, shadow=-1):
-        assert ncards == 1 and to_stack in self.game.s.rows
-        assert len(to_stack.cards) == 1
-        self._handlePairMove(ncards, to_stack, frames=-1, shadow=0)
-        self.fillStack()
-
-    def _handlePairMove(self, n, other_stack, frames=-1, shadow=-1):
-        game = self.game
-        old_state = game.enterState(game.S_FILL)
-        s = other_stack._getDropStack()
-        assert s is not None
-        game.moveMove(n, other_stack, s, frames=frames, shadow=shadow)
-        game.moveMove(n, self, other_stack, frames=0)
-        game.leaveState(old_state)
-
-
-class DerLetzteMonarch_ReserveStack(ReserveStack):
-    def clickHandler(self, event):
-        return self.doubleclickHandler(event)
-
-
-class DerLetzteMonarch(Game):
-    Talon_Class = InitialDealTalonStack
-
-    #
-    # game layout
-    #
-
-    def createGame(self, texts=False):
-        # create layout
-        l, s = Layout(self, card_x_space=4), self.s
-
-        # set window
-        decks = self.gameinfo.decks
-        if decks == 1:
-            w = l.XM + 13*l.XS
-            dx = 0
-        else:
-            w = l.XM + 15*l.XS
-            dx = l.XS
-        h = l.YM + 5*l.YS
-        self.setSize(w, h)
-
-        # create stacks
-        for i in range(4):
-            for j in range(13):
-                x, y, = dx + l.XM + j*l.XS, l.YM + (i+1)*l.YS
-                s.rows.append(
-                    DerLetzteMonarch_RowStack(
-                        x, y, self, max_accept=1, max_cards=2))
-        for i in range(4):
-            x, y, = l.XM + (i+2)*l.XS, l.YM
-            s.reserves.append(
-                DerLetzteMonarch_ReserveStack(
-                    x, y, self, max_accept=0))
-        for i in range(4*decks):
-            x, y, = l.XM + (i+7)*l.XS, l.YM
-            s.foundations.append(DerLetzteMonarch_Foundation(x, y, self,
-                                 suit=i % 4, max_move=0))
-        s.talon = self.Talon_Class(l.XM, l.YM, self)
-        if texts:
-            l.createText(s.talon, 'ne')
-
-        # define stack-groups (non default)
-        self.sg.talonstacks = [s.talon]
-        self.sg.openstacks = s.foundations + s.rows
-        self.sg.dropstacks = s.rows + s.reserves
-        self.sg.reservestacks = s.reserves
-
-    #
-    # game overrides
-    #
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.rows[:39], frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.rows[39:])
-
-    def isGameWon(self):
-        c = 0
-        for s in self.s.foundations:
-            c = c + len(s.cards)
-        return c == self.gameinfo.ncards-1
-
-    def getAutoStacks(self, event=None):
-        return ((), self.s.reserves, ())
-
-    def getDemoInfoText(self):
-        return "Der letzte\nMonarch"
-
-    #
-    # game extras
-    #
-
-    def isNeighbour(self, stack1, stack2):
-        if not (0 <= stack1.id <= 51 and 0 <= stack2.id <= 51):
-            return False
-        column = stack2.id % 13
-        diff = stack1.id - stack2.id
-        if column == 0:
-            return diff in (-13, 1, 13)
-        if column == 12:
-            return diff in (-13, -1, 13)
-        return diff in (-13, -1, 1, 13)
-
-
-# ************************************************************************
-# * Doublets
-# ************************************************************************
-
 class DoubletsII(Game):
     FILL_STACKS_AFTER_DROP = False  # for Nestor_RowStack
 
@@ -1202,9 +920,6 @@ registerGame(GameInfo(96, Fourteen, "Fourteen",
 registerGame(GameInfo(235, Nestor, "Nestor",
                       GI.GT_PAIRING_TYPE | GI.GT_OPEN, 1, 0,
                       GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(152, DerLetzteMonarch, "The Last Monarch",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL,
-                      altnames=("Der letzte Monarch",)))
 registerGame(GameInfo(328, TheWish, "The Wish",
                       GI.GT_PAIRING_TYPE | GI.GT_STRIPPED | GI.GT_CHILDREN,
                       1, 0, GI.SL_MOSTLY_LUCK,
@@ -1244,8 +959,6 @@ registerGame(GameInfo(875, PatientPairsOpen, "Patient Pairs (Open)",
 registerGame(GameInfo(898, AcesSquare, "Aces Square",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED,
                       altnames=("Miner",)))
-registerGame(GameInfo(923, Crispy, "Crispy",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(935, Juvenile, "Juvenile",
                       GI.GT_PAIRING_TYPE | GI.GT_OPEN, 2, 0,
                       GI.SL_MOSTLY_LUCK))

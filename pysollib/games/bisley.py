@@ -30,11 +30,8 @@ from pysollib.stack import \
     SS_FoundationStack, \
     StackWrapper, \
     UD_AC_RowStack, \
-    UD_RK_RowStack, \
-    UD_SS_RowStack, \
-    WasteStack, \
-    WasteTalonStack
-from pysollib.util import ACE, KING, NO_RANK, UNLIMITED_REDEALS
+    UD_SS_RowStack
+from pysollib.util import ACE, KING, NO_RANK
 
 
 # ************************************************************************
@@ -97,7 +94,6 @@ class Bisley(Game):
 
 # ************************************************************************
 # * Realm
-# * Mancunian
 # ************************************************************************
 
 class Realm(Game):
@@ -139,46 +135,6 @@ class Realm(Game):
     shallHighlightMatch = Game._shallHighlightMatch_AC
 
 
-class Mancunian(Realm):
-    RowStack_Class = StackWrapper(UD_RK_RowStack, base_rank=NO_RANK)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
-# * Hospital Patience
-# ************************************************************************
-
-class HospitalPatience(Game):
-
-    def createGame(self):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+6*l.XS, l.YM+2*l.YS)
-
-        x, y = l.XM, l.YM
-        s.talon = WasteTalonStack(x, y, self,
-                                  max_rounds=UNLIMITED_REDEALS, num_deal=3)
-        l.createText(s.talon, 'ne')
-        y += l.YS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'ne')
-
-        x = l.XM + 2 * l.XS
-        for i in range(4):
-            y = l.YM
-            s.foundations.append(SS_FoundationStack(x, y, self, i, max_move=0))
-            y += l.YS
-            s.foundations.append(SS_FoundationStack(x, y, self, i,
-                                 base_rank=KING, max_move=0, dir=-1))
-            x += l.XS
-
-        l.defaultStackGroups()
-
-    def startGame(self, flip=0, reverse=1):
-        self.startDealSample()
-        self.s.talon.dealCards()      # deal first card to WasteStack
-
-
 # register the game
 registerGame(GameInfo(290, Bisley, "Bisley",
                       GI.GT_BAKERS_DOZEN | GI.GT_OPEN, 1, 0,
@@ -186,8 +142,3 @@ registerGame(GameInfo(290, Bisley, "Bisley",
 registerGame(GameInfo(374, Realm, "Realm",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL,
                       1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(375, Mancunian, "Mancunian",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL,
-                      1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(686, HospitalPatience, "Hospital Patience",
-                      GI.GT_1DECK_TYPE, 1, -1, GI.SL_MOSTLY_LUCK))

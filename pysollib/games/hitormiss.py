@@ -29,9 +29,7 @@ from pysollib.stack import \
         AbstractFoundationStack, \
         WasteStack, \
         WasteTalonStack
-from pysollib.util import ANY_SUIT, RANKS, \
-        UNLIMITED_REDEALS, \
-        VARIABLE_REDEALS
+from pysollib.util import ANY_SUIT, RANKS, VARIABLE_REDEALS
 
 
 # ************************************************************************
@@ -163,14 +161,7 @@ class HitOrMiss(Game):
         return RANKS[self.rank]
 
 
-class HitOrMissUnlimited(HitOrMiss):
-    MaxRounds = UNLIMITED_REDEALS
-
-
 # register the game
 registerGame(GameInfo(774, HitOrMiss, "Hit or Miss",
                       GI.GT_1DECK_TYPE, 1, VARIABLE_REDEALS,
                       GI.SL_LUCK, altnames=("Roll Call",)))
-registerGame(GameInfo(865, HitOrMissUnlimited, "Hit or Miss Unlimited",
-                      GI.GT_1DECK_TYPE | GI.GT_CHILDREN, 1, UNLIMITED_REDEALS,
-                      GI.SL_LUCK))

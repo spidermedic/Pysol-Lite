@@ -4,15 +4,13 @@ from pysollib.hint import DefaultHint
 from pysollib.layout import Layout
 from pysollib.pysoltk import MfxCanvasText, get_text_width
 from pysollib.stack import \
-        BasicRowStack, \
-        DealRowTalonStack, \
-        InitialDealTalonStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        Stack, \
-        StackWrapper, \
-        WasteStack, \
-        WasteTalonStack
+    BasicRowStack, \
+    DealRowTalonStack, \
+    RK_FoundationStack, \
+    Stack, \
+    StackWrapper, \
+    WasteStack, \
+    WasteTalonStack
 from pysollib.util import KING, RANKS
 
 
@@ -170,22 +168,6 @@ class Calculation(Game):
 
 
 # ************************************************************************
-# * Hopscotch
-# ************************************************************************
-
-class Hopscotch(Calculation):
-    def _shuffleHook(self, cards):
-        # prepare first cards
-        topcards = [None] * 4
-        for c in cards[:]:
-            if c.suit == 0 and c.rank <= 3 and topcards[c.rank] is None:
-                topcards[c.rank] = c
-                cards.remove(c)
-        topcards.reverse()
-        return cards + topcards
-
-
-# ************************************************************************
 # * Betsy Ross
 # ************************************************************************
 
@@ -256,95 +238,6 @@ class BetsyRoss(Calculation):
                     cards.remove(c)
         topcards.reverse()
         return cards + topcards
-
-
-# ************************************************************************
-# * One234
-# * Appreciate
-# ************************************************************************
-
-class One234_Foundation(BetsyRoss_Foundation):
-    def canMoveCards(self, cards):
-        if not BetsyRoss_Foundation.canMoveCards(self, cards):
-            return False
-        return len(self.cards) > 1
-
-    def updateText(self):
-        BetsyRoss_Foundation.updateText(self, update_empty=False)
-
-
-class One234(Calculation):
-    Foundation_Class = One234_Foundation
-    RowStack_Class = StackWrapper(BasicRowStack, max_move=1, max_accept=0)
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self, TEXT_HEIGHT=40), self.s
-        help, text_width = self._getHelpText()
-        text_width += 2*l.XM
-
-        # set window
-        # (piles up to 20 cards are playable in default window size)
-        w = l.XM+max(4*l.XS+text_width, 8*l.XS)
-        h = l.YM+2*l.YS+5*l.YOFFSET+l.TEXT_HEIGHT+l.YS
-        self.setSize(w, h)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        for i in range(4):
-            stack = self.Foundation_Class(x, y, self,
-                                          mod=13, dir=i+1, base_rank=i)
-            s.foundations.append(stack)
-            tx, ty, ta, tf = l.getTextAttr(stack, "s")
-            font = self.app.getFont("canvas_default")
-            stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
-                                             anchor=ta, font=font)
-            x = x + l.XS
-        self.texts.help = MfxCanvasText(
-            self.canvas, x + l.XM, y + l.CH // 2, text=help,
-            anchor="w", font=self.app.getFont("canvas_fixed"))
-        x, y = l.XM, l.YM+l.YS+l.TEXT_HEIGHT
-        for i in range(8):
-            s.rows.append(self.RowStack_Class(x, y, self, mod=13,
-                                              dir=(-1 * (i // 2)) - 1))
-            x = x + l.XS
-
-        s.talon = InitialDealTalonStack(l.XM, self.height-l.YS, self)
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return cards
-
-    def startGame(self):
-        self._startDealNumRows(4)
-        self.s.talon.dealRow()
-        self.s.talon.dealRow()
-        self.s.talon.dealRow(rows=self.s.foundations)
-
-
-class Appreciate(One234):
-    RowStack_Class = StackWrapper(RK_RowStack, max_move=1, max_accept=1)
-
-    def startGame(self):
-        One234.startGame(self)
-        self._setBaseRanks()
-
-    def _setBaseRanks(self):
-        for r in self.s.rows:
-            r.cap.base_rank = self._getFinalRank(
-                self.s.foundations[-1 * (r.cap.dir + 1)])
-
-    def _getFinalRank(self, pile):
-        rank = pile.cards[0].rank
-        rank = rank - pile.cap.dir
-        if rank < 0:
-            rank = 13 + rank
-        return rank
-
-    def _restoreGameHook(self, game):
-        self._setBaseRanks()
 
 
 # ************************************************************************
@@ -441,17 +334,10 @@ class SeniorWrangler(Calculation):
 registerGame(GameInfo(256, Calculation, "Calculation",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Progression", "Broken Intervals")))
-registerGame(GameInfo(94, Hopscotch, "Hopscotch",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(134, BetsyRoss, "Betsy Ross",
                       GI.GT_1DECK_TYPE, 1, 2, GI.SL_MOSTLY_LUCK,
                       altnames=("Fairest", "Four Kings", "Musical Patience",
                                 "Quadruple Alliance", "Plus Belle")))
-registerGame(GameInfo(550, One234, "One234",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL,
-                      altnames=("1-2-3-4")))
 registerGame(GameInfo(653, SeniorWrangler, "Senior Wrangler",
                       GI.GT_2DECK_TYPE, 2, 8, GI.SL_BALANCED,
                       altnames=("Mathematics")))
-registerGame(GameInfo(948, Appreciate, "Appreciate",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))

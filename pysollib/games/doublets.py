@@ -22,7 +22,6 @@
 # ---------------------------------------------------------------------------##
 
 from pysollib.game import Game
-from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.pysoltk import MfxCanvasText
@@ -32,10 +31,6 @@ from pysollib.stack import \
         WasteStack, \
         WasteTalonStack
 from pysollib.util import ANY_SUIT, KING
-
-# ************************************************************************
-# * Doublets
-# ************************************************************************
 
 
 class Doublets_Foundation(AbstractFoundationStack):
@@ -131,6 +126,3 @@ class Doublets(Game):
 
 
 # register the game
-registerGame(GameInfo(111, Doublets, "Doublets",
-                      GI.GT_1DECK_TYPE, 1, 2, GI.SL_MOSTLY_LUCK,
-                      altnames=('Double or Quits',)))

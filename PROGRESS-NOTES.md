@@ -798,3 +798,15 @@ The Select Game > Two-Deck games catch-all group had 109 games. The user was sho
 **Things to know:** `dieboesesieben.py` (Bad Seven only) was deleted outright with its import. `AlgerianPatience3` (3 decks, id 457) stays and builds on the kept Carthage. Four rules pages that linked to removed games (Algerian Patience 3 Decks, Locked Cards, Carthage, Picture Patience) now show the name without a link. `html-src/wikipedia` pages for removed games were left alone. The installed app is NOT rebuilt yet.
 
 **Remaining Select-menu types not yet reviewed:** Fan, Forty Thieves, FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon, and the One-Deck group.
+
+## 72. Update: One-Deck games group cut, 705 to 633 games by id (2026-11-12)
+
+Same process as section 71. The One-Deck catch-all group had 110 games in 21 families; the user approved the suggested keep list. 38 kept, 72 removed (72 registrations, 121 dead classes, rules pages, unused imports, section comments). Rollback tag (local only): `before-onedeck-cut`. Commit follows `6913d160` (the Two-Deck cut).
+
+**Kept (38):** Aces Up, Perpetual Motion, Tabby Cat, Osmosis, Peek, Accordion, Push Pin, Trusty Twelve, Dumfries, Fire and Ice, Napoleon's Tomb, Corners, Four Seasons, PileOn, Foursome, Clock, Grandfather's Clock, Calculation, Betsy Ross, Corner Suite, Captive Queens, Vague, Beacon, Four Winds, Carpet, Wave Motion, Ladybug, Ninety-One, Knockout, Aces Square, Lucky Thirteen, Realm, Hit or Miss, Thirty, Moojub, Camelot, Scoundrel, Clear the Dungeon.
+
+**Verification:** id list compared with the saved before-list (633 = 705 - 72; nothing else missing); every games module imports on its own; `--gameid` launch checks on 25 kept games stayed open until killed, no tracebacks; `pyflakes` and `pycodestyle` clean on the touched files. `run-tests.pl` still cannot run here (needs Perl Env::Path).
+
+**Things to know:** four modules held only removed games and were deleted with their `__init__.py` imports: `crossword.py`, `fission.py`, `royaleast.py`, `simplex.py`. Small PileOn had no rules page (nothing to delete). Five rules pages that linked to removed games (Doublets II, Footling, Push Pin, Hit or Miss, Foursome) now show the name without a link. The cut script prints nothing until it exits and its watcher must match the process command line (`pgrep -f "[s]cratchpad/cut.py"`); an earlier watcher fired too early because its pattern missed the process. The installed app is NOT rebuilt for this cut.
+
+**Remaining Select-menu types not yet reviewed:** Fan, Forty Thieves, FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon.

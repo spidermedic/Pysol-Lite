@@ -25,13 +25,11 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.layout import Layout
 from pysollib.stack import \
-        AC_RowStack, \
-        InitialDealTalonStack, \
-        OpenStack, \
-        SS_RowStack, \
-        StackWrapper, \
-        isAlternateColorSequence, \
-        isSameSuitSequence
+    InitialDealTalonStack, \
+    OpenStack, \
+    SS_RowStack, \
+    StackWrapper, \
+    isSameSuitSequence
 from pysollib.util import ANY_RANK
 
 # ************************************************************************
@@ -102,57 +100,6 @@ class WaveMotion(Game):
     shallHighlightMatch = Game._shallHighlightMatch_SS
 
 
-# ************************************************************************
-# * Flourish
-# ************************************************************************
-
-class Flourish(WaveMotion):
-    RowStack_Class = AC_RowStack
-
-    def createGame(self):
-        WaveMotion.createGame(self, rows=7, reserves=8, playcards=7)
-
-    def isGameWon(self):
-        for s in self.s.rows:
-            if s.cards:
-                if len(s.cards) != 13 or not isAlternateColorSequence(s.cards):
-                    return False
-        return True
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
-# ************************************************************************
-# * Flow
-# * Wading Pool
-# ************************************************************************
-
-class Flow_ReserveStack(SS_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if len(self.cards) == 0 and len(cards) > 1:
-            return False
-        return SS_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class Flow(WaveMotion):
-    Reserve_Class = StackWrapper(Flow_ReserveStack, base_rank=ANY_RANK)
-
-    def createGame(self):
-        WaveMotion.createGame(self, rows=8, reserves=8, playcards=14)
-
-
-class WadingPool(Flow):
-    Reserve_Class = StackWrapper(Flow_ReserveStack, base_rank=ANY_RANK,
-                                 max_move=1)
-
-
 # register the game
 registerGame(GameInfo(314, WaveMotion, "Wave Motion",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(753, Flourish, "Flourish",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(841, Flow, "Flow",
-                      GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(878, WadingPool, "Wading Pool",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))

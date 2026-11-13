@@ -33,7 +33,7 @@ from pysollib.stack import \
     OpenStack, \
     ReserveStack, \
     SS_FoundationStack
-from pysollib.util import ACE, JACK, KING, QUEEN
+from pysollib.util import ACE, KING
 
 # ************************************************************************
 # * Tournament
@@ -207,69 +207,9 @@ class KingsdownEights(Game):
     shallHighlightMatch = Game._shallHighlightMatch_AC
 
 
-# ************************************************************************
-# * Ladies Battle
-# ************************************************************************
-
-class LadiesBattle_RowStack(AC_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not AC_RowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if from_stack in self.game.s.reserves:
-            return False
-        return True
-
-
-class LadiesBattle(Game):
-    Hint_Class = CautiousDefaultHint
-
-    def createGame(self):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+9*l.XS, max(l.YM+l.YS+20*l.YOFFSET, l.YM+6*l.YS))
-
-        x, y, = l.XM+1.5*l.XS, l.YM
-        for i in range(6):
-            s.rows.append(LadiesBattle_RowStack(x, y, self,
-                                                max_move=1, mod=13))
-            x = x + l.XS
-        x, y = l.XM, l.YM+l.YS//2
-        for i in range(4):
-            s.reserves.append(OpenStack(x, y, self, max_accept=0))
-            y += l.YS
-        x, y = self.width-l.XS, l.YM+l.YS//2
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                                    base_rank=QUEEN, mod=13))
-            y += l.YS
-        x, y = self.width-l.XS, self.height-l.YS
-        s.talon = DealRowTalonStack(x, y, self)
-        l.createText(s.talon, "sw")
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (JACK, QUEEN), (c.rank, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startAndDealRow()
-
-    def fillStack(self, stack):
-        if stack in self.s.rows and not stack.cards:
-            if self.s.talon.cards:
-                self.s.talon.flipMove()
-                self.s.talon.moveMove(1, stack)
-
-    shallHighlightMatch = Game._shallHighlightMatch_ACW
-
-
 # register the game
 registerGame(GameInfo(303, Tournament, "Tournament",
                       GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK,
                       altnames=("Marechal Saxe", ),))
 registerGame(GameInfo(386, KingsdownEights, "Kingsdown Eights",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(652, LadiesBattle, "Ladies Battle",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))

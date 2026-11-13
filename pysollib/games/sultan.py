@@ -27,7 +27,6 @@ from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.stack import \
     AbstractFoundationStack, \
-    AutoDealTalonStack, \
     BasicRowStack, \
     DealRowTalonStack, \
     InitialDealTalonStack, \
@@ -36,13 +35,10 @@ from pysollib.stack import \
     RK_RowStack, \
     ReserveStack, \
     SS_FoundationStack, \
-    SS_RowStack, \
     Stack, \
-    StackWrapper, \
-    UD_AC_RowStack, \
     WasteStack, \
     WasteTalonStack
-from pysollib.util import ACE, ANY_SUIT, JACK, KING, NO_RANK, QUEEN
+from pysollib.util import ACE, ANY_SUIT, JACK, KING, QUEEN
 
 
 # ************************************************************************
@@ -466,168 +462,6 @@ class CornerSuite(Game):
     shallHighlightMatch = Game._shallHighlightMatch_RK
 
 
-# ************************************************************************
-# * Circle Eight
-# ************************************************************************
-
-class CircleEight(Game):
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+5*l.XS, l.YM+4*l.YS)
-
-        for i, j in ((1, 0),
-                     (2, 0),
-                     (3, 0),
-                     (4, 1.5),
-                     (3, 3),
-                     (2, 3),
-                     (1, 3),
-                     (0, 1.5),
-                     ):
-            x, y = l.XM+i*l.XS, l.YM+j*l.YS
-            stack = RK_RowStack(x, y, self, dir=1, mod=13, max_move=0)
-            s.rows.append(stack)
-            stack.CARD_YOFFSET = 0
-
-        x, y = l.XM+1.5*l.XS, l.YM+1.5*l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=2)
-        l.createText(s.talon, 'nw')
-        l.createRoundText(self.s.talon, 'nn')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 'ne')
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    def isGameWon(self):
-        return len(self.s.talon.cards) == 0 and len(self.s.waste.cards) == 0
-
-    shallHighlightMatch = Game._shallHighlightMatch_RKW
-
-
-# ************************************************************************
-# * Phalanx
-# ************************************************************************
-
-class Phalanx(Game):
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+8*l.XS, l.YM+5*l.YS)
-
-        y = l.YM
-        for i in range(5):
-            x = l.XM+(8-i)*l.XS//2
-            for j in range(i+1):
-                s.rows.append(ReserveStack(x, y, self))
-                x += l.XS
-            y += l.YS
-
-        suit = 0
-        for xx, yy in ((1.5, 1.5),
-                       (1,   2.5),
-                       (6.5, 1.5),
-                       (7,   2.5)):
-            x, y = l.XM+xx*l.XS, l.YM+yy*l.YS
-            s.foundations.append(SS_FoundationStack(x, y, self, suit))
-            suit += 1
-
-        x, y = l.XM, l.YM
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 's')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 's')
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(frames=4)
-        self.s.talon.dealCards()
-
-
-# ************************************************************************
-# * Turncoats
-# ************************************************************************
-
-class Grandee(Game):
-    Hint_Class = CautiousDefaultHint
-    Talon_Class = DealRowTalonStack
-    RowStack_Class = SS_RowStack
-
-    def createGame(self, waste=False, rows=14):
-
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        decks = self.gameinfo.decks
-        w = max(decks*4, rows//2)
-        self.setSize(l.XM+w*l.XS, l.YM+5*l.YS)
-
-        # create stacks
-        x, y = l.XM + (w-decks*4)*l.XS//2, l.YM
-        for i in range(4):
-            for j in range(decks):
-                s.foundations.append(SS_FoundationStack(x, y, self, suit=i))
-                x += l.XS
-
-        y = l.YM+1.5*l.YS
-        for i in range(2):
-            x = l.XM + (w-rows//2)*l.XS//2
-            for j in range(rows//2):
-                stack = self.RowStack_Class(x, y, self, max_move=1)
-                stack.CARD_YOFFSET = 0
-                s.rows.append(stack)
-                x += l.XS
-            y += l.YS
-
-        x, y = self.width-l.XS, self.height-l.YS
-        s.talon = self.Talon_Class(x, y, self)
-        if waste:
-            l.createText(s.talon, 'n')
-            x -= l.XS
-            s.waste = WasteStack(x, y, self)
-            l.createText(s.waste, 'n')
-        else:
-            l.createText(s.talon, 'sw')
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self._startAndDealRow()
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-class Turncoats(Grandee):
-    Talon_Class = AutoDealTalonStack
-    RowStack_Class = StackWrapper(UD_AC_RowStack, base_rank=NO_RANK)
-
-    def createGame(self):
-        Grandee.createGame(self, rows=12)
-
-    def fillStack(self, stack):
-        if not stack.cards:
-            if stack in self.s.rows and self.s.talon.cards:
-                old_state = self.enterState(self.S_FILL)
-                self.s.talon.flipMove()
-                self.s.talon.moveMove(1, stack)
-                self.leaveState(old_state)
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
 # register the game
 registerGame(GameInfo(330, Sultan, "Sultan",
                       GI.GT_2DECK_TYPE, 2, 2, GI.SL_MOSTLY_LUCK,
@@ -646,9 +480,3 @@ registerGame(GameInfo(477, CornerSuite, "Corner Suite",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(598, PicturePatience, "Picture Patience",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(635, CircleEight, "Circle Eight",
-                      GI.GT_1DECK_TYPE, 1, 1, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(730, Phalanx, "Phalanx",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(743, Turncoats, "Turncoats",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))

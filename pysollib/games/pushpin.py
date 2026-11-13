@@ -31,7 +31,7 @@ from pysollib.stack import \
         DealRowTalonStack, \
         ReserveStack, \
         Stack
-from pysollib.util import ANY_RANK, ANY_SUIT, RANKS, SUITS_PL
+from pysollib.util import ANY_RANK, ANY_SUIT
 
 
 class PushPin_Hint(AbstractHint):
@@ -217,24 +217,6 @@ class PushPin(Game):
         return ((), (), ())
 
 
-class RoyalMarriage(PushPin):
-    def _shuffleHook(self, cards):
-        qi, ki = -1, -1
-        for i, c in enumerate(cards):
-            if c.suit == 2 and c.rank == 11:
-                qi = i
-            if c.suit == 2 and c.rank == 12:
-                ki = i
-            if qi >= 0 and ki >= 0:
-                break
-        q, k = cards[qi], cards[ki]
-        del cards[max(qi, ki)]
-        del cards[min(qi, ki)]
-        cards.insert(0, k)
-        cards.append(q)
-        return cards
-
-
 # ************************************************************************
 # * Bayan (ex. Accordion)
 # ************************************************************************
@@ -326,247 +308,19 @@ class Accordion2Deck(Accordion2):
     def isGameWon(self):
         return len(self.s.foundations[0].cards) == 103
 
-# ************************************************************************
-# * Relaxed Accordion
-# ************************************************************************
 
-
-class RelaxedAccordion_RowStack(Accordion2_RowStack):
-    acceptsCards = Accordion_RowStack.acceptsCards
-
-
-class RelaxedAccordion(Accordion2):
-    RowStack_Class = RelaxedAccordion_RowStack
-
-# ************************************************************************
-# * 23 Skidoo
-# ************************************************************************
-
-
-class TwoThreeSkidoo_Hint(Accordion_Hint):
-    VAL1 = 2
-    VAL2 = 3
-
-
-class TwoThreeSkidoo_RowStack(Accordion2_RowStack):
-    ALLOWED_JUMPS = (2, 3)
-
-
-class TwoThreeSkidoo(Accordion2):
-    RowStack_Class = TwoThreeSkidoo_RowStack
-    Hint_Class = TwoThreeSkidoo_Hint
-
-    def isGameWon(self):
-        return len(self.s.foundations[0].cards) == 50
-
-# ************************************************************************
-# * Accordion's Revenge
-# ************************************************************************
-
-
-class AccordionsRevenge(Accordion2):
-    Comment = True
-
-    def createGame(self):
-        self.finalrank = -1
-        self.finalsuit = -1
-
-        Accordion2.createGame(self)
-
-    def startGame(self):
-        self.finalrank = -1
-        self.finalsuit = -1
-        self.updateText()
-
-        Accordion2.startGame(self)
-
-        while (self.finalrank == -1 or self.finalsuit == -1 or
-               (self.finalrank == self.s.rows[0].cards[0].rank and
-                self.finalsuit == self.s.rows[0].cards[0].suit) or
-               (self.finalrank == self.s.rows[1].cards[0].rank and
-                self.finalsuit == self.s.rows[1].cards[0].suit)):
-            self.finalsuit = self.random.choice(self.gameinfo.suits)
-            self.finalrank = self.random.choice(self.gameinfo.ranks)
-
-    def isGameWon(self):
-        return (len(self.s.foundations[0].cards) == 51 and
-                self.s.rows[0].cards[0].rank == self.finalrank and
-                self.s.rows[0].cards[0].suit == self.finalsuit)
-
-    def _restoreGameHook(self, game):
-        self.finalrank = game.loadinfo.dval.get('Rank')
-        self.finalsuit = game.loadinfo.dval.get('Suit')
-
-    def _loadGameHook(self, p):
-        self.loadinfo.addattr(dval=p.load())
-
-    def _saveGameHook(self, p):
-        dval = {'Rank': self.finalrank, 'Suit': self.finalsuit}
-        p.dump(dval)
-
-    def updateText(self):
-        if self.preview > 1:
-            return
-        if self.finalrank != -1 and self.finalsuit != -1:
-            self.texts.base_rank.config(text=self.parseGameInfo())
-
-    def parseGameInfo(self):
-        return "Goal card: " + RANKS[self.finalrank] + \
-            ' - ' + SUITS_PL[self.finalsuit]
-
-# ************************************************************************
-# * Decade
-# ************************************************************************
+# Hint should reveal a valid move, but some intelligence should be added.
 
 
 # Hint should reveal a valid move, but some intelligence should be added.
-class Decade_Hint(AbstractHint):
-
-    def computeHints(self):
-        game = self.game
-        rows = game.s.rows
-        for i, row_i in enumerate(rows):
-            for j in range(i + 1, len(rows)):
-                total = 0
-                count = 0
-                for k in range(i, j):
-                    if self.game.s.rows[k].cards:
-                        total += min(self.game.s.rows[k].cards[0].rank + 1, 10)
-                        count += 1
-                if total in [10, 20, 30] and count > 1:
-                    self.addHint(5000, 1, row_i, rows[j - 1])
-
-
-class Decade_RowStack(PushPin_RowStack):
-
-    def acceptsCards(self, from_stack, cards):
-        if not self.cards:
-            return False
-        firstcard = min(self.id, from_stack.id)
-        lastcard = max(self.id, from_stack.id) + 1
-
-        total = 0
-        for x in range(firstcard, lastcard):
-            total += min(self.game.s.rows[x].cards[0].rank + 1, 10)
-
-        return total in [10, 20, 30]
-
-    def _dropPairMove(self, n, other_stack, frames=-1, shadow=-1):
-        game = self.game
-        old_state = game.enterState(game.S_FILL)
-        f = game.s.foundations[0]
-        game.updateStackMove(game.s.talon, 2 | 16)  # for undo
-        if not game.demo:
-            game.playSample("droppair", priority=200)
-
-        firstcard = min(self.id, other_stack.id)
-        lastcard = max(self.id, other_stack.id) + 1
-
-        for x in range(firstcard, lastcard):
-            game.moveMove(n, self.game.s.rows[x], f,
-                          frames=frames, shadow=shadow)
-
-        self.fillStack()
-        game.updateStackMove(game.s.talon, 1 | 16)  # for redo
-        game.leaveState(old_state)
-
-    clickHandler = ReserveStack.clickHandler
-
-
-class Decade(PushPin):
-    Hint_Class = Decade_Hint
-    RowStack_Class = Decade_RowStack
-
-    def isGameWon(self):
-        return len(self.s.foundations[0].cards) == 52
-
-
-# ************************************************************************
-# * Seven Up
-# ************************************************************************
-
-
-# Hint should reveal a valid move, but some intelligence should be added.
-class SevenUp_Hint(AbstractHint):
-
-    def computeHints(self):
-        rows = self.game.s.rows
-        for i, row in enumerate(rows):
-            if row.cards and row.cards[0].rank == 6:
-                self.addHint(5000, 1, row, self.game.s.foundations[0])
-            for j in range(i + 1, len(rows)):
-                cards_in_between = [
-                    rows[k].cards[0].rank + 1
-                    for k in range(i, j)
-                    if rows[k].cards
-                ]
-                count = len(cards_in_between)
-                total = sum(cards_in_between)
-                if total % 7 == 0 and 1 < count <= 4:
-                    self.addHint(5000, 1, row, rows[j - 1])
-
-
-class SevenUp_RowStack(Decade_RowStack):
-
-    def acceptsCards(self, from_stack, cards):
-        if not self.cards:
-            return False
-        firstcard = min(self.id, from_stack.id)
-        lastcard = max(self.id, from_stack.id) + 1
-
-        total = 0
-        numcards = 0
-        for x in range(firstcard, lastcard):
-            total += self.game.s.rows[x].cards[0].rank + 1
-            numcards += 1
-
-        return numcards <= 4 and total % 7 == 0
-
-    def _dropSevenClickHandler(self, event):
-        if not self.cards:
-            return 0
-        c = self.cards[-1]
-        if c.face_up and c.rank == 6:
-            self.game.playSample("autodrop", priority=20)
-            self.playMoveMove(1, self.game.s.foundations[0], sound=False)
-            return 1
-        return 0
-
-    def clickHandler(self, event):
-        if self._dropSevenClickHandler(event):
-            return 1
-        return Decade_RowStack.clickHandler(self, event)
-
-
-class SevenUp(Decade):
-    Hint_Class = SevenUp_Hint
-    RowStack_Class = SevenUp_RowStack
 
 
 registerGame(GameInfo(287, PushPin, "Push Pin",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK,
                       altnames=('Queens')))
-registerGame(GameInfo(288, RoyalMarriage, "Royal Marriage",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK,
-                      altnames=('Betrothal', 'Coquette',
-                                'The Queen and Her Lad')))
-registerGame(GameInfo(656, Accordion, "Bayan",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_SKILL))
 registerGame(GameInfo(772, Accordion2, "Accordion",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_SKILL,
                       altnames=('Idle Year', 'Methuselah', 'Tower of Babel',
                                 'One Away Three Away', 'One-Handed')))
-registerGame(GameInfo(773, RelaxedAccordion, "Relaxed Accordion",
-                      GI.GT_1DECK_TYPE | GI.GT_RELAXED, 1, 0, GI.SL_SKILL))
-registerGame(GameInfo(811, AccordionsRevenge, "Accordion's Revenge",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_SKILL))
-registerGame(GameInfo(816, Decade, "Decade",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_SKILL,
-                      altnames=('Ten Twenty Thirty')))
-registerGame(GameInfo(883, TwoThreeSkidoo, "23 Skidoo",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_SKILL))
-registerGame(GameInfo(918, SevenUp, "Seven Up",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_SKILL,
-                      altnames=('Seventh Wonder', 'The Magic Seven')))
 registerGame(GameInfo(994, Accordion2Deck, "Accordion (2 Decks)",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_SKILL))

@@ -1078,29 +1078,6 @@ class AuntMary(Klondike):
 # * Double Dot
 # ************************************************************************
 
-class DoubleDot(Klondike):
-    Talon_Class = DealRowTalonStack
-    RowStack_Class = StackWrapper(RK_RowStack, dir=-2, mod=13)
-    Foundation_Class = StackWrapper(SS_FoundationStack, dir=2, mod=13)
-
-    def createGame(self):
-        Klondike.createGame(self, max_rounds=1, rows=8, waste=0)
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: ((c.rank == ACE and c.suit in (0, 1)) or
-                       (c.rank == 1 and c.suit in (2, 3)), c.suit))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startAndDealRow()
-
-    # def shallHighlightMatch(self, stack1, card1, stack2, card2):
-    #     return abs(card1.rank-card2.rank) == 2
-
-    shallHighlightMatch = Game._shallHighlightMatch_RKW
-
 
 # ************************************************************************
 # * Moving Left
@@ -1470,8 +1447,6 @@ registerGame(GameInfo(350, Q_C_, "Q.C.",
                       altnames=("K.C.",)))
 registerGame(GameInfo(407, AuntMary, "Aunt Mary",
                       GI.GT_KLONDIKE, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(420, DoubleDot, "Double Dot",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
 # registerGame(GameInfo(452, DoubleEasthaven, "Double Easthaven",
 #                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
 # registerGame(GameInfo(453, TripleEasthaven, "Triple Easthaven",
@@ -1527,8 +1502,6 @@ registerGame(GameInfo(855, HalfKlondike, "Half Klondike",
                       suits=(1, 2)))
 registerGame(GameInfo(869, Smokey, "Smokey",
                       GI.GT_KLONDIKE, 1, 2, GI.SL_BALANCED))
-registerGame(GameInfo(888, SixBySix, "Six by Six",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(893, TakingSilk, "Taking Silk",
                       GI.GT_KLONDIKE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(913, NineAcross, "Nine Across",

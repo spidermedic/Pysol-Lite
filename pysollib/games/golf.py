@@ -45,13 +45,11 @@ from pysollib.stack import \
     StackWrapper, \
     UD_RK_RowStack, \
     WasteStack, \
-    WasteTalonStack, \
-    isSameSuitSequence
+    WasteTalonStack
 from pysollib.util import \
     ACE, \
     ANY_RANK, \
     ANY_SUIT, \
-    DIAMOND, \
     KING, \
     NO_RANK, \
     RANKS, \
@@ -912,60 +910,6 @@ class DoubleUintah(Uintah):
 
 
 # ************************************************************************
-# * Diamond Mine
-# ************************************************************************
-
-class DiamondMine_RowStack(RK_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not RK_RowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if cards[0].suit == DIAMOND:
-            return False
-        if self.cards:
-            return self.cards[-1].suit != DIAMOND
-        return True
-
-
-class DiamondMine(Game):
-
-    def createGame(self):
-        layout, s = Layout(self), self.s
-        self.setSize(
-            layout.XM+13*layout.XS,
-            layout.YM+2*layout.YS+15*layout.YOFFSET)
-
-        x, y = layout.XM+6*layout.XS, layout.YM
-        s.foundations.append(SS_FoundationStack(x, y, self,
-                             base_rank=ANY_RANK, suit=DIAMOND, mod=13))
-        x, y = layout.XM, layout.YM+layout.YS
-        for i in range(13):
-            s.rows.append(DiamondMine_RowStack(x, y, self))
-            x += layout.XS
-        s.talon = InitialDealTalonStack(layout.XM, self.height-layout.YS, self)
-
-        layout.defaultAll()
-
-    def startGame(self):
-        for i in range(3):
-            self.s.talon.dealRow(flip=0, frames=0)
-        self._startAndDealRow()
-
-    def isGameWon(self):
-        if len(self.s.foundations[0].cards) != 13:
-            return False
-        for s in self.s.rows:
-            if len(s.cards) == 0:
-                continue
-            if len(s.cards) != 13:
-                return False
-            if not isSameSuitSequence(s.cards):
-                return False
-        return True
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
 # * Dolphin
 # ************************************************************************
 
@@ -1082,48 +1026,6 @@ class Vague(Game):
             return ((), (), self.sg.dropstacks)
         # rightclickHandler
         return ((), self.sg.dropstacks, self.sg.dropstacks)
-
-
-# ************************************************************************
-# * Sticko
-# ************************************************************************
-
-class Sticko_Foundation(AbstractFoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        r1, r2 = self.cards[-1].rank, cards[0].rank
-        s1, s2 = self.cards[-1].suit, cards[0].suit
-        c1, c2 = self.cards[-1].color, cards[0].color
-
-        # Increase rank, same suit
-        if ((r2 == r1 + 1 or (r2 == ACE and r1 == KING)
-             or (r2 == 6 and r1 == ACE)) and s1 == s2):
-            return True
-
-        # Decrease rank, different suit but same color
-        if ((r1 == r2 + 1 or (r1 == ACE and r2 == KING)
-             or (r1 == 6 and r2 == ACE)) and s1 != s2 and c1 == c2):
-            return True
-
-        # Same rank, different color
-        if r1 == r2 and c1 != c2:
-            return True
-
-        return False
-
-
-class Sticko(Vague):
-    Foundation_Classes = [StackWrapper(Sticko_Foundation,
-                                       max_cards=32, )]
-    SEPARATE_FOUNDATIONS = False
-    SPREAD_FOUNDATION = True
-
-    def createGame(self):
-        Vague.createGame(self, rows=2, columns=8)
-
-    def startGame(self):
-        self._startAndDealRow()
-        self.s.talon.flipMove()
-        self.s.talon.moveMove(1, self.s.foundations[0])
 
 
 # ************************************************************************
@@ -1560,8 +1462,6 @@ registerGame(GameInfo(405, AllInARow, "All in a Row",
                       altnames=("Quasar",)))
 registerGame(GameInfo(432, Robert, "Robert",
                       GI.GT_GOLF, 1, 2, GI.SL_LUCK))
-registerGame(GameInfo(551, DiamondMine, "Diamond Mine",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(661, Dolphin, "Dolphin",
                       GI.GT_GOLF | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 0,
                       GI.SL_MOSTLY_SKILL))
@@ -1599,9 +1499,6 @@ registerGame(GameInfo(777, DoubleGolf, "Double Golf",
 registerGame(GameInfo(783, Uintah, "Uintah",
                       GI.GT_GOLF, 1, UNLIMITED_REDEALS,
                       GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(812, Sticko, "Sticko",
-                      GI.GT_1DECK_TYPE | GI.GT_STRIPPED, 1, 0, GI.SL_BALANCED,
-                      ranks=(0, 6, 7, 8, 9, 10, 11, 12)))
 registerGame(GameInfo(868, Bobby, "Bobby",
                       GI.GT_GOLF, 1, 2, GI.SL_LUCK))
 registerGame(GameInfo(880, Carcassonne, "Carcassonne",

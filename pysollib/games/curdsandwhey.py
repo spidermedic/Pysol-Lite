@@ -26,23 +26,20 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint, CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.stack import (
-    AC_RowStack,
-    AutoDealTalonStack,
-    BasicRowStack,
-    InitialDealTalonStack,
-    OpenStack,
-    OpenTalonStack,
-    RK_RowStack,
-    SS_FoundationStack,
-    SS_RowStack,
-    StackWrapper,
-    TalonStack,
-    WasteStack,
-    WasteTalonStack,
-    isRankSequence,
-    isSameSuitSequence,
-)
+from pysollib.stack import \
+    AutoDealTalonStack, \
+    BasicRowStack, \
+    InitialDealTalonStack, \
+    OpenStack, \
+    OpenTalonStack, \
+    RK_RowStack, \
+    SS_FoundationStack, \
+    SS_RowStack, \
+    StackWrapper, \
+    WasteStack, \
+    WasteTalonStack, \
+    isRankSequence, \
+    isSameSuitSequence
 from pysollib.util import BLACK, KING, RED, UNLIMITED_ACCEPTS, UNLIMITED_MOVES
 
 # ************************************************************************
@@ -123,7 +120,6 @@ class CurdsAndWhey(Game):
 
 # ************************************************************************
 # * Dumfries
-# * Galloway
 # ************************************************************************
 
 class Dumfries_TalonStack(OpenTalonStack):
@@ -180,11 +176,6 @@ class Dumfries(Game):
             abs(card1.rank-card2.rank) in (0, 1)
 
 
-class Galloway(Dumfries):
-    def createGame(self):
-        Dumfries.createGame(self, rows=7)
-
-
 # ************************************************************************
 # * German Patience
 # ************************************************************************
@@ -233,9 +224,6 @@ class GermanPatience(Game):
 
 # ************************************************************************
 # * Trusty Twelve
-# * Up and Up
-# * Knotty Nines
-# * Sweet Sixteen
 # ************************************************************************
 
 class TrustyTwelve_Hint(AbstractHint):
@@ -288,49 +276,6 @@ class TrustyTwelve(Game):
         return len(self.s.talon.cards) == 0
 
     shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-class UpAndUp_TalonStack(OpenTalonStack):
-    rightclickHandler = OpenStack.rightclickHandler
-    doubleclickHandler = OpenStack.doubleclickHandler
-
-
-class UpAndUp(TrustyTwelve):
-    TALON_CLASS = UpAndUp_TalonStack
-    ROWSTACK_CLASS = StackWrapper(RK_RowStack, mod=13, dir=1)
-
-    def createGame(self):
-        TrustyTwelve.createGame(self, rows=10)
-        self.sg.dropstacks.append(self.s.talon)
-
-    def startGame(self):
-        TrustyTwelve.startGame(self)
-        self.s.talon.fillStack()
-
-
-class KnottyNines(TrustyTwelve):
-    def createGame(self):
-        TrustyTwelve.createGame(self, rows=9)
-
-
-class SweetSixteen(TrustyTwelve):
-
-    def createGame(self):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+9*l.XS, l.YM+2*l.YS+20*l.YOFFSET)
-        x, y = l.XM, l.YM
-        s.talon = TalonStack(x, y, self)
-        l.createText(s.talon, "s")
-        y = l.YM
-        for i in range(2):
-            x = l.XM+l.XS
-            for j in range(8):
-                s.rows.append(AC_RowStack(x, y, self, max_move=1))
-                x += l.XS
-            y += l.YS+10*l.YOFFSET
-        l.defaultStackGroups()
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
 
 
 # ************************************************************************
@@ -431,20 +376,12 @@ registerGame(GameInfo(294, CurdsAndWhey, "Curds and Whey",
                       GI.GT_SPIDER | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(311, Dumfries, "Dumfries",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(312, Galloway, "Galloway",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(414, GermanPatience, "German Patience",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(480, TrustyTwelve, "Trusty Twelve",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(481, KnottyNines, "Knotty Nines",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(482, SweetSixteen, "Sweet Sixteen",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(724, EightPacks, "Eight Packs",
                       GI.GT_2DECK_TYPE | GI.GT_ORIGINAL, 2, 2,
                       GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(830, FireAndIce, "Fire and Ice",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_SKILL))
-registerGame(GameInfo(833, UpAndUp, "Up and Up",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED))
