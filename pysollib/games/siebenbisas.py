@@ -25,15 +25,14 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.stack import \
-        BasicRowStack, \
-        InitialDealTalonStack, \
-        InvisibleStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        Stack, \
-        getPileFromStacks, \
-        isSameSuitSequence
+from pysollib.stack import (
+    BasicRowStack,
+    InitialDealTalonStack,
+    InvisibleStack,
+    Stack,
+    getPileFromStacks,
+    isSameSuitSequence,
+)
 from pysollib.util import ACE, KING, QUEEN
 
 # ************************************************************************
@@ -76,97 +75,6 @@ class SiebenBisAs_Hint(CautiousDefaultHint):
             # this is dangerous as we can create endless loops...
             return 0
         return 1
-
-# ************************************************************************
-# * Sieben bis As (Seven to Ace)
-# ************************************************************************
-
-
-class SiebenBisAs_Foundation(SS_FoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not SS_FoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        # this stack accepts only a card from a rowstack with an empty
-        # left neighbour
-        if from_stack not in self.game.s.rows:
-            return False
-        if from_stack.id % 10 == 0:
-            return False
-        return len(self.game.s.rows[from_stack.id - 1].cards) == 0
-
-
-class SiebenBisAs_RowStack(BasicRowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not BasicRowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if self.id % 10 != 0:
-            # left neighbour
-            s = self.game.s.rows[self.id - 1]
-            if s.cards and s.cards[-1].suit == cards[0].suit \
-                    and (s.cards[-1].rank + 1) % 13 == cards[0].rank:
-                return True
-        if self.id % 10 != 10 - 1:
-            # right neighbour
-            s = self.game.s.rows[self.id + 1]
-            if s.cards and s.cards[-1].suit == cards[0].suit \
-                    and (s.cards[-1].rank - 1) % 13 == cards[0].rank:
-                return True
-        return False
-
-    # bottom to get events for an empty stack
-    #  prepareBottom = Stack.prepareInvisibleBottom
-
-    getBottomImage = Stack._getReserveBottomImage
-
-
-class SiebenBisAs(Game):
-    Hint_Class = SiebenBisAs_Hint
-
-    #
-    # game layout
-    #
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM + 10*l.XS, l.YM + 5*l.YS)
-
-        # create stacks
-        for i in range(3):
-            for j in range(10):
-                x, y, = l.XM + j*l.XS, l.YM + (i+1)*l.YS
-                s.rows.append(
-                    SiebenBisAs_RowStack(
-                        x, y, self, max_accept=1, max_cards=1))
-        for i in range(2):
-            x, y, = l.XM + (i+4)*l.XS, l.YM
-            s.reserves.append(ReserveStack(x, y, self, max_accept=0))
-        for i in range(4):
-            x, y, = l.XM + (i+3)*l.XS, l.YM + 4*l.YS
-            s.foundations.append(
-                SiebenBisAs_Foundation(
-                    x, y, self, i, base_rank=6, mod=13,
-                    max_move=0, max_cards=8))
-        s.talon = InitialDealTalonStack(l.XM, self.height-l.YS, self)
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    #
-    # game overrides
-    #
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealRow(rows=self.s.reserves)
-        stacks = [r for r in self.s.rows if r.cards[-1].rank == 6]
-        for r in stacks:
-            self.moveMove(1, r, self.s.foundations[r.cards[-1].suit])
-
-    shallHighlightMatch = Game._shallHighlightMatch_SSW
 
 
 # ************************************************************************
@@ -289,10 +197,6 @@ class Maze(Game):
 
 
 # register the game
-registerGame(GameInfo(118, SiebenBisAs, "Sieben bis As",
-                      GI.GT_MONTANA | GI.GT_OPEN | GI.GT_STRIPPED, 1, 0,
-                      GI.SL_MOSTLY_SKILL, ranks=(0, 6, 7, 8, 9, 10, 11, 12),
-                      altnames=("Seven to Ace",)))
 registerGame(GameInfo(144, Maze, "Maze",
                       GI.GT_MONTANA | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL,
                       si={"ncards": 48}))

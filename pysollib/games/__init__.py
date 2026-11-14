@@ -68,7 +68,6 @@ from . import needle  # noqa: F401
 from . import numerica  # noqa: F401
 from . import osmosis  # noqa: F401
 from . import parallels  # noqa: F401
-from . import pasdedeux  # noqa: F401
 from . import picturegallery  # noqa: F401
 from . import pileon  # noqa: F401
 from . import precedence  # noqa: F401

@@ -25,15 +25,14 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import DefaultHint
 from pysollib.layout import Layout
-from pysollib.stack import \
-        BasicRowStack, \
-        InitialDealTalonStack, \
-        InvisibleStack, \
-        Stack, \
-        StackWrapper, \
-        TalonStack, \
-        WasteStack, \
-        WasteTalonStack
+from pysollib.stack import (
+    BasicRowStack,
+    InitialDealTalonStack,
+    InvisibleStack,
+    Stack,
+    StackWrapper,
+    TalonStack,
+)
 from pysollib.util import ACE, NO_SUIT
 
 # ************************************************************************
@@ -276,21 +275,6 @@ class Spaces(Montana):
 
 
 # ************************************************************************
-# * Station
-# ************************************************************************
-
-class Station_Talon(Montana_Talon):
-    def getRedealSpaces(self, stacks, gaps):
-        # use the last space of each row.
-        return [self.game.s.rows[12], self.game.s.rows[25],
-                self.game.s.rows[38], self.game.s.rows[51]]
-
-
-class Station(Montana):
-    Talon_Class = StackWrapper(Station_Talon, max_rounds=3)
-
-
-# ************************************************************************
 # * Blue Moon
 # ************************************************************************
 
@@ -337,11 +321,6 @@ class RedMoon(BlueMoon):
             self.s.talon.dealRow(rows=r[n:n+12], frames=frames)
 
 
-# ************************************************************************
-# * Galary
-# ************************************************************************
-
-
 class Galary_Hint(Montana_Hint):
     def shallMovePile(self, from_stack, to_stack, pile, rpile):
         if from_stack is to_stack or \
@@ -354,285 +333,6 @@ class Galary_Hint(Montana_Hint):
             # this is dangerous as we can create endless loops...
             return False
         return True
-
-
-class Galary_RowStack(Montana_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not BasicRowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if self.id % self.game.RSTEP == 0:
-            return cards[0].rank == self.game.RBASE
-        r = self.game.s.rows
-        left = r[self.id - 1]
-        if left.cards and left.cards[-1].suit == cards[0].suit \
-                and left.cards[-1].rank + 1 == cards[0].rank:
-            return True
-        if self.id < len(r)-1:
-            right = r[self.id + 1]
-            if right.cards and right.cards[-1].suit == cards[0].suit \
-                    and right.cards[-1].rank - 1 == cards[0].rank:
-                return True
-        return False
-
-
-class Galary(RedMoon):
-    RowStack_Class = Galary_RowStack
-    Hint_Class = Galary_Hint
-
-
-# ************************************************************************
-# * Free Parking
-# ************************************************************************
-
-class FreeParking(Montana):
-    RowStack_Class = Galary_RowStack
-    Hint_Class = Galary_Hint
-
-
-# ************************************************************************
-# * Jungle
-# ************************************************************************
-
-class Jungle_RowStack(Montana_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not BasicRowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if self.id % self.game.RSTEP == 0:
-            return cards[0].rank == self.game.RBASE
-        left = self.game.s.rows[self.id - 1]
-        return left.cards and left.cards[-1].rank + 1 == cards[0].rank
-
-
-class Jungle(BlueMoon):
-    Talon_Class = StackWrapper(Montana_Talon, max_rounds=2)
-    RowStack_Class = Jungle_RowStack
-    Hint_Class = Galary_Hint
-
-
-# ************************************************************************
-# * Spaces and Aces
-# ************************************************************************
-
-class SpacesAndAces_RowStack(Montana_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not BasicRowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if self.id % self.game.RSTEP == 0:
-            return cards[0].rank == self.game.RBASE
-        left = self.game.s.rows[self.id - 1]
-        return left.cards and left.cards[-1].suit == cards[0].suit \
-            and left.cards[-1].rank < cards[0].rank
-
-
-class SpacesAndAces(BlueMoon):
-    Hint_Class = Galary_Hint
-    Talon_Class = InitialDealTalonStack
-    RowStack_Class = SpacesAndAces_RowStack
-
-    def createGame(self):
-        Montana.createGame(self, round_text=False)
-
-    def startGame(self):
-        frames = 0
-        for i in range(self.RLEN):
-            if i == self.RLEN-self.RSTEP:  # last row
-                self.startDealSample()
-                frames = -1
-            if i % self.RSTEP == 0:     # left column
-                continue
-            self.s.talon.dealRow(rows=(self.s.rows[i],), frames=frames)
-
-# ************************************************************************
-# * Paganini
-# ************************************************************************
-
-
-class Paganini_Talon(Montana_Talon):
-    def _inSequence(self, card, suit, rank):
-        card_rank = card.rank
-        if card_rank >= 5:
-            card_rank -= 4
-        return card.suit == suit and card_rank == rank
-
-
-class Paganini_RowStack(Montana_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if not BasicRowStack.acceptsCards(self, from_stack, cards):
-            return False
-        if self.id % self.game.RSTEP == 0:
-            return cards[0].rank == self.game.RBASE
-        left = self.game.s.rows[self.id - 1]
-        if not left.cards:
-            return False
-        if left.cards[-1].suit != cards[0].suit:
-            return False
-        if left.cards[-1].rank == ACE:
-            return cards[0].rank == 5
-        return left.cards[-1].rank+1 == cards[0].rank
-
-
-class Paganini(BlueMoon):
-    RLEN, RSTEP, RBASE = 40, 10, 0
-
-    Talon_Class = StackWrapper(Paganini_Talon, max_rounds=2)
-    RowStack_Class = Paganini_RowStack
-
-    def isGameWon(self):
-        rows = self.s.rows
-        for i in range(0, self.RLEN, self.RSTEP):
-            if not rows[i].cards:
-                return False
-            suit = rows[i].cards[-1].suit
-            for j in range(self.RSTEP - 1):
-                r = rows[i + j]
-                if not r.cards:
-                    return False
-                card = r.cards[-1]
-                card_rank = card.rank
-                if card_rank >= 5:
-                    card_rank -= 4
-                if card_rank != self.RBASE + j or card.suit != suit:
-                    return False
-        return True
-
-
-# ************************************************************************
-# * Spoilt
-# ************************************************************************
-
-class Spoilt_RowStack(BasicRowStack):
-    def acceptsCards(self, from_stack, cards):
-        # if not BasicRowStack.acceptsCards(self, from_stack, cards):
-        #    return False
-
-        card = cards[0]
-        RSTEP = self.game.RSTEP
-        RBASE = self.game.RBASE
-        row, col = divmod(self.id, RSTEP)
-        # check rank
-        if card.rank == ACE:
-            if col != RSTEP-1:
-                return False
-        else:
-            if card.rank - RBASE != col:
-                return False
-        # check suit
-        suit = None
-        for i in range(row*RSTEP, (row+1)*RSTEP):
-            r = self.game.s.rows[i]
-            if r.cards and r.cards[0].face_up:
-                suit = r.cards[0].suit
-                break
-        if suit is not None:
-            return card.suit == suit
-        for r in self.game.s.rows:      # check other rows
-            if r.cards and r.cards[0].face_up and r.cards[0].suit == card.suit:
-                return False
-        return True
-
-    def canFlipCard(self):
-        return False
-
-
-class Spoilt_Waste(WasteStack):
-
-    def moveMove(self, ncards, to_stack, frames=-1, shadow=-1):
-        assert ncards == 1 and to_stack in self.game.s.rows
-        if to_stack.cards:
-            self._swapPairMove(ncards, to_stack, frames=-1, shadow=0)
-        else:
-            WasteStack.moveMove(self, ncards, to_stack, frames, shadow)
-
-    def _swapPairMove(self, n, other_stack, frames=-1, shadow=-1):
-        game = self.game
-        old_state = game.enterState(game.S_FILL)
-        swap = game.s.internals[0]
-        game.flipMove(other_stack)
-        game.moveMove(n, self, swap, frames=0)
-        game.moveMove(n, other_stack, self, frames=frames, shadow=shadow)
-        game.moveMove(n, swap, other_stack, frames=0)
-        game.leaveState(old_state)
-
-
-class Spoilt(Game):
-    RSTEP, RBASE = 8, 6
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM + self.RSTEP*l.XS, l.YM + 5.5*l.YS)
-
-        # create stacks
-        for i in range(4):
-            x, y, = l.XM, l.YM + i*l.YS
-            for j in range(self.RSTEP):
-                s.rows.append(Spoilt_RowStack(x, y, self,
-                              max_accept=1, max_cards=2, min_cards=1))
-                x += l.XS
-        x, y = self.width//2 - l.XS, self.height-l.YS
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 'n')
-        x += l.XS
-        s.waste = Spoilt_Waste(x, y, self, max_cards=1)
-
-        # create an invisible stack
-        s.internals.append(InvisibleStack(self))
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        for i in range(4):
-            rows = self.s.rows[self.RSTEP*i+1:self.RSTEP*(i+1)]
-            self.s.talon.dealRow(rows=rows, frames=4, flip=False)
-        self.s.talon.dealCards()
-
-    def isGameWon(self):
-        for r in self.s.rows:
-            if not r.cards:
-                return False
-            if not r.cards[0].face_up:
-                return False
-        return True
-
-    def getHighlightPilesStacks(self):
-        return ()
-
-    def getAutoStacks(self, event=None):
-        return (), (), ()
-
-
-# ************************************************************************
-# * Rectangular Rovers
-# ***********************************************************************
-
-class RectangularRovers_RowStack(Montana_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        return len(self.cards) == 0 and self.game.isNeighbour(from_stack, self)
-
-
-class RectangularRovers(Montana):
-    Hint_Class = None
-    Talon_Class = InitialDealTalonStack
-    RowStack_Class = RectangularRovers_RowStack
-    RLEN, RSTEP, RBASE = 24, 6, 0
-
-    SpaceRank = 5
-
-    def createGame(self):
-        Montana.createGame(self, round_text=False)
-
-    def isNeighbour(self, stack1, stack2):
-        column = stack2.id % 6
-        diff = stack1.id - stack2.id
-        if column == 0:
-            return diff in (-6, 1, 6)
-        if column == 5:
-            return diff in (-6, -1, 6)
-        return diff in (-6, -1, 1, 6)
 
 
 # ************************************************************************
@@ -685,30 +385,6 @@ class DoubleRedMoon(PaganiniII, RedMoon):
     startGame = RedMoon.startGame
 
 
-# ************************************************************************
-# * House of Commons
-# * Pretzel
-# ************************************************************************
-
-
-class HouseOfCommons(Montana):
-    Talon_Class = StackWrapper(Montana_Talon, max_rounds=2)
-    RLEN, RSTEP, RBASE = 40, 10, 1
-
-    def createGame(self):
-        Montana.createGame(self, round_text=True)
-
-
-class Pretzel(Montana):
-    Talon_Class = InitialDealTalonStack
-    RLEN, RSTEP, RBASE = 24, 6, 0
-
-    SpaceRank = 5
-
-    def createGame(self):
-        Montana.createGame(self, round_text=False)
-
-
 # register the game
 registerGame(GameInfo(53, Montana, "Montana",
                       GI.GT_MONTANA | GI.GT_OPEN, 1, 2, GI.SL_MOSTLY_SKILL,
@@ -721,45 +397,10 @@ registerGame(GameInfo(63, BlueMoon, "Blue Moon",
                       altnames=("Rangoon",)))
 registerGame(GameInfo(117, RedMoon, "Red Moon",
                       GI.GT_MONTANA | GI.GT_OPEN, 1, 2, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(275, Galary, "Galary",
-                      GI.GT_MONTANA | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 2,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(276, FreeParking, "Free Parking",
-                      GI.GT_MONTANA | GI.GT_OPEN, 1, 2, GI.SL_MOSTLY_SKILL,
-                      si={"ncards": 48}, altnames=("Moonlight",
-                                                   "Park and Ride")))
-registerGame(GameInfo(380, Jungle, "Jungle",
-                      GI.GT_MONTANA | GI.GT_OPEN, 1, 1, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(381, SpacesAndAces, "Spaces and Aces",
-                      GI.GT_MONTANA | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(706, Paganini, "Paganini",
-                      GI.GT_MONTANA | GI.GT_OPEN | GI.GT_STRIPPED, 1, 1,
-                      GI.SL_MOSTLY_SKILL, ranks=(0, 5, 6, 7, 8, 9, 10, 11, 12),
-                      altnames=('Long Trip',)))
-registerGame(GameInfo(736, Spoilt, "Spoilt",
-                      GI.GT_MONTANA | GI.GT_STRIPPED, 1, 0, GI.SL_MOSTLY_LUCK,
-                      ranks=(0, 6, 7, 8, 9, 10, 11, 12)))
-registerGame(GameInfo(759, PaganiniII, "Paganini II",
-                      GI.GT_MONTANA | GI.GT_OPEN, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(770, DoubleBlueMoon, "Double Blue Moon",
                       GI.GT_MONTANA | GI.GT_OPEN, 2, 2, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(771, DoubleRedMoon, "Double Red Moon",
                       GI.GT_MONTANA | GI.GT_OPEN, 2, 2, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(794, HouseOfCommons, "House of Commons",
-                      GI.GT_MONTANA | GI.GT_OPEN | GI.GT_STRIPPED, 1, 1,
-                      GI.SL_MOSTLY_SKILL, ranks=(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
-                      si={"ncards": 36}))
-registerGame(GameInfo(795, Pretzel, "Line Up",
-                      GI.GT_MONTANA | GI.GT_OPEN | GI.GT_STRIPPED, 1, 0,
-                      GI.SL_MOSTLY_SKILL, ranks=(0, 1, 2, 3, 4, 5),
-                      si={"ncards": 20}, altnames=('Pretzel',)))
-registerGame(GameInfo(858, Station, "Station",
-                      GI.GT_MONTANA | GI.GT_OPEN, 1, 2, GI.SL_MOSTLY_SKILL,
-                      si={"ncards": 48}))
 registerGame(GameInfo(877, DoubleMontana, "Double Montana",
                       GI.GT_MONTANA | GI.GT_OPEN, 2, 2, GI.SL_MOSTLY_SKILL,
                       si={"ncards": 96}))
-registerGame(GameInfo(993, RectangularRovers, "Rectangular Rovers",
-                      GI.GT_MONTANA | GI.GT_OPEN | GI.GT_STRIPPED, 1, 0,
-                      GI.SL_MOSTLY_SKILL, ranks=(0, 1, 2, 3, 4, 5),
-                      si={"ncards": 20}))

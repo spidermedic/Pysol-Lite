@@ -839,3 +839,15 @@ Select Game > Forty Thieves type had 82 games in 12 families. Same rule as secti
 
 **Build and install after the Fan and Forty Thieves cuts (2026-11-13).** Built from `a1306cbf` (577 games): `make rules`, `py2app --arch arm64`, `lipo -thin arm64` on 134 Mach-O files, copied out of iCloud with `ditto --norsrc --noextattr --noqtn`, ad-hoc signed, `ditto` to `~/Applications/PySol Lite.app` (99 MB). Checked with `--version` (26.11) and `codesign -v` only; the bundle holds 582 rules pages and none of the removed games' pages. A running copy was force quit first (standing rule). One empty iCloud duplicate `data/html 2` was removed. Commits `1829f077` (Fan) and `a1306cbf` (Forty Thieves) and the rollback tags `before-fan-cut` and `before-forty-cut` were pushed to `origin` after this note was added.
 
+
+## 75. Update: Montana type cut, 577 to 564 games by id (2026-11-13)
+
+Select Game > Montana type had 21 games. The user named Montana, Blue Moon and Double Blue Moon as must-keeps; Montana and Maze are also on `popular solitaire game.md`. 8 kept, 13 removed. Rollback tag (local only): `before-montana-cut`.
+
+**Kept (8):** Montana, Blue Moon, Double Blue Moon, Maze, plus Red Moon, Double Red Moon, Double Montana, Spaces (the last four are suggestions the user accepted).
+
+**Removed (13, ids):** Galary 275, Free Parking 276, Jungle 380, Spaces and Aces 381, Paganini 706, Spoilt 736, Paganini II 759 (registration only; the class stays as the base of Double Blue Moon and Double Red Moon), House of Commons 794, Line Up 795, Station 858, Rectangular Rovers 993, Sieben bis As 118, Pas de Deux 153.
+
+**Things to know:** `pysollib/games/pasdedeux.py` held only Pas de Deux and was deleted with its `__init__.py` import. `siebenbisas.py` now holds only Maze plus the shared `SiebenBisAs_Hint` it uses. `Galary_Hint` stays because `PaganiniII` uses it; a first edit removed it by mistake and pyflakes caught the missing name, so it was restored. 13 rules pages deleted; no remaining page linked to them. Id list compared with the before-list: exactly the 13 ids gone. All games modules import; pyflakes and pycodestyle clean; the 8 kept games launched and stayed open until killed. Committed but NOT rebuilt, installed or pushed yet (the installed app is still the build in section 74).
+
+**Remaining Select-menu types not yet reviewed:** FreeCell, Golf, Gypsy, Klondike, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon.
