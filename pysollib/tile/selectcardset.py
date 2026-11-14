@@ -22,54 +22,17 @@
 # ---------------------------------------------------------------------------##
 
 import os
+import tkinter
 import tkinter.ttk as ttk
 
 from pysollib.mfxutil import KwStruct, USE_PIL
 from pysollib.resource import CSI, getNaturalSortKey
 from pysollib.speech import Speech
-from pysollib.ui.tktile.selecttree import SelectDialogTreeData
 from pysollib.ui.tktile.tkcanvas import MfxCanvasImage
 from pysollib.ui.tktile.tkutil import bind, loadImage
 from pysollib.util import CARDSET
 
-from .selecttree import SelectDialogTreeCanvas
-from .selecttree import SelectDialogTreeLeaf
 from .tkwidget import MfxDialog, MfxScrolledCanvas, PysolText
-
-
-# ************************************************************************
-# * Nodes
-# ************************************************************************
-
-class SelectCardsetLeaf(SelectDialogTreeLeaf):
-    pass
-
-
-# ************************************************************************
-# * Tree database
-# ************************************************************************
-
-class SelectCardsetData(SelectDialogTreeData):
-    def __init__(self, manager, key):
-        SelectDialogTreeData.__init__(self)
-        self.all_objects = manager.getAllSortedByName()
-        self.all_objects = [obj for obj in self.all_objects if not obj.error]
-        self.no_contents = [SelectCardsetLeaf(
-            None, None, "(no cardsets)", key=None), ]
-        # one flat list, in alphanumeric order
-        self.rootnodes = [
-            SelectCardsetLeaf(None, None, text=obj.name, key=obj.index)
-            for obj in sorted(self.all_objects,
-                              key=lambda cs: getNaturalSortKey(cs.name))
-        ] or self.no_contents
-
-
-# ************************************************************************
-# * Canvas that shows the tree
-# ************************************************************************
-
-class SelectCardsetTree(SelectDialogTreeCanvas):
-    data = None
 
 
 # ************************************************************************
@@ -77,10 +40,6 @@ class SelectCardsetTree(SelectDialogTreeCanvas):
 # ************************************************************************
 
 class SelectCardsetDialogWithPreview(MfxDialog):
-    Tree_Class = SelectCardsetTree
-    TreeDataHolder_Class = SelectCardsetTree
-    TreeData_Class = SelectCardsetData
-
     def __init__(self, parent, title, app, manager, key=None, **kw):
         kw = self.initKw(kw)
         MfxDialog.__init__(self, parent, title, kw.resizable, kw.default)
@@ -94,8 +53,10 @@ class SelectCardsetDialogWithPreview(MfxDialog):
         self.app = app
         # padx, pady = kw.padx, kw.pady
         padx, pady = 4, 4
-        if self.TreeDataHolder_Class.data is None:
-            self.TreeDataHolder_Class.data = self.TreeData_Class(manager, key)
+        # one flat list, in alphanumeric order
+        self.cardsets = sorted(
+            [obj for obj in manager.getAllSortedByName() if not obj.error],
+            key=lambda cs: getNaturalSortKey(cs.name))
         #
 
         pw = parent.winfo_width()
@@ -105,7 +66,6 @@ class SelectCardsetDialogWithPreview(MfxDialog):
 
         h = int(ph * .8)
         w = int(pw * .8)
-        w1 = int(min(275, pw / 2.5))
         geometry = ("%dx%d+%d+%d" % (w, h, px + ((pw - w) / 2),
                                      py + (int((ph - h) / 1.5))))
         self.top.wm_minsize(400, 200)
@@ -117,15 +77,28 @@ class SelectCardsetDialogWithPreview(MfxDialog):
         paned_window.add(left_frame)
         paned_window.add(right_frame)
 
-        # Tree
-        font = app.getFont("default")
-        self.tree = self.Tree_Class(self, left_frame, key=key,
-                                    default=kw.default,
-                                    font=font, width=w1)
-        self.tree.frame.grid(row=0, column=0, sticky='nsew',
-                             padx=padx, pady=pady)
+        # list of cardsets
+        list_frame = ttk.Frame(left_frame)
+        list_frame.grid(row=0, column=0, sticky='nsew', padx=padx, pady=pady)
+        self.list_scrollbar = tkinter.Scrollbar(list_frame)
+        self.list_scrollbar.pack(side='right', fill='y')
+        self.list = tkinter.Listbox(list_frame, exportselection=False,
+                                    width=24)
+        self.list.pack(side='left', expand=True, fill='both')
+        self.list.config(yscrollcommand=self.list_scrollbar.set)
+        self.list_scrollbar.config(command=self.list.yview)
+        for cs in self.cardsets:
+            self.list.insert('end', cs.name)
+        for i, cs in enumerate(self.cardsets):
+            if cs.index == key:
+                self.list.selection_set(i)
+                self.list.see(i)
+        bind(self.list, '<<ListboxSelect>>', self.selectCardset)
+        bind(self.list, '<Double-Button-1>', lambda e: self.mDone(0))
+        bind(self.list, '<Return>', lambda e: self.mDone(0))
+        bind(self.list, '<FocusIn>',
+             lambda e: self.app.speech.speak("Cardsets list"))
 
-        #
         left_frame.rowconfigure(0, weight=1)
         left_frame.columnconfigure(0, weight=1)
         #
@@ -143,12 +116,16 @@ class SelectCardsetDialogWithPreview(MfxDialog):
         self.updatePreview(key, overrideScale=True)
         #
         focus = self.createButtons(bottom_frame, kw)
-        focus = self.tree.frame
+        focus = self.list
         self.mainloop(focus, kw.timeout, geometry=geometry)
 
+    def selectCardset(self, event=None):
+        sel = self.list.curselection()
+        if not sel:
+            return
+        self.updatePreview(self.cardsets[sel[0]].index)
+
     def destroy(self):
-        self.tree.updateNodesWithTree(self.tree.rootnodes, None)
-        self.tree.destroy()
         self.preview.unbind_all()
         self.preview_images = []
         MfxDialog.destroy(self)
@@ -165,8 +142,7 @@ class SelectCardsetDialogWithPreview(MfxDialog):
 
     def mDone(self, button):
         if button in (0, 1):            # Load/Cancel
-            self.key = self.tree.selection_key
-            self.tree.n_expansions = 1  # save xyview in any case
+            self.key = self.preview_key
 
             if button == 0:
                 cardset = self.app.cardset_manager.get(self.key)
@@ -182,7 +158,7 @@ class SelectCardsetDialogWithPreview(MfxDialog):
                     return
 
         if button == 10:                # Info
-            cs = self.manager.get(self.tree.selection_key)
+            cs = self.manager.get(self.preview_key)
             if not cs:
                 return
             # title = CARDSET+" "+cs.name

@@ -47,7 +47,6 @@ from pysollib.pysoltk import MfxScrolledCanvas, TclError
 from pysollib.pysoltk import PysolProgressBar
 from pysollib.pysoltk import PysolStatusbar
 from pysollib.pysoltk import SelectCardsetDialogWithPreview
-from pysollib.pysoltk import SelectDialogTreeData
 from pysollib.pysoltk import destroy_find_card_dialog
 from pysollib.pysoltk import loadImage, wm_withdraw
 from pysollib.pysoltk import raise_find_card_dialog
@@ -499,7 +498,7 @@ class Application:
                   "joker11_100_774",
                   "joker10_100",):
             self.gimages.logos.append(self.dataloader.findImage(f, dirname))
-        dirname = os.path.join('images', 'dialog', 'material')
+        dirname = os.path.join('images', 'dialog', 'phosphor')
         for f in ('error', 'info', 'question', 'warning'):
             fn = self.dataloader.findImage(f, dirname)
             im = loadImage(fn)
@@ -532,14 +531,6 @@ class Application:
         #     self.gimages.stats.append(self.dataloader.findImage(f, dirname))
 
     def loadImages3(self):
-        # load treeview images
-        SelectDialogTreeData.img = []
-        dirname = os.path.join('images', 'tree', 'material')
-        for f in ('folder', 'openfolder', 'node', 'emptynode'):
-            fn = self.dataloader.findImage(f, dirname)
-            im = loadImage(fn)
-            SelectDialogTreeData.img.append(im)
-
         # load htmlviewer images
         dirname = os.path.join('images', 'htmlviewer')
         fn = self.dataloader.findImage('disk', dirname)

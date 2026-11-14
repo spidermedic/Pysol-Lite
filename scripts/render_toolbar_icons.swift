@@ -89,4 +89,27 @@ for white in [false, true] {
         }
     }
 }
+
+// Dialog icons (coloured, one fixed size) go next to the toolbar folder:
+// <out>/../../dialog/phosphor
+let imagesRoot = URL(fileURLWithPath: out).deletingLastPathComponent()
+    .deletingLastPathComponent().path
+let others: [(String, Int, [(String, String, NSColor)])] = [
+    ("dialog/phosphor", 48, [
+        ("error", "x-circle-fill", hex(0xE0343B)),
+        ("info", "info-fill", hex(0x2F7DE1)),
+        ("question", "question-fill", hex(0x1F9BE0)),
+        ("warning", "warning-fill", hex(0xF0A000)),
+    ]),
+]
+for (subdir, px, items) in others {
+    let dir = "\(imagesRoot)/\(subdir)"
+    try! fm.createDirectory(atPath: dir, withIntermediateDirectories: true)
+    for (name, file, color) in items {
+        guard let data = render("\(src)/\(file).svg", px: px, white: false,
+                                color: color)
+        else { print("cannot render", file); exit(1) }
+        try! data.write(to: URL(fileURLWithPath: "\(dir)/\(name).png"))
+    }
+}
 print("done")

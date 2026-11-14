@@ -36,4 +36,3 @@ from pysollib.tile.statusbar import *  # noqa: F401,F403
 from pysollib.tile.progressbar import *  # noqa: F401,F403
 from pysollib.tile.menubar import *  # noqa: F401,F403
 from pysollib.tile.selectcardset import *  # noqa: F401,F403
-from pysollib.tile.selecttree import *  # noqa: F401,F403
