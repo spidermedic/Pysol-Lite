@@ -24,18 +24,15 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.fortythieves import FortyThieves_Hint
-from pysollib.games.spider import Spider_Hint
 from pysollib.layout import Layout
-from pysollib.stack import \
-        RK_RowStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        Spider_SS_RowStack, \
-        StackWrapper, \
-        UD_SS_RowStack, \
-        WasteStack, \
-        WasteTalonStack
-from pysollib.util import ACE, KING
+from pysollib.stack import (
+    RK_RowStack,
+    SS_FoundationStack,
+    StackWrapper,
+    WasteStack,
+    WasteTalonStack,
+)
+from pysollib.util import ACE
 
 # ************************************************************************
 # * Diplomat
@@ -108,14 +105,6 @@ class Diplomat(Game):
 
 
 # ************************************************************************
-# * Lady Palk
-# ************************************************************************
-
-class LadyPalk(Diplomat):
-    RowStack_Class = RK_RowStack
-
-
-# ************************************************************************
 # * Congress
 # * Parliament
 # ************************************************************************
@@ -176,113 +165,11 @@ class Parliament(Congress):
         Congress.startGame(self)
 
 
-class Wheatsheaf(Congress):
-    Foundation_Classes = [
-        SS_FoundationStack,
-        StackWrapper(SS_FoundationStack, base_rank=KING, dir=-1),
-        ]
-    RowStack_Class = UD_SS_RowStack
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-# ************************************************************************
-# * Rows of Four
-# ************************************************************************
-
-class RowsOfFour(Diplomat):
-    def createGame(self):
-        Diplomat.createGame(self, max_rounds=3)
-
-
-# ************************************************************************
-# * Dieppe
-# ************************************************************************
-
-class Dieppe(Diplomat):
-    RowStack_Class = RK_RowStack
-
-    def _dealToFound(self):
-        talon = self.s.talon
-        if not talon.cards:
-            return False
-        talon.flipMove()
-        for f in self.s.foundations:
-            if f.acceptsCards(talon, talon.cards[-1:]):
-                talon.moveMove(1, f)
-                return True
-        return False
-
-    def startGame(self):
-        self.startDealSample()
-        talon = self.s.talon
-        for i in range(3):
-            for r in self.s.rows:
-                while True:
-                    if not self._dealToFound():
-                        break
-                if talon.cards:
-                    talon.moveMove(1, r)
-        talon.dealCards()
-
-
-# ************************************************************************
-# * Little Napoleon
-# * McClellan
-# ************************************************************************
-
-class McClellan(Diplomat):
-    RowStack_Class = SS_RowStack
-
-    def startGame(self):
-        for i in range(3):
-            self.s.talon.dealRow(frames=0, flip=0)
-        self._startAndDealRowAndCards()
-
-    getQuickPlayScore = Game._getSpiderQuickPlayScore
-
-
-class LittleNapoleon(McClellan):
-    RowStack_Class = Spider_SS_RowStack
-    Hint_Class = Spider_Hint
-
-
-# ************************************************************************
-# * Twin Queens
-# ************************************************************************
-
-class TwinQueens(Congress):
-    Foundation_Classes = [
-        StackWrapper(SS_FoundationStack, base_rank=KING, mod=13),
-        StackWrapper(SS_FoundationStack, base_rank=KING, mod=13),
-        ]
-    RowStack_Class = StackWrapper(SS_RowStack, max_move=1)
-
-    def createGame(self):
-        Congress.createGame(self, max_rounds=2)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
 # register the game
 registerGame(GameInfo(149, Diplomat, "Diplomat",
-                      GI.GT_FORTY_THIEVES, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(151, LadyPalk, "Lady Palk",
                       GI.GT_FORTY_THIEVES, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(150, Congress, "Congress",
                       GI.GT_FORTY_THIEVES, 2, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("President's Cabinet",)))
-registerGame(GameInfo(433, RowsOfFour, "Rows of Four",
-                      GI.GT_FORTY_THIEVES, 2, 2, GI.SL_BALANCED))
-registerGame(GameInfo(485, Dieppe, "Dieppe",
-                      GI.GT_FORTY_THIEVES, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(489, LittleNapoleon, "Little Napoleon",
-                      GI.GT_FORTY_THIEVES, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(548, Parliament, "Parliament",
-                      GI.GT_FORTY_THIEVES, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(549, Wheatsheaf, "Wheatsheaf",
-                      GI.GT_FORTY_THIEVES, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(563, TwinQueens, "Twin Queens",
-                      GI.GT_FORTY_THIEVES, 2, 1, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(882, McClellan, "McClellan",
                       GI.GT_FORTY_THIEVES, 2, 0, GI.SL_BALANCED))

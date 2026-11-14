@@ -824,3 +824,16 @@ The Select Game > Fan type group had 40 games in 11 families. The user supplied 
 **Things to know:** the dead-class script also wanted to delete classes that were already unused before this cut (Labyrinth, StrictEiffelTower, SalicLaw_Talon_2, SimpleSimonII, ScorpionTail_RowStack); those files were restored from git. `Club` was removed by hand (the script missed it). Dover and Forest Glade are not on the popularity list; they were kept from the original suggestion. Id list compared with the saved before-list: exactly the 17 ids gone. 23 kept games launched and stayed open until killed; pyflakes and pycodestyle clean on the touched modules; unit tests 12 of 13 (the old `--version` failure). Installed app NOT rebuilt yet.
 
 **Remaining Select-menu types not yet reviewed:** Forty Thieves, FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon.
+
+## 74. Update: Forty Thieves type cut, 616 to 577 games by id (2026-11-13)
+
+Select Game > Forty Thieves type had 82 games in 12 families. Same rule as section 73: every game on `popular solitaire game.md` stays (38 matched by name, plus Alternation, which is almost certainly the list's "Alternations"). The user approved four extra keepers that are the bases of listed games: Napoleon's Folly, Courtyard, Double Rail, Deuces. 43 kept, 39 removed. Rollback tag (local only): `before-forty-cut`.
+
+**Removed (39, ids):** Lady Palk 151, Triple Line 197, Napoleon's Exile 198, Octave 323, Mumbai 332, Carre Napoleon 411, Rows of Four 433, Dieppe 485, Little Napoleon 489, Big Streets 503, Number Twelve 504, Big Courtyard 505, Express 506, Carnation 514, Final Battle 528, San Juan Hill 529, Wheatsheaf 549, Junction 556, Delivery 562 (class lived in `harp.py`), Twin Queens 563, Kilowatt 564, Breakwater 576, Forty-Nine 577, Indian Patience 578, Roosevelt 588, Floradora 632, Famous Fifty 683, Blind Patience 751, Foothold 765, Following 815, Triple Rail 818, Single Spark 837, The Spark 838, McClellan 882, Jacks in the Box 884, Preference 895, Napoleon's Shoulder 910, Cascade 933, Thirty-Nine Steps 940. Napoleon's Exile and Junction stay as classes (bases of Double Rail and Crossroads). Their rules pages and the other 37 were deleted; the Crossroads page no longer links to Junction.
+
+**Tooling:** the dead-class script now records classes that were already unreferenced before the cut and leaves them alone (so Labyrinth and the like are untouched this time). Unused imports were pruned from pyflakes output with a small script, not by hand. Both scripts live only in the session scratchpad.
+
+**Verification:** id list compared with the saved before-list: exactly the 39 ids gone, nothing else. Every games module imports; pyflakes and pycodestyle clean on `fortythieves.py`, `diplomat.py`, `harp.py`; kept games launched with `--gameid` and stayed open until killed. Installed app NOT rebuilt.
+
+**Remaining Select-menu types not yet reviewed:** FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon.
+

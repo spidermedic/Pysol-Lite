@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.spider import Spider_Hint
-from pysollib.hint import CautiousDefaultHint
 from pysollib.hint import KlondikeType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
@@ -280,26 +279,6 @@ class BigDeal(DoubleKlondike):
 
 
 # ************************************************************************
-# * Delivery
-# ************************************************************************
-
-class Delivery(BigDeal):
-    Hint_Class = CautiousDefaultHint
-    RowStack_Class = StackWrapper(SS_RowStack, max_move=1)
-
-    def createGame(self):
-        dx = self.app.images.CARDW//10
-        BigDeal.createGame(self, rows=12, max_rounds=1, XOFFSET=dx)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-    def startGame(self):
-        self._startDealNumRows(2)
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()          # deal first card to WasteStack
-
-
-# ************************************************************************
 # * Double Kingsley
 # ************************************************************************
 
@@ -435,9 +414,6 @@ registerGame(GameInfo(497, Arabella, "Arabella",
                       GI.GT_KLONDIKE, 3, 0, GI.SL_BALANCED))
 registerGame(GameInfo(545, BigDeal, "Big Deal",
                       GI.GT_KLONDIKE | GI.GT_ORIGINAL, 4, 1, GI.SL_BALANCED))
-registerGame(GameInfo(562, Delivery, "Delivery",
-                      GI.GT_FORTY_THIEVES | GI.GT_ORIGINAL, 4, 0,
-                      GI.SL_BALANCED))
 registerGame(GameInfo(590, ChineseKlondike, "Chinese Klondike",
                       GI.GT_KLONDIKE | GI.GT_STRIPPED, 3, -1, GI.SL_BALANCED,
                       suits=(0, 1, 2)))
