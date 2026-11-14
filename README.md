@@ -71,8 +71,8 @@ python3 scripts/linux-install.py
 ```
 
 ```
-git clone https://github.com/spidermedic/PySol-Lite.git
-cd PySol-Lite
+git clone https://github.com/spidermedic/Pysol-Lite.git
+cd Pysol-Lite
 # Now make sure you have installed the dependencies.
 gmake test
 gmake rules
@@ -121,8 +121,8 @@ sudo apt-get install libjpeg-dev
 #### 2 - Clone the source from version control
 
 ```
-git clone https://github.com/spidermedic/PySol-Lite.git
-cd PySol-Lite
+git clone https://github.com/spidermedic/Pysol-Lite.git
+cd Pysol-Lite
 ```
 
 #### 3 - Create your virtual environment.
