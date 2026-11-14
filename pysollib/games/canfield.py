@@ -568,71 +568,6 @@ class Skippy(Canfield):
     shallHighlightMatch = Game._shallHighlightMatch_RKW
 
 
-# ************************************************************************
-# * Club
-# ************************************************************************
-
-class Club_RowStack(AC_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if self.id > 2 and from_stack.id < 3:
-            return False
-        return AC_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class Club(Game):
-
-    def createGame(self):
-        # create layout
-        lay, s = Layout(self), self.s
-
-        # set window
-        playcards = 8
-        w0 = lay.XS+playcards*lay.XOFFSET
-        w = lay.XM+lay.XS//2+max(10*lay.XS, lay.XS+4*w0)
-        h = lay.YM+4*lay.YS+lay.TEXT_HEIGHT
-        self.setSize(w, h)
-
-        # create stacks
-        y = lay.YM + lay.YS + lay.TEXT_HEIGHT
-        x = lay.XM + lay.XS + lay.XS // 2 + (w0 // 2)
-        for j in range(3):
-            stack = Club_RowStack(x, y, self, max_move=1)
-            s.rows.append(stack)
-            stack.CARD_XOFFSET, stack.CARD_YOFFSET = lay.XOFFSET, 0
-            x += w0
-        y += lay.YS
-        for i in range(2):
-            x = lay.XM + lay.XS + lay.XS // 2
-            for j in range(4):
-                stack = Club_RowStack(x, y, self, max_move=1)
-                s.rows.append(stack)
-                stack.CARD_XOFFSET, stack.CARD_YOFFSET = lay.XOFFSET, 0
-                x += w0
-            y += lay.YS
-
-        x, y = lay.XM, lay.YM
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        lay.createText(s.talon, 's')
-        x += lay.XS
-        s.waste = WasteStack(x, y, self)
-        lay.createText(s.waste, 's')
-        x = self.width - 8*lay.XS
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self,
-                                                    suit=i % 4, mod=13))
-            x += lay.XS
-
-        # define stack-groups
-        lay.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.rows, flip=0, frames=0)
-        self.s.talon.dealRow(rows=self.s.rows, flip=1, frames=0)
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-
 # register the game
 registerGame(GameInfo(105, Canfield, "Canfield",                # was: 262
                       GI.GT_CANFIELD | GI.GT_CONTRIB, 1, -1, GI.SL_BALANCED))
@@ -655,5 +590,3 @@ registerGame(GameInfo(527, Doorway, "Doorway",
                       altnames=('Solstice',)))
 registerGame(GameInfo(605, Skippy, "Skippy",
                       GI.GT_FAN_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(947, Club, "Club",
-                      GI.GT_FAN_TYPE, 2, 0, GI.SL_BALANCED))

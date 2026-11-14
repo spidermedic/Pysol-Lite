@@ -812,3 +812,15 @@ Same process as section 71. The One-Deck catch-all group had 110 games in 21 fam
 **Remaining Select-menu types not yet reviewed:** Fan, Forty Thieves, FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon.
 
 **Build and install after the Two-Deck and One-Deck cuts (2026-11-12).** Built from `dcaa6ad4`: `make rules` (635 rules pages), `py2app --arch arm64`, `lipo -thin arm64` on 134 Mach-O files, copied out of iCloud with `ditto --norsrc --noextattr --noqtn`, ad-hoc signed, `ditto` to `~/Applications/PySol Lite.app` (99 MB). Checked with `--version` (26.11) and `codesign -v` only; removed games' rules pages are absent from the bundle and no `data/html N` duplicates were present. No copy was running, so no force quit was needed. Commits `6913d160` (Two-Deck) and `dcaa6ad4` (One-Deck) and the rollback tags `before-twodeck-cut` and `before-onedeck-cut` were pushed to `origin` after this note was added.
+
+## 73. Update: Fan type cut, 633 to 616 games by id (2026-11-13)
+
+The Select Game > Fan type group had 40 games in 11 families. The user supplied `popular solitaire game.md` (416 games ranked by popularity, untracked file in the repo root) and said to use it as a hard filter: every Fan game on that list stays. Result: 23 kept, 17 removed. Rollback tag (local only): `before-fan-cut`.
+
+**Kept (23):** La Belle Lucie, Fan, Trefoil, Shamrocks, Scotch Patience, Box Fan, Fascination Fan (also "Demon Fan" on the list), Troika, Intelligence, House in the Wood, Crescent, Open Proils, Clover Leaf, Bristol, Dover, Forest Glade, plus the list-forced Three Shuffles and a Draw, Free Fan, Rainbow Fan, Super Flower Garden, New York, Skippy, House on the Hill.
+
+**Removed (17, ids):** Shamrocks II 714, Intelligence + 340, Quads 517, Quads + 767, Gotham 519, Belvedere 214, Vincent 949, Cromwell 894, Alexander the Great 926, Ceiling Fan 871, School 719, Bear River 819, Roaming Proils 879 (registration only; class stays as the base of Open Proils), Interment 604, Club 947, Lucky Piles 586, Flamboyant 979. Rules pages deleted; the Open Proils page no longer links to Roaming Proils.
+
+**Things to know:** the dead-class script also wanted to delete classes that were already unused before this cut (Labyrinth, StrictEiffelTower, SalicLaw_Talon_2, SimpleSimonII, ScorpionTail_RowStack); those files were restored from git. `Club` was removed by hand (the script missed it). Dover and Forest Glade are not on the popularity list; they were kept from the original suggestion. Id list compared with the saved before-list: exactly the 17 ids gone. 23 kept games launched and stayed open until killed; pyflakes and pycodestyle clean on the touched modules; unit tests 12 of 13 (the old `--version` failure). Installed app NOT rebuilt yet.
+
+**Remaining Select-menu types not yet reviewed:** Forty Thieves, FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon.

@@ -54,7 +54,6 @@ from pysollib.stack import (
     Stack,
     StackWrapper,
     SuperMoveAC_RowStack,
-    UD_SS_RowStack,
     WasteStack,
     WasteTalonStack,
     isSameColorSequence,
@@ -1075,11 +1074,6 @@ class AuntMary(Klondike):
 
 
 # ************************************************************************
-# * Double Dot
-# ************************************************************************
-
-
-# ************************************************************************
 # * Moving Left
 # * Souter
 # ************************************************************************
@@ -1271,15 +1265,6 @@ class LuckyThirteen(Game):
         self._startDealNumRowsAndDealSingleRow(3)
 
     shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-class LuckyPiles(LuckyThirteen):
-    RowStack_Class = StackWrapper(UD_SS_RowStack, base_rank=KING)
-
-    def createGame(self):
-        LuckyThirteen.createGame(self, xoffset=1, playcards=7)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
 
 
 # ************************************************************************
@@ -1479,8 +1464,6 @@ registerGame(GameInfo(572, GoldMine, "Gold Mine",
                       GI.GT_NUMERICA, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(585, LuckyThirteen, "Lucky Thirteen",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(586, LuckyPiles, "Lucky Piles",
-                      GI.GT_FAN_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(607, Legion, "Legion",
                       GI.GT_KLONDIKE, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(633, Athena, "Athena",
