@@ -26,18 +26,18 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.pysoltk import MfxCanvasText
-from pysollib.stack import \
-        AC_RowStack, \
-        KingAC_RowStack, \
-        OpenStack, \
-        OpenTalonStack, \
-        RK_FoundationStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        StackWrapper, \
-        TalonStack, \
-        WasteStack
+from pysollib.stack import (
+    AC_RowStack,
+    OpenStack,
+    OpenTalonStack,
+    RK_FoundationStack,
+    RK_RowStack,
+    ReserveStack,
+    SS_FoundationStack,
+    StackWrapper,
+    TalonStack,
+    WasteStack,
+)
 from pysollib.util import ANY_RANK, KING, NO_RANK, RANKS, UNLIMITED_CARDS
 
 
@@ -319,28 +319,6 @@ class NewYork(Dover):
         p.dump(self.base_card.id)
 
 
-# ************************************************************************
-# * Spike
-# ************************************************************************
-
-class Spike(Dover):
-
-    Foundation_Class = SS_FoundationStack
-    RowStack_Class = KingAC_RowStack
-
-    def createGame(self):
-        Dover.createGame(self, rows=7)
-
-    def startGame(self):
-        for i in range(1, 7):
-            self.s.talon.dealRow(rows=self.s.rows[i:], flip=0, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
 # register the game
 registerGame(GameInfo(42, Bristol, "Bristol",
                       GI.GT_FAN_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
@@ -348,5 +326,3 @@ registerGame(GameInfo(266, Dover, "Dover",
                       GI.GT_FAN_TYPE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(425, NewYork, "New York",
                       GI.GT_FAN_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(468, Spike, "Spike",
-                      GI.GT_KLONDIKE, 1, 0, GI.SL_BALANCED))

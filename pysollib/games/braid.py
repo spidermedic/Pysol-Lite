@@ -29,18 +29,18 @@ from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.pysoltk import MfxCanvasText
-from pysollib.stack import \
-        AbstractFoundationStack, \
-        BasicRowStack, \
-        DealRowRedealTalonStack, \
-        OpenStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        Stack, \
-        StackWrapper, \
-        WasteStack, \
-        WasteTalonStack
+from pysollib.stack import (
+    AbstractFoundationStack,
+    BasicRowStack,
+    DealRowRedealTalonStack,
+    OpenStack,
+    ReserveStack,
+    SS_FoundationStack,
+    SS_RowStack,
+    Stack,
+    WasteStack,
+    WasteTalonStack,
+)
 from pysollib.util import ACE, KING, NO_RANK, RANKS
 
 
@@ -242,48 +242,6 @@ class Braid(Game):
         self.texts.info.config(text=t)
 
 
-class LongBraid(Braid):
-    BRAID_CARDS = 24
-
-
-# ************************************************************************
-# * Fort
-# ************************************************************************
-
-class Fort(Braid):
-
-    Foundation_Classes = [SS_FoundationStack,
-                          StackWrapper(SS_FoundationStack, base_rank=KING,
-                                       dir=-1)]
-
-    BRAID_CARDS = 21
-
-    def _shuffleHook(self, cards):
-        # move 4 Kings and 4 Aces to top of the Talon
-        # (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (ACE, KING) and c.deck == 0,
-                       (c.suit, c.rank)))
-
-    def _restoreGameHook(self, game):
-        pass
-
-    def _loadGameHook(self, p):
-        pass
-
-    def _saveGameHook(self, p):
-        pass
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self.startDealSample()
-        for i in range(self.BRAID_CARDS):
-            self.s.talon.dealRow(rows=[self.s.braid], frames=4)
-        self.s.talon.dealRow(frames=4)
-        self.s.talon.dealCards()
-
-
 # ************************************************************************
 # * Backbone
 # ************************************************************************
@@ -360,18 +318,6 @@ class Backbone(Game):
 class BackbonePlus(Backbone):
     def createGame(self):
         Backbone.createGame(self, rows=10)
-
-
-class SmallBackbone(Backbone):
-    RESERVE_CARDS = 9
-
-
-# ************************************************************************
-# * Big Braid
-# ************************************************************************
-
-class BigBraid(Braid):
-    Foundation_Classes = [Braid_Foundation, Braid_Foundation, Braid_Foundation]
 
 
 # ************************************************************************
@@ -498,19 +444,9 @@ class Well(Game):
 registerGame(GameInfo(12, Braid, "Braid",
                       GI.GT_NAPOLEON, 2, 2, GI.SL_BALANCED,
                       altnames=("Der Zopf", "Plait", "Pigtail")))
-registerGame(GameInfo(175, LongBraid, "Long Braid",
-                      GI.GT_NAPOLEON, 2, 2, GI.SL_BALANCED,
-                      altnames=("Der lange Zopf",)))
-registerGame(GameInfo(358, Fort, "Fort",
-                      GI.GT_NAPOLEON, 2, 2, GI.SL_BALANCED))
 registerGame(GameInfo(376, Backbone, "Backbone",
                       GI.GT_NAPOLEON, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(377, BackbonePlus, "Backbone +",
                       GI.GT_NAPOLEON, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(510, BigBraid, "Big Braid",
-                      GI.GT_NAPOLEON | GI.GT_ORIGINAL, 3, 2, GI.SL_BALANCED,
-                      altnames=("Der grose Zopf",)))
 registerGame(GameInfo(717, Well, "Well",
                       GI.GT_2DECK_TYPE, 2, 4, GI.SL_BALANCED))
-registerGame(GameInfo(824, SmallBackbone, "Small Backbone",
-                      GI.GT_NAPOLEON, 2, 0, GI.SL_BALANCED))

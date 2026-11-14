@@ -33,15 +33,12 @@ from . import bristol  # noqa: F401
 from . import buffalobill  # noqa: F401
 from . import calculation  # noqa: F401
 from . import camelot  # noqa: F401
-from . import capricieuse  # noqa: F401
 from . import canfield  # noqa: F401
 from . import clearthedungeon  # noqa: F401
 from . import curdsandwhey  # noqa: F401
 from . import daddylonglegs  # noqa: F401
 from . import demonsandthieves  # noqa: F401
 from . import diplomat  # noqa: F401
-from . import doublets  # noqa: F401
-from . import eiffeltower  # noqa: F401
 from . import fan  # noqa: F401
 from . import fortythieves  # noqa: F401
 from . import freecell  # noqa: F401
@@ -53,7 +50,6 @@ from . import gypsy  # noqa: F401
 from . import harp  # noqa: F401
 from . import headsandtails  # noqa: F401
 from . import hitormiss  # noqa: F401
-from . import interlock  # noqa: F401
 from . import katzenschwanz  # noqa: F401
 from . import klondike  # noqa: F401
 from . import knockout  # noqa: F401
@@ -80,7 +76,6 @@ from . import siebenbisas  # noqa: F401
 from . import spider  # noqa: F401
 from . import sthelena  # noqa: F401
 from . import sultan  # noqa: F401
-from . import takeaway  # noqa: F401
 from . import terrace  # noqa: F401
 from . import threepeaks  # noqa: F401
 from . import tournament  # noqa: F401

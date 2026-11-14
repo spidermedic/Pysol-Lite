@@ -25,11 +25,7 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.stack import \
-        OpenStack, \
-        SS_FoundationStack, \
-        Stack, \
-        WasteTalonStack
+from pysollib.stack import OpenStack, SS_FoundationStack, WasteTalonStack
 
 
 class LarasGame_Hint(CautiousDefaultHint):
@@ -170,16 +166,6 @@ class LarasGame_RowStack(OpenStack):
 
 class LarasGame_ReserveStack(OpenStack):
     pass
-
-
-class LarasGame_Reserve(OpenStack):
-
-    def acceptsCards(self, from_stack, cards):
-        if not OpenStack.acceptsCards(self, from_stack, cards):
-            return False
-        return from_stack in self.game.s.rows
-
-    getBottomImage = Stack._getReserveBottomImage
 
 
 # ************************************************************************
@@ -420,33 +406,8 @@ class LarasGame(Game):
         p.dump(self.active_row)
 
 
-# ************************************************************************
-# * Relaxed Lara's Game
-# ************************************************************************
-
-class RelaxedLarasGame(LarasGame):
-    Reserve_Class = LarasGame_Reserve
-    Reserve_Cards = 1
-    DEAL_TO_TALON = 3
-    MAX_ROUNDS = 2
-
-
-# ************************************************************************
-# * Double Lara's Game
-# ************************************************************************
-
-class DoubleLarasGame(RelaxedLarasGame):
-    Reserve_Cards = 2
-    MAX_ROUNDS = 3
-
-    def Max_Cards(self, i):
-        return 26
-
-
 # register the game
 
 registerGame(GameInfo(37, LarasGame, "Lara's Game",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED,
                       altnames=("Thirteen Packs", "Leoni's Own", "Weavers")))
-registerGame(GameInfo(13007, DoubleLarasGame, "Lara's Game Doubled",
-                      GI.GT_4DECK_TYPE, 4, 2, GI.SL_BALANCED))

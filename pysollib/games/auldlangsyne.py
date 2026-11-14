@@ -39,7 +39,7 @@ from pysollib.stack import \
         StackWrapper, \
         WasteStack, \
         WasteTalonStack
-from pysollib.util import ACE, ANY_RANK, ANY_SUIT, KING, QUEEN
+from pysollib.util import ACE, ANY_SUIT, KING, QUEEN
 
 
 # ************************************************************************
@@ -112,7 +112,6 @@ class TamOShanter(Game):
 
 # ************************************************************************
 # * Auld Lang Syne
-# * Old Fashioned
 # ************************************************************************
 
 class AuldLangSyne(TamOShanter):
@@ -124,11 +123,6 @@ class AuldLangSyne(TamOShanter):
     def startGame(self):
         self.s.talon.dealRow(rows=self.s.foundations, frames=0)
         self._startAndDealRow()
-
-
-class OldFashioned(AuldLangSyne):
-    def createGame(self):
-        TamOShanter.createGame(self, rows=6, playcards=8)
 
 
 # ************************************************************************
@@ -386,7 +380,6 @@ class Primrose(Interregnum):
 
 # ************************************************************************
 # * Colorado
-# * Double Line
 # * Grandfather
 # ************************************************************************
 
@@ -495,12 +488,6 @@ class Grandfather(Colorado):
         return cards
 
 
-class DoubleLine(Grandfather):
-
-    def createGame(self):
-        Grandfather.createGame(self, max_rounds=1)
-
-
 # ************************************************************************
 # * Amazons
 # ************************************************************************
@@ -564,7 +551,6 @@ class Amazons(AuldLangSyne):
 
 
 # ************************************************************************
-# * Scuffle
 # * Acquaintance
 # ************************************************************************
 
@@ -582,13 +568,6 @@ class Scuffle_Talon(RedealTalonStack):
         return self.dealRowAvail(sound=sound)
 
 
-class Scuffle(AuldLangSyne):
-    Talon_Class = StackWrapper(Scuffle_Talon, max_rounds=3)
-
-    def createGame(self):
-        AuldLangSyne.createGame(self, texts=True, yoffset=0)
-
-
 class Acquaintance_Talon(Scuffle_Talon):
     def dealCards(self, sound=False):
         Scuffle_Talon.dealCards(self, sound=sound, shuffle=False)
@@ -599,83 +578,6 @@ class Acquaintance(AuldLangSyne):
 
     def createGame(self, texts=False, yoffset=None):
         AuldLangSyne.createGame(self, texts=True)
-
-
-class DoubleAcquaintance(AuldLangSyne):
-    Talon_Class = StackWrapper(Acquaintance_Talon, max_rounds=3)
-
-    def createGame(self):
-        AuldLangSyne.createGame(self, rows=8, texts=True)
-
-
-class MutualAcquaintance(AuldLangSyne):
-    Talon_Class = StackWrapper(Acquaintance_Talon, max_rounds=2)
-
-    ALT_FOUNDATIONS = True
-
-    def createGame(self):
-        AuldLangSyne.createGame(self, rows=8, texts=True)
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards, lambda c: (c.deck == 0 and c.rank in (0, 12),
-                              (c.rank, c.suit)), 8)
-
-
-# ************************************************************************
-# * Formic
-# ************************************************************************
-
-class Formic_Foundation(AbstractFoundationStack):
-    def acceptsCards(self, from_stack, cards):
-        if not AbstractFoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        # check the rank
-        return ((self.cards[-1].rank+1) % 13 == cards[0].rank or
-                (self.cards[-1].rank-1) % 13 == cards[0].rank)
-
-    def getHelp(self):
-        return 'Foundation. Build up or down regardless of suit.'
-
-
-class Formic(TamOShanter):
-
-    def createGame(self):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+6*l.XS, l.YM+2*l.YS+12*l.YOFFSET)
-
-        x, y, = l.XM, l.YM
-        s.talon = self.Talon_Class(x, y, self)
-        l.createText(s.talon, "s")
-        x, y = l.XM+2*l.XS, l.YM
-        for i in range(4):
-            s.foundations.append(Formic_Foundation(x, y, self,
-                                 suit=ANY_SUIT, base_rank=ANY_RANK,
-                                 max_cards=52, max_move=0))
-            x += l.XS
-        x, y = l.XM+2*l.XS, l.YM+l.YS
-        for i in range(4):
-            s.rows.append(BasicRowStack(x, y, self, max_move=1, max_accept=0))
-            x += l.XS
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        suits = []
-        top_cards = []
-        for c in cards[:]:
-            if c.suit not in suits:
-                suits.append(c.suit)
-                top_cards.append(c)
-                cards.remove(c)
-            if len(suits) == 4:
-                break
-        top_cards.sort(key=lambda x: -x.suit)  # sort by suit
-        return cards+top_cards
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startAndDealRow()
 
 
 # register the game
@@ -696,23 +598,10 @@ registerGame(GameInfo(406, Amazons, "Amazons",
                       ))
 registerGame(GameInfo(490, Acquaintance, "Acquaintance",
                       GI.GT_NUMERICA, 1, 2, GI.SL_BALANCED))
-registerGame(GameInfo(553, Scuffle, "Scuffle",
-                      GI.GT_NUMERICA, 1, 2, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(560, DoubleAcquaintance, "Double Acquaintance",
-                      GI.GT_NUMERICA, 2, 2, GI.SL_BALANCED))
 registerGame(GameInfo(569, Primrose, "Primrose",
                       GI.GT_NUMERICA | GI.GT_OPEN, 2, 8, GI.SL_BALANCED,
                       altnames=("Capuchin", "As You Like It")))
 registerGame(GameInfo(636, StrategyPlus, "Strategy +",
                       GI.GT_NUMERICA, 1, 0, GI.SL_SKILL))
-registerGame(GameInfo(688, Formic, "Ants",
-                      GI.GT_GOLF, 1, 0, GI.SL_MOSTLY_SKILL,
-                      altnames=("Formic",)))
-registerGame(GameInfo(702, DoubleLine, "Double Line",
-                      GI.GT_NUMERICA, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(853, Grandfather, "Grandfather",
-                      GI.GT_NUMERICA, 2, 1, GI.SL_BALANCED))
-registerGame(GameInfo(866, OldFashioned, "Old Fashioned",
-                      GI.GT_NUMERICA, 1, 0, GI.SL_LUCK))
-registerGame(GameInfo(995, MutualAcquaintance, "Mutual Acquaintance",
                       GI.GT_NUMERICA, 2, 1, GI.SL_BALANCED))

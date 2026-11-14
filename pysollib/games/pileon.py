@@ -25,22 +25,18 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint, DefaultHint
 from pysollib.layout import Layout
-from pysollib.pysoltk import MfxCanvasText
-from pysollib.stack import \
-        AC_RowStack, \
-        AbstractFoundationStack, \
-        DealRowTalonStack, \
-        InitialDealTalonStack, \
-        RK_RowStack, \
-        ReserveStack, \
-        Stack, \
-        UD_AC_RowStack, \
-        UD_RK_RowStack, \
-        WasteStack, \
-        WasteTalonStack, \
-        cardsFaceDown, \
-        isRankSequence
-from pysollib.util import ACE, ANY_RANK, ANY_SUIT, RANKS
+from pysollib.stack import (
+    AbstractFoundationStack,
+    DealRowTalonStack,
+    InitialDealTalonStack,
+    RK_RowStack,
+    ReserveStack,
+    Stack,
+    UD_AC_RowStack,
+    cardsFaceDown,
+    isRankSequence,
+)
+from pysollib.util import ANY_SUIT
 
 # ************************************************************************
 # * PileOn
@@ -210,174 +206,9 @@ class FourByFour_Hint(DefaultHint):
         return 93000, color
 
 
-class FourByFour_Foundation(AbstractFoundationStack):
-
-    def _getNumSameCards(self):
-        decks = self.game.gameinfo.decks
-        rank = self.cards[-1].rank
-        n = 1
-        for i in range(2, 4*decks+1):
-            if len(self.cards) < i:
-                break
-            if self.cards[-i].rank != rank:
-                break
-            n += 1
-        return n
-
-    def _getDir(self):
-        decks = self.game.gameinfo.decks
-        if len(self.cards) < 4*decks:
-            return 0
-        if isRankSequence(self.cards[-4*decks:], dir=0):
-            return 1
-        return 0
-
-    def acceptsCards(self, from_stack, cards):
-        if not AbstractFoundationStack.acceptsCards(self, from_stack, cards):
-            return False
-        if not self.cards:
-            return True
-        dir = self._getDir()
-        return (self.cards[-1].rank+dir) % self.cap.mod == cards[0].rank
-
-    def getHelp(self):
-        return 'Foundation. Build up regardless of suit.'
-
-
-class FourByFour(Game):
-    Hint_Class = FourByFour_Hint
-
-    def createGame(self):
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+7*l.XS, l.YM+2*l.YS+20*l.YOFFSET)
-
-        x, y = l.XM, l.YM
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 's')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 's')
-
-        x += 3.5*l.XS
-        s.foundations.append(FourByFour_Foundation(x, y, self,
-                             suit=ANY_SUIT, base_rank=ANY_RANK, max_cards=52,
-                             max_accept=1, max_move=0, mod=13))
-        stack = s.foundations[0]
-        tx, ty, ta, tf = l.getTextAttr(stack, 'ne')
-        font = self.app.getFont('canvas_default')
-        stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
-                                         anchor=ta, font=font)
-
-        x, y = l.XM+3*l.XS, l.YM+l.YS
-        for i in range(4):
-            stack = UD_RK_RowStack(x, y, self, mod=13)
-            stack.getBottomImage = stack._getReserveBottomImage
-            s.rows.append(stack)
-            x += l.XS
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow(rows=self.s.foundations)
-        self.s.talon.dealCards()
-
-    def updateText(self):
-        decks = self.gameinfo.decks
-        if self.preview > 1:
-            return
-        f = self.s.foundations[0]
-        if not f.cards:
-            if f.cap.base_rank == ANY_RANK:
-                t = ''
-            else:
-                r = RANKS[f.cap.base_rank]
-                n = 4*decks
-                t = '%s (%d)' % (r, n)
-        elif len(f.cards) == 52*decks:
-            t = ''
-        else:
-            n = f._getNumSameCards()
-            n = 4*decks - n
-            r = f.cards[-1].rank
-            if n == 0:
-                n = 4*decks
-                r = (r+1) % f.cap.mod
-            r = r % 13
-            r = RANKS[r]
-            t = '%s (%d)' % (r, n)
-        f.texts.misc.config(text=t)
-
-    shallHighlightMatch = Game._shallHighlightMatch_RKW
-
-
-# ************************************************************************
-# * Footling
-# ************************************************************************
-
-class Footling(FourByFour):
-    Hint_Class = DefaultHint
-
-    def createGame(self, rows=8, reserves=4, playcards=15):
-
-        decks = self.gameinfo.decks
-
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+rows*l.XS, l.YM+2*l.YS+playcards*l.YOFFSET)
-
-        x, y = l.XM, l.YM
-        for i in range(reserves):
-            s.reserves.append(ReserveStack(x, y, self))
-            x += l.XS
-
-        x = self.width - 2*l.XS
-        s.foundations.append(FourByFour_Foundation(x, y, self,
-                             suit=ANY_SUIT, base_rank=ACE, max_cards=52*decks,
-                             max_accept=1, max_move=0))
-        stack = s.foundations[0]
-        tx, ty, ta, tf = l.getTextAttr(stack, 'ne')
-        font = self.app.getFont('canvas_default')
-        stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
-                                         anchor=ta, font=font)
-
-        x, y = l.XM, l.YM+l.YS
-        for i in range(rows):
-            s.rows.append(AC_RowStack(x, y, self))
-            x += l.XS
-
-        x, y = l.XM, self.height-l.YS
-        s.talon = InitialDealTalonStack(x, y, self)
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self._startDealNumRows(5)
-        self.s.talon.dealRow()
-        self.s.talon.dealRowAvail()
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
-class DoubleFootling(Footling):
-    def createGame(self):
-        Footling.createGame(self, rows=10, reserves=5, playcards=18)
-
-    def startGame(self):
-        self._startDealNumRows(9)
-        self.s.talon.dealRow()
-        self.s.talon.dealRowAvail()
-
-
 # register the game
 registerGame(GameInfo(41, PileOn, "PileOn",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Fifteen Puzzle", "Fan Fifteen", "Beeswax")))
 registerGame(GameInfo(554, Foursome, "Foursome",
                       GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(740, Footling, "Footling",
-                      GI.GT_FREECELL | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(741, DoubleFootling, "Double Footling",
-                      GI.GT_FREECELL | GI.GT_OPEN | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))

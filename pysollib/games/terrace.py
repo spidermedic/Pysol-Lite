@@ -35,7 +35,7 @@ from pysollib.stack import \
         StackWrapper, \
         WasteStack, \
         WasteTalonStack
-from pysollib.util import KING, NO_RANK
+from pysollib.util import NO_RANK
 
 
 class Terrace_Talon(WasteTalonStack):
@@ -59,19 +59,6 @@ class Terrace_AC_Foundation(AC_FoundationStack):
             return from_stack in self.game.s.rows
         return AC_FoundationStack.acceptsCards(self, from_stack, cards)
 
-class Terrace_SS_Foundation(SS_FoundationStack):
-    def __init__(self, x, y, game, suit, **cap):
-        kwdefault(cap, mod=13, min_cards=1, max_move=0)
-        SS_FoundationStack.__init__(self, x, y, game, suit, **cap)
-
-    def acceptsCards(self, from_stack, cards):
-        if self.game.getState() == 0:
-            if len(cards) != 1 or not cards[0].face_up:
-                return False
-            if cards[0].suit != self.cap.base_suit:
-                return False
-            return from_stack in self.game.s.rows
-        return SS_FoundationStack.acceptsCards(self, from_stack, cards)
 
 class Terrace_RowStack(AC_RowStack):
     def __init__(self, x, y, game, **cap):
@@ -222,18 +209,8 @@ class QueenOfItaly(Terrace):
 
 
 # ************************************************************************
-# * General's Patience
-# ************************************************************************
-
-class GeneralsPatience(Terrace):
-    Foundation_Class = Terrace_SS_Foundation
-    INITIAL_RESERVE_CARDS = 13
-
-
-# ************************************************************************
 # * Big Terrace
 # * Empress of Italy
-# * Admiral's Patience
 # ************************************************************************
 
 class BigTerrace(Terrace):
@@ -253,14 +230,8 @@ class EmpressOfItaly(BigTerrace):
         pass
 
 
-class AdmiralsPatience(BigTerrace):
-    Foundation_Class = Terrace_SS_Foundation
-    INITIAL_RESERVE_CARDS = 13
-
-
 # ************************************************************************
 # * Blondes and Brunettes
-# * Falling Star
 # * Wood
 # ************************************************************************
 
@@ -283,10 +254,6 @@ class BlondesAndBrunettes(Terrace):
         return 1
 
 
-class FallingStar(BlondesAndBrunettes):
-    INITIAL_RESERVE_CARDS = 11
-
-
 class Wood_RowStack(AC_RowStack):
     def acceptsCards(self, from_stack, cards):
         if not AC_RowStack.acceptsCards(self, from_stack, cards):
@@ -301,29 +268,6 @@ class Wood(BlondesAndBrunettes):
 
     def fillStack(self, stack):
         pass
-
-
-# ************************************************************************
-# * Signora
-# ************************************************************************
-
-class Signora(Terrace):
-    def startGame(self):
-        Terrace.startGame(self, nrows=9)
-
-
-# ************************************************************************
-# * Madame
-# ************************************************************************
-
-class Madame(Terrace):
-    INITIAL_RESERVE_CARDS = 15
-
-    def createGame(self):
-        Terrace.createGame(self, rows=10, playcards=20)
-
-    def startGame(self):
-        Terrace.startGame(self, nrows=10)
 
 
 # ************************************************************************
@@ -365,126 +309,14 @@ class MamySusan(Terrace):
         pass
 
 
-# ************************************************************************
-# * Bastille Day
-# ************************************************************************
-
-class BastilleDay_BastilleStack(Stack):
-    def clickHandler(self, event):
-        return self.dealCards(sound=True)
-
-    def rightclickHandler(self, event):
-        return self.clickHandler(event)
-
-    def canDealCards(self):
-        if self.game.s.reserves[-1].cards:
-            return 0 < len(self.cards) < 12
-        return len(self.cards) > 0
-
-    def dealCards(self, sound=False):
-        if not self.canDealCards():
-            return 0
-        old_state = self.game.enterState(self.game.S_DEAL)
-        if sound and not self.game.demo:
-            self.game.playSample("dealwaste")
-        self.game.flipAndMoveMove(self, self.game.s.reserves[-1])
-        self.game.leaveState(old_state)
-        self.game.finishMove()
-        return 1
-
-    def getHelp(self):
-        return "Bastille. Can be dealt to reserve, once it's empty."
-
-
-class BastilleDay(Game):
-
-    def createGame(self, rows=9, max_rounds=1, num_deal=1, playcards=16):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+8*l.XS, l.YM+3*l.YS+12*l.YOFFSET+l.TEXT_HEIGHT)
-
-        x, y = l.XM, l.YM
-        s.talon = WasteTalonStack(x, y, self, max_rounds=1)
-        l.createText(s.talon, 's')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        l.createText(s.waste, 's')
-        x += 2*l.XS
-        stack = BastilleDay_BastilleStack(x, y, self)
-        s.reserves.append(stack)
-        l.createText(stack, 's')
-        x += l.XS
-        stack = OpenStack(x, y, self)
-        stack.CARD_XOFFSET = l.XOFFSET
-        l.createText(stack, 's')
-        s.reserves.append(stack)
-
-        x, y = l.XM, l.YM+l.YS+l.TEXT_HEIGHT
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i % 4))
-            x = x + l.XS
-        x, y = l.XM, l.YM+2*l.YS+l.TEXT_HEIGHT
-        for i in range(8):
-            s.rows.append(AC_RowStack(x, y, self))
-            x = x + l.XS
-
-        l.defaultStackGroups()
-
-    def _shuffleHook(self, cards):
-        # move Kings to top
-        cards = self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank == KING, None))
-        # move any 4 cards to top
-        cards = cards[4:]+cards[:4]
-        return cards
-
-    def startGame(self, nrows=4):
-        for i in range(12):  # deal to Bastille
-            self.s.talon.dealRow(flip=0, rows=[self.s.reserves[0]], frames=0)
-        for i in range(9):
-            self.s.talon.dealRow(rows=[self.s.reserves[-1]], frames=0)
-        for i in range(3):
-            self.s.talon.dealRow(flip=0, frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    def dealCards(self, sound=True):
-        # for demo-mode
-        if self.demo:
-            r = self.s.reserves[0]
-            if r.canDealCards():
-                # self.demo.last_deal = [] # don't check last deal
-                return r.dealCards(sound=sound)
-        return Game.dealCards(self, sound=sound)
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
 # register the game
 registerGame(GameInfo(135, Terrace, "Terrace",
                       GI.GT_TERRACE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(136, GeneralsPatience, "General's Patience",
-                      GI.GT_TERRACE, 2, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(137, BlondesAndBrunettes, "Blondes and Brunettes",
-                      GI.GT_TERRACE, 2, 0, GI.SL_MOSTLY_LUCK))
-registerGame(GameInfo(138, FallingStar, "Falling Star",
-                      GI.GT_TERRACE, 2, 0, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(431, QueenOfItaly, "Queen of Italy",
                       GI.GT_TERRACE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(499, Signora, "Signora",
-                      GI.GT_TERRACE, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(500, Madame, "Madame",
-                      GI.GT_TERRACE, 3, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(533, MamySusan, "Mamy Susan",
-                      GI.GT_TERRACE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(582, Wood, "Wood",
-                      GI.GT_TERRACE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(637, BastilleDay, "Bastille Day",
                       GI.GT_TERRACE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(785, BigTerrace, "Big Terrace",
                       GI.GT_TERRACE, 4, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(786, EmpressOfItaly, "Empress of Italy",
-                      GI.GT_TERRACE, 4, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(787, AdmiralsPatience, "Admiral's Patience",
                       GI.GT_TERRACE, 4, 0, GI.SL_MOSTLY_SKILL))

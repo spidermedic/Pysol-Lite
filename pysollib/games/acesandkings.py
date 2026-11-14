@@ -143,18 +143,6 @@ class AcesAndKings(Game):
             self.leaveState(old_state)
 
 
-# ************************************************************************
-# * Racing Aces
-# ************************************************************************
-
-class RacingAces(AcesAndKings):
-    NUM_RESERVES = 3
-    NUM_TABLEAU = 6
-    FOUNDATION_SETS = ((ACE, KING), (6, 5))
-
-
 # register the game
 registerGame(GameInfo(800, AcesAndKings, "Aces and Kings",
                       GI.GT_2DECK_TYPE, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(820, RacingAces, "Racing Aces",
-                      GI.GT_3DECK_TYPE, 3, 0, GI.SL_BALANCED))

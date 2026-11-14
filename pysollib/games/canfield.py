@@ -15,7 +15,7 @@ from pysollib.stack import (
     WasteStack,
     WasteTalonStack,
 )
-from pysollib.util import KING, QUEEN, RANKS, UNLIMITED_REDEALS
+from pysollib.util import RANKS, UNLIMITED_REDEALS
 
 
 class Canfield_Hint(CautiousDefaultHint):
@@ -288,7 +288,6 @@ class Storehouse(Canfield):
 
 # ************************************************************************
 # * Gate
-# * Doorway
 # ************************************************************************
 
 class Gate(Game):
@@ -353,82 +352,6 @@ class Gate(Game):
                 from_stack.moveMove(1, stack)
 
     shallHighlightMatch = Game._shallHighlightMatch_AC
-
-
-class LittleGate(Gate):
-
-    RowStack_Class = AC_RowStack
-    ReserveStack_Class = StackWrapper(OpenStack, max_accept=0)
-
-    #
-    # game layout
-    #
-
-    def createGame(self, rows=4):
-        # create layout
-        lay, s = Layout(self), self.s
-
-        # set window
-        max_rows = max(7, rows+3)
-        w, h = lay.XM+max_rows*lay.XS, lay.YM+2*lay.YS+12*lay.YOFFSET
-        self.setSize(w, h)
-
-        # create stacks
-        y = lay.YM+lay.YS+lay.TEXT_HEIGHT
-        for x in (lay.XM, w-lay.XS):
-            stack = self.ReserveStack_Class(x, y, self)
-            stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, lay.YOFFSET
-            s.reserves.append(stack)
-        x, y = lay.XM+(max_rows-4)*lay.XS, lay.YM
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i))
-            x += lay.XS
-        x, y = lay.XM+(max_rows-rows)*lay.XS//2, lay.YM+lay.YS+lay.TEXT_HEIGHT
-        for i in range(rows):
-            s.rows.append(self.RowStack_Class(x, y, self))
-            x += lay.XS
-        s.talon = WasteTalonStack(lay.XM, lay.YM, self, max_rounds=1)
-        lay.createText(s.talon, "s")
-        s.waste = WasteStack(lay.XM+lay.XS, lay.YM, self)
-        lay.createText(s.waste, "s")
-
-        # define stack-groups
-        lay.defaultStackGroups()
-
-        return lay
-
-
-class Doorway(LittleGate):
-
-    Hint_Class = CautiousDefaultHint
-    RowStack_Class = StackWrapper(RK_RowStack, max_move=1)
-    ReserveStack_Class = ReserveStack
-
-    def createGame(self):
-        lay = LittleGate.createGame(self, rows=5)
-        king_stack, queen_stack = self.s.reserves
-        tx, ty, ta, tf = lay.getTextAttr(king_stack, "s")
-        font = self.app.getFont("canvas_default")
-        king_stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
-                                              anchor=ta, font=font,
-                                              text='King')
-        tx, ty, ta, tf = lay.getTextAttr(queen_stack, "s")
-        font = self.app.getFont("canvas_default")
-        queen_stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
-                                               anchor=ta, font=font,
-                                               text='Queen')
-        king_stack.cap.base_rank = KING
-        queen_stack.cap.base_rank = QUEEN
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealCards()
-
-    def fillStack(self, stack):
-        pass
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
 
 
 # ************************************************************************
@@ -585,8 +508,5 @@ registerGame(GameInfo(422, Minerva, "Minerva",
                       GI.GT_CANFIELD, 1, 1, GI.SL_BALANCED))
 registerGame(GameInfo(476, Demon, "Demon",
                       GI.GT_CANFIELD, 2, -1, GI.SL_BALANCED))
-registerGame(GameInfo(527, Doorway, "Doorway",
-                      GI.GT_KLONDIKE, 1, 0, GI.SL_BALANCED,
-                      altnames=('Solstice',)))
 registerGame(GameInfo(605, Skippy, "Skippy",
                       GI.GT_FAN_TYPE, 2, 0, GI.SL_MOSTLY_SKILL))

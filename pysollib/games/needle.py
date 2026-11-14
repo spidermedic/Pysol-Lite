@@ -25,18 +25,16 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
-from pysollib.stack import \
-        AC_RowStack, \
-        InitialDealTalonStack, \
-        OpenStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        StackWrapper
+from pysollib.stack import (
+    AC_RowStack,
+    InitialDealTalonStack,
+    ReserveStack,
+    SS_FoundationStack,
+    StackWrapper,
+)
 
 # ************************************************************************
 # * Needle
-# * Haystack
-# * Pitchfork
 # ************************************************************************
 
 
@@ -103,18 +101,6 @@ class Needle(Game):
         return 1+int(len(to_stack.cards) != 0)
 
 
-class Haystack(Needle):
-    ReserveStack_Class = StackWrapper(ReserveStack, max_cards=8)
-
-
-class Pitchfork(Needle):
-    ReserveStack_Class = StackWrapper(OpenStack, max_accept=0)
-
-
 # register the game
 registerGame(GameInfo(318, Needle, "Needle",
-                      GI.GT_FREECELL | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(319, Haystack, "Haystack",
-                      GI.GT_FREECELL | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(367, Pitchfork, "Pitchfork",
                       GI.GT_FREECELL | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))

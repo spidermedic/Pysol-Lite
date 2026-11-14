@@ -35,7 +35,6 @@ from pysollib.stack import (
     SS_FoundationStack,
     SS_RowStack,
     Spider_SS_RowStack,
-    Stack,
     StackWrapper,
     WasteStack,
     WasteTalonStack,
@@ -712,28 +711,6 @@ class Crossroads(Junction):
 
 
 # ************************************************************************
-# * Double Gold Mine
-# ************************************************************************
-
-class DoubleGoldMine_RowStack(AC_RowStack):
-    getBottomImage = Stack._getReserveBottomImage
-
-
-class DoubleGoldMine(Streets):
-
-    RowStack_Class = DoubleGoldMine_RowStack
-
-    ROW_MAX_MOVE = UNLIMITED_MOVES
-
-    def createGame(self):
-        Streets.createGame(self, rows=9, num_deal=3)
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealCards()
-
-
-# ************************************************************************
 # * Interchange
 # * Unlimited
 # * Alternation
@@ -853,9 +830,6 @@ registerGame(GameInfo(493, MarieRose, "Marie Rose",
                       GI.GT_FORTY_THIEVES, 3, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(540, Waterloo, "Waterloo",
                       GI.GT_FORTY_THIEVES, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(573, DoubleGoldMine, "Double Gold Mine",
-                      GI.GT_NUMERICA | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(574, Interchange, "Interchange",
                       GI.GT_FORTY_THIEVES, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(575, Unlimited, "Unlimited",

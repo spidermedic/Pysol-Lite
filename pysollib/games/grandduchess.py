@@ -29,7 +29,7 @@ from pysollib.stack import \
         BasicRowStack, \
         RedealTalonStack, \
         SS_FoundationStack
-from pysollib.util import ACE, KING
+from pysollib.util import KING
 
 # ************************************************************************
 # * Grand Duchess
@@ -130,24 +130,6 @@ class GrandDuchess(Game):
         return ((), (), self.sg.dropstacks)
 
 
-# ************************************************************************
-# * Parisienne
-# ************************************************************************
-
-class Parisienne(GrandDuchess):
-    def _shuffleHook(self, cards):
-        # move one Ace and one King of each suit to top of the Talon
-        # (i.e. first cards to be dealt)
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (ACE, KING) and c.deck == 0,
-                       (c.rank, c.suit)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        GrandDuchess.startGame(self)
-
-
 class GrandDuchessPlus(GrandDuchess):
     def createGame(self):
         GrandDuchess.createGame(self, rows=6)
@@ -156,9 +138,5 @@ class GrandDuchessPlus(GrandDuchess):
 registerGame(GameInfo(557, GrandDuchess, "Grand Duchess",
                       GI.GT_NUMERICA, 2, 3,
                       altnames=('Duchess de Luynes')))
-registerGame(GameInfo(617, Parisienne, "Parisienne",
-                      GI.GT_NUMERICA, 2, 3,
-                      altnames=('La Parisienne', 'Parisian',
-                                'Isle of Capri')))
 registerGame(GameInfo(618, GrandDuchessPlus, "Grand Duchess +",
                       GI.GT_NUMERICA, 2, 3))

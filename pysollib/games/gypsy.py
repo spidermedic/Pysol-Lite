@@ -24,33 +24,26 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.spider import Spider_Hint
-from pysollib.hint import KlondikeType_Hint, YukonType_Hint
+from pysollib.hint import KlondikeType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.stack import \
-    AC_RowStack, \
-    AbstractFoundationStack, \
-    BasicRowStack, \
-    DealRowTalonStack, \
-    InitialDealTalonStack, \
-    KingAC_RowStack, \
-    OpenStack, \
-    ReserveStack, \
-    SS_FoundationStack, \
-    SS_RowStack, \
-    Spider_SS_RowStack, \
-    Stack, \
-    StackWrapper, \
-    TalonStack, \
-    WasteStack, \
-    WasteTalonStack, \
-    Yukon_AC_RowStack
-from pysollib.util import \
-    ACE, \
-    ANY_SUIT, \
-    KING, \
-    UNLIMITED_ACCEPTS, \
-    UNLIMITED_MOVES
+from pysollib.stack import (
+    AC_RowStack,
+    AbstractFoundationStack,
+    BasicRowStack,
+    DealRowTalonStack,
+    InitialDealTalonStack,
+    KingAC_RowStack,
+    OpenStack,
+    ReserveStack,
+    SS_FoundationStack,
+    SS_RowStack,
+    Stack,
+    StackWrapper,
+    WasteStack,
+    WasteTalonStack,
+)
+from pysollib.util import ACE, ANY_SUIT, UNLIMITED_ACCEPTS, UNLIMITED_MOVES
 
 # ************************************************************************
 # * Gypsy
@@ -96,15 +89,6 @@ class Gypsy3Decks(Gypsy):
 
 
 # ************************************************************************
-# * Yeast Dough
-# ************************************************************************
-
-class YeastDough(Gypsy):
-    def startGame(self):
-        Gypsy.startGame(self, flip=1)
-
-
-# ************************************************************************
 # * Giant
 # ************************************************************************
 
@@ -121,58 +105,6 @@ class Giant(Gypsy):
 
     def startGame(self):
         self._startAndDealRow()
-
-
-# ************************************************************************
-# * Irmgard
-# ************************************************************************
-
-class Irmgard_Talon(TalonStack):
-    # A single click deals 9 (or 7) new cards to the RowStacks.
-    def dealCards(self, sound=False):
-        if self.cards:
-            if len(self.cards) > 7:
-                c = self.dealRow(sound=sound)
-            else:
-                c = self.dealRow(self.game.s.rows[1:8], sound=sound)
-            return c
-        return 0
-
-
-class Irmgard(Gypsy):
-    GAME_VERSION = 2
-
-    Layout_Method = staticmethod(Layout.harpLayout)
-    Talon_Class = Irmgard_Talon
-    RowStack_Class = KingAC_RowStack
-
-    def createGame(self):
-        Gypsy.createGame(self, rows=9, playcards=19)
-
-    def startGame(self):
-        r = self.s.rows
-        for i in range(1, 5):
-            self.s.talon.dealRow(rows=r[i:len(r)-i], flip=0, frames=0)
-        self._startAndDealRow()
-
-
-# ************************************************************************
-# * Die Königsbergerin
-# ************************************************************************
-
-class DieKoenigsbergerin_Talon(DealRowTalonStack):
-    # all Aces go to Foundations
-    dealToStacks = DealRowTalonStack.dealToStacksOrFoundations
-
-
-class DieKoenigsbergerin(Gypsy):
-    Talon_Class = DieKoenigsbergerin_Talon
-    Foundation_Class = StackWrapper(SS_FoundationStack, max_move=0)
-
-    def startGame(self):
-        self.startDealSample()
-        for i in range(3):
-            self.s.talon.dealRow()
 
 
 # ************************************************************************
@@ -225,7 +157,6 @@ class DieRussische(Gypsy):
 
 # ************************************************************************
 # * Miss Milligan
-# * Imperial Guards
 # ************************************************************************
 
 class MissMilligan_ReserveStack(AC_RowStack):
@@ -283,23 +214,6 @@ class MissMilligan(Gypsy):
         self._startAndDealRow()
 
 
-class ImperialGuards(MissMilligan):
-    RowStack_Class = AC_RowStack
-
-
-# ************************************************************************
-# * Nomad
-# ************************************************************************
-
-class Nomad(MissMilligan):
-    Foundation_Class = SS_FoundationStack
-    RowStack_Class = AC_RowStack
-    ReserveStack_Class = ReserveStack
-
-    def startGame(self):
-        self._startDealNumRowsAndDealSingleRow(3)
-
-
 # ************************************************************************
 # * Milligan Cell
 # ************************************************************************
@@ -317,7 +231,6 @@ class MilliganCell(MissMilligan):
 # ************************************************************************
 # * Milligan Harp
 # * Carlton
-# * Steve
 # ************************************************************************
 
 class MilliganHarp(Gypsy):
@@ -334,48 +247,8 @@ class Carlton(MilliganHarp):
         MilliganHarp.startGame(self, flip=1)
 
 
-class Steve(Carlton):
-    Hint_Class = Spider_Hint
-    RowStack_Class = Spider_SS_RowStack
-
-    shallHighlightMatch = Game._shallHighlightMatch_RK
-    getQuickPlayScore = Game._getSpiderQuickPlayScore
-
-
-# ************************************************************************
-# * Lexington Harp
-# * Brunswick
-# * Mississippi
-# * Griffon
-# ************************************************************************
-
-class LexingtonHarp(MilliganHarp):
-    GAME_VERSION = 2
-    RowStack_Class = Yukon_AC_RowStack
-    Hint_Class = YukonType_Hint
-
-    def getHighlightPilesStacks(self):
-        return ()
-
-
-class Brunswick(LexingtonHarp):
-    def startGame(self):
-        LexingtonHarp.startGame(self, flip=1)
-
-
-class Mississippi(LexingtonHarp):
-    def createGame(self):
-        LexingtonHarp.createGame(self, rows=7)
-
-
-class Griffon(Mississippi):
-    def startGame(self):
-        Mississippi.startGame(self, flip=1)
-
-
 # ************************************************************************
 # * Blockade
-# * Phantom Blockade
 # ************************************************************************
 
 class Blockade(Gypsy):
@@ -396,77 +269,6 @@ class Blockade(Gypsy):
             self.leaveState(old_state)
 
     shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-class PhantomBlockade(Gypsy):
-    Layout_Method = staticmethod(Layout.klondikeLayout)
-    RowStack_Class = KingAC_RowStack
-
-    def createGame(self):
-        Gypsy.createGame(self, rows=13, playcards=24)
-
-    def startGame(self):
-        self._startDealNumRowsAndDealSingleRow(2)
-
-
-# ************************************************************************
-# * Cone
-# ************************************************************************
-
-class Cone_Talon(DealRowTalonStack):
-    def canDealCards(self):
-        if not DealRowTalonStack.canDealCards(self):
-            return False
-        if len(self.cards) == 4:
-            return True
-        for r in self.game.s.rows:
-            if not r.cards:
-                return False
-        return True
-
-    def dealCards(self, sound=False):
-        rows = self.game.s.rows
-        if len(self.cards) == 4:
-            rows = self.game.s.reserves
-        return self.dealRowAvail(rows=rows, sound=sound)
-
-
-class Cone(Gypsy):
-
-    def createGame(self):
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM+9*l.XS, 3*l.YM+5*l.YS)
-
-        # create stacks
-        x, y = l.XM, l.YM
-        s.talon = Cone_Talon(x, y, self)
-        l.createText(s.talon, 's')
-        y += l.YS+2*l.YM
-        for i in range(4):
-            s.reserves.append(OpenStack(x, y, self, max_accept=0))
-            y += l.YS
-        x, y = l.XM+l.XS, l.YM
-        for i in range(7):
-            s.rows.append(AC_RowStack(x, y, self, mod=13))
-            x += l.XS
-        for i in range(4):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i,
-                                                    mod=13, max_cards=26))
-            y += l.YS
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def startGame(self):
-        self.startDealSample()
-        self.s.talon.dealRow()
-        for i in (1, 2, 3):
-            self.s.talon.dealRow(rows=self.s.rows[i:-i])
-
-    shallHighlightMatch = Game._shallHighlightMatch_ACW
 
 
 # ************************************************************************
@@ -517,40 +319,7 @@ class Surprise(Gypsy):
 
 
 # ************************************************************************
-# * Elba
-# ************************************************************************
-
-class Elba(Gypsy):
-    Layout_Method = staticmethod(Layout.klondikeLayout)
-    RowStack_Class = KingAC_RowStack
-
-    def createGame(self):
-        Gypsy.createGame(self, rows=10)
-
-    def startGame(self):
-        for i in range(4):
-            self.s.talon.dealRow(flip=0, frames=0)
-        self._startAndDealRow()
-
-
-# ************************************************************************
-# * Millie
-# ************************************************************************
-
-class Millie(Gypsy):
-    Layout_Method = staticmethod(Layout.klondikeLayout)
-
-    def createGame(self):
-        Gypsy.createGame(self, playcards=24)
-
-    def startGame(self):
-        self._startAndDealRow()
-
-
-# ************************************************************************
 # * Hypotenuse
-# * Eternal Triangle
-# * Right Triangle
 # ************************************************************************
 
 class Hypotenuse(Gypsy):
@@ -564,139 +333,6 @@ class Hypotenuse(Gypsy):
         for i in range(1, rows):
             self.s.talon.dealRow(rows=self.s.rows[i:], flip=flip, frames=0)
         self._startAndDealRow()
-
-
-class EternalTriangle(Hypotenuse):
-
-    def startGame(self):
-        Hypotenuse.startGame(self, flip=1)
-
-
-class SmallTriangle(Hypotenuse):
-
-    def createGame(self):
-        Hypotenuse.createGame(self, rows=7, playcards=20)
-
-    def startGame(self):
-        Hypotenuse.startGame(self, rows=7)
-
-
-class RightTriangle_Talon(OpenStack, DealRowTalonStack):
-    def __init__(self, x, y, game, max_rounds=1, num_deal=1, **cap):
-        kwdefault(cap, max_move=1, max_accept=1, max_cards=999999)
-        Stack.__init__(self, x, y, game, cap=cap)
-        self.max_rounds = max_rounds
-        self.num_deal = num_deal
-        self.round = 1
-        self.base_cards = []        # for DealBaseCard_StackMethods
-
-    def clickHandler(self, event):
-        if self.cards and not self.cards[-1].face_up:
-            return self.game.dealCards(sound=True)
-        return OpenStack.clickHandler(self, event)
-
-    def canDealCards(self):
-        if not DealRowTalonStack.canDealCards(self):
-            return False
-        if self.cards and self.cards[-1].face_up:
-            return False
-        return True
-
-    def canFlipCard(self):
-        return False
-
-    getBottomImage = Stack._getReserveBottomImage
-
-    prepareView = Stack.prepareView
-
-    resize = Stack.resize
-
-    def getHelp(self):
-        return DealRowTalonStack.getHelp(self)
-
-
-class RightTriangle(Hypotenuse):
-    Talon_Class = RightTriangle_Talon
-
-    def createGame(self):
-        Gypsy.createGame(self, rows=10, playcards=24)
-        self.sg.dropstacks.append(self.s.talon)
-        self.sg.openstacks.append(self.s.talon)
-        self.sg.reservestacks.append(self.s.talon)
-
-
-# ************************************************************************
-# * Trapdoor
-# ************************************************************************
-
-class Trapdoor_Talon(DealRowTalonStack):
-    def dealCards(self, sound=False):
-        if not self.cards:
-            return 0
-        if sound:
-            self.game.startDealSample()
-        n = 0
-        for row, reserve in zip(self.game.s.rows, self.game.s.reserves):
-            if reserve.cards:
-                reserve.moveMove(1, row)
-                n += 1
-        n += self.dealRowAvail(rows=self.game.s.reserves, sound=False)
-        if sound:
-            self.game.stopSamples()
-        return n
-
-
-class Trapdoor(Gypsy):
-    Foundation_Class = SS_FoundationStack
-    RowStack_Class = AC_RowStack
-
-    def createGame(self, rows=8):
-        kw = {'rows': rows,
-              'waste': 0,
-              'texts': 1,
-              'reserves': rows}
-        Layout(self).createGame(layout_method=Layout.gypsyLayout,
-                                talon_class=Trapdoor_Talon,
-                                foundation_class=self.Foundation_Class,
-                                row_class=self.RowStack_Class,
-                                reserve_class=OpenStack,
-                                **kw
-                                )
-
-    def startGame(self):
-        Gypsy.startGame(self)
-        self.s.talon.dealCards()
-
-
-# ************************************************************************
-# * Flamenco
-# ************************************************************************
-
-class Flamenco(Gypsy):
-
-    def createGame(self):
-        kw = {'rows': 8,
-              'waste': 0,
-              'texts': 1, }
-        foundation_class = (
-            SS_FoundationStack,
-            StackWrapper(SS_FoundationStack, base_rank=KING, dir=-1))
-        Layout(self).createGame(layout_method=Layout.gypsyLayout,
-                                talon_class=DealRowTalonStack,
-                                foundation_class=foundation_class,
-                                row_class=AC_RowStack,
-                                **kw
-                                )
-
-    def _shuffleHook(self, cards):
-        return self._shuffleHookMoveToTop(
-            cards,
-            lambda c: (c.rank in (ACE, KING) and c.deck == 0,
-                       (c.suit, c.rank)))
-
-    def startGame(self):
-        self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        self._startDealNumRowsAndDealSingleRow(2)
 
 
 # ************************************************************************
@@ -732,62 +368,6 @@ class Eclipse(Gypsy):
 #         for i in range(1, 10):
 #             self.s.talon.dealRow(rows=self.s.rows[i:], flip=0, frames=0)
 #         self._startAndDealRow()
-
-
-# ************************************************************************
-# * Leprechaun
-# ************************************************************************
-
-class Leprechaun_Reserve(OpenStack):
-    def canFlipCard(self):
-        if not OpenStack.canFlipCard(self):
-            return False
-        i = list(self.game.s.reserves).index(self)
-        return len(self.game.s.foundations[i].cards) != 0
-
-
-class Leprechaun(Game):
-
-    def createGame(self):
-
-        # create layout
-        l, s = Layout(self), self.s
-
-        # set window
-        self.setSize(l.XM+9.5*l.XS, l.YM+3*l.YS+l.TEXT_HEIGHT+12*l.YOFFSET)
-
-        # create stacks
-        x, y = l.XM+1.5*l.XS, l.TEXT_HEIGHT
-        for i in range(8):
-            stack = Leprechaun_Reserve(x, y, self)
-            s.reserves.append(stack)
-            l.createText(stack, 'n')
-            x += l.XS
-
-        x, y = l.XM+1.5*l.XS, l.YS+l.TEXT_HEIGHT
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i//2))
-            x += l.XS
-
-        x, y = l.XM+1.5*l.XS, 2*l.YS+l.TEXT_HEIGHT
-        for i in range(8):
-            s.rows.append(AC_RowStack(x, y, self))
-            x += l.XS
-
-        s.talon = DealRowTalonStack(l.XM, l.YM, self)
-        l.createText(s.talon, 's')
-
-        # define stack-groups
-        l.defaultStackGroups()
-
-    def startGame(self):
-        for i in range(4):
-            self.s.talon.dealRow(rows=self.s.reserves, flip=0, frames=0)
-        self.s.talon.dealRow(flip=0, frames=0)
-        self.s.talon.dealRow(flip=0, frames=0)
-        self._startAndDealRow()
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
 
 
 # ************************************************************************
@@ -934,42 +514,11 @@ class Thirty(Game):
     getQuickPlayScore = Game._getSpiderQuickPlayScore
 
 
-# ************************************************************************
-# * Swiss Patience
-# ************************************************************************
-
-class SwissPatience_RowStack(AC_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if cards[0].rank == ACE and len(self.cards) > 0:
-            return False
-        return AC_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class SwissPatience(Gypsy):
-    Layout_Method = staticmethod(Layout.klondikeLayout)
-    Foundation_Class = StackWrapper(SS_FoundationStack, base_rank=1, mod=13)
-    RowStack_Class = StackWrapper(SwissPatience_RowStack, base_rank=ACE,
-                                  mod=13)
-
-    def createGame(self):
-        Gypsy.createGame(self, rows=9)
-
-    def startGame(self):
-        self.startDealSample()
-        for i in range(1, 5):
-            self.s.talon.dealRow(rows=self.s.rows[i:-i], flip=0, frames=0)
-        self._startAndDealRow()
-
-
 # register the game
 registerGame(GameInfo(1, Gypsy, "Gypsy",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Double Easthaven", "Normandy",)))
 registerGame(GameInfo(65, Giant, "Giant",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(3, Irmgard, "Irmgard",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(119, DieKoenigsbergerin, "Die Koenigsbergerin",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(174, DieRussische, "Russian Patience",
                       GI.GT_KLONDIKE | GI.GT_OPEN | GI.GT_STRIPPED,
@@ -978,70 +527,29 @@ registerGame(GameInfo(174, DieRussische, "Russian Patience",
                       altnames=("Die Russische",)))
 registerGame(GameInfo(62, MissMilligan, "Miss Milligan",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(200, Nomad, "Nomad",
-                      GI.GT_GYPSY | GI.GT_CONTRIB | GI.GT_ORIGINAL, 2, 0,
-                      GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(78, MilliganCell, "Milligan Cell",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(217, MilliganHarp, "Milligan Harp",
                       GI.GT_GYPSY, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(218, Carlton, "Carlton",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(68, LexingtonHarp, "Lexington Harp",
-                      GI.GT_YUKON, 2, 0, GI.SL_BALANCED,
-                      altnames=("Milligan Yukon",)))
-registerGame(GameInfo(154, Brunswick, "Brunswick",
-                      GI.GT_YUKON, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(121, Mississippi, "Mississippi",
-                      GI.GT_YUKON | GI.GT_XORIGINAL, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(122, Griffon, "Griffon",
-                      GI.GT_YUKON | GI.GT_XORIGINAL, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(226, Blockade, "Blockade",
-                      GI.GT_GYPSY, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(412, Cone, "Cone",
                       GI.GT_GYPSY, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(453, Gypsy3Decks, "Gypsy (3 Decks)",
                       GI.GT_GYPSY, 3, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Triple Easthaven",)))
 registerGame(GameInfo(463, Surprise, "Surprise",
                       GI.GT_GYPSY, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(469, PhantomBlockade, "Phantom Blockade",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(478, Elba, "Elba",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(486, ImperialGuards, "Imperial Guards",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(487, Millie, "Millie",
-                      GI.GT_GYPSY, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(498, Steve, "Steve",
-                      GI.GT_GYPSY, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(566, Hypotenuse, "Hypotenuse",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Brazilian Patience",)))
-registerGame(GameInfo(567, EternalTriangle, "Eternal Triangle",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL,
-                      altnames=('Lobachevsky',)))
-registerGame(GameInfo(568, RightTriangle, "Right Triangle",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(580, Trapdoor, "Trapdoor",
-                      GI.GT_GYPSY | GI.GT_ORIGINAL, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(581, Flamenco, "Flamenco",
-                      GI.GT_GYPSY | GI.GT_ORIGINAL, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(584, Eclipse, "Eclipse",
                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
 # registerGame(GameInfo(640, BrazilianPatience, "Brazilian Patience",
 #                       GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(712, Leprechaun, "Leprechaun",
-                      GI.GT_GYPSY | GI.GT_ORIGINAL, 2, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(718, LockedCards, "Locked Cards",
                       GI.GT_2DECK_TYPE, 2, 2, GI.SL_BALANCED,
                       altnames=("Prisoners",)))
 registerGame(GameInfo(721, Thirty, "Thirty",
                       GI.GT_1DECK_TYPE | GI.GT_OPEN | GI.GT_STRIPPED, 1, 0,
                       GI.SL_MOSTLY_SKILL, ranks=(0, 6, 7, 8, 9, 10, 11, 12)))
-registerGame(GameInfo(842, SwissPatience, "Swiss Patience",
-                      GI.GT_GYPSY, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(890, YeastDough, "Yeast Dough",
-                      GI.GT_GYPSY, 2, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(912, SmallTriangle, "Small Triangle",
-                      GI.GT_GYPSY, 1, 0, GI.SL_BALANCED))

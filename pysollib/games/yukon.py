@@ -23,25 +23,22 @@
 
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
-from pysollib.games.spider import Spider_SS_Foundation
 from pysollib.hint import Yukon_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.pysoltk import MfxCanvasText
-from pysollib.stack import \
-    DealRowTalonStack, \
-    InitialDealTalonStack, \
-    OpenStack, \
-    RedealTalonStack, \
-    ReserveStack, \
-    SS_FoundationStack, \
-    StackWrapper, \
-    WasteStack, \
-    WasteTalonStack, \
-    Yukon_AC_RowStack, \
-    Yukon_BO_RowStack, \
-    Yukon_SS_RowStack, \
-    isAlternateColorSequence
+from pysollib.stack import (
+    DealRowTalonStack,
+    InitialDealTalonStack,
+    RedealTalonStack,
+    ReserveStack,
+    SS_FoundationStack,
+    StackWrapper,
+    WasteStack,
+    WasteTalonStack,
+    Yukon_AC_RowStack,
+    Yukon_SS_RowStack,
+)
 from pysollib.util import ANY_SUIT, KING
 
 
@@ -105,33 +102,6 @@ class RussianSolitaire(Yukon):
 
 
 # ************************************************************************
-# * Moosehide (build down in any suit but the same)
-# ************************************************************************
-
-class Moosehide(Yukon):
-    RowStack_Class = StackWrapper(Yukon_BO_RowStack, base_rank=KING)
-
-    def shallHighlightMatch(self, stack1, card1, stack2, card2):
-        return (card1.suit != card2.suit and
-                abs(card1.rank-card2.rank) == 1)
-
-
-# ************************************************************************
-# * Odessa (just like Russian Solitaire, only a different initial
-# * card layout)
-# ************************************************************************
-
-class Odessa(RussianSolitaire):
-    def startGame(self):
-        for i in range(3):
-            self.s.talon.dealRow(flip=0, frames=0)
-        self._dealNumRows(2)
-        for i in range(2):
-            self.s.talon.dealRow(rows=self.s.rows[1:6], frames=0)
-        self._startAndDealRow()
-
-
-# ************************************************************************
 # * Grandfather
 # ************************************************************************
 
@@ -183,25 +153,6 @@ class Alaska_RowStack(Yukon_SS_RowStack):
 
 class Alaska(RussianSolitaire):
     RowStack_Class = StackWrapper(Alaska_RowStack, base_rank=KING)
-
-
-# ************************************************************************
-# * Roslin (like Yukon, but build up or down by alternate color)
-# ************************************************************************
-
-class Roslin_RowStack(Yukon_AC_RowStack):
-    def _isYukonSequence(self, c1, c2):
-        return (c1.color != c2.color and
-                ((c1.rank + self.cap.dir) % self.cap.mod == c2.rank or
-                 (c2.rank + self.cap.dir) % self.cap.mod == c1.rank))
-
-    def getHelp(self):
-        return ('Tableau. Build up or down by alternate color, can move '
-                'any face-up cards regardless of sequence.')
-
-
-class Roslin(Yukon):
-    RowStack_Class = StackWrapper(Roslin_RowStack, base_rank=KING)
 
 
 # ************************************************************************
@@ -263,18 +214,6 @@ class Rushdike(RussianSolitaire):
                 rows=self.s.rows[i:], flip=flip, frames=0, reverse=reverse)
         self.startDealSample()
         self.s.talon.dealRow(reverse=reverse)
-
-
-# ************************************************************************
-# * Russian Point (Rushdike in a different layout)
-# ************************************************************************
-
-class RussianPoint(Rushdike):
-    def startGame(self):
-        r = self.s.rows
-        for i in (1, 1, 2, 2, 3, 3):
-            self.s.talon.dealRow(rows=r[i:len(r)-i], flip=0, frames=0)
-        self._startAndDealRow()
 
 
 # ************************************************************************
@@ -395,87 +334,9 @@ class QuadrupleYukon(Yukon):
 
 
 # ************************************************************************
-# * Ten Across
-# ************************************************************************
-
-class TenAcross(Yukon):
-
-    Foundation_Class = Spider_SS_Foundation
-    RowStack_Class = StackWrapper(Yukon_SS_RowStack, base_rank=KING)
-    Layout_Method = staticmethod(Layout.freeCellLayout)
-
-    #
-    # game layout
-    #
-
-    def createGame(self, **layout):
-        # create layout
-        lay, s = Layout(self), self.s
-        kwdefault(layout, rows=10, reserves=2, texts=0)
-        self.Layout_Method(lay, **layout)
-        self.setSize(lay.size[0], lay.size[1])
-        # create stacks
-        s.talon = InitialDealTalonStack(lay.s.talon.x, lay.s.talon.y, self)
-        for r in lay.s.foundations:
-            self.s.foundations.append(
-                self.Foundation_Class(r.x, r.y, self, suit=r.suit))
-        for r in lay.s.rows:
-            s.rows.append(self.RowStack_Class(r.x, r.y, self))
-        for r in lay.s.reserves:
-            self.s.reserves.append(ReserveStack(r.x, r.y, self))
-        # default
-        lay.defaultAll()
-
-    #
-    # game overrides
-    #
-
-    def startGame(self):
-        n = 1
-        for i in range(4):
-            self.s.talon.dealRow(rows=self.s.rows[:n], frames=0)
-            self.s.talon.dealRow(rows=self.s.rows[n:-n], frames=0, flip=0)
-            self.s.talon.dealRow(rows=self.s.rows[-n:], frames=0)
-            n += 1
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealRow(rows=self.s.reserves)
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-# ************************************************************************
-# * Panopticon
-# ************************************************************************
-
-class Panopticon(TenAcross):
-
-    Foundation_Class = SS_FoundationStack
-
-    def createGame(self):
-        TenAcross.createGame(self, rows=8, reserves=4)
-
-    def startGame(self):
-        self.s.talon.dealRow(frames=0, flip=0)
-        n = 1
-        for i in range(3):
-            self.s.talon.dealRow(rows=self.s.rows[:n], frames=0)
-            self.s.talon.dealRow(rows=self.s.rows[n:-n], frames=0, flip=0)
-            self.s.talon.dealRow(rows=self.s.rows[-n:], frames=0)
-            n += 1
-        self.s.talon.dealRow(frames=0)
-        self.startDealSample()
-        self.s.talon.dealRow()
-        self.s.talon.dealRow(rows=self.s.reserves)
-
-
-# ************************************************************************
 # * Australian Patience
 # * Outback Patience
-# * Tasmanian Patience
-# * Canberra
 # * Raw Prawn
-# * Bim Bom
 # ************************************************************************
 
 class AustralianPatience(RussianSolitaire):
@@ -508,28 +369,8 @@ class OutbackPatience(AustralianPatience):
         self._startDealNumRowsAndDealRowAndCards(6)
 
 
-class TasmanianPatience(AustralianPatience):
-    def createGame(self):
-        AustralianPatience.createGame(self, max_rounds=-1, num_deal=3)
-
-
-class Canberra(AustralianPatience):
-    def createGame(self):
-        AustralianPatience.createGame(self, max_rounds=2)
-
-
 class RawPrawn(AustralianPatience):
     RowStack_Class = Yukon_SS_RowStack
-
-
-class BimBom(AustralianPatience):
-    RowStack_Class = Yukon_SS_RowStack
-
-    def createGame(self):
-        AustralianPatience.createGame(self, rows=8)
-
-    def startGame(self):
-        self._startDealNumRowsAndDealRowAndCards(4)
 
 
 # ************************************************************************
@@ -550,27 +391,6 @@ class Geoffrey(Yukon):
         self.startDealSample()
         self.s.talon.dealRow()
         self.s.talon.dealRow(rows=self.s.rows[:4])
-
-    shallHighlightMatch = Game._shallHighlightMatch_SS
-
-
-# ************************************************************************
-# * Queensland
-# ************************************************************************
-
-class Queensland(Yukon):
-    Layout_Method = staticmethod(Layout.klondikeLayout)
-    RowStack_Class = Yukon_SS_RowStack
-
-    def createGame(self):
-        Yukon.createGame(self, waste=0)
-
-    def startGame(self):
-        for i in range(1, len(self.s.rows)):
-            self.s.talon.dealRow(rows=self.s.rows[i:], flip=0, frames=0)
-        self._startDealNumRows(3)
-        self.s.talon.dealRow()
-        self.s.talon.dealRowAvail()
 
     shallHighlightMatch = Game._shallHighlightMatch_SS
 
@@ -602,45 +422,6 @@ class Brisbane(Yukon):
         return ()
 
     shallHighlightMatch = Game._shallHighlightMatch_RK
-
-
-# ************************************************************************
-# * Hawaiian
-# ************************************************************************
-
-class Hawaiian(Game):
-    Hint_Class = Yukon_Hint
-
-    def createGame(self, rows=10, playcards=20):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+max(rows, 8)*l.XS,
-                     l.YM+2*l.YS+playcards*l.YOFFSET)
-        x, y = l.XM, l.YM
-        stack = OpenStack(x, y, self, max_move=1, max_accept=0)
-        s.reserves.append(stack)
-        l.createText(stack, 'ne')
-        x, y = self.width-8*l.XS, l.YM
-        for i in range(8):
-            s.foundations.append(SS_FoundationStack(x, y, self, suit=i//2))
-            x += l.XS
-        x, y = self.width-rows*l.XS, l.YM+l.YS
-        for i in range(rows):
-            s.rows.append(Yukon_AC_RowStack(x, y, self))
-            x += l.XS
-        x, y = l.XM, self.height-l.YS
-        s.talon = InitialDealTalonStack(x, y, self)
-
-        l.defaultStackGroups()
-
-    def startGame(self):
-        for i in range(104-5*10):
-            self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        self._startDealNumRowsAndDealSingleRow(4)
-
-    def getHighlightPilesStacks(self):
-        return ()
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
 
 
 # ************************************************************************
@@ -682,42 +463,8 @@ class Wave(Game):
 
 
 # ************************************************************************
-# * Yukon Kings
-# ************************************************************************
-
-class YukonKings(Yukon):
-
-    def createGame(self, playcards=25):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM + (7 * l.XS),
-                     l.YM + l.YS + playcards * l.YOFFSET)
-
-        x, y = l.XM, l.YM
-        for i in range(7):
-            s.rows.append(self.RowStack_Class(x, y, self))
-            x += l.XS
-
-        x, y = l.XM, self.height - l.YS
-        s.talon = InitialDealTalonStack(x, y, self)
-
-        l.defaultStackGroups()
-
-    def isGameWon(self):
-        cardsPlayed = False
-        for s in self.s.rows:
-            if s.cards:
-                if len(s.cards) != 13 or not isAlternateColorSequence(s.cards):
-                    return False
-                cardsPlayed = True
-        if not cardsPlayed:
-            return False
-        return True
-
-
-# ************************************************************************
 # * Yukon Cells
 # * Russian Cell
-# * Yukonic Plague
 # ************************************************************************
 
 class YukonCells(Yukon):
@@ -784,31 +531,11 @@ class RussianCell(YukonCells):
     shallHighlightMatch = Game._shallHighlightMatch_SS
 
 
-class YukonicPlague(YukonCells):
-    Reserve_Stack = OpenStack
-
-    RESERVES = 1
-    RESERVE_TEXT = True
-
-    def startGame(self):
-        for i in range(13):
-            self.s.talon.dealRow(rows=self.s.reserves, frames=0)
-        for i in range(2):
-            self.s.talon.dealRow(rows=self.s.rows[1:7], flip=0, frames=0)
-        for i in range(5):
-            self.s.talon.dealRow(rows=self.s.rows[i + 1:7], flip=1, frames=0)
-        self._startAndDealRow()
-
-
 # register the game
 registerGame(GameInfo(19, Yukon, "Yukon",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(20, RussianSolitaire, "Russian Solitaire",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(27, Odessa, "Odessa",
-                      GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(278, Grandfather, "Tvete's Grandfather",
-                      GI.GT_YUKON, 1, 2, GI.SL_BALANCED))
 registerGame(GameInfo(186, Alaska, "Alaska",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(187, ChineseDiscipline, "Chinese Discipline",
@@ -819,29 +546,16 @@ registerGame(GameInfo(189, Queenie, "Queenie",
                       GI.GT_YUKON | GI.GT_XORIGINAL, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(190, Rushdike, "Rushdike",
                       GI.GT_YUKON | GI.GT_XORIGINAL, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(191, RussianPoint, "Russian Point",
-                      GI.GT_YUKON | GI.GT_XORIGINAL, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(192, Abacus, "Abacus",
                       GI.GT_YUKON | GI.GT_XORIGINAL, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(271, DoubleYukon, "Double Yukon",
                       GI.GT_YUKON, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(272, TripleYukon, "Triple Yukon",
                       GI.GT_YUKON, 3, 0, GI.SL_BALANCED))
-registerGame(GameInfo(284, TenAcross, "Ten Across",
-                      GI.GT_YUKON, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(285, Panopticon, "Panopticon",
-                      GI.GT_YUKON | GI.GT_ORIGINAL, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(339, Moosehide, "Moosehide",
-                      GI.GT_YUKON, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(387, Roslin, "Roslin",
-                      GI.GT_YUKON, 1, 0, GI.SL_MOSTLY_SKILL,
-                      altnames=("Roslyn",)))
 registerGame(GameInfo(447, AustralianPatience, "Australian Patience",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(450, RawPrawn, "Raw Prawn",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(456, BimBom, "Bim Bom",
-                      GI.GT_YUKON | GI.GT_ORIGINAL, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(466, DoubleRussianSolitaire, "Double Russian Solitaire",
                       GI.GT_YUKON, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(488, TripleRussianSolitaire, "Triple Russian Solitaire",
@@ -849,25 +563,11 @@ registerGame(GameInfo(488, TripleRussianSolitaire, "Triple Russian Solitaire",
 registerGame(GameInfo(492, Geoffrey, "Geoffrey",
                       GI.GT_YUKON, 1, 0, GI.SL_MOSTLY_SKILL,
                       altnames=('Thornq',)))
-registerGame(GameInfo(525, Queensland, "Queensland",
-                      GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(526, OutbackPatience, "Outback Patience",
                       GI.GT_YUKON, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(603, Brisbane, "Brisbane",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(707, Hawaiian, "Hawaiian",
-                      GI.GT_YUKON | GI.GT_ORIGINAL, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(732, Wave, "Wave",
-                      GI.GT_YUKON | GI.GT_ORIGINAL, 2, 0, GI.SL_BALANCED))
-registerGame(GameInfo(826, YukonicPlague, "Yukonic Plague",
-                      GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(857, TasmanianPatience, "Tasmanian Patience",
-                      GI.GT_YUKON, 1, -1, GI.SL_BALANCED))
-registerGame(GameInfo(914, Canberra, "Canberra",
-                      GI.GT_YUKON, 1, 1, GI.SL_BALANCED))
 registerGame(GameInfo(925, YukonCells, "Yukon Cells",
-                      GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
-registerGame(GameInfo(936, YukonKings, "Yukon Kings",
                       GI.GT_YUKON, 1, 0, GI.SL_BALANCED))
 registerGame(GameInfo(942, QuadrupleYukon, "Quadruple Yukon",
                       GI.GT_YUKON, 4, 0, GI.SL_BALANCED))

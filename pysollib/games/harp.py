@@ -27,20 +27,17 @@ from pysollib.games.spider import Spider_Hint
 from pysollib.hint import KlondikeType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
-from pysollib.stack import \
-        AC_RowStack, \
-        BO_RowStack, \
-        DealRowTalonStack, \
-        KingAC_RowStack, \
-        KingSS_RowStack, \
-        OpenStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        Spider_SS_RowStack, \
-        StackWrapper, \
-        WasteStack, \
-        WasteTalonStack, \
-        isAlternateColorSequence
+from pysollib.stack import (
+    AC_RowStack,
+    BO_RowStack,
+    KingAC_RowStack,
+    SS_FoundationStack,
+    SS_RowStack,
+    Spider_SS_RowStack,
+    StackWrapper,
+    WasteStack,
+    WasteTalonStack,
+)
 from pysollib.util import ACE, KING
 
 # ************************************************************************
@@ -86,42 +83,13 @@ class DoubleKlondike(Game):
 
 
 # ************************************************************************
-# * Double Klondike by Threes
-# ************************************************************************
-
-class DoubleKlondikeByThrees(DoubleKlondike):
-    def createGame(self):
-        DoubleKlondike.createGame(self, num_deal=3)
-
-
-# ************************************************************************
-# * Double Trigon
-# ************************************************************************
-
-class DoubleTrigon(DoubleKlondike):
-    RowStack_Class = KingSS_RowStack
-
-
-# ************************************************************************
 # * Gargantua (Double Klondike with one redeal)
-# * Pantagruel
 # ************************************************************************
 
 class Gargantua(DoubleKlondike):
     def createGame(self):
         DoubleKlondike.createGame(self, max_rounds=2)
 
-
-class OpenGargantua(Gargantua):
-    def startGame(self):
-        DoubleKlondike.startGame(self, flip=1)
-
-
-class Pantagruel(DoubleKlondike):
-    RowStack_Class = AC_RowStack
-
-    def createGame(self):
-        DoubleKlondike.createGame(self, max_rounds=1)
 
 # ************************************************************************
 # * Harp (Double Klondike with 10 non-king rows and no redeal)
@@ -147,17 +115,6 @@ class BigHarp(DoubleKlondike):
 
 
 # ************************************************************************
-# * Steps (Harp with 7 rows)
-# ************************************************************************
-
-class Steps(DoubleKlondike):
-    RowStack_Class = AC_RowStack
-
-    def createGame(self):
-        DoubleKlondike.createGame(self, max_rounds=2, rows=7)
-
-
-# ************************************************************************
 # * Triple Klondike
 # * Triple Klondike by Threes
 # * Chinese Klondike
@@ -166,11 +123,6 @@ class Steps(DoubleKlondike):
 class TripleKlondike(DoubleKlondike):
     def createGame(self):
         DoubleKlondike.createGame(self, rows=13)
-
-
-class TripleKlondikeByThrees(DoubleKlondike):
-    def createGame(self):
-        DoubleKlondike.createGame(self, rows=13, num_deal=3)
 
 
 class ChineseKlondike(DoubleKlondike):
@@ -188,11 +140,6 @@ class ChineseKlondike(DoubleKlondike):
 class QuadrupleKlondike(DoubleKlondike):
     def createGame(self):
         DoubleKlondike.createGame(self, rows=16)
-
-
-class QuadrupleKlondikeByThrees(DoubleKlondike):
-    def createGame(self):
-        DoubleKlondike.createGame(self, rows=16, num_deal=3)
 
 
 # ************************************************************************
@@ -244,41 +191,6 @@ class Arabella(DoubleKlondike):
 
 
 # ************************************************************************
-# * Big Deal
-# ************************************************************************
-
-class BigDeal(DoubleKlondike):
-    RowStack_Class = KingAC_RowStack
-
-    def createGame(self, rows=12, max_rounds=2, XOFFSET=0):
-        l, s = Layout(self), self.s
-        self.setSize(l.XM+(rows+2)*l.XS, l.YM+8*l.YS)
-        x, y = l.XM, l.YM
-        for i in range(rows):
-            s.rows.append(self.RowStack_Class(x, y, self))
-            x += l.XS
-        for i in range(2):
-            y = l.YM
-            for j in range(8):
-                s.foundations.append(
-                    SS_FoundationStack(x, y, self, suit=j % 4))
-                y += l.YS
-            x += l.XS
-        x, y = l.XM, self.height - l.YS - l.TEXT_HEIGHT
-        s.talon = WasteTalonStack(x, y, self, max_rounds=max_rounds)
-        l.createText(s.talon, 's')
-        x += l.XS
-        s.waste = WasteStack(x, y, self)
-        s.waste.CARD_XOFFSET = XOFFSET
-        l.createText(s.waste, 's')
-        if max_rounds > 1:
-            l.createRoundText(s.talon, 'n')
-        self.setRegion(s.rows, (-999, -999, l.XM+rows*l.XS-l.CW//2, 999999),
-                       priority=1)
-        l.defaultStackGroups()
-
-
-# ************************************************************************
 # * Double Kingsley
 # ************************************************************************
 
@@ -315,124 +227,31 @@ class ThievesOfEgypt(DoubleKlondike):
 # ************************************************************************
 # https://boardgames.stackexchange.com/questions/29254/rules-for-churchill-solitaire
 
-class Churchill_DevilStack(OpenStack):
-    def getHelp(self):
-        return "Devil's Six. Must be played directly to Foundations."
-
-
-class Churchill_RowStack(KingAC_RowStack):
-    def acceptsCards(self, from_stack, cards):
-        if isinstance(from_stack, Churchill_DevilStack):
-            return False
-        return KingAC_RowStack.acceptsCards(self, from_stack, cards)
-
-
-class Churchill_TalonStack(DealRowTalonStack):
-    def dealCards(self, sound=False):
-        def isKingPile(cards):
-            return len(cards) > 0 and \
-                cards[0].rank == KING and \
-                isAlternateColorSequence(cards)
-        rows = [r for r in self.game.s.rows if not isKingPile(r.cards)]
-        return self.dealRowAvail(rows=rows, sound=sound)
-
-
-class Churchill(Game):
-    Layout_Method = staticmethod(Layout.harpLayout)
-    Talon_Class = Churchill_TalonStack
-    Foundation_Class = SS_FoundationStack
-    RowStack_Class = Churchill_RowStack
-
-    shallHighlightMatch = Game._shallHighlightMatch_AC
-
-    DevilCards = 6
-
-    def createGame(self, **layout):
-        # create layout
-        l, s = Layout(self), self.s
-        kwdefault(layout, rows=10, waste=0, texts=1, playcards=30, reserves=1)
-        self.Layout_Method(l, **layout)
-        self.setSize(l.size[0], l.size[1])
-        # create stacks
-        s.talon = self.Talon_Class(l.s.talon.x, l.s.talon.y, self)
-        for r in l.s.foundations:
-            s.foundations.append(
-                self.Foundation_Class(r.x, r.y, self, suit=r.suit, max_move=0))
-        for r in l.s.rows:
-            s.rows.append(self.RowStack_Class(r.x, r.y, self))
-        for r in l.s.reserves:
-            stack = Churchill_DevilStack(r.x, r.y, self)
-            stack.CARD_XOFFSET = l.XOFFSET
-            stack.CARD_YOFFSET = 0
-            s.reserves.append(stack)
-        # default
-        l.defaultAll()
-        return l
-
-    def startGame(self):
-        for i in range(1, 5):
-            self.s.talon.dealRow(rows=self.s.rows[i:-i], flip=0, frames=0)
-        self.startDealSample()
-        for i in range(self.DevilCards):
-            self.s.talon.dealRow(rows=[self.s.reserves[0]])
-        self._startAndDealRow()
-
-
-# ************************************************************************
-# * Pitt the Younger
-# ************************************************************************
-
-class PittTheYounger(Churchill):
-    DevilCards = 11
-
 
 # register the game
 registerGame(GameInfo(21, DoubleKlondike, "Double Klondike",
                       GI.GT_KLONDIKE, 2, -1, GI.SL_BALANCED))
-registerGame(GameInfo(28, DoubleKlondikeByThrees, "Double Klondike (Draw 3)",
-                      GI.GT_KLONDIKE, 2, -1, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(25, Gargantua, "Gargantua",
                       GI.GT_KLONDIKE, 2, 1, GI.SL_BALANCED,
                       altnames=("Jumbo",)))
-registerGame(GameInfo(333, OpenGargantua, "Open Gargantua",
-                      GI.GT_KLONDIKE, 2, 1, GI.SL_BALANCED,
-                      altnames=("Open Jumbo",)))
 registerGame(GameInfo(15, BigHarp, "Big Harp",
                       GI.GT_KLONDIKE, 2, 0, GI.SL_BALANCED,
                       altnames=("Die grosse Harfe", "Die Pyramide", "Harp")))
-registerGame(GameInfo(51, Steps, "Steps",
-                      GI.GT_KLONDIKE, 2, 1, GI.SL_BALANCED))
 registerGame(GameInfo(273, TripleKlondike, "Triple Klondike",
                       GI.GT_KLONDIKE, 3, -1, GI.SL_BALANCED))
-registerGame(GameInfo(274, TripleKlondikeByThrees, "Triple Klondike (Draw 3)",
-                      GI.GT_KLONDIKE, 3, -1, GI.SL_MOSTLY_LUCK))
 registerGame(GameInfo(495, LadyJane, "Lady Jane",
                       GI.GT_KLONDIKE, 2, 1, GI.SL_BALANCED))
 registerGame(GameInfo(496, Inquisitor, "Inquisitor",
                       GI.GT_KLONDIKE, 2, 2, GI.SL_BALANCED))
 registerGame(GameInfo(497, Arabella, "Arabella",
                       GI.GT_KLONDIKE, 3, 0, GI.SL_BALANCED))
-registerGame(GameInfo(545, BigDeal, "Big Deal",
-                      GI.GT_KLONDIKE | GI.GT_ORIGINAL, 4, 1, GI.SL_BALANCED))
 registerGame(GameInfo(590, ChineseKlondike, "Chinese Klondike",
                       GI.GT_KLONDIKE | GI.GT_STRIPPED, 3, -1, GI.SL_BALANCED,
                       suits=(0, 1, 2)))
-registerGame(GameInfo(591, Pantagruel, "Pantagruel",
-                      GI.GT_KLONDIKE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(668, DoubleKingsley, "Double Kingsley",
                       GI.GT_KLONDIKE, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(678, ThievesOfEgypt, "Thieves of Egypt",
                       GI.GT_KLONDIKE, 2, 1, GI.SL_BALANCED,
                       altnames=('Upside-Down Pyramid')))
-registerGame(GameInfo(822, DoubleTrigon, "Double Trigon",
-                      GI.GT_KLONDIKE, 2, -1, GI.SL_BALANCED))
-registerGame(GameInfo(828, Churchill, "Churchill",
-                      GI.GT_GYPSY, 2, 0, GI.SL_BALANCED,
-                      altnames=('Prime Minister', "Devil's Six")))
-registerGame(GameInfo(885, PittTheYounger, "Pitt the Younger",
-                      GI.GT_GYPSY, 2, 0, GI.SL_BALANCED))
 registerGame(GameInfo(920, QuadrupleKlondike, "Quadruple Klondike",
-                      GI.GT_KLONDIKE, 4, -1, GI.SL_BALANCED))
-registerGame(GameInfo(921, QuadrupleKlondikeByThrees,
-                      "Quadruple Klondike (Draw 3)",
                       GI.GT_KLONDIKE, 4, -1, GI.SL_BALANCED))

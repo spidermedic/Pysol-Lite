@@ -854,3 +854,35 @@ Select Game > Montana type had 21 games. The user named Montana, Blue Moon and D
 
 **Build and install after the Montana cut (2026-11-13).** Built from `825a1cae` (564 games): `make rules`, `py2app --arch arm64`, `lipo -thin arm64` on 134 Mach-O files, copied out of iCloud with `ditto --norsrc --noextattr --noqtn`, ad-hoc signed, `ditto` to `~/Applications/PySol Lite.app` (99 MB). Checked with `--version` (26.11) and `codesign -v` only; the bundle holds 569 rules pages (same as `html-src/rules`) and none of the removed games' pages. No copy was running and no `data/html N` duplicates appeared. Commit `825a1cae` and the rollback tag `before-montana-cut` were pushed to `origin` after this note was added.
 
+
+
+## 76. Update: all remaining types cut, 564 to 344 games by id (2026-11-13)
+
+The user authorised cutting every remaining Select Game type without asking per type, with one hard rule: nothing on `popular solitaire game.md` may be cut. Types covered: FreeCell, Golf, Gypsy, Klondike, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon, and the Three-Deck and Four-Deck catch-alls. 377 games: 157 kept, 220 removed. Rollback tag (local only, later pushed): `before-remaining-cuts` (at `43eccf8c`).
+
+| Type | Games | Kept | Removed |
+|---|---|---|---|
+| FreeCell | 49 | 23 | 26 |
+| Golf | 34 | 8 | 26 |
+| Gypsy | 35 | 14 | 21 |
+| Klondike | 67 | 34 | 33 |
+| Napoleon | 18 | 4 | 14 |
+| Numerica | 46 | 17 | 29 |
+| Pairing | 54 | 25 | 29 |
+| Picture Gallery | 14 | 5 | 9 |
+| Terrace | 13 | 5 | 8 |
+| Yukon | 41 | 21 | 20 |
+| Three-Deck games | 4 | 1 | 3 |
+| Four-Deck games | 2 | 0 | 2 |
+
+**Keep rule (applied by script, not per game):** a game is kept if its name or any alternate name matches a list entry (case, punctuation, "the", plural and "Solitaire/Patience" suffixes ignored), or if it is the registered base game of a kept game (so the family root stays visible). Everything else was removed. Hand overrides after checking near-misses of the removed games against the list: kept Der kleine Napoleon (German name of the listed Kleine Napoleon), Double Seahaven Towers (the listed "Double SeaTowers"), Algerian Patience (3 Decks) (variant of the listed game) and Klondike (Draw 3) (the common way to play the #1 game). Near-misses deliberately NOT kept: Westhaven vs Easthaven, Greater Wheel vs Great Wheel, Casino/Vegas Klondike, Super Challenge FreeCell, Double Dolphin and similar, which are different games.
+
+**Removed ids (220):** 3, 5, 6, 16, 27, 28, 39, 44, 51, 61, 68, 90, 92, 107, 119, 121, 122, 127, 129, 136, 137, 138, 154, 168, 169, 170, 171, 175, 191, 200, 212, 216, 225, 259, 267, 274, 278, 281, 284, 285, 286, 319, 326, 327, 329, 333, 334, 337, 339, 350, 355, 356, 357, 358, 364, 365, 367, 378, 379, 387, 394, 399, 402, 412, 427, 430, 432, 435, 442, 456, 468, 469, 471, 472, 475, 478, 486, 487, 498, 499, 500, 509, 510, 518, 520, 525, 527, 536, 537, 538, 545, 553, 558, 560, 567, 568, 573, 580, 581, 582, 589, 591, 600, 607, 613, 614, 617, 622, 626, 634, 637, 641, 643, 644, 648, 649, 654, 659, 661, 662, 669, 674, 677, 688, 701, 702, 705, 707, 712, 713, 726, 727, 731, 732, 733, 734, 735, 740, 741, 746, 749, 750, 754, 755, 763, 768, 777, 782, 783, 784, 787, 796, 801, 802, 803, 804, 810, 813, 820, 821, 822, 824, 826, 828, 842, 846, 852, 854, 857, 862, 866, 867, 868, 869, 874, 875, 880, 885, 890, 891, 892, 893, 899, 906, 912, 913, 914, 921, 924, 927, 928, 929, 932, 935, 936, 937, 938, 939, 944, 946, 952, 953, 956, 957, 959, 960, 962, 965, 969, 972, 974, 985, 988, 991, 995, 1900, 1901, 13007, 22217, 22218
+
+**What the cut touched:** 220 registrations, 313 classes only they used (games, hints, row stacks, talons), 216 rules pages, unused imports, section comments. Modules left without any game were deleted with their `__init__.py` imports: `capricieuse.py` (only Choice remained), `doublets.py`, `eiffeltower.py`, `interlock.py`, `takeaway.py`. `labyrinth.py` stays: its registration was already commented out in the upstream import. Six rules pages that linked to removed games now show plain names (Kings, Big Harp, Double FreeCell, Saratoga, All in a Row, Der kleine Napoleon). Pre-existing dangling links to `austalianpatience.html` (a typo in Outback Patience and Raw Prawn) were left alone.
+
+**Tooling (scratchpad only):** `classify.py` (keep/remove from the list plus base-class rule), `cut2.py` (registrations and dead classes, ignoring classes that were already unused before the cut; slow on this many files, about 4 minutes), `post.py` (section headers and rules pages), `prune.py` (unused imports from pyflakes). The tags `before-fan-cut` onward are the way back.
+
+**Verification:** id list compared with the before-list: exactly the 220 ids gone, nothing else; 344 registered. Every games module imports; pyflakes and pycodestyle clean on `pysollib/games`; unit tests 12 of 13 (the old `--version` failure). Every kept game in the touched types was launched with `--gameid` (four at a time) and stayed open until killed: 157 of 157 ok, no tracebacks.
+
+**Remaining unreviewed groups:** none of the Select-menu types. The special-deck games (Mahjongg, Poker, Cribbage and others) were handled in earlier sections.

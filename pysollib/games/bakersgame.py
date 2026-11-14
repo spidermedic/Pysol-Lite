@@ -27,17 +27,17 @@ from pysollib.games.freecell import FreeCell
 from pysollib.hint import DefaultHint
 from pysollib.hint import FreeCellSolverWrapper, FreeCellType_Hint
 from pysollib.layout import Layout
-from pysollib.stack import \
-        AC_RowStack, \
-        FreeCell_SS_RowStack, \
-        InitialDealTalonStack, \
-        KingSS_RowStack, \
-        OpenStack, \
-        ReserveStack, \
-        SS_FoundationStack, \
-        SS_RowStack, \
-        StackWrapper, \
-        SuperMoveSS_RowStack
+from pysollib.stack import (
+    AC_RowStack,
+    FreeCell_SS_RowStack,
+    InitialDealTalonStack,
+    OpenStack,
+    ReserveStack,
+    SS_FoundationStack,
+    SS_RowStack,
+    StackWrapper,
+    SuperMoveSS_RowStack,
+)
 from pysollib.util import KING
 
 # ************************************************************************
@@ -113,17 +113,6 @@ class EightOff(KingOnlyBakersGame):
         self.s.talon.dealRow(rows=[r[0], r[2], r[4], r[6]])
 
 
-class DoubleEightOff(EightOff):
-
-    def createGame(self, rows=8, reserves=8):
-        EightOff.createGame(self, rows=12)
-
-    def startGame(self):
-        self._startDealNumRows(7)
-        self.s.talon.dealRow()
-        self.s.talon.dealRow(rows=self.s.reserves)
-
-
 # ************************************************************************
 # * Seahaven Towers (Baker's Game in a different layout)
 # ************************************************************************
@@ -174,19 +163,8 @@ class SeahavenTowers(KingOnlyBakersGame):
 
 
 # ************************************************************************
-# *
-# ************************************************************************
-
-class RelaxedSeahavenTowers(SeahavenTowers):
-    RowStack_Class = KingSS_RowStack
-    Solver_Class = FreeCellSolverWrapper(
-        sbb='suit', esf='kings', sm='unlimited')
-
-
-# ************************************************************************
 # * Tuxedo
 # * Penguin
-# * Opus
 # ************************************************************************
 
 class Tuxedo(Game):
@@ -281,11 +259,6 @@ class Penguin(Tuxedo):
         p.dump(self.base_card.id)
 
 
-class Opus(Penguin):
-    def createGame(self):
-        Tuxedo.createGame(self, reserves=5)
-
-
 # ************************************************************************
 # * Flipper
 # ************************************************************************
@@ -328,18 +301,8 @@ registerGame(GameInfo(258, EightOff, "Eight Off",
 registerGame(GameInfo(9, SeahavenTowers, "Seahaven Towers",
                       GI.GT_FREECELL | GI.GT_OPEN, 1, 0, GI.SL_SKILL,
                       altnames=("Sea Towers", "Towers", "Tours du Alice")))
-registerGame(GameInfo(6, RelaxedSeahavenTowers, "Relaxed Seahaven Towers",
-                      GI.GT_FREECELL | GI.GT_RELAXED | GI.GT_OPEN, 1, 0,
-                      GI.SL_SKILL))
 registerGame(GameInfo(64, Penguin, "Penguin",
                       GI.GT_FREECELL | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Beak and Flipper",)))
-registerGame(GameInfo(427, Opus, "Opus",
-                      GI.GT_FREECELL | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
 registerGame(GameInfo(629, Tuxedo, "Tuxedo",
                       GI.GT_FREECELL | GI.GT_OPEN, 1, 0, GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(713, Flipper, "Flipper",
-                      GI.GT_FREECELL | GI.GT_OPEN | GI.GT_ORIGINAL, 1, 0,
-                      GI.SL_MOSTLY_SKILL))
-registerGame(GameInfo(985, DoubleEightOff, "Double Eight Off",
-                      GI.GT_FREECELL | GI.GT_OPEN, 2, 0, GI.SL_MOSTLY_SKILL))
