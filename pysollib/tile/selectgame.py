@@ -84,7 +84,7 @@ class SelectGameData(SelectDialogTreeData):
             app.gdb.getGamesIdSortedByName()))
         self.no_games = [SelectGameLeaf(None, None, "(no games)", None), ]
         #
-        s_by_type = s_special = s_original = s_contrib = s_mahjongg = None
+        s_original = s_contrib = s_mahjongg = None
         g = []
         for data in (GI.SELECT_GAME_BY_TYPE,
                      GI.SELECT_SPECIAL_GAME_BY_TYPE,
@@ -107,12 +107,8 @@ class SelectGameData(SelectDialogTreeData):
             gg = SelectGameNode(None, "Mahjongg Games",
                                 select_mahjongg_game)
         g.append(gg)
-        if g[0]:
-            s_by_type = SelectGameNode(None, "French Games",
-                                       tuple(g[0]), expanded=1)
-        if g[1]:
-            s_special = SelectGameNode(None, "Special Games",
-                                       tuple(g[1]))
+        # French and Special categories go directly into the main list
+        flat_nodes = list(g[0]) + list(g[1])
         if g[2]:
             s_original = SelectGameNode(None, "Original Games",
                                         tuple(g[2]))
@@ -160,14 +156,10 @@ class SelectGameData(SelectDialogTreeData):
         ul_alternate_names = UserList(
             list(app.gdb.getGamesTuplesSortedByAlternateName()))
         #
-        self.rootnodes = [_f for _f in (
-            SelectGameNode(None, "All Games", None, expanded=0),
+        others = [_f for _f in (
+            *flat_nodes,
             SelectGameNode(None, "Alternate Names", ul_alternate_names),
-            SelectGameNode(None, "Popular Games",
-                           lambda gi: gi.si.game_flags & GI.GT_POPULAR),
-            s_by_type,
             s_mahjongg,
-            s_special,
             SelectGameNode(None, "Custom Games",
                            lambda gi: gi.si.game_type == GI.GT_CUSTOM),
             SelectGameNode(None, 'by Skill Level', (
@@ -256,6 +248,13 @@ class SelectGameData(SelectDialogTreeData):
             s_original,
             s_contrib,
         ) if _f]
+        others.sort(key=lambda n: n.text.lower())
+        self.rootnodes = [
+            SelectGameNode(None, "All Games", None, expanded=0),
+            SelectGameNode(None, "Popular Games",
+                           lambda gi: gi.si.game_flags & GI.GT_POPULAR),
+            SelectGameLeaf(None, None, "-" * 28, None),
+        ] + others
 
 
 # ************************************************************************

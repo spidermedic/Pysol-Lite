@@ -893,3 +893,9 @@ The user authorised cutting every remaining Select Game type without asking per 
 
 **State at the end of the night (2026-11-13):** 344 games registered. Every Select Game type has now been reviewed and cut; the popularity list (`popular solitaire game.md`, still untracked) was the hard filter throughout. Possible next steps, none started: commit the list file or leave it untracked; decide whether to prune the `html-src/wikipedia` pages and `po` files for removed games; the earlier open items in sections 20 to 23 (dead `auto_scale` branches, `MANIFEST.in` cardset lines, missing translations). Pushed rollback tags: `before-fan-cut`, `before-forty-cut`, `before-montana-cut`; local only: `before-remaining-cuts`.
 
+
+## 61. Update: flat category list in Select Game and the Games menu (2026-11-14)
+
+The "French Games" and "Special Games" folders are gone from the Select Game dialog tree (`pysollib/tile/selectgame.py`) and from the Games menu (`pysollib/ui/tktile/menubar.py`). Their categories sit directly in the main list. Order: All Games, Popular Games, a dashed separator row (an inert leaf with no key), then every other root entry (categories, Mahjongg Games, Alternate Names, Custom Games, the "by ..." groups, Other Categories) sorted alphabetically. The Games menu has the same shape: All games, Popular games, a separator, then the French, Special and Mahjongg categories alphabetically.
+
+Rebuilt and installed afterwards (same procedure as section 14); checked with `--version` (26.11) and `codesign -v` only, not opened by hand.

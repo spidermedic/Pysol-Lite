@@ -528,14 +528,8 @@ class PysolMenubarTkCommon:
             return
         self._addSelectPopularGameSubMenu(games, menu, self.mSelectGame,
                                           self.tkopt.gameid)
-        self._addSelectFrenchGameSubMenu(games, menu, self.mSelectGame,
-                                         self.tkopt.gameid)
-        if self.progress:
-            self.progress.update(step=1)
-        self._addSelectMahjonggGameSubMenu(games, menu, self.mSelectGame,
-                                           self.tkopt.gameid)
-        self._addSelectSpecialGameSubMenu(games, menu, self.mSelectGame,
-                                          self.tkopt.gameid)
+        menu.add_separator()
+        self._addSelectCategorySubMenus(games, menu)
         if self.progress:
             self.progress.update(step=1)
 
@@ -563,25 +557,6 @@ class PysolMenubarTkCommon:
             ngames += len(list(filter(select_func, games)))
         return ngames
 
-    def _addSelectMahjonggGameSubMenu(self, games, menu, command, variable):
-        def select_func(gi):
-            return gi.si.game_type == GI.GT_MAHJONGG
-
-        def sort_func(gi):
-            return gi.short_name
-
-        mahjongg_games = list(filter(select_func, games))
-        if len(mahjongg_games) == 0:
-            return
-
-        mahjongg_games.sort(key=sort_func)
-        #
-        menu = MfxMenu(menu, label="&Mahjongg games")
-        if self.progress:
-            self.progress.update(step=1)
-        self._addSelectGameSubSubMenu(mahjongg_games, menu, command, variable,
-                                      short_name=True)
-
     def _addSelectPopularGameSubMenu(self, games, menu, command, variable):
         def select_func(gi):
             return gi.si.game_flags & GI.GT_POPULAR
@@ -592,20 +567,27 @@ class PysolMenubarTkCommon:
                                    self.mSelectGamePopular,
                                    self.tkopt.gameid_popular)
 
-    def _addSelectFrenchGameSubMenu(self, games, menu, command, variable):
-        if self._getNumGames(games, GI.SELECT_GAME_BY_TYPE) == 0:
-            return
-        submenu = MfxMenu(menu, label="&French games")
-        self._addSelectGameSubMenu(games, submenu, GI.SELECT_GAME_BY_TYPE,
-                                   self.mSelectGame, self.tkopt.gameid)
+    def _addSelectCategorySubMenus(self, games, menu):
+        # French, Special and Mahjongg categories, flattened into one
+        # alphabetical list.
+        def mahjongg_func(gi):
+            return gi.si.game_type == GI.GT_MAHJONGG
 
-    def _addSelectSpecialGameSubMenu(self, games, menu, command, variable):
-        if self._getNumGames(games, GI.SELECT_SPECIAL_GAME_BY_TYPE) == 0:
-            return
-        submenu = MfxMenu(menu, label="&Special games")
-        self._addSelectGameSubMenu(games, submenu,
-                                   GI.SELECT_SPECIAL_GAME_BY_TYPE,
-                                   self.mSelectGame, self.tkopt.gameid)
+        data = [(label, func, False)
+                for label, func in GI.SELECT_GAME_BY_TYPE
+                + GI.SELECT_SPECIAL_GAME_BY_TYPE if label is not None]
+        data.append(("&Mahjongg games", mahjongg_func, True))
+        data.sort(key=lambda d: d[0].replace("&", "").lower())
+        for label, func, short_name in data:
+            g = list(filter(func, games))
+            if not g:
+                continue
+            if short_name:
+                g.sort(key=lambda gi: gi.short_name)
+            submenu = MfxMenu(menu, label=label)
+            self._addSelectGameSubSubMenu(
+                g, submenu, self.mSelectGame, self.tkopt.gameid,
+                short_name=short_name)
 
     def _addSelectAllGameSubMenu(self, games, menu, command, variable):
         n, d = 0, self.cb_max
