@@ -886,3 +886,10 @@ The user authorised cutting every remaining Select Game type without asking per 
 **Verification:** id list compared with the before-list: exactly the 220 ids gone, nothing else; 344 registered. Every games module imports; pyflakes and pycodestyle clean on `pysollib/games`; unit tests 12 of 13 (the old `--version` failure). Every kept game in the touched types was launched with `--gameid` (four at a time) and stayed open until killed: 157 of 157 ok, no tracebacks.
 
 **Remaining unreviewed groups:** none of the Select-menu types. The special-deck games (Mahjongg, Poker, Cribbage and others) were handled in earlier sections.
+
+**Build and install after the remaining-types cut (2026-11-13).** Built from `0f841be6` (344 games): `make rules`, `py2app --arch arm64`, `lipo -thin arm64` on 134 Mach-O files, copied out of iCloud with `ditto --norsrc --noextattr --noqtn`, ad-hoc signed, `ditto` to `~/Applications/PySol Lite.app` (98 MB). Checked with `--version` (26.11) and `codesign -v` only; the bundle holds 353 rules pages (same as `html-src/rules`) and none of the removed games' pages. No copy was running and no `data/html N` duplicates appeared. Not played by hand.
+
+**NOT pushed yet:** `0f841be6` (the cut), this note's commit and the tag `before-remaining-cuts` exist only locally. Push with `git push origin master before-remaining-cuts`.
+
+**State at the end of the night (2026-11-13):** 344 games registered. Every Select Game type has now been reviewed and cut; the popularity list (`popular solitaire game.md`, still untracked) was the hard filter throughout. Possible next steps, none started: commit the list file or leave it untracked; decide whether to prune the `html-src/wikipedia` pages and `po` files for removed games; the earlier open items in sections 20 to 23 (dead `auto_scale` branches, `MANIFEST.in` cardset lines, missing translations). Pushed rollback tags: `before-fan-cut`, `before-forty-cut`, `before-montana-cut`; local only: `before-remaining-cuts`.
+
