@@ -907,3 +907,7 @@ Each category submenu in the Games menu now starts with one featured game, then 
 **Correction to earlier game counts:** `import pysollib.games` registers only the French games (344 after the remaining-types cut). `pysollib.games.mahjongg` and `pysollib.games.special` (Cribbage, Poker, Shisen-Sho, Mahjongg) are imported separately in `pysollib/main.py`, so a script must import all three to see the real total: 370 games. Those four categories still have games (Cribbage 7, Poker 6, Shisen-Sho 3, Mahjongg 10); nothing was removed from them. Check counts with all three imports.
 
 Rebuilt and installed afterwards; `--version` (26.11) and `codesign -v` only.
+
+## 63. Update: four games moved to better categories (2026-11-14)
+
+Aces Square moved from One-Deck to Pairing type (it subclasses Monte Carlo); Calculation and Betsy Ross moved from One-Deck, and Senior Wrangler from Two-Deck, to Numerica type (all three build foundations in fixed rank steps). The change is the `GT_*` argument of their `registerGame` calls in `pysollib/games/montecarlo.py` and `calculation.py`. 370 games still registered. Rebuilt and installed afterwards; `--version` (26.11) and `codesign -v` only.

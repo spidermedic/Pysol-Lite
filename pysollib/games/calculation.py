@@ -332,12 +332,12 @@ class SeniorWrangler(Calculation):
 
 # register the game
 registerGame(GameInfo(256, Calculation, "Calculation",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_MOSTLY_SKILL,
+                      GI.GT_NUMERICA, 1, 0, GI.SL_MOSTLY_SKILL,
                       altnames=("Progression", "Broken Intervals")))
 registerGame(GameInfo(134, BetsyRoss, "Betsy Ross",
-                      GI.GT_1DECK_TYPE, 1, 2, GI.SL_MOSTLY_LUCK,
+                      GI.GT_NUMERICA, 1, 2, GI.SL_MOSTLY_LUCK,
                       altnames=("Fairest", "Four Kings", "Musical Patience",
                                 "Quadruple Alliance", "Plus Belle")))
 registerGame(GameInfo(653, SeniorWrangler, "Senior Wrangler",
-                      GI.GT_2DECK_TYPE, 2, 8, GI.SL_BALANCED,
+                      GI.GT_NUMERICA, 2, 8, GI.SL_BALANCED,
                       altnames=("Mathematics")))

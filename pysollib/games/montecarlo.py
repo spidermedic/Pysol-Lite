@@ -612,5 +612,5 @@ registerGame(GameInfo(368, Vertical, "Vertical",
 registerGame(GameInfo(829, BlockTen, "Block Ten",
                       GI.GT_PAIRING_TYPE, 1, 0, GI.SL_LUCK))
 registerGame(GameInfo(898, AcesSquare, "Aces Square",
-                      GI.GT_1DECK_TYPE, 1, 0, GI.SL_BALANCED,
+                      GI.GT_PAIRING_TYPE, 1, 0, GI.SL_BALANCED,
                       altnames=("Miner",)))
