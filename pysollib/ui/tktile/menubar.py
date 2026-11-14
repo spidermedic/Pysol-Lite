@@ -567,6 +567,35 @@ class PysolMenubarTkCommon:
                                    self.mSelectGamePopular,
                                    self.tkopt.gameid_popular)
 
+    # The game shown first in each category's menu, above a separator.
+    CATEGORY_FEATURED_GAME = {
+        "Baker's Dozen type": "Baker's Dozen",
+        "Beleaguered Castle type": "Beleaguered Castle",
+        "Canfield type": "Canfield",
+        "Fan type": "Fan",
+        "Forty Thieves type": "Forty Thieves",
+        "FreeCell type": "FreeCell",
+        "Golf type": "Golf",
+        "Gypsy type": "Gypsy",
+        "Klondike type": "Klondike",
+        "Montana type": "Montana",
+        "Napoleon type": "Der kleine Napoleon",
+        "Numerica type": "Numerica",
+        "Pairing type": "Pyramid",
+        "Picture Gallery type": "Picture Gallery",
+        "Raglan type": "Raglan",
+        "Spider type": "Spider",
+        "Terrace type": "Terrace",
+        "Yukon type": "Yukon",
+        "One-Deck games": "Aces Up",
+        "Two-Deck games": "Alhambra",
+        "Three-Deck games": "Algerian Patience (3 Decks)",
+        "Cribbage type": "Cribbage Square",
+        "Poker type": "Poker Square",
+        "Shisen-Sho type": "Shisen-Sho 14x6",
+        "&Mahjongg games": "Mahjongg Traditional",
+    }
+
     def _addSelectCategorySubMenus(self, games, menu):
         # French, Special and Mahjongg categories, flattened into one
         # alphabetical list.
@@ -584,10 +613,14 @@ class PysolMenubarTkCommon:
                 continue
             if short_name:
                 g.sort(key=lambda gi: gi.short_name)
+            featured = self.CATEGORY_FEATURED_GAME.get(label)
+            first = [gi for gi in g if gi.name == featured]
+            if first:
+                g = first + [gi for gi in g if gi is not first[0]]
             submenu = MfxMenu(menu, label=label)
             self._addSelectGameSubSubMenu(
                 g, submenu, self.mSelectGame, self.tkopt.gameid,
-                short_name=short_name)
+                short_name=short_name, separate_first=bool(first))
 
     def _addSelectAllGameSubMenu(self, games, menu, command, variable):
         n, d = 0, self.cb_max
@@ -610,7 +643,7 @@ class PysolMenubarTkCommon:
                 menu.entryconfigure(i, columnbreak=columnbreak)
 
     def _addSelectGameSubSubMenu(self, games, menu, command, variable,
-                                 short_name=False):
+                                 short_name=False, separate_first=False):
         # cb = (25, self.cb_max) [ len(g) > 4 * 25 ]
         # cb = min(cb, self.cb_max)
         cb = self.cb_max
@@ -627,6 +660,8 @@ class PysolMenubarTkCommon:
                                         'columnbreak': columnbreak,
                                         'value': gi.id,
                                         'label': label}))
+            if i == 0 and separate_first and len(games) > 1:
+                menu.add_separator()
 
     def updateGamesMenu(self, menu, games):
         menu.delete(0, 'last')

@@ -899,3 +899,11 @@ The user authorised cutting every remaining Select Game type without asking per 
 The "French Games" and "Special Games" folders are gone from the Select Game dialog tree (`pysollib/tile/selectgame.py`) and from the Games menu (`pysollib/ui/tktile/menubar.py`). Their categories sit directly in the main list. Order: All Games, Popular Games, a dashed separator row (an inert leaf with no key), then every other root entry (categories, Mahjongg Games, Alternate Names, Custom Games, the "by ..." groups, Other Categories) sorted alphabetically. The Games menu has the same shape: All games, Popular games, a separator, then the French, Special and Mahjongg categories alphabetically.
 
 Rebuilt and installed afterwards (same procedure as section 14); checked with `--version` (26.11) and `codesign -v` only, not opened by hand.
+
+## 62. Update: featured game first in each Games-menu category (2026-11-14)
+
+Each category submenu in the Games menu now starts with one featured game, then a separator, then the other games alphabetically (the featured game is not repeated). The mapping is `CATEGORY_FEATURED_GAME` in `pysollib/ui/tktile/menubar.py`: the same-named game where one exists (Klondike, Yukon, FreeCell, Spider...), otherwise the best-known one: Pyramid (Pairing), Aces Up (One-Deck), Alhambra (Two-Deck), Der kleine Napoleon, Algerian Patience (3 Decks), Cribbage Square, Poker Square, Shisen-Sho 14x6, Mahjongg Traditional. A category with one game gets no separator.
+
+**Correction to earlier game counts:** `import pysollib.games` registers only the French games (344 after the remaining-types cut). `pysollib.games.mahjongg` and `pysollib.games.special` (Cribbage, Poker, Shisen-Sho, Mahjongg) are imported separately in `pysollib/main.py`, so a script must import all three to see the real total: 370 games. Those four categories still have games (Cribbage 7, Poker 6, Shisen-Sho 3, Mahjongg 10); nothing was removed from them. Check counts with all three imports.
+
+Rebuilt and installed afterwards; `--version` (26.11) and `codesign -v` only.
