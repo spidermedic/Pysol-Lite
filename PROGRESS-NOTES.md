@@ -833,7 +833,9 @@ Select Game > Forty Thieves type had 82 games in 12 families. Same rule as secti
 
 **Tooling:** the dead-class script now records classes that were already unreferenced before the cut and leaves them alone (so Labyrinth and the like are untouched this time). Unused imports were pruned from pyflakes output with a small script, not by hand. Both scripts live only in the session scratchpad.
 
-**Verification:** id list compared with the saved before-list: exactly the 39 ids gone, nothing else. Every games module imports; pyflakes and pycodestyle clean on `fortythieves.py`, `diplomat.py`, `harp.py`; kept games launched with `--gameid` and stayed open until killed. Installed app NOT rebuilt.
+**Verification:** id list compared with the saved before-list: exactly the 39 ids gone, nothing else. Every games module imports; pyflakes and pycodestyle clean on `fortythieves.py`, `diplomat.py`, `harp.py`; kept games launched with `--gameid` and stayed open until killed. Installed app rebuilt afterwards (see the build note below).
 
 **Remaining Select-menu types not yet reviewed:** FreeCell, Golf, Gypsy, Klondike, Montana, Napoleon, Numerica, Pairing, Picture Gallery, Terrace, Yukon.
+
+**Build and install after the Fan and Forty Thieves cuts (2026-11-13).** Built from `a1306cbf` (577 games): `make rules`, `py2app --arch arm64`, `lipo -thin arm64` on 134 Mach-O files, copied out of iCloud with `ditto --norsrc --noextattr --noqtn`, ad-hoc signed, `ditto` to `~/Applications/PySol Lite.app` (99 MB). Checked with `--version` (26.11) and `codesign -v` only; the bundle holds 582 rules pages and none of the removed games' pages. A running copy was force quit first (standing rule). One empty iCloud duplicate `data/html 2` was removed. Commits `1829f077` (Fan) and `a1306cbf` (Forty Thieves) and the rollback tags `before-fan-cut` and `before-forty-cut` were pushed to `origin` after this note was added.
 
