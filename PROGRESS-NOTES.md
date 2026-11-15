@@ -1312,3 +1312,8 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - **README:** step 6 of the build instructions now uses `scripts/notarize.sh` instead of the ad-hoc `codesign`.
 - **Not done:** a test of the downloaded copy on another Mac (quarantine flag), and the release steps (tag, GitHub release with the zip or dmg).
 - **Open items now:** sound-effect origin; the Windows and Linux code paths (parked). Left alone on purpose: the compiled pygame modules, the 9 import-order findings, the move counter `%d/%d` and the Tk command template.
+
+## 108. Update: release dmg (2026-11-15)
+
+- `scripts/make_dmg.sh` builds `dist/PySol-Lite-26.11.dmg` (41 MB, UDZO) holding the notarized app and an Applications shortcut, signs it with the Developer ID, submits it to Apple (Accepted), staples the ticket and checks it with `spctl` ("Notarized Developer ID"). The app inside the mounted dmg also passes `spctl` and `stapler validate`. README build step 7 describes it.
+- **Not done:** a test on another Mac with a downloaded (quarantined) copy; the release tag and GitHub release (`git tag -a v26.11`, attach the dmg).

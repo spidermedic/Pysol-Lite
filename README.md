@@ -116,6 +116,16 @@ below).
    an Apple account, `codesign --force --deep --sign - "PySol Lite.app"` still
    gives an ad-hoc signature.
 
+7. Package a release dmg (signed, notarized and stapled; needs the app from
+   step 6 to be notarized first):
+
+   ```
+   scripts/make_dmg.sh "dist/PySol Lite.app"
+   ```
+
+   This writes `dist/PySol-Lite-<version>.dmg`, containing the app and an
+   Applications shortcut. Attach it to the GitHub release (see Releasing).
+
 Things that go wrong:
 
 - **iCloud duplicates.** iCloud can create copies such as `data/html 2` or
