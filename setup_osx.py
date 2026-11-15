@@ -76,12 +76,15 @@ FRAMEWORKS = ([SOLVER_LIB_PATH] if SOLVER_LIB_PATH else []) + \
              ([SHARPYUV_LIB_PATH] if SHARPYUV_LIB_PATH else [])
 # with argv_emulation=True, the app window is not shown when launched
 OPTIONS = dict(argv_emulation=False,
-               emulate_shell_environment=True,
+               # off: it starts the login shell in a pseudo-tty at every launch
+               # (about 1 s) and the app needs none of that environment
+               emulate_shell_environment=False,
                plist=PLIST,
                iconfile=ICON_FILE,
                resources=RESOURCES,
                frameworks=FRAMEWORKS,
-               excludes=[]
+               # not needed at run time (about 7 MB)
+               excludes=['setuptools', 'pkg_resources', 'distutils']
                )
 
 setup(
