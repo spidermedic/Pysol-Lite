@@ -20,13 +20,6 @@
 #
 # ---------------------------------------------------------------------------##
 
-# imports
-
-
-def cmp(a, b):
-    return ((b > a)-(a > b))
-
-
 # ************************************************************************
 # * moves (undo / redo)
 # ************************************************************************
@@ -52,8 +45,8 @@ class AtomicMove:
         return str(self.__dict__)
 
     # Custom comparison for detecting redo moves. See Game.finishMove().
-    def cmpForRedo(self, other):
-        return -1
+    def isSameMove(self, other):
+        return False
 
 
 # ************************************************************************
@@ -99,10 +92,9 @@ class AMoveMove(AtomicMove):
         self._doMove(game, self.ncards, game.allstacks[self.to_stack_id],
                      game.allstacks[self.from_stack_id])
 
-    def cmpForRedo(self, other):
-        return (cmp(self.ncards, other.ncards) or
-                cmp(self.from_stack_id, other.from_stack_id) or
-                cmp(self.to_stack_id, other.to_stack_id))
+    def isSameMove(self, other):
+        return ((self.ncards, self.from_stack_id, self.to_stack_id) ==
+                (other.ncards, other.from_stack_id, other.to_stack_id))
 
 
 # ************************************************************************
@@ -127,8 +119,8 @@ class AFlipMove(AtomicMove):
     def undo(self, game):
         self._doMove(game, game.allstacks[self.stack_id])
 
-    def cmpForRedo(self, other):
-        return cmp(self.stack_id, other.stack_id)
+    def isSameMove(self, other):
+        return self.stack_id == other.stack_id
 
 
 # flip with animation
@@ -180,9 +172,9 @@ class AFlipAndMoveMove(AtomicMove):
         self._doMove(game, game.allstacks[self.to_stack_id],
                      game.allstacks[self.from_stack_id])
 
-    def cmpForRedo(self, other):
-        return (cmp(self.from_stack_id, other.from_stack_id) or
-                cmp(self.to_stack_id, other.to_stack_id))
+    def isSameMove(self, other):
+        return ((self.from_stack_id, self.to_stack_id) ==
+                (other.from_stack_id, other.to_stack_id))
 
 
 # ************************************************************************
@@ -211,8 +203,8 @@ class AFlipAllMove(AtomicMove):
                 card.showFace()
         stack.refreshView()
 
-    def cmpForRedo(self, other):
-        return cmp(self.stack_id, other.stack_id)
+    def isSameMove(self, other):
+        return self.stack_id == other.stack_id
 
 
 # ************************************************************************
@@ -260,9 +252,9 @@ class ATurnStackMove(AtomicMove):
         from_stack.updateText()
         to_stack.updateText()
 
-    def cmpForRedo(self, other):
-        return (cmp(self.from_stack_id, other.from_stack_id) or
-                cmp(self.to_stack_id, other.to_stack_id))
+    def isSameMove(self, other):
+        return ((self.from_stack_id, self.to_stack_id) ==
+                (other.from_stack_id, other.to_stack_id))
 
 
 # ************************************************************************
@@ -317,10 +309,9 @@ class NEW_ATurnStackMove(AtomicMove):
             to_stack.round = to_stack.round - 1
         self._doMove(to_stack, from_stack, 1)
 
-    def cmpForRedo(self, other):
-        return (cmp(self.from_stack_id, other.from_stack_id) or
-                cmp(self.to_stack_id, other.to_stack_id) or
-                cmp(self.update_flags, other.update_flags))
+    def isSameMove(self, other):
+        return ((self.from_stack_id, self.to_stack_id, self.update_flags) ==
+                (other.from_stack_id, other.to_stack_id, other.update_flags))
 
 
 # ************************************************************************
@@ -353,9 +344,8 @@ class AUpdateStackMove(AtomicMove):
         if (self.flags & 3) in (2, 3):
             self._doMove(game, game.allstacks[self.stack_id], 1)
 
-    def cmpForRedo(self, other):
-        return cmp(self.stack_id, other.stack_id) or \
-            cmp(self.flags, other.flags)
+    def isSameMove(self, other):
+        return (self.stack_id, self.flags) == (other.stack_id, other.flags)
 
 
 AUpdateStackModelMove = AUpdateStackMove
@@ -384,8 +374,8 @@ class ANextRoundMove(AtomicMove):
         stack.round = stack.round - 1
         stack.updateText()
 
-    def cmpForRedo(self, other):
-        return cmp(self.stack_id, other.stack_id)
+    def isSameMove(self, other):
+        return self.stack_id == other.stack_id
 
 
 # ************************************************************************
@@ -402,8 +392,8 @@ class ASaveSeedMove(AtomicMove):
     def undo(self, game):
         game.random.setstate(self.state)
 
-    def cmpForRedo(self, other):
-        return cmp(self.state, other.state)
+    def isSameMove(self, other):
+        return self.state == other.state
 
 
 # ************************************************************************
@@ -423,8 +413,8 @@ class ASaveStateMove(AtomicMove):
         if (self.flags & 3) in (2, 3):
             game.setState(self.state)
 
-    def cmpForRedo(self, other):
-        return cmp(self.state, other.state)
+    def isSameMove(self, other):
+        return self.state == other.state
 
 
 # ************************************************************************
@@ -465,10 +455,9 @@ class AShuffleStackMove(AtomicMove):
         game.random.setstate(self.state)
         stack.refreshView()
 
-    def cmpForRedo(self, other):
-        return (cmp(self.stack_id, other.stack_id) or
-                cmp(self.card_ids, other.card_ids) or
-                self.state != other.state)
+    def isSameMove(self, other):
+        return ((self.stack_id, self.card_ids, self.state) ==
+                (other.stack_id, other.card_ids, other.state))
 
 
 # ************************************************************************
@@ -513,9 +502,9 @@ class ASingleCardMove(AtomicMove):
         from_stack.insertCard(card, from_pos)
         # to_stack.refreshView()
 
-    def cmpForRedo(self, other):
-        return cmp((self.from_stack_id, self.to_stack_id, self.from_pos),
-                   (other.from_stack_id, other.to_stack_id, other.from_pos))
+    def isSameMove(self, other):
+        return ((self.from_stack_id, self.to_stack_id, self.from_pos) ==
+                (other.from_stack_id, other.to_stack_id, other.from_pos))
 
 
 # ************************************************************************
@@ -536,6 +525,6 @@ class AInnerMove(AtomicMove):
         # stack = game.allstacks[self.stack_id]
         pass
 
-    def cmpForRedo(self, other):
-        return cmp((self.stack_id, self.from_pos, self.to_pos),
-                   (other.stack_id, other.from_pos, other.to_pos))
+    def isSameMove(self, other):
+        return ((self.stack_id, self.from_pos, self.to_pos) ==
+                (other.stack_id, other.from_pos, other.to_pos))

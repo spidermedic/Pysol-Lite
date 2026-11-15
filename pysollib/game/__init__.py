@@ -2761,7 +2761,7 @@ class Game:
                     a1 = current[i]
                     a2 = m[i]
                     if a1.__class__ is not a2.__class__ or \
-                            a1.cmpForRedo(a2) != 0:
+                            not a1.isSameMove(a2):
                         break
                 else:
                     redo = 1
