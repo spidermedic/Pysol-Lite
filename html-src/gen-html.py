@@ -38,7 +38,6 @@ sys.path[0] = os.path.normpath(pysollib_path)
 files = [
     ('credits.html', 'PySol Lite Credits'),
     ('credits_old.html', 'PySol Lite Credits'),
-    ('faq.html', 'PySol Lite - FAQ'),
     ('general_rules.html', 'PySol Lite - General Rules'),
     ('glossary.html', 'PySol Lite - Glossary'),
     ('howtoplay.html', 'How to Use PySol Lite'),
