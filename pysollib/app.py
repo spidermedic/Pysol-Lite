@@ -37,6 +37,7 @@ from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import Struct, destruct
 from pysollib.mfxutil import getprefdir, getusername
 from pysollib.mfxutil import latin1_normalize, print_err
+from pysollib.pysolaudio import create_audio_client
 from pysollib.mfxutil import unpickle
 from pysollib.options import Options
 from pysollib.pysolrandom import PysolRandom, construct_random
@@ -229,6 +230,30 @@ class Application:
         self.demo_counter = 0
         # set when the saved game given on the command line cannot be opened
         self.load_error = None
+        # the audio client is connected after startup (see connectAudio)
+        self.audio_connected = False
+        self.audio_args = (False, None)
+
+    def connectAudio(self):
+        """Connect the real audio client: it imports pygame and starts its
+        mixer, about 0.1 second, so it is done after the window is up (and
+        only if sound is on) or when sound is first turned on."""
+        if self.audio_connected:
+            return
+        self.audio_connected = True
+        old = self.audio
+        self.audio = create_audio_client(self, *self.audio_args)
+        try:
+            old.destroy()
+        except Exception:
+            pass
+        if not self.audio.CAN_PLAY_SOUND:
+            self.opt.sound = 0
+            try:
+                self.menubar.tkopt.sound.set(0)
+            except Exception:
+                pass
+        self.audio.updateSettings()
 
     def _showLoadError(self):
         filename, ex = self.load_error
@@ -443,6 +468,9 @@ class Application:
         # tell the user if the saved game from the command line was refused
         if self.load_error:
             self.top.after(300, self._showLoadError)
+        # connect the audio client after the window is up
+        if self.opt.sound:
+            self.top.after(300, self.connectAudio)
         # enter the Tk mainloop
         self.game.busy = 0
         self.top.mainloop()

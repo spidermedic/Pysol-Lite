@@ -158,7 +158,8 @@ def gen_rules_html():
 
     # open file of list of all rules
     out_rules = open(os.path.join('html', 'rules.html'), 'w', encoding='utf-8')
-    print(_fmt(main_header, {'title': 'PySol Lite - a Solitaire Game Collection'}),
+    print(_fmt(main_header,
+               {'title': 'PySol Lite - a Solitaire Game Collection'}),
           file=out_rules)
     with open('rules.html', 'r', encoding='utf-8') as file:
         print(file.read(), file=out_rules)
@@ -201,7 +202,8 @@ def gen_rules_html():
     # create file of altnames
     out_rules_alt = open(os.path.join('html', 'rules_alternate.html'), 'w',
                          encoding='utf-8')
-    print(_fmt(main_header, {'title': 'PySol Lite - a Solitaire Game Collection'}),
+    print(_fmt(main_header,
+               {'title': 'PySol Lite - a Solitaire Game Collection'}),
           file=out_rules_alt)
     with open('rules_alternate.html', 'r', encoding='utf-8') as file:
         print(file.read(), file=out_rules_alt)

@@ -938,6 +938,8 @@ class PysolMenubarTkCommon:
 
     def mOptSound(self, *args):
         self.app.opt.sound = self.tkopt.sound.get()
+        if self.app.opt.sound:
+            self.app.connectAudio()
         if self.app.audio:
             if not self.app.opt.sound:
                 self.app.audio.stopSamples()

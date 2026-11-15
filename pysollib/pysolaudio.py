@@ -442,3 +442,42 @@ class PyGameAudioClient(AbstractAudioClient):
     def _destroy(self):
         self.mixer.stop()
         self.mixer.quit()
+
+
+# ************************************************************************
+# * choose and connect the audio client
+# ************************************************************************
+
+def create_audio_client(app, nosound=False, sound_mod=None):
+    """Return a connected audio client for the app (a silent one if there is
+    none to use).  Importing pygame and starting its mixer takes about 0.1
+    second, so the app calls this after its window is up, or when the user
+    first turns sound on."""
+    from pysollib.settings import SOUND_MOD
+    sounds = {'pss': PysolSoundServerModuleClient,
+              'pygame': PyGameAudioClient,
+              'oss': OSSAudioClient,
+              'win': Win32AudioClient}
+    if nosound or SOUND_MOD == 'none':
+        return AbstractAudioClient()
+    if sound_mod:
+        return sounds[sound_mod]()
+    if SOUND_MOD == 'auto':
+        candidates = [PyGameAudioClient]
+        if pysolsoundserver:
+            candidates.append(PysolSoundServerModuleClient)
+        candidates += [OSSAudioClient, Win32AudioClient, AbstractAudioClient]
+        for c in candidates:
+            try:
+                client = c()
+                client.startServer()
+                client.connectServer(app)
+            except Exception:
+                pass
+            else:
+                return client
+        return AbstractAudioClient()
+    client = sounds[SOUND_MOD]()
+    client.startServer()
+    client.connectServer(app)
+    return client

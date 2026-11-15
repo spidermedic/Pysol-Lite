@@ -3,7 +3,7 @@
 /MANIFEST
 /_Inline/
 /build/*
-/data/cardsets/*
+/data/cardset-*/
 /data/html/*
 /data/html [0-9]*/
 /dist/*
@@ -20,17 +20,8 @@ PySolFC-Cardsets--Minimal-3.0.*
 PySolFC-Cardsets--Minimal-3.0/
 PySolFC-Cardsets-3.0.*
 PySolFC-Cardsets-3.0/
-android/*.apk
-android/*.zip
-android/bin/keystore
-buildozer/.buildozer*
-buildozer/PySolFC-Cardsets*
-buildozer/cardsets
-buildozer/bin
-buildozer/tmp
-buildozer/support*
-buildozer/ENV
-buildozer/VENV
 venv*
+.venv/
+.build-venv/
 local-comments
 .DS_Store

@@ -31,16 +31,12 @@ from pysollib.app import Application
 from pysollib.gamedb import GAME_DB
 from pysollib.mfxutil import print_err
 from pysollib.pysolaudio import AbstractAudioClient
-from pysollib.pysolaudio import OSSAudioClient
-from pysollib.pysolaudio import PyGameAudioClient, Win32AudioClient
-from pysollib.pysolaudio import PysolSoundServerModuleClient
-from pysollib.pysolaudio import pysolsoundserver
 from pysollib.pysoltk import MfxMessageDialog
 from pysollib.pysoltk import MfxRoot
 from pysollib.pysoltk import PysolProgressBar
 from pysollib.pysoltk import loadImage
 from pysollib.resource import Tile
-from pysollib.settings import SOUND_MOD, TITLE, TITLE_CLASS
+from pysollib.settings import TITLE, TITLE_CLASS
 from pysollib.util import DataLoader
 from pysollib.winsystems import init_root_window
 
@@ -219,40 +215,11 @@ def pysol_init(app, args):
 
     GAME_DB.setCallback(None)
 
-    # init audio 1)
-    app.audio = None
-    sounds = {'pss':     PysolSoundServerModuleClient,
-              'pygame':  PyGameAudioClient,
-              'oss':     OSSAudioClient,
-              'win':     Win32AudioClient}
-    if opts["nosound"] or SOUND_MOD == 'none':
-        app.audio = AbstractAudioClient()
-    elif opts['sound-mod']:
-        c = sounds[opts['sound-mod']]
-        app.audio = c()
-    elif SOUND_MOD == 'auto':
-        snd = []
-        snd.append(PyGameAudioClient)
-        if pysolsoundserver:
-            snd.append(PysolSoundServerModuleClient)
-        snd.append(OSSAudioClient)
-        snd.append(Win32AudioClient)
-        snd.append(AbstractAudioClient)
-        for c in snd:
-            try:
-                app.audio = c()
-                app.audio.startServer()
-                app.audio.connectServer(app)
-            except Exception:
-                pass
-            else:
-                # success
-                break
-    else:
-        c = sounds[SOUND_MOD]
-        app.audio = c()
-        app.audio.startServer()
-        app.audio.connectServer(app)
+    # init audio 1): a silent placeholder; the real client is connected by
+    # Application.connectAudio() once the window is up (or when sound is
+    # first turned on), so that starting pygame does not delay the launch
+    app.audio = AbstractAudioClient()
+    app.audio_args = (opts["nosound"], opts['sound-mod'])
 
     # check games
     if len(app.gdb.getGamesIdSortedByName()) == 0:
@@ -323,10 +290,6 @@ Please check that this cardset is installed.
     # init samples
     app.initSamples()
 
-    # init audio 2)
-    if not app.audio.CAN_PLAY_SOUND:
-        app.opt.sound = 0
-    app.audio.updateSettings()
     # prepare other images
     app.loadImages2()
     app.loadImages4()
