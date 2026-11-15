@@ -58,7 +58,7 @@ class Fan_Hint(CautiousDefaultHint):
 
 class Fan(Game):
     Talon_Class = InitialDealTalonStack
-    Foundation_Classes = [SS_FoundationStack]
+    Foundation_Classes = (SS_FoundationStack,)
     ReserveStack_Class = ReserveStack
     RowStack_Class = KingSS_RowStack
     Hint_Class = Fan_Hint
@@ -138,7 +138,7 @@ class FanGame(Fan):
 # ************************************************************************
 
 class ScotchPatience(Fan):
-    Foundation_Classes = [AC_FoundationStack]
+    Foundation_Classes = (AC_FoundationStack,)
     RowStack_Class = StackWrapper(RK_RowStack, base_rank=NO_RANK)
 
     def createGame(self):
@@ -335,7 +335,7 @@ class ThreeShufflesAndADraw(LaBelleLucie):
 
 class Trefoil(LaBelleLucie):
     GAME_VERSION = 2
-    Foundation_Classes = [StackWrapper(SS_FoundationStack, min_cards=1)]
+    Foundation_Classes = (StackWrapper(SS_FoundationStack, min_cards=1),)
 
     def createGame(self):
         return Fan.createGame(self, rows=(5, 5, 5, 1), texts=True)
@@ -405,7 +405,7 @@ class Intelligence_ReserveStack(ReserveStack, DealRow_StackMethods):
 
 class Intelligence(Fan):
 
-    Foundation_Classes = [SS_FoundationStack, SS_FoundationStack]
+    Foundation_Classes = (SS_FoundationStack, SS_FoundationStack)
     Talon_Class = StackWrapper(Intelligence_Talon, max_rounds=3)
     RowStack_Class = StackWrapper(Intelligence_RowStack, base_rank=NO_RANK)
 
@@ -437,7 +437,7 @@ class Intelligence(Fan):
 # ************************************************************************
 
 class HouseInTheWood(Fan):
-    Foundation_Classes = [SS_FoundationStack, SS_FoundationStack]
+    Foundation_Classes = (SS_FoundationStack, SS_FoundationStack)
     RowStack_Class = StackWrapper(UD_SS_RowStack, base_rank=NO_RANK)
 
     def createGame(self):
@@ -451,9 +451,9 @@ class HouseInTheWood(Fan):
 
 
 class HouseOnTheHill(HouseInTheWood):
-    Foundation_Classes = [SS_FoundationStack,
+    Foundation_Classes = (SS_FoundationStack,
                           StackWrapper(
-                              SS_FoundationStack, base_rank=KING, dir=-1)]
+                              SS_FoundationStack, base_rank=KING, dir=-1))
 
 
 # ************************************************************************

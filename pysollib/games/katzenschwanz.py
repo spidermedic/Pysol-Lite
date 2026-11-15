@@ -278,10 +278,10 @@ class SalicLaw(DerKatzenschwanz):
     Hint_Class = SalicLaw_Hint
 
     Talon_Class = SalicLaw_Talon
-    Foundation_Classes = [
+    Foundation_Classes = (
         StackWrapper(AbstractFoundationStack, max_cards=1, base_rank=QUEEN),
         StackWrapper(SalicLaw_Foundation, max_cards=11, base_rank=ACE),
-        ]
+        )
     RowStack_Class = StackWrapper(SalicLaw_RowStack, min_cards=1,
                                   max_accept=UNLIMITED_ACCEPTS)
 
@@ -385,11 +385,11 @@ class Intrigue_RowStack(OpenStack):
 class Intrigue(SalicLaw):
 
     Talon_Class = SalicLaw_Talon
-    Foundation_Classes = [
+    Foundation_Classes = (
         StackWrapper(RK_FoundationStack, base_rank=5, max_cards=6),
         StackWrapper(
             RK_FoundationStack, base_rank=4, max_cards=6, dir=-1, mod=13),
-        ]
+        )
     RowStack_Class = StackWrapper(Intrigue_RowStack, max_accept=1, min_cards=1)
 
     ROW_BASE_RANK = QUEEN

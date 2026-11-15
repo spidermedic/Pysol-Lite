@@ -5,6 +5,7 @@ import sys
 import tkinter
 import tkinter.filedialog
 from tkinter.colorchooser import askcolor
+from types import MappingProxyType
 
 from pysollib.gamedb import GI
 from pysollib.mfxutil import Struct, kwdefault
@@ -556,7 +557,7 @@ class PysolMenubarTkCommon:
                                    self.tkopt.gameid_popular)
 
     # The game shown first in each category's menu, above a separator.
-    CATEGORY_FEATURED_GAME = {
+    CATEGORY_FEATURED_GAME = MappingProxyType({
         "Baker's Dozen": "Baker's Dozen",
         "Beleaguered Castle": "Beleaguered Castle",
         "Canfield": "Canfield",
@@ -579,7 +580,7 @@ class PysolMenubarTkCommon:
         "Cribbage": "Cribbage Square",
         "Poker": "Poker Square",
         "&Mahjongg": "Mahjongg Traditional",
-    }
+    })
 
     def _addSelectCategorySubMenus(self, games, menu):
         # French, Special and Mahjongg categories, flattened into one

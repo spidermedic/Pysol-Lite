@@ -139,7 +139,7 @@ spread_stacks = boolean
 
 
 class Options:
-    GENERAL_OPTIONS = [
+    GENERAL_OPTIONS = (
         ('last_version', 'list'),
         ('confirm', 'bool'),
         ('autofaceup', 'bool'),
@@ -185,7 +185,7 @@ class Options:
         # ('table_zoom', 'list'),
         ('fontscale', 'str'),
         # ('fontsizefactor', 'float'),
-        ]
+        )
 
     def __init__(self):
         self._config = None             # configobj.ConfigObj instance

@@ -20,6 +20,8 @@
 #
 # ---------------------------------------------------------------------------##
 
+from types import MappingProxyType
+
 import pysollib.settings
 from pysollib.mfxutil import Struct, print_err
 from pysollib.resource import CSI, getNaturalSortKey
@@ -89,7 +91,7 @@ class GI:
     SL_MOSTLY_SKILL = 4
     SL_SKILL = 5
     #
-    TYPE_NAMES = {
+    TYPE_NAMES = MappingProxyType({
         GT_BAKERS_DOZEN:        "Baker's Dozen",
         GT_BELEAGUERED_CASTLE:  "Beleaguered Castle",
         GT_CANFIELD:            "Canfield",
@@ -116,15 +118,15 @@ class GI:
         GT_POKER_TYPE:          "Poker",
 
         GT_CUSTOM:              "Custom",
-    }
+    })
 
-    SKILL_LEVELS = {
+    SKILL_LEVELS = MappingProxyType({
         SL_LUCK: 'Luck only',
         SL_MOSTLY_LUCK: 'Mostly luck',
         SL_BALANCED: 'Balanced',
         SL_MOSTLY_SKILL: 'Mostly skill',
         SL_SKILL: 'Skill only',
-    }
+    })
 
     #      SELECT_GAME_BY_TYPE = []
     #      for gt, name in TYPE_NAMES.items():
@@ -175,7 +177,7 @@ class GI:
     # PySol and are no longer supported because of internal changes
     # (mainly rule changes or removed duplicate games). The game
     # has been assigned a new id.
-    PROTECTED_GAMES = {
+    PROTECTED_GAMES = MappingProxyType({
          22:  106,              # Double Canfield
          32:  901,              # La Belle Lucie (Midnight Oil)
          52:  903,              # Aces Up
@@ -199,7 +201,7 @@ class GI:
          5101: 5610, 5213: 5611, 5214: 5612, 5238: 5613, 5244: 5614,
          5501: 5615, 5502: 5616, 5503: 5617, 5504: 5618, 5505: 5619,
          5802: 5620, 5804: 5621, 5902: 5622, 5903: 5623
-    }
+    })
 
     # For games by compatibility, note that missing games may actually
     # be present under alternate names.  This needs to be verified.
@@ -524,6 +526,8 @@ class GI:
 
     # deprecated - the correct way is to or a GI.GT_XXX flag
     # in the registerGame() call
+    # (these three are filled in while the games register, see
+    # GameInfo.__init__, so they are lists on purpose)
     _CHILDREN_GAMES = []
 
     _OPEN_GAMES = []

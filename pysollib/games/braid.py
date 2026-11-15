@@ -112,7 +112,7 @@ class Braid_ReserveStack(ReserveStack):
 
 class Braid(Game):
     Hint_Class = Braid_Hint
-    Foundation_Classes = [Braid_Foundation, Braid_Foundation]
+    Foundation_Classes = (Braid_Foundation, Braid_Foundation)
 
     BRAID_CARDS = 20
     RANKS = RANKS           # pull into class Braid

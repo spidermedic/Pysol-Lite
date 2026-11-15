@@ -323,13 +323,13 @@ class _OptionsUnpickler(Unpickler):
     """Reads the old pickled options file: only the Options class and
     plain containers may be loaded, nothing that can run code."""
 
-    ALLOWED = {
+    ALLOWED = frozenset({
         ('pysollib.options', 'Options'),
         ('copyreg', '_reconstructor'),
         ('copy_reg', '_reconstructor'),
         ('builtins', 'object'),
         ('__builtin__', 'object'),
-    }
+    })
 
     def find_class(self, module, name):
         if (module, name) in self.ALLOWED:

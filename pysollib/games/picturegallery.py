@@ -193,7 +193,7 @@ class PictureGallery(Game):
     Hint_Class = PictureGallery_Hint
 
     Foundation_Class = PictureGallery_Foundation
-    TableauStack_Classes = [
+    TableauStack_Classes = (
         StackWrapper(
             PictureGallery_TableauStack, base_rank=3, max_cards=4,
             direction=3),
@@ -203,7 +203,7 @@ class PictureGallery(Game):
         StackWrapper(
             PictureGallery_TableauStack, base_rank=1, max_cards=4,
             direction=3),
-        ]
+        )
     RowStack_Class = StackWrapper(PictureGallery_RowStack, max_accept=1)
     Talon_Class = DealRowTalonStack
 
@@ -341,14 +341,14 @@ class GreatWheel(PictureGallery):
 
     Hint_Class = GreatWheel_Hint
     Foundation_Class = GreatWheel_Foundation
-    TableauStack_Classes = [
+    TableauStack_Classes = (
         StackWrapper(
             PictureGallery_TableauStack, base_rank=2, max_cards=5,
             direction=2),
         StackWrapper(
             PictureGallery_TableauStack, base_rank=1, max_cards=6,
             direction=2),
-        ]
+        )
     RowStack_Class = StackWrapper(GreatWheel_RowStack, max_accept=1)
     Talon_Class = StackWrapper(WasteTalonStack, max_rounds=1)
 
@@ -502,14 +502,14 @@ class RoyalParade_TableauStack(PictureGallery_TableauStack):
 
 class RoyalParade(PictureGallery):
     Talon_Class = DealRowTalonStack
-    TableauStack_Classes = [
+    TableauStack_Classes = (
         StackWrapper(RoyalParade_TableauStack,
                      base_rank=1, max_cards=4, direction=3),
         StackWrapper(RoyalParade_TableauStack,
                      base_rank=2, max_cards=4, direction=3),
         StackWrapper(RoyalParade_TableauStack,
                      base_rank=3, max_cards=4, direction=3),
-        ]
+        )
     RowStack_Class = StackWrapper(BasicRowStack, max_accept=0)
 
     def createGame(self, waste=False, numstacks=8):

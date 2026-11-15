@@ -24,6 +24,7 @@ import glob
 import os
 import re
 import traceback
+from types import MappingProxyType
 
 from pysollib.mfxutil import Image, KwStruct, Struct, USE_PIL
 from pysollib.settings import DEBUG
@@ -179,42 +180,42 @@ class CSI:
     SUBTYPE_NONE = 0
     SUBTYPE_JOKER_DECK = 1
 
-    TYPE = {
+    TYPE = MappingProxyType({
         1:  "French type (52-54 cards)",
         4:  "Mahjongg type (42 tiles)",
-    }
+    })
 
-    TYPE_NAME = {
+    TYPE_NAME = MappingProxyType({
         1:  "French",
         4:  "Mahjongg",
-    }
+    })
 
-    SUBTYPE_NAME = {
+    SUBTYPE_NAME = MappingProxyType({
         1:  {0: "No Jokers", 1: "Joker Deck"}
-    }
+    })
 
-    TYPE_ID = {
+    TYPE_ID = MappingProxyType({
         1:  "french",
         4:  "mahjongg",
-    }
+    })
 
-    TYPE_SUITS = {
+    TYPE_SUITS = MappingProxyType({
         1:  "cshd",
         4:  "abc",
-    }
+    })
 
-    TYPE_RANKS = {
+    TYPE_RANKS = MappingProxyType({
         1:  list(range(13)),
         4:  list(range(10)),
-    }
+    })
 
-    TYPE_TRUMPS = {
+    TYPE_TRUMPS = MappingProxyType({
         1:  (),
         4:  list(range(12)),
-    }
+    })
 
     # cardset styles
-    STYLE = {
+    STYLE = MappingProxyType({
         35: "Abstract",              #
         1:  "Adult",                 #
         2:  "Animals",               #
@@ -245,10 +246,10 @@ class CSI:
         24:  "Sports",               #
         25:  "Vehicles",             #
         26:  "Video Games",          #
-    }
+    })
 
     # cardset nationality (suit and rank symbols)
-    NATIONALITY = {
+    NATIONALITY = MappingProxyType({
         1021:  "Australia",         #
         1001:  "Austria",           #
         1019:  "Belgium",           #
@@ -271,10 +272,10 @@ class CSI:
         1017:  "Sweden",            #
         1009:  "Switzerland",       #
         1018:  "USA",               #
-    }
+    })
 
     # cardset creation date
-    DATE = {
+    DATE = MappingProxyType({
         10:  "1000 - 1099",
         11:  "1100 - 1199",
         12:  "1200 - 1299",
@@ -288,16 +289,16 @@ class CSI:
         20:  "2000 - 2099",
         21:  "2100 - 2199",
         22:  "2200 - 2299",
-    }
+    })
 
-    SIZE_NAME = {
+    SIZE_NAME = MappingProxyType({
         1:  "Tiny",
         2:  "Small",
         3:  "Medium",
         4:  "Large",
         5:  "Extra Large",
         6:  "Hi-Res",
-    }
+    })
 
 
 class CardsetConfig(Struct):
