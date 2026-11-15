@@ -34,8 +34,9 @@ under the GNU General Public License, version 3 (see `LICENSE.md`).
 - Optional: `pygame-ce` for sound, `accessible-output2` for screen readers.
 - To build the macOS app: `py2app`, `setuptools` and `markdown`
   (the License page of the help is built from `LICENSE.md`), and the
-  python.org Python 3.13.17 or later installer (its Tk has the fix for
-  dialogs opened from menus freezing on macOS 27).
+  python.org Python 3.14.10 or later installer (Tk 9: it has the fix for
+  dialogs opened from menus freezing on macOS 27, and it redraws the canvas
+  about 25 times faster than Tk 8.6).
 
 ## Build and install the macOS app
 

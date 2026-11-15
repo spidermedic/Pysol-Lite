@@ -77,6 +77,16 @@ OPTIONS = dict(argv_emulation=False,
                excludes=['setuptools', 'pkg_resources', 'distutils']
                )
 
+# Tk 9 frameworks carry static stub libraries that codesign cannot sign, which
+# makes py2app's own signing step fail. py2app already skips the Tk 8.6 names;
+# add the Tk 9 ones.
+if "py2app" in sys.argv:
+    try:
+        import py2app.build_app as _py2app_build
+        _py2app_build._IGNORE_FILES.extend(['libtkstub.a', 'libtclstub.a'])
+    except (ImportError, AttributeError):
+        pass
+
 setup(
     app=APP,
     data_files=DATA_FILES,
