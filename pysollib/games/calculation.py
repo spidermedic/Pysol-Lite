@@ -120,7 +120,7 @@ class Calculation(Game):
             stack = self.Foundation_Class(x, y, self,
                                           mod=13, dir=i+1, base_rank=i)
             s.foundations.append(stack)
-            tx, ty, ta, tf = l.getTextAttr(stack, "s")
+            tx, ty, ta, _ = l.getTextAttr(stack, "s")
             font = self.app.getFont("canvas_default")
             stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
                                              anchor=ta, font=font)
@@ -200,7 +200,7 @@ class BetsyRoss(Calculation):
             stack = BetsyRoss_Foundation(x, y, self, base_rank=2*i+1,
                                          mod=13, dir=i+1,
                                          max_cards=12, max_move=0)
-            tx, ty, ta, tf = l.getTextAttr(stack, "s")
+            tx, ty, ta, _ = l.getTextAttr(stack, "s")
             font = self.app.getFont("canvas_default")
             stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
                                              anchor=ta, font=font)
@@ -290,7 +290,7 @@ class SeniorWrangler(Calculation):
         for i in range(8):
             stack = BetsyRoss_Foundation(x, y, self, base_rank=i,
                                          mod=13, dir=i+1, max_move=0)
-            tx, ty, ta, tf = l.getTextAttr(stack, "s")
+            tx, ty, ta, _ = l.getTextAttr(stack, "s")
             font = self.app.getFont("canvas_default")
             stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
                                              anchor=ta, font=font)

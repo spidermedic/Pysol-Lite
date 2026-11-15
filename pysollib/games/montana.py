@@ -180,7 +180,7 @@ class Montana(Game):
         for k in range(decks):
             for i in range(4):
                 x, y = l.XM, l.YM + (i+k*4)*l.YS
-                for j in range(self.RSTEP):
+                for _ in range(self.RSTEP):
                     s.rows.append(self.RowStack_Class(x, y, self,
                                   max_accept=1, max_cards=1))
                     x += l.XS

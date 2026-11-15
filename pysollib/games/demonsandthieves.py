@@ -74,16 +74,16 @@ class DemonsAndThieves(Game):
         if round_text:
             y += lay.TEXT_HEIGHT
         for i in range(4):
-            for j in range(decks):
+            for _ in range(decks):
                 x += lay.XS
                 s.foundations.append(SS_FoundationStack(x, y, self, i,
                                                         mod=13, max_move=0))
         if text:
             if 10 > 4 * decks:
-                tx, ty, ta, tf = lay.getTextAttr(None, "se")
+                tx, ty, ta, _ = lay.getTextAttr(None, "se")
                 tx, ty = x + tx + lay.XM, y + ty
             else:
-                tx, ty, ta, tf = lay.getTextAttr(None, "s")
+                tx, ty, ta, _ = lay.getTextAttr(None, "s")
                 tx, ty = x + tx, y + ty
             font = self.app.getFont("canvas_default")
             self.texts.info = MfxCanvasText(self.canvas, tx, ty,
@@ -136,7 +136,7 @@ class DemonsAndThieves(Game):
         self.startDealSample()
         self.base_card = None
         self.updateText()
-        for i in range(7):
+        for _ in range(7):
             self.s.talon.dealRow(rows=self.s.rows[4:9], flip=1, frames=0)
         self.s.talon.dealRow()
         # deal base_card to Foundations, update foundations cap.base_rank
@@ -151,7 +151,7 @@ class DemonsAndThieves(Game):
         self.moveMove(1, self.s.talon, self.s.foundations[n])
         self.updateText()
         # fill the Reserve
-        for i in range(13):
+        for _ in range(13):
             self.moveMove(
                 1, self.s.talon, self.s.reserves[0], frames=4, shadow=0)
         if self.s.reserves[0].canFlipCard():
@@ -197,12 +197,12 @@ class Antares(Game):
         # create stacks
         x, y = lay.XM, lay.YM
         for i in range(4):
-            for j in range(decks):
+            for _ in range(decks):
                 s.reserves.append(ReserveStack(x, y, self, max_accept=1))
                 x += lay.XS
         x += (lay.XS * .5)
         for i in range(4):
-            for j in range(decks):
+            for _ in range(decks):
                 s.foundations.append(SS_FoundationStack(x, y, self, i,
                                                         max_move=0))
                 x += lay.XS

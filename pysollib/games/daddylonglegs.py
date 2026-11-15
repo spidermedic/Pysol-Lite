@@ -32,7 +32,7 @@ class DaddyLonglegs(Game):
         s.talon = self.Talon_Class(x, y, self)
         l.createText(s.talon, "ss")
         x = x + 3*l.XS//2
-        for i in range(4):
+        for _ in range(4):
             s.rows.append(self.RowStack_Class(x, y, self))
             x = x + l.XS
 

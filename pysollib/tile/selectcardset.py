@@ -150,7 +150,7 @@ class SelectCardsetDialogWithPreview(MfxDialog):
                     gi = self.app.getGameInfo(self.app.game.id)
                 else:
                     gi = self.app.getGameInfo(self.app.nextgame.id)
-                cs, cs_update_flag, t = \
+                cs, _, t = \
                     self.app.getCompatibleCardset(gi, cardset, trychange=False)
 
                 if cs is None:

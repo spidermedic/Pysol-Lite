@@ -149,11 +149,11 @@ class DerKleineNapoleon(Game):
             cards, lambda c, rank=rank: (c.rank == rank, c.suit))
 
     def startGame(self):
-        for i in range(4):
+        for _ in range(4):
             self.s.talon.dealRow(rows=self.s.rows[:8], frames=0)
         self.startDealSample()
         self.s.talon.dealRow(rows=self.s.rows[:8])
-        for i in range(4):
+        for _ in range(4):
             self.s.talon.dealRow(rows=self.s.rows[8:])
         self.s.talon.dealBaseCards(ncards=4)
 

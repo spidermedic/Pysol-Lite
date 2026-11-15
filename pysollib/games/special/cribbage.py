@@ -99,13 +99,13 @@ class CribbageSquare(Game):
         # create texts 2)
         if self.preview <= 1:
             for i in (3, 7, 11, 15):
-                tx, ty, ta, tf = l.getTextAttr(s.rows[i], anchor="e")
+                tx, ty, ta, _ = l.getTextAttr(s.rows[i], anchor="e")
                 t = MfxCanvasText(self.canvas, tx + 8, ty,
                                   anchor=ta,
                                   font=self.app.getFont("canvas_default"))
                 self.texts.list.append(t)
             for i in range(12, 16):
-                tx, ty, ta, tf = l.getTextAttr(s.rows[i], anchor="ss")
+                tx, ty, ta, _ = l.getTextAttr(s.rows[i], anchor="ss")
                 t = MfxCanvasText(self.canvas, tx, ty, anchor=ta,
                                   font=self.app.getFont("canvas_default"))
                 self.texts.list.append(t)
@@ -446,7 +446,7 @@ class CribbagePatience(CribbageShuffle):
                 scores = (0, 4)
 
             for i in scores:
-                tx, ty, ta, tf = l.getTextAttr(s.rows[i], anchor="w")
+                tx, ty, ta, _ = l.getTextAttr(s.rows[i], anchor="w")
                 t = MfxCanvasText(self.canvas, tx - 8, ty,
                                   anchor=ta,
                                   font=self.app.getFont("canvas_default"))

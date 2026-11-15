@@ -88,7 +88,7 @@ class SlyFox(Game):
         s.talon = SlyFox_Talon(x, y, self)
         s.waste = s.talon
         l.createText(s.talon, 'ne')
-        tx, ty, ta, tf = l.getTextAttr(s.talon, "ss")
+        tx, ty, ta, _ = l.getTextAttr(s.talon, "ss")
         font = self.app.getFont("canvas_default")
         self.texts.misc = MfxCanvasText(self.canvas, tx, ty,
                                         anchor=ta, font=font)
@@ -96,7 +96,7 @@ class SlyFox(Game):
         y = l.YM
         for i in range(4):
             x = l.XM+1.5*l.XS
-            for j in range(5):
+            for _ in range(5):
                 stack = SlyFox_RowStack(x, y, self, max_cards=UNLIMITED_CARDS)
                 stack.CARD_YOFFSET = 0
                 s.rows.append(stack)

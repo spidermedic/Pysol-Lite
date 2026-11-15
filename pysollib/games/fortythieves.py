@@ -127,9 +127,9 @@ class FortyThieves(Game):
     #
 
     def startGame(self):
-        for i in range(self.DEAL[0]):
+        for _ in range(self.DEAL[0]):
             self.s.talon.dealRow(flip=0, frames=0)
-        for i in range(self.DEAL[1] - 1):
+        for _ in range(self.DEAL[1] - 1):
             self.s.talon.dealRow(frames=0)
         self._startAndDealRowAndCards()
 
@@ -317,7 +317,7 @@ class FortunesFavor(Game):
         y = 2*l.YM+l.YS
         for i in range(self.ROWS):
             x = l.XM+2*l.XS
-            for j in range(self.COLS):
+            for _ in range(self.COLS):
                 stack = SS_RowStack(x, y, self, max_move=1)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, 0
                 s.rows.append(stack)
@@ -360,7 +360,7 @@ class Junction(Game):
         self.setSize(l.XM+10*l.XS, l.YM+3*l.YS+12*l.YOFFSET)
 
         y = l.YM
-        for i in range(2):
+        for _ in range(2):
             x = l.XM+2*l.XS
             for j in range(8):
                 s.foundations.append(self.Foundation_Class(x, y, self,
@@ -369,7 +369,7 @@ class Junction(Game):
             y += l.YS
 
         x, y = l.XM+(10-rows)*l.XS//2, l.YM+2*l.YS
-        for i in range(rows):
+        for _ in range(rows):
             s.rows.append(AC_RowStack(x, y, self))
             x += l.XS
 
@@ -394,7 +394,7 @@ class Crossroads(Junction):
     Foundation_Class = StackWrapper(SS_FoundationStack, max_cards=13)
 
     def startGame(self):
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(frames=0)
             self.s.talon.dealRow(flip=0, frames=0)
         self.startDealSample()
@@ -419,7 +419,7 @@ class Interchange(FortyThieves):
         FortyThieves.createGame(self, rows=7)
 
     def startGame(self):
-        for i in (0, 1, 2):
+        for _ in (0, 1, 2):
             self.s.talon.dealRow(frames=0)
             self.s.talon.dealRow(flip=0, frames=0)
         self.startDealSample()

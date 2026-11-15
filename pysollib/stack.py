@@ -1315,7 +1315,7 @@ class Stack:
         # sx, sy = 0, 0
         sx, sy = -images.SHADOW_XOFFSET, -images.SHADOW_YOFFSET
         dx, dy = 0, 0
-        cw, ch = images.getSize()
+        _, _ = images.getSize()
         for s in drag.shadows:
             if dx > 0 or dy > 0:
                 s.move(dx, dy)
@@ -1724,7 +1724,7 @@ class RedealCards_StackMethods:
         if reverse:
             rows.reverse()
         for r in rows:
-            for i in range(len(r.cards)):
+            for _ in range(len(r.cards)):
                 num_cards += 1
                 self.game.moveMove(1, r, self, frames=frames, shadow=0)
                 if self.cards[-1].face_up:
@@ -1849,7 +1849,7 @@ class TalonStack(Stack,
         cw, ch = images.getSize()
         cx, cy = self.init_redeal.img_coord
         ca = 'center'
-        tx, ty = self.init_redeal.txt_coord
+        _, ty = self.init_redeal.txt_coord
 
         if self.images.redeal:
             self.canvas.delete(self.images.redeal)
@@ -2106,7 +2106,7 @@ class OpenStack(Stack):
     #
 
     def clickHandler(self, event):
-        flipstacks, dropstacks, quickstacks = self.game.getAutoStacks(event)
+        flipstacks, _, _ = self.game.getAutoStacks(event)
         if self in flipstacks and self.canFlipCard():
             self.playFlipMove(animation=True)
             # return -1                   # continue this event (start a drag)
@@ -2117,7 +2117,7 @@ class OpenStack(Stack):
         if self.doubleclickHandler(event):
             return 1
         if self.game.app.opt.quickplay:
-            flipstacks, dropstacks, quickstacks = \
+            _, _, quickstacks = \
                 self.game.getAutoStacks(event)
             if self in quickstacks:
                 n = self.quickPlayHandler(event)
@@ -2127,7 +2127,7 @@ class OpenStack(Stack):
 
     def doubleclickHandler(self, event):
         # flip or drop a card
-        flipstacks, dropstacks, quickstacks = self.game.getAutoStacks(event)
+        flipstacks, dropstacks, _ = self.game.getAutoStacks(event)
         if self in flipstacks and self.canFlipCard():
             self.playFlipMove(animation=True)
             return -1               # continue this event (start a drag)
@@ -2221,7 +2221,7 @@ class OpenStack(Stack):
         if moves:
             moves.sort()
             # from pprint import pprint; pprint(moves)
-            score, len_moves, ncards, from_stack, to_stack = moves[-1]
+            score, _, ncards, from_stack, to_stack = moves[-1]
             if score >= 0:
                 # self.game.playSample("startdrag")
                 from_stack.playMoveMove(ncards, to_stack)
@@ -3002,7 +3002,7 @@ class WasteTalonStack(TalonStack):
                 self.game.playSample("dealwaste")
             num_cards = min(len(self.cards), self.num_deal)
             assert len(waste.cards) + num_cards <= waste.cap.max_cards
-            for i in range(num_cards):
+            for _ in range(num_cards):
                 if not self.cards[-1].face_up:
                     if 1:
                         self.game.flipAndMoveMove(self, waste)
@@ -3146,7 +3146,7 @@ class ArbitraryStack(OpenStack):
 
     def doubleclickHandler(self, event):
         # flip or drop a card
-        flipstacks, dropstacks, quickstacks = self.game.getAutoStacks(event)
+        flipstacks, dropstacks, _ = self.game.getAutoStacks(event)
         if self in flipstacks and self.canFlipCard():
             self.playFlipMove(animation=True)
             return -1               # continue this event (start a drag)
@@ -3209,7 +3209,7 @@ class ArbitraryStack(OpenStack):
         if moves:
             moves.sort()
             # from pprint import pprint; pprint(moves)
-            score, len_moves, index, to_stack = moves[-1]
+            score, _, index, to_stack = moves[-1]
             if score >= 0:
                 # self.game.playSample("startdrag")
                 self.playSingleCardMove(index, to_stack)

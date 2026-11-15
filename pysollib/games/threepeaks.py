@@ -48,7 +48,7 @@ class ThreePeaks_TalonStack(WasteTalonStack):
                 self.game.playSample("dealwaste")
             num_cards = min(len(self.cards), self.num_deal)
             assert len(waste.cards) + num_cards <= waste.cap.max_cards
-            for i in range(num_cards):
+            for _ in range(num_cards):
                 if not self.cards[-1].face_up:
                     game.flipMove(self)
                 game.moveMove(1, self, waste, frames=4, shadow=0)
@@ -146,21 +146,21 @@ class ThreePeaks(ThreePeaksExposeFlip, Game):
 
         # Create rows
         x, y = l.XM + l.XS * 1.5, l.YM
-        for i in range(3):
+        for _ in range(3):
             s.rows.append(ThreePeaks_RowStack(x, y, self))
             x = x + l.XS * 3
         x, y = l.XM + l.XS, y + l.YS * .5
-        for i in range(3):
+        for _ in range(3):
             s.rows.append(ThreePeaks_RowStack(x, y, self))
             x = x + l.XS
             s.rows.append(ThreePeaks_RowStack(x, y, self))
             x = x + l.XS * 2
         x, y = l.XM + l.XS * .5, y + l.YS * .5
-        for i in range(9):
+        for _ in range(9):
             s.rows.append(ThreePeaks_RowStack(x, y, self))
             x = x + l.XS
         x, y = l.XM, y + l.YS * .5
-        for i in range(10):
+        for _ in range(10):
             s.rows.append(ThreePeaks_RowStack(x, y, self))
             x = x + l.XS
 

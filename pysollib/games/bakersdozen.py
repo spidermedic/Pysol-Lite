@@ -204,7 +204,7 @@ class Cruel_Talon(TalonStack):
         for i in range(lr):
             k = min(deal[i], n)
             frames = (0, 4)[n <= 3*4]
-            for j in range(k):
+            for _ in range(k):
                 self.game.moveMove(1, self, self.game.s.rows[i], frames=frames)
             n = n - k
             if n == 0:

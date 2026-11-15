@@ -178,7 +178,7 @@ class ThievesOfEgypt(DoubleKlondike):
         # rows: 1 3 5 7 9 10 8 6 4 2
         row = 0
         for i in (0, 2, 4, 6, 8, 9, 7, 5, 3, 1):
-            for j in range(i):
+            for _ in range(i):
                 self.s.talon.dealRow(rows=[self.s.rows[row]], frames=0)
             row += 1
         self._startAndDealRowAndCards()

@@ -90,7 +90,7 @@ class AcesUp(Game):
         else:
             l.createText(s.talon, "s")
         x = x + 3*l.XS//2
-        for i in range(rows):
+        for _ in range(rows):
             s.rows.append(self.RowStack_Class(x, y, self))
             x = x + l.XS
         x = x + l.XS//2
@@ -212,15 +212,15 @@ class TabbyCat(Game):
 
         # create stacks
         x = l.XM
-        for i in range(decks):
+        for _ in range(decks):
             y = l.YM
-            for j in range(4):
+            for _ in range(4):
                 s.foundations.append(self.Foundation_Class(x, y, self))
                 y += l.YS
             x += l.XS
 
         x, y, = l.XM + (decks+0.5)*l.XS, l.YM
-        for i in range(rows):
+        for _ in range(rows):
             stack = self.RowStack_Class(x, y, self)
             s.rows.append(stack)
             stack.canDropCards = stack.spiderCanDropCards

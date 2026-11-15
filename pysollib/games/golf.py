@@ -145,7 +145,7 @@ class Golf(Game):
 
         # create stacks
         x, y = layout.XM + layout.XS // 2, layout.YM
-        for i in range(columns):
+        for _ in range(columns):
             s.rows.append(Golf_RowStack(x, y, self))
             x += layout.XS
         x, y = layout.XM, self.height - layout.YS
@@ -266,7 +266,7 @@ class Elevator(RelaxedGolf):
         for i in range(7):
             x = layout.XM + (8-i) * layout.XS // 2
             y = layout.YM + i * layout.YS // 2
-            for j in range(i+1):
+            for _ in range(i+1):
                 s.rows.append(Elevator_RowStack(x, y, self))
                 x = x + layout.XS
         x, y = layout.XM, layout.YM
@@ -451,11 +451,11 @@ class AllInARow(BlackHole):
 
         # create stacks
         x, y = layout.XM, layout.YM
-        for i in range(7):
+        for _ in range(7):
             s.rows.append(self.RowStack_Class(x, y, self))
             x += layout.XS
         x, y = layout.XM, layout.YM+h
-        for i in range(6):
+        for _ in range(6):
             s.rows.append(self.RowStack_Class(x, y, self))
             x += layout.XS
         for r in s.rows:
@@ -494,7 +494,7 @@ class Robert(Game):
             x += 3 * layout.XS // 2
         elif num_foundations == 2:
             x += layout.XS
-        for f in range(num_foundations):
+        for _ in range(num_foundations):
             stack = self.Foundation_Stack(x, y, self, ANY_SUIT,
                                           dir=0, mod=13, max_move=0,
                                           max_cards=52,

@@ -169,11 +169,11 @@ class Clock_RowStack(RK_RowStack):
         swap = game.s.internals[0]
         ncards = other_stack._numFaceDown()
 
-        for i in range(ncards):
+        for _ in range(ncards):
             game.moveMove(n, other_stack, swap, frames=0)
         game.moveMove(n, self, other_stack, frames=0)
         if ncards > 0:
-            for i in range(ncards):
+            for _ in range(ncards):
                 game.moveMove(n, swap, other_stack, frames=0)
             game.flipMove(other_stack)
             game.moveMove(n, other_stack, self)
@@ -187,10 +187,10 @@ class Clock_RowStack(RK_RowStack):
         swap, swap2 = game.s.internals
         game.moveMove(1, self, swap2, frames=0)
         ncards = self._numFaceDown()
-        for i in range(ncards):
+        for _ in range(ncards):
             game.moveMove(1, self, swap, frames=0)
         game.moveMove(1, swap2, self, frames=0)
-        for i in range(ncards):
+        for _ in range(ncards):
             game.moveMove(1, swap, self, frames=0)
         if not self.cards[-1].face_up:
             game.flipMove(self)
@@ -306,7 +306,7 @@ class Clock(Game):
 
     def startGame(self):
         self.DrawsLeft = self.Draws
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(frames=0, flip=False)
         self.startDealSample()
         self.s.talon.dealRow(flip=False)

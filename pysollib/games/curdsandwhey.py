@@ -80,7 +80,7 @@ class CurdsAndWhey(Game):
 
         # create stacks
         x, y = l.XM, l.YM
-        for i in range(rows):
+        for _ in range(rows):
             stack = self.RowStack_Class(x, y, self)
             s.rows.append(stack)
             x += l.XS

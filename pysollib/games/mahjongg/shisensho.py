@@ -97,7 +97,7 @@ class Shisen_RowStack(Mahjongg_RowStack):
         dx, dy = x2 - x1, y2 - y1
 
         a = []
-        for i in range(cols+2):
+        for _ in range(cols+2):
             a.append([5]*(rows+2))
 
         def can_move(x, y, nx, ny, direct, d, direct_chng_cnt):

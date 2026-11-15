@@ -149,7 +149,7 @@ class Layout:
             if isinstance(foundation_class, (list, tuple)):
                 n = len(self.s.foundations)//len(foundation_class)
                 i = 0
-                for j in range(n):
+                for _ in range(n):
                     for cls in foundation_class:
                         r = self.s.foundations[i]
                         s.foundations.append(cls(r.x, r.y, game, suit=r.suit))
@@ -219,7 +219,7 @@ class Layout:
         elif anchor == 'sss':
             anchor = 'ss'
             delta_y = self.TEXT_MARGIN
-        tx, ty, ta, tf = self.getTextAttr(stack, anchor)
+        tx, ty, ta, _ = self.getTextAttr(stack, anchor)
         tx += delta_x + dx
         ty += delta_y + dy
         font = self.game.app.getFont("canvas_default")
@@ -356,7 +356,7 @@ class Layout:
         # create reserves & foundations
         x, y = (w - (toprows*XS - XM))//2, YM
         if reserves:
-            for i in range(reserves):
+            for _ in range(reserves):
                 s = S(x, y)
                 self.s.reserves.append(s)
                 if reserve_texts:
@@ -364,7 +364,7 @@ class Layout:
                 x += XS
             x += XS
         for suit in range(suits):
-            for i in range(decks):
+            for _ in range(decks):
                 self.s.foundations.append(S(x, y, suit=suit))
                 x += XS
 
@@ -372,7 +372,7 @@ class Layout:
         x, y = (w - (rows*XS - XM))//2, YM + YS
         if reserves and reserve_texts:
             y += self.TEXT_HEIGHT
-        for i in range(rows):
+        for _ in range(rows):
             self.s.rows.append(S(x, y))
             x += XS
         self.setRegion(self.s.rows, (-999, y - CH // 2, 999999, 999999))
@@ -508,7 +508,7 @@ class Layout:
             if reserve_texts:
                 y += self.TEXT_HEIGHT
             x = (w - (reserves*XS - XM))//2
-            for i in range(reserves):
+            for _ in range(reserves):
                 s = S(x, y)
                 self.s.reserves.append(s)
                 x += XS
@@ -516,14 +516,14 @@ class Layout:
                     self._setText(s, anchor="n")
             y += YS
         x = (w - (rows*XS - XM))//2
-        for i in range(rows):
+        for _ in range(rows):
             self.s.rows.append(S(x, y))
             x += XS
 
         # bottom
         x, y = XM, YM + h - self.TEXT_HEIGHT
         for suit in range(suits):
-            for i in range(decks):
+            for _ in range(decks):
                 self.s.foundations.append(S(x, y, suit=suit))
                 x += XS
         if reserves:
@@ -609,7 +609,7 @@ class Layout:
                 cursuit = suit
                 if suit < len(self.game.gameinfo.suits):
                     cursuit = self.game.gameinfo.suits[suit]
-                for i in range(decks):
+                for _ in range(decks):
                     self.s.foundations.append(
                         S(x, y, suit=cursuit + (row * (suits // 2))))
                     x += XS
@@ -621,7 +621,7 @@ class Layout:
             x += (maxrows-rows) * XS//2
         # y += YM * (3 - foundrows)
         y += text_height
-        for i in range(rows):
+        for _ in range(rows):
             self.s.rows.append(S(x, y))
             x += XS
         if reserves:
@@ -635,7 +635,7 @@ class Layout:
             x = (maxrows-reserves)*XS//2
             y = h
             h += YS
-            for i in range(reserves):
+            for _ in range(reserves):
                 s = S(x, y)
                 self.s.reserves.append(s)
                 x += XS
@@ -840,7 +840,7 @@ class Layout:
 
         # create foundations
         x, y = XM, YM
-        for i in range(decks):
+        for _ in range(decks):
             for suit in range(12):
                 self.s.foundations.append(S(x, y, suit=suit))
                 x += XS
@@ -848,7 +848,7 @@ class Layout:
 
         # create rows
         x, y = XM + XS * ((toprows - rows) // 2), YM + YS * decks
-        for i in range(rows):
+        for _ in range(rows):
             self.s.rows.append(S(x, y))
             x += XS
         self.setRegion(
@@ -857,11 +857,11 @@ class Layout:
 
         # create reserves
         x, y = XM, YM + YS * decks
-        for i in range(reserves // 2):
+        for _ in range(reserves // 2):
             self.s.reserves.append(S(x, y))
             y += YS
         x, y = w - XS, YM + YS * decks
-        for i in range(reserves // 2):
+        for _ in range(reserves // 2):
             self.s.reserves.append(S(x, y))
             y += YS
 
@@ -902,7 +902,7 @@ class Layout:
 
         # create foundations
         x, y = w - XS * decks, YM
-        for i in range(decks):
+        for _ in range(decks):
             for rank in range(ranks):
                 self.s.foundations.append(S(x, y, suit=rank))
                 y += YS
@@ -910,19 +910,19 @@ class Layout:
 
         # create rows
         x, y = XM, YM
-        for i in range(rows // 2):
+        for _ in range(rows // 2):
             self.s.rows.append(S(x, y))
             x += XS
         x, y = XM, (YS + h) // 2
-        for i in range(rows // 2):
+        for _ in range(rows // 2):
             self.s.rows.append(S(x, y))
             x += XS
         self.setRegion(self.s.rows, (0, 0, XS * rows // 2 + XM // 2, 999999))
 
         # create reserves
         x, y = w - XS * decks, YM + YS * 4
-        for i in range(decks):
-            for i in range(reserves // decks):
+        for _ in range(decks):
+            for _ in range(reserves // decks):
                 self.s.reserves.append(S(x, y))
                 y += YS
             x, y = x + XS, YM + YS * 4
@@ -968,19 +968,19 @@ class Layout:
 
         # create rows
         x, y = XS + XM * 3, YM
-        for i in range(rows // 2):
+        for _ in range(rows // 2):
             self.s.rows.append(S(x, y))
             x += XS + XM
         x, y = XS + XM * 3, (YS + h) // 2
-        for i in range(rows // 2):
+        for _ in range(rows // 2):
             self.s.rows.append(S(x, y))
             x += XS + XM
         self.setRegion(self.s.rows, (XS + XM, -999, 999999, 999999))
 
         # create reserves
         x, y = XM, YM + YS + self.TEXT_HEIGHT
-        for i in range(decks):
-            for i in range(reserves // decks):
+        for _ in range(decks):
+            for _ in range(reserves // decks):
                 self.s.reserves.append(S(x, y))
                 y += YS
             x, y = x + XS, YM + YS * 4
@@ -1067,19 +1067,19 @@ class Layout:
         # Create foundations
         x = w - fspace - XS * frows // 2
         for suit in range(suits // 2):
-            for i in range(decks):
+            for _ in range(decks):
                 self.s.foundations.append(S(x, y, suit=suit))
                 x += XS
         x = w - fspace - XS * frows // 2
         y += YS
         for suit in range(suits // 2):
-            for i in range(decks):
+            for _ in range(decks):
                 self.s.foundations.append(S(x, y, suit=(suit + suits // 20)))
                 x += XS
 
         # bottom
         x, y = XM, YM * 2 + YS * 2
-        for i in range(rows):
+        for _ in range(rows):
             self.s.rows.append(S(x, y))
             x += XS
         self.setRegion(self.s.rows, (-999, y - YM, 999999, 999999))

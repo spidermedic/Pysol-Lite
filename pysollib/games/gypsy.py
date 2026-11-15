@@ -72,7 +72,7 @@ class Gypsy(Game):
         l.defaultAll()
 
     def startGame(self, flip=0):
-        for i in range(2):
+        for _ in range(2):
             self.s.talon.dealRow(flip=flip, frames=0)
         self._startAndDealRow()
 
@@ -145,7 +145,7 @@ class DieRussische(Gypsy):
 
     def startGame(self):
         self._startDealNumRows(6)
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow()
         c = self.s.talon.cards[-1]
         self.s.talon.dealRow(rows=(self.s.foundations[c.suit*2],))

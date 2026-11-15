@@ -106,7 +106,7 @@ class UnionSquare(pysollib.game.StartDealRowAndCards, Game):
         l.createText(s.waste, "s")
         for i in range(4):
             x = 3*l.XS
-            for j in range(rows//4):
+            for _ in range(rows//4):
                 stack = self.RowStack_Class(x, y, self)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, 1
                 s.rows.append(stack)

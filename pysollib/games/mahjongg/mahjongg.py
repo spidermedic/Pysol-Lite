@@ -807,7 +807,7 @@ class AbstractMahjonggGame(Game):
                 return None             # try another way
             #
             old_pairs = []
-            for j in range(_count_pairs(len(free_stacks))):
+            for _ in range(_count_pairs(len(free_stacks))):
                 nc = new_cards[:]
                 while True:
                     # create uniq pair
@@ -905,7 +905,7 @@ class AbstractMahjonggGame(Game):
                                if nc[r.id] is None and is_suitable(r, nc)]
 
             old_pairs = []
-            for j in range(_count_pairs(len(suitable_stacks))):
+            for _ in range(_count_pairs(len(suitable_stacks))):
                 if iters[0] > max_iters:
                     return None
                 if time.time() - start_time > max_time:
@@ -1106,7 +1106,7 @@ a solvable configuration.'''),
         if self.pause:
             return 0
         items = []
-        for s, c1, c2, color in info:
+        for s, c1, c2, _ in info:
             assert c1 is c2
             assert c1 in s.cards
             x, y = s.x, s.y

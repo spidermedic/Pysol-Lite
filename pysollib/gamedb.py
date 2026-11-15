@@ -689,7 +689,7 @@ class GameManager:
                                     (gi.name, str(gi.gameclass),
                                      str(gameclass)))
         if 1:
-            for id, game in self.__all_games.items():
+            for _, game in self.__all_games.items():
                 if gi.gameclass is game.gameclass:
                     raise GameInfoException(
                         "duplicate game class %s: %s and %s" %

@@ -191,7 +191,7 @@ class Braid(Game):
         self.base_card = None
         self.updateText()
         self.startDealSample()
-        for i in range(self.BRAID_CARDS):
+        for _ in range(self.BRAID_CARDS):
             self.s.talon.dealRow(rows=[self.s.braid], frames=4)
         self.s.talon.dealRow(frames=4)
         # deal base_card to foundations
@@ -304,7 +304,7 @@ class Backbone(Game):
         l.defaultStackGroups()
 
     def startGame(self):
-        for i in range(self.RESERVE_CARDS - 1):
+        for _ in range(self.RESERVE_CARDS - 1):
             self.s.talon.dealRow(rows=self.s.reserves[:2], frames=0)
         self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.startDealSample()

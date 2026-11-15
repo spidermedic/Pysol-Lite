@@ -323,7 +323,7 @@ class Interregnum(Game):
 
     def _loadGameHook(self, p):
         ids = []
-        for i in range(8):
+        for _ in range(8):
             ids.append(p.load())
         self.loadinfo.addattr(base_card_ids=ids)    # register extra load var.
 
@@ -345,7 +345,7 @@ class Primrose_Talon(DealRowTalonStack):
 
     def _redeal(self):
         r = self.game.s.rows[self.round-1]
-        for i in range(len(r.cards)):
+        for _ in range(len(r.cards)):
             self.game.moveMove(1, r, self, frames=4)
             self.game.flipMove(self)
         self.game.nextRoundMove(self)
@@ -427,7 +427,7 @@ class Colorado(Game):
         y = l.YM + l.YS
         for i in range(2):
             x = l.XM
-            for j in range(10):
+            for _ in range(10):
                 stack = self.RowStack_Class(x, y, self,
                                             max_move=1, max_accept=1,
                                             max_cards=tableau_max)

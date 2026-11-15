@@ -85,7 +85,7 @@ class AMoveMove(AtomicMove):
             x, y = to_stack.getPositionForNextCard()
             game.animatedMoveTo(from_stack, to_stack, cards, x, y,
                                 frames=frames, shadow=self.shadow)
-        for i in range(ncards):
+        for _ in range(ncards):
             from_stack.removeCard()
         for c in cards:
             to_stack.addCard(c)
@@ -232,7 +232,7 @@ class ATurnStackMove(AtomicMove):
         assert len(from_stack.cards) > 0
         assert len(to_stack.cards) == 0
         mylen = len(from_stack.cards)
-        for i in range(mylen):
+        for _ in range(mylen):
             # unhide = (i >= mylen - 2)
             unhide = 1
             # print 1, unhide, from_stack.getCard().__dict__
@@ -251,7 +251,7 @@ class ATurnStackMove(AtomicMove):
         assert len(from_stack.cards) > 0
         assert len(to_stack.cards) == 0
         mylen = len(from_stack.cards)
-        for i in range(mylen):
+        for _ in range(mylen):
             # unhide = (i >= mylen - 2)
             unhide = 1
             card = from_stack.removeCard(unhide=unhide, update=0)

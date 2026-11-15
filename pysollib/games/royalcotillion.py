@@ -99,7 +99,7 @@ class RoyalCotillion(Game):
     def startGame(self):
         self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.startDealSample()
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow()
         self.s.talon.dealCards()          # deal first card to WasteStack
 
@@ -172,7 +172,7 @@ class Alhambra_Talon(DealRowTalonStack):
             if sound:
                 self.game.playSample("turnwaste", priority=20)
             for r in rows:
-                for i in range(len(r.cards)):
+                for _ in range(len(r.cards)):
                     self.game.moveMove(1, r, self, frames=0)
                     self.game.flipMove(self)
             if len(self.game.s.rows) > 1:
@@ -252,7 +252,7 @@ class Alhambra(Game):
 
     def startGame(self):
         self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.startDealSample()
         self.s.talon.dealRow(rows=self.s.reserves)
@@ -276,7 +276,7 @@ class Reserves(Alhambra):
 
     def startGame(self):
         self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        for i in range(11):
+        for _ in range(11):
             self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.startDealSample()
         self.s.talon.dealRow(rows=self.s.reserves)
@@ -396,7 +396,7 @@ class BritishConstitution(Game):
         y = l.YM+l.YS
         for i in range(4):
             x = l.XM+l.XS
-            for j in range(8):
+            for _ in range(8):
                 stack = self.RowStack_Class(x, y, self, max_move=1)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, 0
                 s.rows.append(stack)

@@ -377,13 +377,13 @@ class Nestor(Game):
 
         # create stacks
         x, y = l.XM, l.YM
-        for i in range(self.COLS):
+        for _ in range(self.COLS):
             s.rows.append(self.RowStack_Class(x, y, self,
                                               max_move=1, max_accept=1,
                                               dir=0, base_rank=NO_RANK))
             x += l.XS
         x, y = l.XM + ((self.COLS / 2) - 2) * l.XS, self.height-l.YS
-        for i in range(4):
+        for _ in range(4):
             s.rows.append(self.RowStack_Class(x, y, self,
                                               max_move=1, max_accept=1,
                                               dir=0, base_rank=NO_RANK))
@@ -414,7 +414,7 @@ class Nestor(Game):
     def _shuffleHook(self, cards):
         # no row will have two cards of the same rank
         for i in range(self.COLS):
-            for t in range(1000):  # just in case
+            for _ in range(1000):  # just in case
                 j = self._checkRow(cards[i * self.COLCARDS:(i + 1)
                                    * self.COLCARDS])
                 if j < 0:
@@ -428,7 +428,7 @@ class Nestor(Game):
 
     def startGame(self):
         for r in self.s.rows[:self.COLS]:
-            for j in range(self.COLCARDS):
+            for _ in range(self.COLCARDS):
                 self.s.talon.dealRow(rows=[r], frames=0)
         self.startDealSample()
         self.s.talon.dealRow(rows=self.s.rows[self.COLS:])
@@ -486,7 +486,7 @@ class TheWish(Game):
     #
 
     def startGame(self):
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(flip=0, frames=0)
         self._startAndDealRow()
 

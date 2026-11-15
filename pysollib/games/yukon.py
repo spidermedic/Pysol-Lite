@@ -453,7 +453,7 @@ class YukonCells(Yukon):
             l.XOFFSET = int((w1 - w2) / 13)
 
         x2 = x * 3
-        for i in range(self.RESERVES):
+        for _ in range(self.RESERVES):
             reserve = self.Reserve_Stack(x2, y, self)
             reserve.CARD_XOFFSET = l.XOFFSET
             if self.RESERVE_TEXT:
@@ -462,7 +462,7 @@ class YukonCells(Yukon):
             x2 += l.XS
 
         y += l.YS
-        for i in range(ROWS):
+        for _ in range(ROWS):
             self.s.rows.append(self.RowStack_Class(x, y, self))
             x += l.XS
 

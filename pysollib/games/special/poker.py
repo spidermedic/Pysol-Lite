@@ -127,13 +127,13 @@ One Pair'''))
         # create texts 2)
         if self.preview <= 1:
             for i in (4, 9, 14, 19, 24):
-                tx, ty, ta, tf = l.getTextAttr(s.rows[i], anchor="e")
+                tx, ty, ta, _ = l.getTextAttr(s.rows[i], anchor="e")
                 t = MfxCanvasText(self.canvas, tx+8, ty,
                                   anchor=ta,
                                   font=self.app.getFont("canvas_default"))
                 self.texts.list.append(t)
             for i in range(20, 25):
-                tx, ty, ta, tf = l.getTextAttr(s.rows[i], anchor="ss")
+                tx, ty, ta, _ = l.getTextAttr(s.rows[i], anchor="ss")
                 t = MfxCanvasText(self.canvas, tx, ty, anchor=ta,
                                   font=self.app.getFont("canvas_default"))
                 self.texts.list.append(t)
@@ -227,7 +227,7 @@ One Pair'''))
     def getGameScore(self):
         score = 0
         for hand in self.poker_hands:
-            type, value = self.getHandScore(hand)
+            _, value = self.getHandScore(hand)
             score = score + value
         return score
 
@@ -348,7 +348,7 @@ class Maverick(PokerShuffle):
             return
 
         for i in range(5):
-            type, value = self.getHandScore(self.poker_hands[i])
+            _, value = self.getHandScore(self.poker_hands[i])
             self.texts.list[i].config(text=self.getNameByScore(value))
 
     def getNameByScore(self, score):
@@ -382,7 +382,7 @@ class Maverick(PokerShuffle):
 
     def isGameWon(self):
         for i in range(5):
-            type, value = self.getHandScore(self.poker_hands[i])
+            _, value = self.getHandScore(self.poker_hands[i])
             if value < 15:
                 return False
         return True

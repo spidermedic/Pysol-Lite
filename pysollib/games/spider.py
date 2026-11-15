@@ -138,7 +138,7 @@ class RelaxedSpider(Game):
         l.defaultAll()
 
     def startGame(self, flip=0):
-        for i in range(4):
+        for _ in range(4):
             self.s.talon.dealRow(flip=flip, frames=0)
         r = self.s.rows
         rows = (r[0], r[3], r[6], r[9])
@@ -356,7 +356,7 @@ class Trillium(Game):
 
         # create stacks
         x, y = l.XM, l.YM
-        for i in range(rows):
+        for _ in range(rows):
             s.rows.append(self.RowStack_Class(x, y, self))
             x += l.XS
 
@@ -399,19 +399,19 @@ class Astrocyte(Game):
 
         # create stacks
         x, y = l.XM + 1.5 * l.XS, l.YM
-        for i in range(4):
+        for _ in range(4):
             stack = ReserveStack(x, y, self, max_cards=1)
             s.reserves.append(stack)
             stack.CARD_YOFFSET = l.YOFFSET
             x += l.XS
 
         x, y = l.XM + 6 * l.XS, l.YM
-        for i in range(8):
+        for _ in range(8):
             s.foundations.append(Spider_SS_Foundation(x, y, self))
             x += l.XS
 
         x, y = l.XM + 3 * l.XS, l.YM + l.YS
-        for i in range(8):
+        for _ in range(8):
             s.rows.append(Spider_RowStack(x, y, self))
             x += l.XS
 
@@ -423,7 +423,7 @@ class Astrocyte(Game):
         l.defaultStackGroups()
 
     def startGame(self):
-        for i in range(7):
+        for _ in range(7):
             self.s.talon.dealRow(flip=0, frames=0)
         self._startAndDealRow()
 

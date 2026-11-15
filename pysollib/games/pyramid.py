@@ -206,14 +206,14 @@ class Pyramid(Game):
         for i in range(size):
             x = x0 + (size-1-i) * layout.XS // 2
             y = y0 + i * layout.YS // self.PYRAMID_Y_FACTOR
-            for j in range(i+1):
+            for _ in range(i+1):
                 stack = self.RowStack_Class(x, y, self)
                 rows.append(stack)
                 x = x + layout.XS
         # compute blocking
         n = 0
         for i in range(size-1):
-            for j in range(i+1):
+            for _ in range(i+1):
                 k = n+i+1
                 rows[n].blockmap = [rows[k], rows[k+1]]
                 n += 1
@@ -281,7 +281,7 @@ class Pyramid(Game):
         if reserves:
             x = layout.XM+(max_rows-reserves)*layout.XS//2
             y = layout.YM+4*layout.YS
-            for i in range(reserves):
+            for _ in range(reserves):
                 stack = self.Reserve_Class(x, y, self)
                 s.reserves.append(stack)
                 stack.CARD_YOFFSET = layout.YOFFSET
@@ -355,7 +355,7 @@ class Giza(Pyramid):
         Pyramid.createGame(self, reserves=8, waste=False, texts=False)
 
     def startGame(self):
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.startDealSample()
         self.s.talon.dealRow(frames=4)
@@ -399,9 +399,9 @@ class Thirteens(Pyramid):
 
         # create stacks
         x, y = layout.XM, layout.YM
-        for i in range(rows):
+        for _ in range(rows):
             x = layout.XM
-            for j in range(cols):
+            for _ in range(cols):
                 s.rows.append(self.RowStack_Class(x, y, self, max_accept=1))
                 x += layout.XS
             y += layout.YS
@@ -514,9 +514,9 @@ class Elevens(Pyramid):
         layout.createText(s.foundations[0], 'n')
         y = layout.YM
         piles = 0
-        for i in range(rows):
+        for _ in range(rows):
             x = layout.XM
-            for j in range(cols):
+            for _ in range(cols):
                 if 0 < maxpiles <= piles:
                     break
                 s.rows.append(self.RowStack_Class(x, y, self, max_accept=1))
@@ -524,7 +524,7 @@ class Elevens(Pyramid):
                 x += layout.XS
             y += layout.YS
         x, y = layout.XM, self.height-layout.YS
-        for i in range(reserves):
+        for _ in range(reserves):
             stack = self.Reserve_Class(x, y, self)
             s.reserves.append(stack)
             stack.CARD_XOFFSET = layout.XOFFSET  # for fifteens
@@ -532,7 +532,7 @@ class Elevens(Pyramid):
 
         if texts:
             stack = s.reserves[0]
-            tx, ty, ta, tf = layout.getTextAttr(stack, "n")
+            tx, ty, ta, _ = layout.getTextAttr(stack, "n")
             font = self.app.getFont("canvas_default")
             stack.texts.misc = MfxCanvasText(self.canvas, tx, ty,
                                              anchor=ta, font=font)
@@ -906,7 +906,7 @@ class TripleAlliance(Game):
         self.setSize(layout.XM+5*w0, layout.YM+5*layout.YS)
 
         x, y = layout.XM, layout.YM
-        for i in range(3):
+        for _ in range(3):
             s.reserves.append(TripleAlliance_Reserve(x, y, self))
             x += layout.XS
         x, y = self.width-layout.XS, layout.YM
@@ -915,9 +915,9 @@ class TripleAlliance(Game):
         layout.createText(s.foundations[0], 'nw')
         y = layout.YM+layout.YS
         nstacks = 0
-        for i in range(4):
+        for _ in range(4):
             x = layout.XM
-            for j in range(5):
+            for _ in range(5):
                 stack = BasicRowStack(x, y, self, max_accept=0)
                 s.rows.append(stack)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = layout.XOFFSET, 0
@@ -934,7 +934,7 @@ class TripleAlliance(Game):
 
     def startGame(self):
         self._startDealNumRows(self.CARDS_PER_SMALL_PILE)
-        for i in range(self.CARDS_PER_PILE - self.CARDS_PER_SMALL_PILE - 1):
+        for _ in range(self.CARDS_PER_PILE - self.CARDS_PER_SMALL_PILE - 1):
             self.s.talon.dealRowAvail(self.s.rows[:16], frames=0)
         self.s.talon.dealRowAvail(self.s.rows[:16])
 
@@ -1046,7 +1046,7 @@ class Baroness(Pyramid):
         layout.createText(s.talon, 's')
 
         x += 2*layout.XS
-        for i in range(5):
+        for _ in range(5):
             stack = Baroness_RowStack(x, y, self, max_accept=1)
             s.rows.append(stack)
             stack.CARD_YOFFSET = layout.YOFFSET
@@ -1133,7 +1133,7 @@ class Apophis(Pharaohs):
             layout.createRoundText(s.talon, 'ne')
 
         y += layout.YS
-        for i in range(3):
+        for _ in range(3):
             stack = self.Waste_Class(x, y, self, max_accept=1)
             s.reserves.append(stack)
             layout.createText(stack, 'se')

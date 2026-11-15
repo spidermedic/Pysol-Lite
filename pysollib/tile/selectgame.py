@@ -442,7 +442,7 @@ class SelectGameDialog(MfxDialog):
 
         cardset = self.app.cardset_manager.getByName(
                 self.app.opt.cardset[gi.category][gi.subcategory][0])
-        images, simages = self.loadCardsetForPreview(cardset)
+        images, _ = self.loadCardsetForPreview(cardset)
         self.preview_app.images = images
 
         self.preview_app.audio = None    # turn off audio for initial dealing

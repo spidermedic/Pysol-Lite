@@ -83,10 +83,10 @@ class Diplomat(Game):
     #
 
     def startGame(self):
-        for i in range(self.DEAL[0]):
+        for _ in range(self.DEAL[0]):
             self.s.talon.dealRow(frames=0)
         self.startDealSample()
-        for i in range(self.DEAL[1]):
+        for _ in range(self.DEAL[1]):
             self.s.talon.dealRow()
         self.s.talon.dealCards()          # deal first card to WasteStack
 

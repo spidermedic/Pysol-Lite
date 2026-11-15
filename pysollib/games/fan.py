@@ -85,7 +85,7 @@ class Fan(Game):
         decks = self.gameinfo.decks
         if reserves:
             x, y = l.XM, l.YM
-            for r in range(reserves):
+            for _ in range(reserves):
                 s.reserves.append(self.ReserveStack_Class(x, y, self))
                 x += l.XS
             x = (self.width - decks*4*l.XS)  # - 2*l.XS) // 2
@@ -100,7 +100,7 @@ class Fan(Game):
                 x += dx
         for row in rows:
             x, y = l.XM, y + l.YS
-            for j in range(row):
+            for _ in range(row):
                 stack = self.RowStack_Class(
                     x, y, self, max_move=1, max_accept=1)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = l.XOFFSET, 0
@@ -120,7 +120,7 @@ class Fan(Game):
     #
 
     def startGame(self):
-        for i in range(2):
+        for _ in range(2):
             self.s.talon.dealRow(rows=self.s.rows[:17], frames=0)
         self._startAndDealRow()
 
@@ -501,7 +501,7 @@ class CloverLeaf(Game):
         x = (2 * l.XM) + l.XS
         for i in range(cols):
             y = l.YM
-            for j in range(4):
+            for _ in range(4):
                 stack = CloverLeaf_RowStack(x, y, self,
                                             max_move=1, max_accept=1)
                 s.rows.append(stack)
@@ -586,7 +586,7 @@ class FascinationFan(Fan):
         Fan.createGame(self, texts=True)
 
     def startGame(self):
-        for i in range(2):
+        for _ in range(2):
             self.s.talon.dealRow(rows=self.s.rows[:17], flip=0, frames=0)
         self._startAndDealRow()
 
@@ -665,7 +665,7 @@ class Crescent(Game):
         y = l.YM + l.YS + l.TEXT_HEIGHT
         for i in range(self.ROWS):
             x = l.XM
-            for j in range(self.COLS):
+            for _ in range(self.COLS):
                 stack = UD_SS_RowStack(x, y, self, base_rank=NO_RANK, mod=13)
                 s.rows.append(stack)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = l.XOFFSET, 0
@@ -699,7 +699,7 @@ class RainbowFan(Crescent):
         if stack in self.s.rows and len(stack.cards) == 0 \
                 and len(self.s.talon.cards) > 0:
             old_state = self.enterState(self.S_FILL)
-            for i in range(3):
+            for _ in range(3):
                 self.s.talon.flipMove(1)
                 self.s.talon.moveMove(1, stack)
             self.leaveState(old_state)

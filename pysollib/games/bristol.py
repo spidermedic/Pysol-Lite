@@ -141,7 +141,7 @@ class Bristol(Game):
 
     def startGame(self):
         r = self.s.rows
-        for i in range(2):
+        for _ in range(2):
             self.s.talon.dealRow(rows=r, frames=0)
         self.startDealSample()
         self.s.talon.dealRow(rows=r)
@@ -182,13 +182,13 @@ class Dover(Bristol):
 
         # create stacks
         x, y, = w-l.XS*self.gameinfo.decks*4, l.YM
-        for j in range(self.gameinfo.decks):
+        for _ in range(self.gameinfo.decks):
             for i in range(4):
                 s.foundations.append(self.Foundation_Class(x, y, self, suit=i))
                 x += l.XS
         if text:
             x, y = w-l.XS, l.YM
-            tx, ty, ta, tf = l.getTextAttr(None, "ss")
+            tx, ty, ta, _ = l.getTextAttr(None, "ss")
             tx, ty = x+tx, y+ty
             font = self.app.getFont("canvas_default")
             self.texts.info = MfxCanvasText(self.canvas, tx, ty,

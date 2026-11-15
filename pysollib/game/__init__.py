@@ -324,7 +324,7 @@ class StackRegions(NewStruct):
             self.info.append((d[2], d[3]))
         self.info = tuple(self.info)
         # determine remaining stacks
-        for stacks, rect in self.info:
+        for stacks, _ in self.info:
             for stack in stacks:
                 while stack in remaining:
                     remaining.remove(stack)
@@ -1868,7 +1868,7 @@ class Game:
             return ''
         if not demo:
             self.stopPlayTimer()
-        won, status, updated = self.getWinStatus()
+        _, _, updated = self.getWinStatus()
         if demo and self.getPlayerMoves() == 0:
             if not self.stats.demo_updated:
                 # a pure demo game: remember it finished
@@ -1879,7 +1879,7 @@ class Game:
         return ''
 
     def checkForWin(self):
-        won, status, updated = self.getWinStatus()
+        won, status, _ = self.getWinStatus()
         if not won:
             return False
         self.finishMove()       # just in case
@@ -2023,7 +2023,7 @@ class Game:
         return n
 
     def _autoPlay(self, autofaceup, autodrop, autodeal, sound):
-        flipstacks, dropstacks, quickstacks = self.getAutoStacks()
+        flipstacks, dropstacks, _ = self.getAutoStacks()
         done_something = 1
         while done_something:
             # stop when paused / minimized (Unmap pauses the game)
@@ -2333,7 +2333,7 @@ class Game:
         if self.hints.index >= len(self.hints.list):
             self.hints.index = 0
         # paranoia - verify hint
-        score, pos, ncards, from_stack, to_stack, text_color, forced_move = h
+        score, _, ncards, from_stack, to_stack, text_color, _ = h
         assert from_stack and len(from_stack.cards) >= ncards
         if ncards == 0:
             # a deal move, should not happen with level=0/1
@@ -2568,7 +2568,7 @@ class Game:
         if not h:
             return 1
         # now actually play the hint
-        score, pos, ncards, from_stack, to_stack, text_color, forced_move = h
+        _, _, ncards, from_stack, to_stack, _, _ = h
         if ncards == 0:
             # a deal-move
             # do not let games like Klondike and Canfield deal forever
@@ -2877,7 +2877,7 @@ class Game:
                                    "Go to the bookmark?"):
                 return
         try:
-            s, moves_index = bm
+            s, _ = bm
             self.setCursor(cursor=CURSOR_WATCH)
             file = BytesIO(s)
             p = _alt_unpickler(file)
@@ -3021,11 +3021,11 @@ class Game:
         game.loadinfo.ncards = 0
         nstacks = pload(int)
         validate(1 <= nstacks, err_txt)
-        for i in range(nstacks):
+        for _ in range(nstacks):
             stack = []
             ncards = pload(int)
             validate(0 <= ncards <= 1024, err_txt)
-            for j in range(ncards):
+            for _ in range(ncards):
                 card_id = pload(int)
                 face_up = pload(int)
                 stack.append((card_id, face_up))
@@ -3145,7 +3145,7 @@ class Game:
         pass
 
     def _dealNumRows(self, n):
-        for i in range(n):
+        for _ in range(n):
             self.s.talon.dealRow(frames=0)
 
     def _startDealNumRows(self, n):

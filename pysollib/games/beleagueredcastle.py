@@ -87,7 +87,7 @@ class StreetsAndAlleys(Game):
                 self.Foundation_Class(x, y, self, suit=i, max_move=0))
             y += l.YS
         if texts:
-            tx, ty, ta, tf = l.getTextAttr(None, "ss")
+            tx, ty, ta, _ = l.getTextAttr(None, "ss")
             tx, ty = x+tx, y-l.YS+ty
             font = self.app.getFont("canvas_default")
             self.texts.info = MfxCanvasText(self.canvas, tx, ty,
@@ -116,7 +116,7 @@ class StreetsAndAlleys(Game):
 
     def startGame(self):
         self._startDealNumRows(4)
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRowAvail()
 
     shallHighlightMatch = Game._shallHighlightMatch_RK
@@ -134,7 +134,7 @@ class BeleagueredCastle(StreetsAndAlleys):
 
     def startGame(self):
         self._startDealNumRows(4)
-        for i in range(2):
+        for _ in range(2):
             self.s.talon.dealRow()
         self.s.talon.dealRow(rows=self.s.foundations)
 
@@ -208,7 +208,7 @@ class Fortress(Game):
 
     def startGame(self):
         self._startDealNumRows(3)
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRowAvail()
 
     shallHighlightMatch = Game._shallHighlightMatch_SSW
@@ -255,7 +255,7 @@ class Bastion(Game):
 
     def startGame(self):
         self._startDealNumRows(3)
-        for i in range(2):
+        for _ in range(2):
             self.s.talon.dealRow()
         self.s.talon.dealRow(rows=self.s.reserves)
 
@@ -297,7 +297,7 @@ class Chessboard(Fortress):
 
     def createGame(self):
         lay = Fortress.createGame(self)
-        tx, ty, ta, tf = lay.getTextAttr(self.s.foundations[-1], "e")
+        tx, ty, ta, _ = lay.getTextAttr(self.s.foundations[-1], "e")
         font = self.app.getFont("canvas_default")
         self.texts.info = MfxCanvasText(
             self.canvas, tx + lay.XM, ty, anchor=ta, font=font)

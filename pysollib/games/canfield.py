@@ -121,7 +121,7 @@ class Canfield(Game):
             y += lay.TEXT_HEIGHT
         if (self.SEPARATE_FOUNDATIONS):
             for i in range(4):
-                for j in range(decks):
+                for _ in range(decks):
                     x += lay.XS
                     s.foundations.append(self.Foundation_Class(x, y,
                                                                self, i,
@@ -133,10 +133,10 @@ class Canfield(Game):
                                                        max_move=0))
         if text:
             if rows > 4 * decks:
-                tx, ty, ta, tf = lay.getTextAttr(None, "se")
+                tx, ty, ta, _ = lay.getTextAttr(None, "se")
                 tx, ty = x + tx + lay.XM, y + ty
             else:
-                tx, ty, ta, tf = lay.getTextAttr(None, "s")
+                tx, ty, ta, _ = lay.getTextAttr(None, "s")
                 tx, ty = x + tx, y + ty
             font = self.app.getFont("canvas_default")
             self.texts.info = MfxCanvasText(self.canvas, tx, ty,
@@ -197,14 +197,14 @@ class Canfield(Game):
             self.moveMove(1, self.s.talon, self.s.foundations[n])
             self.updateText()
         # fill the Reserve
-        for i in range(self.INITIAL_RESERVE_CARDS):
+        for _ in range(self.INITIAL_RESERVE_CARDS):
             if self.INITIAL_RESERVE_FACEUP:
                 self.flipMove(self.s.talon)
             self.moveMove(
                 1, self.s.talon, self.s.reserves[0], frames=4, shadow=0)
         if self.s.reserves[0].canFlipCard():
             self.flipMove(self.s.reserves[0])
-        for i in range(num_rows-1):
+        for _ in range(num_rows-1):
             self.s.talon.dealRow(frames=0, flip=0)
         self.s.talon.dealRow(reverse=1)
         self.s.talon.dealCards()          # deal first 3 cards to WasteStack
@@ -332,7 +332,7 @@ class Gate(Game):
     #
 
     def startGame(self):
-        for i in range(5):
+        for _ in range(5):
             self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.startDealSample()
         self.s.talon.dealRow()
@@ -374,7 +374,7 @@ class Minerva(Canfield):
         self.s.talon.dealRow(frames=0, flip=0)
         self.startDealSample()
         self.s.talon.dealRow()
-        for i in range(self.INITIAL_RESERVE_CARDS):
+        for _ in range(self.INITIAL_RESERVE_CARDS):
             self.moveMove(
                 1, self.s.talon, self.s.reserves[0], frames=4, shadow=0)
         self.flipMove(self.s.reserves[0])
@@ -448,7 +448,7 @@ class Skippy(Canfield):
             s.foundations.append(SS_FoundationStack(x, y, self,
                                                     suit=i % 4, mod=13))
             x += lay.XS
-        tx, ty, ta, tf = lay.getTextAttr(None, "ss")
+        tx, ty, ta, _ = lay.getTextAttr(None, "ss")
         tx, ty = x-lay.XS+tx, y+ty
         font = self.app.getFont("canvas_default")
         self.texts.info = MfxCanvasText(self.canvas, tx, ty,
@@ -460,7 +460,7 @@ class Skippy(Canfield):
         y = lay.YM+lay.YS+lay.TEXT_HEIGHT
         for i in range(4):
             x = lay.XM+lay.XS+lay.XS//2
-            for j in range(4):
+            for _ in range(4):
                 stack = RK_RowStack(x, y, self, max_move=1, mod=13)
                 s.rows.append(stack)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = lay.XOFFSET, 0

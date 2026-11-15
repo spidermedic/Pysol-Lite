@@ -108,7 +108,7 @@ class Osmium(Game):
         self.flipMove(self.s.talon)
         self.moveMove(1, self.s.talon, to_stack)
         # deal cards
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(flip=flip)
         self.s.talon.dealRow()
         self.s.talon.dealCards()          # deal first card to WasteStack
@@ -156,7 +156,7 @@ class Osmosis(Osmium):
     def startGame(self, flip=0):
         self.startDealSample()
         # deal cards
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(flip=flip)
         self.s.talon.dealRow()
         # deal one card to foundation

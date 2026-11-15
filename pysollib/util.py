@@ -103,7 +103,7 @@ class DataLoader:
         assert isinstance(filenames, (tuple, list))
         # init path
         path = path[:]
-        head, tail = os.path.split(argv0)
+        head, _ = os.path.split(argv0)
         if not head:
             head = os.curdir
         # dir where placed startup script

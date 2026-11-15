@@ -131,7 +131,7 @@ class AcesAndKings(Game):
 
     def startGame(self):
         self.startDealSample()
-        for i in range(13):
+        for _ in range(13):
             self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.s.talon.dealRow(rows=self.s.rows)
         self.s.talon.dealCards()

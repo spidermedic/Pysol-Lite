@@ -113,7 +113,7 @@ class Carthage(Game):
     # Game overrides
     def startGame(self):
         self.s.talon.dealRow(rows=self.s.rows, frames=0)
-        for i in range(5):
+        for _ in range(5):
             self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self.startDealSample()
         self.s.talon.dealRow(rows=self.s.reserves)

@@ -192,7 +192,7 @@ class LadyOfTheManor(Game):
 
     def startGame(self, flip=False):
         self.s.talon.dealRow(rows=self.s.foundations, frames=0)
-        for i in range(11):
+        for _ in range(11):
             self.s.talon.dealRow(frames=0, flip=flip)
         self.s.talon.dealRow(frames=0)
         self.startDealSample()
@@ -221,7 +221,7 @@ class Matrimony_Talon(DealRowTalonStack):
         num_cards = 0
         assert len(self.cards) == 0
         r = self.game.s.rows[-self.round]
-        for i in range(len(r.cards)):
+        for _ in range(len(r.cards)):
             num_cards += 1
             self.game.moveMove(1, r, self, frames=4)
             self.game.flipMove(self)
@@ -272,7 +272,7 @@ class Matrimony(Game):
         y = l.YM+2*l.YS
         for i in range(2):
             x = l.XM
-            for j in range(8):
+            for _ in range(8):
                 stack = LadyOfTheManor_RowStack(x, y, self, max_accept=0)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = 0, 0
                 s.rows.append(stack)

@@ -65,7 +65,7 @@ class BuffaloBill(Game):
         y = l.YM+l.YS
         for i in rows:
             x = l.XM
-            for j in range(i):
+            for _ in range(i):
                 stack = BasicRowStack(x, y, self, max_move=1, max_accept=0)
                 stack.CARD_XOFFSET, stack.CARD_YOFFSET = l.XOFFSET, 0
                 s.rows.append(stack)

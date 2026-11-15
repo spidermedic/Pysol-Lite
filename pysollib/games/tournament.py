@@ -45,7 +45,7 @@ class Tournament_Talon(DealRowRedealTalonStack):
             num_cards = self._redeal(reverse=True, frames=0)
             self.game.nextRoundMove(self)
         for r in self.game.s.rows:
-            for i in range(4):
+            for _ in range(4):
                 if not self.cards:
                     break
                 num_cards += self.dealRow([r], sound=False, frames=4)
@@ -127,7 +127,7 @@ class Tournament(Game):
         if stack in self.s.rows and not stack.cards:
             if not self.demo:
                 self.startDealSample()
-            for i in range(4):
+            for _ in range(4):
                 if not self.s.talon.cards:
                     break
                 self.s.talon.dealRow([stack])

@@ -139,7 +139,7 @@ class Terrace(Game):
         s.reserves.append(stack)
         x, y = l.XM + w1, y + l.YS
         for i in range(4):
-            for j in range(decks):
+            for _ in range(decks):
                 s.foundations.append(self.Foundation_Class(x, y, self, suit=i))
                 x = x + l.XS
         x, y = l.XM + w2, y + l.YS
@@ -166,7 +166,7 @@ class Terrace(Game):
 
     def startGame(self, nrows=4):
         self.startDealSample()
-        for i in range(self.INITIAL_RESERVE_CARDS):
+        for _ in range(self.INITIAL_RESERVE_CARDS):
             self.s.talon.dealRow(rows=self.s.reserves)
         self.s.talon.dealRow(rows=self.s.rows[:nrows])
 
@@ -240,7 +240,7 @@ class BlondesAndBrunettes(Terrace):
 
     def startGame(self):
         self.startDealSample()
-        for i in range(self.INITIAL_RESERVE_CARDS):
+        for _ in range(self.INITIAL_RESERVE_CARDS):
             self.s.talon.dealRow(rows=self.s.reserves)
         self.s.talon.dealRow()
         # deal base_card to Foundations
@@ -291,7 +291,7 @@ class MamySusan(Terrace):
         Terrace.createGame(self, rows=10)
 
     def startGame(self, nrows=4):
-        for i in range(6):
+        for _ in range(6):
             self.s.talon.dealRow(rows=self.s.reserves, flip=0, frames=0)
         self.flipMove(self.s.reserves[0])
         self._startDealNumRowsAndDealRowAndCards(3)

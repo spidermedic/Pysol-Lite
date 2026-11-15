@@ -159,7 +159,7 @@ class Eastcliff(Klondike):
         Klondike.createGame(self, max_rounds=1)
 
     def startGame(self):
-        for i in range(2):
+        for _ in range(2):
             self.s.talon.dealRow(flip=0, frames=0)
         self.startDealSample()
         self.s.talon.dealRow()
@@ -528,7 +528,7 @@ class Jane(Klondike):
 
         x += (rows - 1 - (4 * self.gameinfo.decks)) * lay.XS
         for i in range(4):
-            for j in range(self.gameinfo.decks):
+            for _ in range(self.gameinfo.decks):
                 s.foundations.append(self.Foundation_Class(x, y, self, suit=i))
                 x += lay.XS
 

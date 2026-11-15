@@ -70,7 +70,7 @@ class Sanibel(Gypsy):
         Start the game by dealing cards into the talon and rows.
         """
         # Deal the first three rows from the talon
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(flip=0, frames=0)
         # Deal 6 more rows
         self._startDealNumRows(6)

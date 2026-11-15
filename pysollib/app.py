@@ -596,7 +596,7 @@ class Application:
     def getToolbarImagesDir(self):
         size = self._toolbarIconSizeName()
         images_root = os.path.join(self.dataloader.dir, 'images')
-        style, dirname = resolve_toolbar_images_dir(
+        _, dirname = resolve_toolbar_images_dir(
             images_root, DEFAULT_TOOLBAR_STYLE, size, DEFAULT_TOOLBAR_STYLE,
             interface_is_dark(self.top))
         return dirname
@@ -818,7 +818,7 @@ class Application:
     def requestCompatibleCardsetType(self, id, progress=None):
         gi = self.getGameInfo(id)
         #
-        cs, cs_update_flag, t = self.getCompatibleCardset(gi, self.cardset)
+        cs, _, t = self.getCompatibleCardset(gi, self.cardset)
         if cs is self.cardset:
             return 0
         if cs is not None:

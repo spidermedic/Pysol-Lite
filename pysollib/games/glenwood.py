@@ -124,7 +124,7 @@ class Glenwood(Game):
                                  mod=13, base_rank=ANY_RANK, max_move=0))
             x += l.XS
 
-        tx, ty, ta, tf = l.getTextAttr(None, "ss")
+        tx, ty, ta, _ = l.getTextAttr(None, "ss")
         tx, ty = x - l.XS + tx, y + ty
         font = self.app.getFont("canvas_default")
         self.texts.info = MfxCanvasText(self.canvas, tx, ty,
@@ -146,7 +146,7 @@ class Glenwood(Game):
 
     def startGame(self):
         self.base_rank = None
-        for i in range(3):
+        for _ in range(3):
             self.s.talon.dealRow(rows=self.s.reserves, frames=0)
         self._startAndDealRow()
 

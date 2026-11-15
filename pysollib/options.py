@@ -403,7 +403,7 @@ class Options:
         self.last_version = self.version_tuple
 
         # general
-        for key, t in self.GENERAL_OPTIONS:
+        for key, _ in self.GENERAL_OPTIONS:
             val = getattr(self, key)
             config['general'][key] = val
 

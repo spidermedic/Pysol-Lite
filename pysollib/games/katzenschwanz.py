@@ -310,10 +310,10 @@ class SalicLaw(DerKatzenschwanz):
         #
         playcards = 4*l.YS // l.YOFFSET
         xoffset, yoffset = [], []
-        for i in range(playcards):
+        for _ in range(playcards):
             xoffset.append(0)
             yoffset.append(l.YOFFSET)
-        for i in range(104-playcards):
+        for _ in range(104-playcards):
             xoffset.append(l.XOFFSET)
             yoffset.append(0)
 
@@ -321,7 +321,7 @@ class SalicLaw(DerKatzenschwanz):
         y = l.YM
         for found_class in self.Foundation_Classes:
             x = l.XM
-            for i in range(8):
+            for _ in range(8):
                 s.foundations.append(found_class(x, y, self,
                                                  suit=ANY_SUIT, max_move=0))
                 x += l.XS
@@ -329,7 +329,7 @@ class SalicLaw(DerKatzenschwanz):
 
         x, y = l.XM, l.YM+l.YS*len(self.Foundation_Classes)
         self.setRegion(s.foundations, (-999, -999, 999999, y - l.XM // 2))
-        for i in range(8):
+        for _ in range(8):
             stack = self.RowStack_Class(x, y, self, max_move=1)
             stack.CARD_XOFFSET = xoffset
             stack.CARD_YOFFSET = yoffset

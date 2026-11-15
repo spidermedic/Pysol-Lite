@@ -238,7 +238,7 @@ class PictureGallery(Game):
         y = l.YM
         for cl in self.TableauStack_Classes:
             x = l.XM
-            for j in range(numtableau):
+            for _ in range(numtableau):
                 s.tableaux.append(cl(x, y, self, yoffset=TABLEAU_YOFFSET))
                 x = x + l.XS
             y = y + th
@@ -247,7 +247,7 @@ class PictureGallery(Game):
                                            y - l.CH))
         x, y = l.XM, y + l.YM
         if self.RowStack_Class is not None:
-            for i in range(numstacks):
+            for _ in range(numstacks):
                 s.rows.append(self.RowStack_Class(x, y, self))
                 x = x + l.XS
         # self.setRegion(s.rows, (-999, -999, x - l.CW // 2, 999999))
@@ -356,7 +356,7 @@ class GreatWheel(PictureGallery):
         if self.s.talon.cards or self.s.waste.cards:
             if stack in self.s.rows and len(stack.cards) == 0:
                 old_state = self.enterState(self.S_FILL)
-                for i in range(2 + self.gameinfo.decks):
+                for _ in range(2 + self.gameinfo.decks):
                     if not self.s.waste.cards:
                         self.s.talon.dealCards()
                     if self.s.waste.cards:
@@ -364,7 +364,7 @@ class GreatWheel(PictureGallery):
                 self.leaveState(old_state)
 
     def startGame(self):
-        for i in range(1 + self.gameinfo.decks):
+        for _ in range(1 + self.gameinfo.decks):
             self.s.talon.dealRow(frames=0)
         self.startDealSample()
         self.s.talon.dealRow()

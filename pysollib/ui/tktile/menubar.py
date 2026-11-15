@@ -541,7 +541,7 @@ class PysolMenubarTkCommon:
 
     def _getNumGames(self, games, select_data):
         ngames = 0
-        for label, select_func in select_data:
+        for _, select_func in select_data:
             ngames += len(list(filter(select_func, games)))
         return ngames
 
@@ -766,10 +766,10 @@ class PysolMenubarTkCommon:
         if mp1 is None or mp2 is None:
             return
         x = self.app.opt.bookmarks and self.game.canSetBookmark()
-        menu, index, submenu = mp1
+        menu, index, _ = mp1
         menu.entryconfig(index, state=state(x))
         s = self.game.gsaveinfo.bookmarks.get(0) is not None
-        menu, index, submenu = mp2
+        menu, index, _ = mp2
         menu.entryconfig(index, state=state(s and x))
         # the toolbar button: filled when the game has a bookmark
         if getattr(self.app, 'toolbar', None) is not None:
@@ -797,7 +797,7 @@ class PysolMenubarTkCommon:
         # print state, path
         path = ".menubar." + path
         mp = self.menupath.get(path)
-        menu, index, submenu = mp
+        menu, index, _ = mp
         s = self._getEnabledState(state)
         menu.entryconfig(index, state=s)
 

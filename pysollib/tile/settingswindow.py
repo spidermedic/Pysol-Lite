@@ -153,7 +153,7 @@ class SettingsWindow:
 
     def _sync(self, box):
         value = box.var.get()
-        for i, (label, v) in enumerate(box.choices):
+        for i, (_, v) in enumerate(box.choices):
             if str(v) == str(value):
                 box.current(i)
                 return

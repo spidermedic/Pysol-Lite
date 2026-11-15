@@ -220,15 +220,15 @@ class TripleFreecell(FreeCell):
 
         x, y = l.XM+(max_rows-decks*4)*l.XS//2, l.YM
         for j in range(4):
-            for i in range(decks):
+            for _ in range(decks):
                 s.foundations.append(self.Foundation_Class(x, y, self, suit=j))
                 x += l.XS
         x, y = l.XM+(max_rows-reserves)*l.XS//2, l.YM+l.YS
-        for i in range(reserves):
+        for _ in range(reserves):
             s.reserves.append(ReserveStack(x, y, self))
             x += l.XS
         x, y = l.XM+(max_rows-rows)*l.XS//2, l.YM+2*l.YS
-        for i in range(rows):
+        for _ in range(rows):
             s.rows.append(self.RowStack_Class(x, y, self))
             x += l.XS
 
@@ -370,7 +370,7 @@ class FourColours(FreeCell):
         self.s.talon.dealRow(rows=[self.s.rows[suit]], frames=frames)
 
     def startGame(self):
-        for i in range(40):
+        for _ in range(40):
             self.dealOne(frames=0)
         self.startDealSample()
         while self.s.talon.cards:

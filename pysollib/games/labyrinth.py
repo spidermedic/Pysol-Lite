@@ -86,7 +86,7 @@ class Labyrinth(Game):
         x, y = l.XM, l.YM+l.YS
         for i in range(6):
             x = l.XM
-            for j in range(8):
+            for _ in range(8):
                 s.rows.append(Labyrinth_RowStack(x, y, self, max_move=1))
                 x += l.XS
             y += l.YOFFSET

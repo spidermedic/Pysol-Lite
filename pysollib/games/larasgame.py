@@ -47,7 +47,7 @@ class LarasGame_Talon(WasteTalonStack):
         cards = self.dealToStacks(rows[:game.MAX_ROW], flip, reverse, frames)
         if sound and frames and self.game.app.opt.animations:
             self.game.startDealSample()
-        for i in range(game.DEAL_TO_TALON):
+        for _ in range(game.DEAL_TO_TALON):
             if self.cards:
                 game.moveMove(1, self, game.s.rows[-1], frames=frames)
                 cards = cards + 1
@@ -80,7 +80,7 @@ class LarasGame_Talon(WasteTalonStack):
                 move(1, self, game.s.rows[-1], frames=frames)
             i = i + 1
             if rank == 0:       # Is this an Ace?
-                for j in range(2):
+                for _ in range(2):
                     if not self.cards:
                         return 0
                     move(1, self, game.s.rows[-1], frames=frames)

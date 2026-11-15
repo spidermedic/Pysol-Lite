@@ -83,7 +83,7 @@ class EightOff(KingOnlyBakersGame):
         # create stacks
         x, y = l.XM + (maxrows - (4 * decks)) * l.XS // 2, l.YM
         for i in range(4):
-            for j in range(decks):
+            for _ in range(decks):
                 s.foundations.append(SS_FoundationStack(x, y, self, i))
                 x = x + l.XS
         x, y = l.XM + (maxrows-rows)*l.XS//2, y + l.YS
@@ -233,7 +233,7 @@ class Penguin(Tuxedo):
         self.base_card = self.s.talon.cards[-4]
         self._updateStacks()
         # deal base cards to Foundations
-        for i in range(3):
+        for _ in range(3):
             c = self.s.talon.getCard()
             assert c.rank == self.base_card.rank
             to_stack = self.s.foundations[c.suit * self.gameinfo.decks]
