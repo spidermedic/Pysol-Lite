@@ -202,8 +202,7 @@ def pysol_init(app, args):
     # prepare the progress bar
     app.loadImages1()
     if not app.progress_images:
-        app.progress_images = (loadImage(app.gimages.logos[0]),
-                               loadImage(app.gimages.logos[1]))
+        app.progress_images = (loadImage(app.gimages.logos[0]),)
     app.wm_withdraw()
 
     # create the progress bar

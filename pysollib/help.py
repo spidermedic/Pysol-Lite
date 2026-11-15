@@ -66,7 +66,7 @@ For more information about this application visit''') %
                          {'title': TITLE, 'description': t,
                           'versioninfo': version},
                          url=PACKAGE_URL,
-                         image=app.gimages.logos[2],
+                         image=app.gimages.logos[1],
                          strings=strings, default=0,
                          separator=True)
     if d.status == 0 and d.button == 1:

@@ -486,12 +486,10 @@ class Application:
         # load dialog images
         dirname = os.path.join("images", "logos")
         self.gimages.logos = []
-        for f in ("joker07_40_774",
-                  "joker08_40_774",
-                  "joker07_50_774",
-                  "joker08_50_774",
-                  "joker11_100_774",
-                  "joker10_100",):
+        # 0: loading progress bar; 1: About box and the game won, lost and
+        # autopilot dialogs
+        for f in ("pysol-lite-logo-small",
+                  "pysol-lite-logo",):
             self.gimages.logos.append(self.dataloader.findImage(f, dirname))
         dirname = os.path.join('images', 'dialog', 'phosphor')
         for f in ('error', 'info', 'question', 'warning'):

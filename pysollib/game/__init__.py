@@ -1881,7 +1881,7 @@ class Game:
                 text='\n' + congrats + '\n\n' + text + '\n' + top_msg + '\n',
                 strings=("&New game", None, "&Back to game",
                          "&Cancel"),
-                image=self.app.gimages.logos[5])
+                image=self.app.gimages.logos[1])
         elif status == 1:
             if not time_str:
                 time_str = self.getTime()
@@ -1896,7 +1896,7 @@ class Game:
                 text='\n' + congrats + '\n\n' + text + '\n' + top_msg + '\n',
                 strings=("&New game", None, "&Back to game",
                          "&Cancel"),
-                image=self.app.gimages.logos[4])
+                image=self.app.gimages.logos[1])
         elif self.gstats.updated < 0:
             d = MfxMessageDialog(
                 self.top, title="Game finished", bitmap="info",
@@ -2450,7 +2450,7 @@ class Game:
                 d = MfxMessageDialog(self.top,
                                      title="%s Autopilot" % TITLE,
                                      text=text,
-                                     image=self.app.gimages.logos[4],
+                                     image=self.app.gimages.logos[1],
                                      strings=(s,),
                                      separator=True,
                                      timeout=timeout)
