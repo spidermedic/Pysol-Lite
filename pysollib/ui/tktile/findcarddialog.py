@@ -38,6 +38,9 @@ EMBLEMS_SIZE = (38, 34)
 class FindCardDialog(tkinter.Toplevel):
     CARD_IMAGES = {}  # key: (type, rank, suit)
 
+    HINT = ("Point at a card, or use the arrow keys, to find it on the "
+            "table. Click or press Enter to keep it marked.")
+
     def __init__(self, parent, game, dir):
         tkinter.Toplevel.__init__(self)
         self.title("Find Card")
@@ -49,24 +52,37 @@ class FindCardDialog(tkinter.Toplevel):
 
         # the hint is packed first so the canvas cannot squeeze it out
         self.hint = tkinter.Label(
-            self, text="Point at a card to find it on the table",
+            self, text=self.HINT,
             bg='white', fg='#555555', anchor='center', justify='center')
         self.hint.pack(side='bottom', fill='x', pady=(0, 4))
         self.canvas = MfxCanvas(self, bg='white')
         self.canvas.pack(expand=True, fill='both')
         #
         self.groups = []
-        self.highlight_items = None
+        self.cells = []         # one dict per emblem (see createCardLabel)
+        self.shown = {}         # cell index -> [highlight items, blink timer]
+        self.hovered = None     # cell under the pointer
+        self.selected = None    # cell chosen with the keyboard (or last click)
+        self.pinned = None      # cell kept marked by a click or Enter
+        self.keyboard = False   # the selection counts as shown
         self.busy = False
+        self.dirty = False
+        self.poll = None
+        self.signature = None
         self.connectGame(game)
         #
         bind(self, "WM_DELETE_WINDOW", self.destroy)
-        bind(self, "<Escape>", self.destroy)
+        bind(self, "<Escape>", self.escapeEvent)
+        bind(self, "<Left>", lambda e: self.moveSelection(-1, 0))
+        bind(self, "<Right>", lambda e: self.moveSelection(1, 0))
+        bind(self, "<Up>", lambda e: self.moveSelection(0, -1))
+        bind(self, "<Down>", lambda e: self.moveSelection(0, 1))
+        for key in ("<Return>", "<KP_Enter>", "<space>"):
+            bind(self, key, self.pinEvent)
         #
         self.normal_timeout = int(
             1000*game.app.opt.timeouts['highlight_samerank'])
         self.hidden_timeout = 200
-        self.timer = None
 
     def createCardLabel(self, suit, rank, x0, y0):
         dx, dy = self.label_width, self.label_height
@@ -99,15 +115,21 @@ class FindCardDialog(tkinter.Toplevel):
                                   )
         rect.addtag(group)
         #
-        bind(group, '<Enter>',
-             lambda e, suit=suit, rank=rank, rect=rect:
-                 self.enterEvent(suit, rank, rect, group))
-        bind(group, '<Leave>',
-             lambda e, suit=suit, rank=rank, rect=rect:
-                 self.leaveEvent(suit, rank, rect, group))
+        n = len(self.cells)
+        self.cells.append(dict(suit=suit, rank=rank, rect=rect, x=x0, y=y0))
+        bind(group, '<Enter>', lambda e, n=n: self.enterEvent(n))
+        bind(group, '<Leave>', lambda e, n=n: self.leaveEvent(n))
+        bind(group, '<Button-1>', lambda e, n=n: self.clickEvent(n))
         self.groups.append(group)
 
     def connectGame(self, game):
+        self.clearHighlights()
+        for group in self.groups:
+            unbind_destroy(group)
+        self.groups = []
+        self.cells = []
+        self.hovered = self.selected = self.pinned = None
+        self.keyboard = False
         self.cardsettype = game.gameinfo.category
         cs_type = CSI.TYPE_ID[self.cardsettype]
         #
@@ -154,65 +176,189 @@ class FindCardDialog(tkinter.Toplevel):
         self.wm_iconname(TITLE + " - " + game.getTitleName())
         self.wm_geometry('')            # cancel user-specified geometry
 
-    def enterEvent(self, suit, rank, rect, group):
-        # print 'enterEvent', suit, rank, self.busy
+    # ----------------------------------------------------------------
+    # what is marked: the cell under the pointer, the pinned cell, and
+    # (while the keyboard is in use) the selected cell
+    # ----------------------------------------------------------------
+
+    def wanted(self):
+        w = set()
+        if self.hovered is not None:
+            w.add(self.hovered)
+        if self.pinned is not None:
+            w.add(self.pinned)
+        if self.keyboard and self.selected is not None:
+            w.add(self.selected)
+        return w
+
+    def refresh(self):
+        # Showing or hiding updates the canvas, which can deliver another
+        # Enter or Leave event on the way; such an event only changes the
+        # state and the loop below catches up.
         if self.busy:
+            self.dirty = True
             return
+        self.busy = True
+        try:
+            while True:
+                self.dirty = False
+                wanted = self.wanted()
+                for n in list(self.shown):
+                    if n not in wanted:
+                        self.hideCell(n)
+                for n in wanted:
+                    if n not in self.shown:
+                        self.showCell(n)
+                if not self.dirty:
+                    break
+        finally:
+            self.busy = False
+        if self.shown and self.poll is None:
+            self.signature = self.getSignature()
+            self.poll = after(self, 200, self.pollEvent)
+        elif not self.shown and self.poll is not None:
+            after_cancel(self.poll)
+            self.poll = None
+
+    def showCell(self, n):
         if self.game.demo:
             return
-        self.busy = True
-        self.highlight_items = self.game.highlightCard(suit, rank)
-        if not self.highlight_items:
-            self.highlight_items = []
-        if self.highlight_items:
-            self.timer = after(self, self.normal_timeout, self.timeoutEvent)
-        rect.config(state='normal')
+        cell = self.cells[n]
+        items = self.game.highlightCard(cell['suit'], cell['rank']) or []
+        timer = None
+        if items:
+            timer = after(self, self.normal_timeout, self.blinkEvent, n)
+        self.shown[n] = [items, timer]
+        cell['rect'].config(state='normal')
         self.canvas.update_idletasks()
-        self.busy = False
 
-    def leaveEvent(self, suit, rank, rect, group):
-        # print 'leaveEvent', suit, rank, self.busy
-        if self.busy:
-            return
-        self.busy = True
-        if self.highlight_items:
-            for i in self.highlight_items:
-                i.delete()
-            self.highlight_items = []
-        if self.timer:
-            after_cancel(self.timer)
-            self.timer = None
-        rect.config(state='hidden')
+    def hideCell(self, n):
+        items, timer = self.shown.pop(n)
+        for i in items:
+            i.delete()
+        after_cancel(timer)
+        self.cells[n]['rect'].config(state='hidden')
         if self.game.canvas:
             self.game.canvas.update_idletasks()
         self.canvas.update_idletasks()
-        self.busy = False
 
-    def timeoutEvent(self, *event):
-        if self.highlight_items:
-            state = self.highlight_items[0].cget('state')
-            if state in ('', 'normal'):
-                state = 'hidden'
-                self.timer = after(self, self.hidden_timeout,
-                                   self.timeoutEvent)
-            else:
-                state = 'normal'
-                self.timer = after(self, self.normal_timeout,
-                                   self.timeoutEvent)
-            for item in self.highlight_items:
-                item.config(state=state)
+    def clearHighlights(self):
+        # forget everything that is shown (the game may be gone already)
+        for items, timer in self.shown.values():
+            after_cancel(timer)
+            for i in items:
+                try:
+                    i.delete()
+                except Exception:
+                    pass
+        self.shown = {}
+        if self.poll is not None:
+            after_cancel(self.poll)
+            self.poll = None
+
+    def blinkEvent(self, n):
+        entry = self.shown.get(n)
+        if not entry or not entry[0]:
+            return
+        items = entry[0]
+        state = items[0].cget('state')
+        if state in ('', 'normal'):
+            state = 'hidden'
+            entry[1] = after(self, self.hidden_timeout, self.blinkEvent, n)
+        else:
+            state = 'normal'
+            entry[1] = after(self, self.normal_timeout, self.blinkEvent, n)
+        for item in items:
+            item.config(state=state)
+
+    def getSignature(self):
+        # the marks sit at fixed places on the table: when a card moves
+        # or the cards change size they have to be drawn again
+        try:
+            g = self.game
+            return (g.moves.index, g.canvas.winfo_width(),
+                    g.canvas.winfo_height(), g.app.images.getSize())
+        except Exception:
+            return None
+
+    def pollEvent(self):
+        self.poll = None
+        if not self.shown:
+            return
+        sig = self.getSignature()
+        if sig != self.signature:
+            self.signature = sig
+            for n in list(self.shown):
+                self.hideCell(n)
+            self.refresh()
+        if self.shown and self.poll is None:
+            self.poll = after(self, 200, self.pollEvent)
+
+    # ----------------------------------------------------------------
+    # events
+    # ----------------------------------------------------------------
+
+    def enterEvent(self, n):
+        if self.game.demo:
+            return
+        self.keyboard = False
+        self.hovered = n
+        self.refresh()
+
+    def leaveEvent(self, n):
+        if self.hovered == n:
+            self.hovered = None
+            self.refresh()
+
+    def clickEvent(self, n):
+        self.keyboard = False
+        self.selected = n
+        self.pinned = None if self.pinned == n else n
+        self.refresh()
+
+    def pinEvent(self, event=None):
+        if not self.cells:
+            return
+        if self.selected is None:
+            self.selected = 0
+        self.keyboard = True
+        self.pinned = None if self.pinned == self.selected else self.selected
+        self.refresh()
+
+    def moveSelection(self, dx, dy):
+        if not self.cells:
+            return
+        self.keyboard = True
+        if self.selected is None:
+            self.selected = 0
+        elif dx:
+            # the emblems are created row by row, so left and right
+            # follow that order
+            n = self.selected + dx
+            self.selected = max(0, min(len(self.cells) - 1, n))
+        else:
+            cur = self.cells[self.selected]
+            rows = [c for c in self.cells if (c['y'] - cur['y']) * dy > 0]
+            if rows:
+                ydist = min(abs(c['y'] - cur['y']) for c in rows)
+                row = [c for c in rows if abs(c['y'] - cur['y']) == ydist]
+                best = min(row, key=lambda c: abs(c['x'] - cur['x']))
+                self.selected = self.cells.index(best)
+        self.refresh()
+
+    def escapeEvent(self, event=None):
+        if self.pinned is not None:
+            self.pinned = None
+            self.refresh()
+        else:
+            self.destroy()
 
     def destroy(self, *args):
         for group in self.groups:
             unbind_destroy(group)
         unbind_destroy(self)
-        if self.timer:
-            after_cancel(self.timer)
-            self.timer = None
         self.wm_withdraw()
-        if self.highlight_items:
-            for i in self.highlight_items:
-                i.delete()
+        self.clearHighlights()
         tkinter.Toplevel.destroy(self)
 
 
@@ -244,6 +390,7 @@ def create_find_card_dialog(parent, game, dir):
     try:
         find_card_dialog.wm_deiconify()
         find_card_dialog.tkraise()
+        find_card_dialog.focus_set()
     except Exception:
         # traceback.print_exc()
         find_card_dialog = FindCardDialog(parent, game, dir)
