@@ -29,7 +29,7 @@ import pathlib
 from pysollib.mfxutil import openURL
 from pysollib.pysoltk import MfxMessageDialog
 from pysollib.pysoltk import PysolAboutDialog
-from pysollib.settings import PACKAGE_URL, TITLE, VERSION
+from pysollib.settings import COPYRIGHT_LINES, PACKAGE_URL, TITLE, VERSION
 
 
 # ************************************************************************
@@ -43,11 +43,7 @@ def help_about(app, timeout=0, sound=True):
     if timeout:
         strings = ("&Enjoy",)
     title_version = f"{TITLE} v{VERSION}"
-    copyright_lines = """Copyright \u00a9 1998 - 2003 Markus F.X.J. Oberhumer.
-Copyright \u00a9 2003 Mt. Hood Playing Card Co.
-Copyright \u00a9 2005 - 2009 Skomoroh.
-Copyright \u00a9 2020 - 2026 PySolFC contributors.
-Copyright \u00a9 2026 Doug Martin."""
+    copyright_lines = "\n".join(COPYRIGHT_LINES)
     # (text, justify) blocks: the copyright lines are left aligned, the rest
     # is centred
     parts = (

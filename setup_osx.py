@@ -8,7 +8,7 @@ import shutil
 import sys
 from subprocess import CalledProcessError, call, check_output
 
-from pysollib.settings import TITLE, VERSION
+from pysollib.settings import COPYRIGHT_LINES, TITLE, VERSION
 
 # The bundle (PySol.app) and its executable keep the same name every year;
 # only the display name carries the year.
@@ -45,9 +45,8 @@ try:
 except (OSError, CalledProcessError):
     pass
 
-GETINFO_STRING = f"{TITLE} {VERSION}, a lighter PySol. \
-                (C) 1998-2003 Markus F.X.J Oberhumer \
-                (C) 2005-2009 Skomoroh"
+COPYRIGHT = ' '.join(COPYRIGHT_LINES)
+GETINFO_STRING = f"{TITLE} {VERSION}, a lighter PySol. {COPYRIGHT}"
 PLIST = dict(
     CFBundleDevelopmentRegion='en_US',
     CFBundleExecutable=BUNDLE,
@@ -57,7 +56,7 @@ PLIST = dict(
     CFBundleName=BUNDLE,
     CFBundleVersion=f'{VERSION}',
     CFBundleShortVersionString=f'{VERSION}',
-    NSHumanReadableCopyright="Copyright (C) 1998-2003 Markus F.X.J. Oberhumer",
+    NSHumanReadableCopyright=COPYRIGHT,
     )
 APP = ['pysol.py']
 ICON_FILE = 'data/PySol.icns'

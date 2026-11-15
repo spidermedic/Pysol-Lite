@@ -35,6 +35,14 @@ VERSION = '.'.join([f'{VERSION_TUPLE[0]}'] +
 # Class name for the Tk windows and the X11 resource database (no year).
 TITLE_CLASS = 'PySol'
 TITLE = 'PySol Lite'
+# The copyright lines of the About dialog and of the macOS app's Info.plist.
+COPYRIGHT_LINES = (
+    "Copyright \u00a9 1998 - 2003 Markus F.X.J. Oberhumer.",
+    "Copyright \u00a9 2003 Mt. Hood Playing Card Co.",
+    "Copyright \u00a9 2005 - 2009 Skomoroh.",
+    "Copyright \u00a9 2020 - 2026 PySolFC contributors.",
+    "Copyright \u00a9 2026 Doug Martin.",
+)
 PACKAGE_URL = 'https://github.com/spidermedic/Pysol-Lite'
 
 # Tk windowing system (auto set up in init.py)
