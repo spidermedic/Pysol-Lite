@@ -52,7 +52,7 @@ from pysollib.winsystems import init_root_window
 def fatal_no_cardsets(app):
     app.wm_withdraw()
     MfxMessageDialog(app.top, title="%s installation error" % TITLE,
-                     text=('''No cardsets were found!!!
+                     text=('''No cardsets were found.
 
 Main data directory is:
 %(dir)s
@@ -275,7 +275,7 @@ def pysol_init(app, args):
         app.intro.progress.destroy()
         d = MfxMessageDialog(top, title="%s installation error" % TITLE,
                              text=('''
-No games were found!!!
+No games were found.
 
 Main data directory is:
 %(dir)s
@@ -316,8 +316,7 @@ ensure that your Cardsets package is up to date.''')
                          text=('''
 The cardset "%(cs)s" was not found.
 
-Please ensure that this cardset has been installed, and that your
-Cardsets package is up to date.
+Please check that this cardset is installed.
 ''') % {'cs': c[0]},
                          bitmap="error")
         cardset = app.cardset_manager.getByName("Standard")

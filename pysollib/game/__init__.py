@@ -2873,7 +2873,7 @@ class Game:
         if confirm < 0:
             confirm = self.app.opt.confirm
         if confirm:
-            if not self.areYouSure("Goto bookmark",
+            if not self.areYouSure("Go to bookmark",
                                    "Go to the bookmark?"):
                 return
         try:
@@ -2895,7 +2895,8 @@ class Game:
 
     def loadGame(self, filename):
         if self.changed():
-            if not self.areYouSure("Open game"):
+            if not self.areYouSure(
+                    "Open game", "Discard this game and open a saved one?"):
                 return
         self.finishMove()       # just in case
         game = None

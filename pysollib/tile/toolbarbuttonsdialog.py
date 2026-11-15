@@ -30,6 +30,24 @@ from pysollib.ui.tktile.tkconst import TOOLBAR_BUTTONS
 from .tkwidget import MfxDialog, PysolCheckbutton
 
 
+# the names shown here match the menus and the tooltips
+BUTTON_NAMES = {
+    "new": "New game",
+    "restart": "Restart game",
+    "open": "Open",
+    "save": "Save",
+    "undo": "Undo",
+    "redo": "Redo",
+    "bookmark": "Bookmark",
+    "autodrop": "Auto drop",
+    "shuffle": "Shuffle tiles",
+    "hint": "Hint",
+    "pause": "Pause",
+    "favorite": "Favorite",
+    "rules": "Rules",
+}
+
+
 class ToolbarButtonsDialog(MfxDialog):
     """Choose which buttons the toolbar shows, several at once."""
 
@@ -47,7 +65,8 @@ class ToolbarButtonsDialog(MfxDialog):
             var = tkinter.BooleanVar()
             var.set(bool(app.opt.toolbar_vars.get(w, False)))
             self.vars[w] = var
-            PysolCheckbutton(frame, variable=var, text=(w.capitalize())
+            PysolCheckbutton(frame, variable=var,
+                             text=BUTTON_NAMES.get(w, w.capitalize())
                              ).grid(row=i // 2, column=i % 2, sticky='w',
                                     padx=10, pady=2)
         #

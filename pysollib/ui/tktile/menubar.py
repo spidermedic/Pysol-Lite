@@ -9,7 +9,7 @@ from tkinter.colorchooser import askcolor
 from pysollib.gamedb import GI
 from pysollib.mfxutil import Struct, kwdefault
 from pysollib.settings import SELECT_GAME_MENU
-from pysollib.settings import TITLE, TITLE_CLASS, WIN_SYSTEM
+from pysollib.settings import TITLE, WIN_SYSTEM
 from pysollib.ui.tktile.tkconst import COMPOUNDS, CURSOR_WATCH, EVENT_HANDLED
 from pysollib.ui.tktile.tkconst import EVENT_PROPAGATE
 from pysollib.ui.tktile.tkutil import after_idle, bind
@@ -357,7 +357,7 @@ class PysolMenubarTkCommon:
             menu = MfxMenu(self.menubar, label="Help",
                            name=self.help_menu_name, underline=-1)
             menu.add_command(
-                label="%s Help" % TITLE_CLASS,
+                label="%s Help" % TITLE,
                 command=self.mHelp, accelerator=m+"F1")
         else:
             self.help_menu_name = "help"
@@ -426,10 +426,6 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "k", self.mUndo)
         self._bindKey("",   "j", self.mDeal)
 
-        #
-        # undocumented, devel
-        self._bindKey("", "slash", self.mGameInfo)
-        #
         self._bindKey("",   "f", self.mShuffle)
 
         self._bindKey(ctrl, "k", lambda e: self.mSetBookmark(0))

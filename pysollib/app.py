@@ -228,6 +228,16 @@ class Application:
             deal=None,
         )
         self.demo_counter = 0
+        # set when the saved game given on the command line cannot be opened
+        self.load_error = None
+
+    def _showLoadError(self):
+        filename, ex = self.load_error
+        self.load_error = None
+        MfxMessageDialog(
+            self.top, title="Load game error", bitmap="error",
+            text="Cannot open the saved game\n%s\n\n%s" % (
+                os.path.basename(filename), ex))
 
     # the PySol mainloop
     def mainloop(self):
@@ -308,9 +318,10 @@ class Application:
                     self.nextgame.loadedgame = tmpgame._loadGame(
                         self.commandline.loadgame, self)
                     self.nextgame.id = self.nextgame.loadedgame.id
-                except Exception:
+                except Exception as ex:
                     traceback.print_exc()
                     self.nextgame.loadedgame = None
+                    self.load_error = (self.commandline.loadgame, ex)
             elif self.commandline.game is not None:
                 gameid = self.gdb.getGameByName(self.commandline.game)
                 if gameid is None:
@@ -430,6 +441,9 @@ class Application:
         elif autoplay:
             self.game.autoPlay()
             self.game.stats.player_moves = 0
+        # tell the user if the saved game from the command line was refused
+        if self.load_error:
+            self.top.after(300, self._showLoadError)
         # enter the Tk mainloop
         self.game.busy = 0
         self.top.mainloop()
@@ -661,7 +675,7 @@ class Application:
 
             self.wm_save_state()
             self.wm_withdraw()
-            title = "Loading cardset %s..." % cs.name
+            title = "Loading cardset %s" % cs.name
             color = self.opt.colors['table']
             if self.tabletile_index > 0:
                 color = "#008200"
@@ -803,11 +817,11 @@ class Application:
             self.top, title="Incompatible cardset",
             bitmap="warning",
             text=('''The currently selected cardset %(cardset)s
-        is not compatible with the game
-        %(game)s
+is not compatible with the game
+%(game)s
 
-        Please select a %(correct_type)s %(subcategory)stype cardset.
-        ''') % {'cardset': cardset.name, 'game': gi.name,
+Please select a %(correct_type)s %(subcategory)stype cardset.
+''') % {'cardset': cardset.name, 'game': gi.name,
                 'correct_type': t[0], 'subcategory': subcategoryLabel},
             strings=("&OK",), default=0)
 

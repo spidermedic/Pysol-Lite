@@ -68,7 +68,7 @@ ASSIST_OPTIONS = (
 # a game is thrown away.
 PLAY_OPTIONS = (
     ('click_to_move', 'Click to move cards', 'mOptClickToMove'),
-    ('confirm', 'Confirm before quitting', 'mOptConfirm'),
+    ('confirm', 'Confirm before discarding a game', 'mOptConfirm'),
 )
 
 # Assist options that only matter for some games. The first one restarts

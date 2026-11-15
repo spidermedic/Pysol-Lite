@@ -25,7 +25,6 @@ import os
 
 from pysollib.help import help_about, help_html
 from pysollib.mfxutil import Struct
-from pysollib.pysoltk import GameInfoDialog
 from pysollib.pysoltk import PysolMenubarTk, PysolToolbarTk
 from pysollib.pysoltk import ToolbarButtonsDialog
 from pysollib.pysoltk import create_find_card_dialog
@@ -208,7 +207,8 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag():
             return
         if self.changed():
-            if not self.game.areYouSure("New game"):
+            if not self.game.areYouSure(
+                    "New game", "Discard this game and start a new one?"):
                 return
         if self.game.nextGameFlags(self.game.id) == 0:
             self.game.endGame()
@@ -223,7 +223,8 @@ class PysolMenubar(PysolMenubarTk):
         if not force and self.game.id == id:
             return
         if self.changed():
-            if not self.game.areYouSure("Select game"):
+            if not self.game.areYouSure(
+                    "Select game", "Discard this game and start another?"):
                 return
         self.game.endGame()
         self.game.quitGame(id, random=random)
@@ -236,7 +237,9 @@ class PysolMenubar(PysolMenubarTk):
         if len(gl) < 2 or (id not in gl):
             return
         if self.changed():
-            if not self.game.areYouSure("Select next game"):
+            if not self.game.areYouSure(
+                    "Select next game",
+                    "Discard this game and start another?"):
                 return
         index = (gl.index(id) + step) % len(gl)
         self.game.endGame()
@@ -268,7 +271,8 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag():
             return
         if self.changed():
-            if not self.game.areYouSure("Quit %s" % TITLE):
+            if not self.game.areYouSure("Quit %s" % TITLE,
+                                        "Discard this game and quit?"):
                 return
         self.game.endGame()
         self.game.quitGame()
@@ -357,16 +361,6 @@ class PysolMenubar(PysolMenubarTk):
                                     self.app.getFindCardImagesDir())
             raise_find_card_dialog(self.game)
 
-    def mGameInfo(self, *args):
-        wasPaused = False
-        if not self.game.pause:
-            self.game.doPause()
-            wasPaused = True
-        GameInfoDialog(self.top, "Game Info", self.app)
-        if self.game.pause:
-            if wasPaused:
-                self.game.doPause()
-
     #
     # Assist menu
     #
@@ -404,7 +398,9 @@ class PysolMenubar(PysolMenubarTk):
         if self.changed():
             # only ask if there have been no demo moves or hints yet
             if self.game.stats.demo_moves == 0 and self.game.stats.hints == 0:
-                if not self.game.areYouSure("Play demo"):
+                if not self.game.areYouSure(
+                        "Play demo",
+                        "Play the demo? A demo game does not count as won."):
                     return
         # self.app.demo_counter = 0
         self.game.startDemo(mixed=mixed)

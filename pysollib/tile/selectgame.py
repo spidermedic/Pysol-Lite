@@ -100,7 +100,7 @@ class SelectGameDialog(MfxDialog):
                                           fieldname="Search:",
                                           textvariable=searchText)
 
-        self.advSearch = PysolButton(searchrow, text='Advanced...',
+        self.advSearch = PysolButton(searchrow, text='Advanced',
                                      command=self.advancedSearch)
         self.advSearch.pack(side="right", padx=padx, pady=pady)
 

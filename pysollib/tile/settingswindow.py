@@ -66,6 +66,7 @@ class SettingsWindow:
 
         # Assist
         page = self._page(nb, "Assist")
+        ttk.Label(page, text="Automatic play").pack(anchor="w")
         for key, label, handler in AUTOMATIC_PLAY_OPTIONS:
             self.auto[key] = self._check(page, key, label, handler)
         for key, label, handler in ASSIST_OPTIONS:
@@ -79,7 +80,7 @@ class SettingsWindow:
         page = self._page(nb, "Appearance")
         row = ttk.Frame(page)
         row.pack(fill="x", pady=2)
-        ttk.Label(row, text="Deck:").pack(side="left")
+        ttk.Label(row, text="Cardset:").pack(side="left")
         self.deck = ttk.Label(row)
         self.deck.pack(side="left", padx=6)
         ttk.Button(row, text="Choose",
