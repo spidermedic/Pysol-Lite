@@ -28,7 +28,7 @@ import time
 import webbrowser
 from pickle import Pickler, Unpickler, UnpicklingError
 
-from pysollib.settings import PACKAGE
+from pysollib.settings import TITLE
 
 Image = ImageTk = ImageOps = ImageDraw = None
 try:  # PIL
@@ -122,13 +122,13 @@ def load_error_text(filename, ex):
 
 
 def print_err(s, level=1):
-    ss = PACKAGE + ': '
+    ss = TITLE + ': '
     if level == 0:
-        ss = PACKAGE+': ERROR:'
+        ss = TITLE + ': ERROR:'
     elif level == 1:
-        ss = PACKAGE+': WARNING:'
+        ss = TITLE + ': WARNING:'
     elif level == 2:
-        ss = PACKAGE+': DEBUG WARNING:'
+        ss = TITLE + ': DEBUG WARNING:'
     try:
         print(ss, s, file=sys.stderr)
     except Exception:
