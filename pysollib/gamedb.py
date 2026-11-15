@@ -21,8 +21,6 @@
 #
 # ---------------------------------------------------------------------------##
 
-from importlib import util
-
 import pysollib.settings
 from pysollib.mfxutil import Struct, print_err
 from pysollib.resource import CSI, getNaturalSortKey
@@ -662,7 +660,6 @@ class GameManager:
         self.__all_games = {}           # includes hidden games
         self.__all_gamenames = {}       # includes hidden games
         self.check_game = True
-        self.current_filename = None
         self.registered_game_types = {}
         self.callback = None            # update progress-bar (see main.py)
         self._num_games = 0             # for callback only
@@ -733,8 +730,6 @@ class GameManager:
 #                      if gi.id in k: break
 #                  else:
 #                      print gi.id
-        if self.current_filename is not None:
-            gi.gameclass.MODULE_FILENAME = self.current_filename
 
         if self.callback and self._num_games % 10 == 0:
             self.callback()
@@ -802,15 +797,3 @@ def registerGame(gameinfo):
 def hideGame(game):
     game.gameinfo.si.game_type = GI.GT_HIDDEN
     registerGame(game.gameinfo)
-
-
-def loadGame(modname, filename, check_game=False):
-    # print "load game", modname, filename
-    GAME_DB.check_game = check_game
-    GAME_DB.current_filename = filename
-    spec = util.spec_from_file_location(modname, filename)
-    module = util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    # execfile(filename, globals(), globals())
-    GAME_DB.current_filename = None

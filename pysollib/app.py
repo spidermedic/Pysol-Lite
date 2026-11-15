@@ -31,7 +31,7 @@ from pickle import UnpicklingError
 from pysollib.actions import PysolMenubar
 from pysollib.actions import PysolToolbar
 from pysollib.cardsetparser import read_cardset_config
-from pysollib.gamedb import GAME_DB, GI, loadGame
+from pysollib.gamedb import GAME_DB, GI
 from pysollib.help import help_about
 from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import Struct, destruct
@@ -184,7 +184,6 @@ class Application:
         config = os.path.normpath(getprefdir(PACKAGE))
         self.dn = Struct(
             config=config,
-            plugins=os.path.join(config, "plugins"),
             savegames=os.path.join(config, "savegames"),
             maint=os.path.join(config, "maint"),          # debug
         )
@@ -944,23 +943,6 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
 
     def getRandomGameId(self):
         return self._choice(self.gdb.getGamesIdSortedById())
-
-    #
-    # plugins
-    #
-
-    def loadPlugins(self, dirname):
-        for name in self._my_list_dir(dirname):
-            m = re.search(r"^(.+)\.py$", name)
-            n = os.path.join(dirname, name)
-            if m and os.path.isfile(n):
-                try:
-                    loadGame(m.group(1), n)
-                except Exception as ex:
-                    if DEBUG:
-                        traceback.print_exc()
-                    print_err("error loading plugin %(file)s: %(err)s" %
-                              {'file': n, 'err': ex})
 
     #
     # init cardsets

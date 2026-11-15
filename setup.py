@@ -53,8 +53,8 @@ long_description = '''\
 PySolFC is a collection of more than 1200 solitaire card games.
 Its features include modern look and feel (uses Tile widget set), multiple
 cardsets and tableau backgrounds, sound, unlimited undo, player statistics,
-a hint system, demo games, a solitaire wizard, support for user written
-plug-ins, an integrated HTML help browser, and lots of documentation.
+a hint system, demo games, an integrated HTML help browser, and lots of
+documentation.
 '''
 
 kw = {

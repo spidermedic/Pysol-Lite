@@ -436,7 +436,6 @@ class PysolMenubar(PysolMenubarTk):
         if not self.menustate.rules:
             return
         dir = os.path.join("html", "rules")
-        # FIXME: plugins
         help_html(self.app, self.app.getGameRulesFilename(self.game.id), dir)
 
     def mHelpLicense(self, *args):

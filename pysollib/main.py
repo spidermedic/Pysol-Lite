@@ -73,7 +73,6 @@ def parse_option(argv):
                                       ["deal=", "game=", "gameid=",
                                        "random-game",
                                        "french-only",
-                                       "noplugins",
                                        "nosound",
                                        "sound-mod=",
                                        "help"])
@@ -87,7 +86,6 @@ def parse_option(argv):
             "gameid": None,
             "random-game": False,
             "french-only": False,
-            "noplugins": False,
             "nosound": False,
             "sound-mod": None,
             }
@@ -104,8 +102,6 @@ def parse_option(argv):
             opts["random-game"] = True
         elif i[0] == "--french-only":
             opts["french-only"] = True
-        elif i[0] == "--noplugins":
-            opts["noplugins"] = True
         elif i[0] == "--nosound":
             opts["nosound"] = True
         elif i[0] == "--sound-mod":
@@ -121,7 +117,6 @@ def parse_option(argv):
         --french-only          disable non-french games
         --sound-mod=MOD        use a certain sound module
         --nosound              disable sound support
-        --noplugins            disable loading plugins
         --version              display PySol version and exit
   -h    --help                 display this help and exit
 
@@ -171,7 +166,6 @@ def pysol_init(app, args):
         app.dn.savegames,
         # os.path.join(app.dn.config, "screenshots"),
         os.path.join(app.dn.config, "cardsets"),
-        os.path.join(app.dn.config, "plugins"),
             ):
         if not os.path.exists(d):
             try:
@@ -223,15 +217,6 @@ def pysol_init(app, args):
         import pysollib.games.special
         pysollib.games.special.no_use()
 
-    # try to load plugins
-    if not opts["noplugins"]:
-        for dir in (os.path.join(app.dataloader.dir, "games"),
-                    os.path.join(app.dataloader.dir, "plugins"),
-                    app.dn.plugins):
-            try:
-                app.loadPlugins(dir)
-            except Exception:
-                pass
     GAME_DB.setCallback(None)
 
     # init audio 1)
