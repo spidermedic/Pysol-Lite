@@ -228,6 +228,16 @@ def _safe_getattr(obj, name):
         % (type(obj).__name__, name))
 
 
+def _safe_codecs_encode(data, encoding):
+    # Protocols 0 to 2 pickle a bytes object as _codecs.encode(text,
+    # 'latin1'); nothing else may use this function here.
+    if isinstance(data, str) and encoding == 'latin1':
+        return data.encode('latin1')
+    raise UnpicklingError(
+        "this saved game uses _codecs.encode(%s, %r), which is not allowed"
+        % (type(data).__name__, encoding))
+
+
 # the _alt_unpickler loads saved games: it contains a few hacks to ensure
 # backward compatibility of saves, and refuses everything else
 class _alt_unpickler(Unpickler):
@@ -264,8 +274,19 @@ class _alt_unpickler(Unpickler):
             if (isinstance(cls, type)
                     and issubclass(cls, pysollib.move.AtomicMove)):
                 return cls
-        elif module == 'builtins' and name == 'getattr':
+        elif module in ('builtins', '__builtin__') and name == 'getattr':
+            # '__builtin__' is how protocol 0 to 2 (bookmarks, old saves)
+            # names the module
             return _safe_getattr
+        elif module in ('copy_reg', 'copyreg') and name == '_reconstructor':
+            # protocol 0 to 2 build a plain object with this; the class it
+            # is given has to pass this check as well
+            import copyreg
+            return copyreg._reconstructor
+        elif module in ('builtins', '__builtin__') and name == 'object':
+            return object
+        elif module == '_codecs' and name == 'encode':
+            return _safe_codecs_encode
         raise UnpicklingError(
             "this saved game refers to %s.%s, which is not allowed"
             % (module, name))
@@ -2884,8 +2905,13 @@ class Game:
             game = self._undumpGame(p, self.app)
             assert game.id == self.id
         except Exception:
-            del self.gsaveinfo.bookmarks[n]
+            # keep the bookmark: dropping it silently would hide the cause
+            # (and lose a bookmark that a fixed program could still read)
+            traceback.print_exc()
             self.setCursor(cursor=self.app.top_cursor)
+            MfxMessageDialog(
+                self.top, title="Go to bookmark", bitmap="error",
+                text="This bookmark could not be restored.")
         else:
             if update_stats:
                 self.stats.goto_bookmark_moves += 1
