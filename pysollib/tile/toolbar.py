@@ -180,13 +180,14 @@ class PysolToolbarTk:
             (None,           None,            None),
             ("Undo",     self.mUndo,      "Undo last move"),
             ("Redo",     self.mRedo,      "Redo last move"),
+            (None,           None,            None),
             ("Bookmark", self.mBookmark, "Set bookmark"),
             ("Autodrop", self.mDrop,      "Auto drop cards"),
             ("Shuffle",  self.mShuffle,   "Shuffle tiles"),
             ("Hint",     self.mHint,      "Hint"),
             ("Pause",    self.mPause,     "Pause game"),
-            (None,           None,            None),
             ("Favorite", self.mFavorite,  "Add to favorites"),
+            (None,           None,            None),
             ("Rules",    self.mHelpRules, "Rules for this game"),
                 ):
             if label is None:
