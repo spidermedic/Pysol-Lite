@@ -11,7 +11,7 @@ the year and month (for example 26.11).
 
 PySol Lite is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
 edition and [PySolFC](https://github.com/shlomif/PySolFC), and is licensed
-under the GNU General Public License, version 3 (see `COPYING`).
+under the GNU General Public License, version 3 (see `LICENSE.md`).
 `PROGRESS-NOTES.md` is the working log of what has changed and why.
 
 ## What it has
