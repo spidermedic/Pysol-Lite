@@ -457,7 +457,7 @@ class MfxTooltip:
                                    relief=self.relief, justify=self.justify,
                                    fg=self.fg, bg=self.bg, bd=1, takefocus=0)
         self.label.pack(ipadx=1, ipady=1)
-        self.tooltip.wm_geometry("%+d%+d" % (x, y))
+        self.tooltip.wm_geometry(f"{int(x):+d}{int(y):+d}")
         self.tooltip.wm_deiconify()
         self.cancel_timer = after(
             self.widget, self.cancel_timeout, self._leave)

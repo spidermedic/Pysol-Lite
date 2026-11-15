@@ -87,8 +87,9 @@ def format_time(t):
     if t <= 0:
         return "0:00"
     if t < 3600:
-        return "%d:%02d" % (t // 60, t % 60)
-    return "%d:%02d:%02d" % (t // 3600, (t % 3600) // 60, t % 60)
+        return f"{int(t // 60)}:{int(t % 60):02d}"
+    return (f"{int(t // 3600)}:{int((t % 3600) // 60):02d}:"
+            f"{int(t % 60):02d}")
 
 
 def get_default_resampling():

@@ -196,8 +196,8 @@ class PysolSoundServerModuleClient(AbstractAudioClient):
     #
 
     def _playSample(self, filename, priority, loop, volume):
-        self.cmd("playwav '%s' %d %d %d %d"
-                 % (filename, -1, priority, loop, volume))
+        self.cmd(f"playwav '{filename}' -1 {int(priority)} {int(loop)} "
+                 f"{int(volume)}")
         return 1
 
     def _stopSamples(self):
@@ -213,7 +213,7 @@ class PysolSoundServerModuleClient(AbstractAudioClient):
         if self.app.opt.sound:
             s = SAMPLE_VOLUME
         try:
-            self.cmd("setwavvol %d" % s)
+            self.cmd(f"setwavvol {int(s)}")
         except Exception:
             if traceback:
                 traceback.print_exc()

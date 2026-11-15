@@ -65,8 +65,8 @@ class SelectCardsetDialogWithPreview(MfxDialog):
 
         h = int(ph * .8)
         w = int(pw * .8)
-        geometry = ("%dx%d+%d+%d" % (w, h, px + ((pw - w) / 2),
-                                     py + (int((ph - h) / 1.5))))
+        geometry = (f"{w}x{h}+{int(px + (pw - w) / 2)}+"
+                    f"{py + int((ph - h) / 1.5)}")
         self.top.wm_minsize(400, 200)
 
         paned_window = ttk.PanedWindow(top_frame, orient='horizontal')

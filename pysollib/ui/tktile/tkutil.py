@@ -75,7 +75,7 @@ def restore_window_geometry(window, opt):
     if w <= 0 or h <= 0:
         return
     try:
-        window.wm_geometry("%dx%d+%d+%d" % (w, h, x, y))
+        window.wm_geometry(f"{int(w)}x{int(h)}+{int(x)}+{int(y)}")
     except tkinter.TclError:
         pass
 
@@ -101,7 +101,7 @@ def setTransient(window, parent, relx=None, rely=None, expose=1,
     window.update_idletasks()
     # show
     x, y = __getWidgetXY(window, parent, relx=relx, rely=rely, rect=rect)
-    window.wm_geometry("+%d+%d" % (x, y))
+    window.wm_geometry(f"+{int(x)}+{int(y)}")
     if expose:
         window.wm_deiconify()
 
@@ -115,7 +115,7 @@ def placeOverParent(window, parent, relx=None, rely=None,
     window.update_idletasks()
     x, y = __getWidgetXY(window, parent, relx=relx, rely=rely,
                          w_width=w_width, w_height=w_height)
-    window.wm_geometry("+%d+%d" % (x, y))
+    window.wm_geometry(f"+{int(x)}+{int(y)}")
     window.wm_deiconify()
 
 

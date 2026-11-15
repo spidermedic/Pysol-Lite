@@ -111,7 +111,7 @@ def _updateStatus_process_key_val(tb, sb, k, v):
         if isinstance(v, int):
             # if tb: tb.updateText(moves="Moves\n%d" % v)
             if sb:
-                sb.updateText(moves="%d" % v)
+                sb.updateText(moves=f"{int(v)}")
             return
         if isinstance(v, str):
             # if tb: tb.updateText(moves=v)
@@ -1067,7 +1067,8 @@ class Game:
         for stack in self.allstacks:
             s = []
             for card in stack.cards:
-                s.append('%d%03d%d' % (card.suit, card.rank, card.face_up))
+                s.append(f'{int(card.suit)}{int(card.rank):03d}'
+                         f'{int(card.face_up)}')
             sn.append(''.join(s))
         sn = '-'.join(sn)
         return sn
@@ -2382,7 +2383,7 @@ class Game:
         info = (level == 1) or (level > 1 and DEBUG)
         if info and self.app.statusbar and self.app.opt.statusbar:
             self.app.statusbar.configLabel(
-                "info", text="Score %6d" % (score), fg=text_color)
+                "info", text=f"Score {int(score):6d}", fg=text_color)
         else:
             info = 0
         self.drawHintArrow(from_stack, to_stack, ncards, sleep)
