@@ -60,7 +60,7 @@ class FindCardDialog(tkinter.Toplevel):
         #
         self.groups = []
         self.cells = []         # one dict per emblem (see createCardLabel)
-        self.shown = {}         # cell index -> [highlight items, blink timer]
+        self.shown = {}         # cell index -> highlight items on the table
         self.hovered = None     # cell under the pointer
         self.selected = None    # cell chosen with the keyboard (or last click)
         self.pinned = None      # cell kept marked by a click or Enter
@@ -80,9 +80,6 @@ class FindCardDialog(tkinter.Toplevel):
         for key in ("<Return>", "<KP_Enter>", "<space>"):
             bind(self, key, self.pinEvent)
         #
-        self.normal_timeout = int(
-            1000*game.app.opt.timeouts['highlight_samerank'])
-        self.hidden_timeout = 200
 
     def createCardLabel(self, suit, rank, x0, y0):
         dx, dy = self.label_width, self.label_height
@@ -224,19 +221,14 @@ class FindCardDialog(tkinter.Toplevel):
         if self.game.demo:
             return
         cell = self.cells[n]
-        items = self.game.highlightCard(cell['suit'], cell['rank']) or []
-        timer = None
-        if items:
-            timer = after(self, self.normal_timeout, self.blinkEvent, n)
-        self.shown[n] = [items, timer]
+        items = self.game.highlightCard(cell['suit'], cell['rank'])
+        self.shown[n] = items or []
         cell['rect'].config(state='normal')
         self.canvas.update_idletasks()
 
     def hideCell(self, n):
-        items, timer = self.shown.pop(n)
-        for i in items:
+        for i in self.shown.pop(n):
             i.delete()
-        after_cancel(timer)
         self.cells[n]['rect'].config(state='hidden')
         if self.game.canvas:
             self.game.canvas.update_idletasks()
@@ -244,8 +236,7 @@ class FindCardDialog(tkinter.Toplevel):
 
     def clearHighlights(self):
         # forget everything that is shown (the game may be gone already)
-        for items, timer in self.shown.values():
-            after_cancel(timer)
+        for items in self.shown.values():
             for i in items:
                 try:
                     i.delete()
@@ -255,21 +246,6 @@ class FindCardDialog(tkinter.Toplevel):
         if self.poll is not None:
             after_cancel(self.poll)
             self.poll = None
-
-    def blinkEvent(self, n):
-        entry = self.shown.get(n)
-        if not entry or not entry[0]:
-            return
-        items = entry[0]
-        state = items[0].cget('state')
-        if state in ('', 'normal'):
-            state = 'hidden'
-            entry[1] = after(self, self.hidden_timeout, self.blinkEvent, n)
-        else:
-            state = 'normal'
-            entry[1] = after(self, self.normal_timeout, self.blinkEvent, n)
-        for item in items:
-            item.config(state=state)
 
     def getSignature(self):
         # the marks sit at fixed places on the table: when a card moves
