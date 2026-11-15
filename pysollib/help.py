@@ -40,16 +40,13 @@ from pysollib.settings import PACKAGE_URL, TITLE, VERSION
 def help_about(app, timeout=0, sound=True):
     if sound:
         app.audio.playSample("about")
-    t = "A lighter PySol"
     strings = ("&Nice", "&Credits")
     if timeout:
         strings = ("&Enjoy",)
-    version = "Version %s" % VERSION
+    title_version = "%s v%s" % (TITLE, VERSION)
     d = PysolAboutDialog(app, app.top, title="About %s" % TITLE,
                          timeout=timeout,
                          text=('''%(title)s
-%(description)s
-%(versioninfo)s
 
 Based on PySol, PySol Fan Club edition and PySolFC.
 Copyright (C) 1998 - 2003 Markus F.X.J. Oberhumer.
@@ -63,8 +60,7 @@ PySol is free software distributed under the terms
 of the GNU General Public License.
 
 For more information about this application visit''') %
-                         {'title': TITLE, 'description': t,
-                          'versioninfo': version},
+                         {'title': title_version},
                          url=PACKAGE_URL,
                          image=app.gimages.logos[1],
                          strings=strings, default=0,
