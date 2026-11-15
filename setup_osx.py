@@ -119,6 +119,15 @@ if "py2app" in sys.argv:
     shutil.rmtree(os.path.join(
         top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Resources', 'data',
         'tcl'), ignore_errors=True)
+    # python314.zip holds unused copies of PIL's .dylibs (PIL loads the ones
+    # next to its .so in lib-dynload) and a test archive. Apple's notary
+    # service looks inside zips and rejects the unsigned copies.
+    _zip = os.path.join(
+        top, 'dist', f'{BUNDLE}.app', 'Contents', 'Resources', 'lib',
+        f'python{sys.version_info[0]}{sys.version_info[1]}.zip')
+    if os.path.exists(_zip):
+        call(['zip', '-q', '-d', _zip, 'PIL/.dylibs/*',
+              'test/certdata/distrusted.zip'])
 # Point libwebp at the bundled libsharpyuv instead of its broken
 # original rpath.
 if SHARPYUV_LIB_PATH and "py2app" in sys.argv:

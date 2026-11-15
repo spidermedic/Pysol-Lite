@@ -97,16 +97,24 @@ below).
    done
    ```
 
-6. Sign a clean copy and install it. Quit PySol Lite first, since replacing a
-   running app causes trouble:
+6. Sign with the Developer ID, notarize, staple and install. Quit PySol Lite
+   first, since replacing a running app causes trouble. One-time setup: store
+   a notarytool profile (`xcrun notarytool store-credentials pysol-notary
+   --apple-id <Apple ID> --team-id <Team ID> --password <app-specific
+   password>`). Then:
 
    ```
-   ditto --norsrc --noextattr --noqtn "dist/PySol Lite.app" /tmp/PySolLite/"PySol Lite.app"
-   codesign --force --deep --sign - /tmp/PySolLite/"PySol Lite.app"
-   codesign -v /tmp/PySolLite/"PySol Lite.app"
-   ditto --norsrc --noextattr --noqtn /tmp/PySolLite/"PySol Lite.app" ~/Applications/"PySol Lite.app"
+   scripts/notarize.sh "dist/PySol Lite.app"
+   ditto --norsrc --noextattr --noqtn "dist/PySol Lite.app" ~/Applications/"PySol Lite.app"
    ~/Applications/"PySol Lite.app"/Contents/MacOS/"PySol Lite" --version
    ```
+
+   The script signs every Mach-O file inside-out with the hardened runtime and
+   `scripts/entitlements.plist`, submits the app to Apple, staples the ticket
+   and checks it with `spctl`. Set `SIGN_ID` or `NOTARY_PROFILE` in the
+   environment to use another certificate or profile. For a local test without
+   an Apple account, `codesign --force --deep --sign - "PySol Lite.app"` still
+   gives an ad-hoc signature.
 
 Things that go wrong:
 
