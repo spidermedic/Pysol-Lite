@@ -45,6 +45,21 @@ _global_settings = {
 }
 
 
+def _mac_tk9_exchange(button):
+    """Tk 8.6 on macOS reported the right button, and the two-finger tap of a
+    trackpad, as button 2 and the middle button as button 3. Tk 9 numbers
+    them like every other system. The card piles were set up for the old
+    numbering: a two-finger tap showed a partially covered card (the "middle
+    button" action) and the middle button did the "right button" actions.
+    So that this stays the same, buttons 2 and 3 are exchanged for the card
+    piles on a Mac with Tk 9."""
+    import tkinter
+    if (pysollib.settings.WIN_SYSTEM == 'aqua'
+            and tkinter.TkVersion >= 9.0 and button in (2, 3)):
+        return 5 - button
+    return button
+
+
 def calcCustomMouseButtonsBinding(binding_format):
     assert _global_settings['mouse_button1']
     return binding_format.format(
@@ -613,12 +628,19 @@ class Options:
         _global_settings['mouse_button2'] = _positive(self.mouse_button2)
         _global_settings['mouse_button3'] = _positive(self.mouse_button3)
 
-    def calcCustomMouseButtonsBinding(self, binding_format):
-        """docstring for calcCustomMouseButtonsBinding"""
+    def calcCustomMouseButtonsBinding(self, binding_format, cards=False):
+        """The binding for the mouse button names in binding_format.  The
+        buttons of the card piles (cards=True) are exchanged between 2 and 3
+        on a Mac with Tk 9, see _mac_tk9_exchange."""
         def _positive(button):
             return max([button, 1])
+        buttons = [_positive(self.mouse_button1),
+                   _positive(self.mouse_button2),
+                   _positive(self.mouse_button3)]
+        if cards:
+            buttons = [_mac_tk9_exchange(b) for b in buttons]
         return binding_format.format(
-            mouse_button1=_positive(self.mouse_button1),
-            mouse_button2=_positive(self.mouse_button2),
-            mouse_button3=_positive(self.mouse_button3),
+            mouse_button1=buttons[0],
+            mouse_button2=buttons[1],
+            mouse_button3=buttons[2],
         )

@@ -267,7 +267,8 @@ class Stack:
             self.initBindings()
 
     def _calcMouseBind(self, binding_format):
-        return self.game.app.opt.calcCustomMouseButtonsBinding(binding_format)
+        return self.game.app.opt.calcCustomMouseButtonsBinding(
+            binding_format, cards=True)
 
     # bindings {view widgets bind to controller}
     def initBindings(self):
