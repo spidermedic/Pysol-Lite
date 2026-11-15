@@ -800,7 +800,7 @@ class Eighteens_RowStack(Elevens_RowStack):
 
 class Eighteens_Reserve(ReserveStack):
     def acceptsCards(self, from_stack, cards):
-        sum = 0
+        total = 0
         numcards = 0
         if len(self.cards) > 3:
             return False
@@ -809,9 +809,9 @@ class Eighteens_Reserve(ReserveStack):
                     or (c.rank == cards[0].rank)):
                 return False
             if cards[0].rank <= 9 and c.rank <= 9:
-                sum += c.rank + 1
+                total += c.rank + 1
                 numcards += 1
-        newsum = sum + cards[0].rank + 1
+        newsum = total + cards[0].rank + 1
         if newsum > 18 or (numcards == 2 and newsum < 18):
             return False
         return True

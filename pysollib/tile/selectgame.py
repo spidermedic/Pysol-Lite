@@ -206,9 +206,9 @@ class SelectGameDialog(MfxDialog):
             doc = self.app.getGameRulesFilename(self.selected_gameid)
             if not doc:
                 return
-            dir = os.path.join("html", "rules")
+            rules_dir = os.path.join("html", "rules")
             from pysollib.help import help_html
-            help_html(self.app, doc, dir, self.top)
+            help_html(self.app, doc, rules_dir, self.top)
             return
         MfxDialog.mDone(self, button)
 

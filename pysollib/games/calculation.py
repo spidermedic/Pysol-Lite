@@ -81,31 +81,31 @@ class Calculation(Game):
 
     def _getHelpText(self):
         decks = self.gameinfo.decks
-        help = (('''\
+        help_text = (('''\
 1: 2 3 4 5 6 7 8 9 T J Q K
 2: 4 6 8 T Q A 3 5 7 9 J K
 3: 6 9 Q 2 5 8 J A 4 7 T K
 4: 8 Q 3 7 J 2 6 T A 5 9 K'''))
         if decks > 1:
-            help += (('''\
+            help_text += (('''\
 
 5: T 2 7 Q 4 9 A 6 J 3 8 K
 6: Q 5 J 4 T 3 9 2 8 A 7 K
 7: A 8 2 9 3 T 4 J 5 Q 6 K
 8: 3 J 6 A 9 4 Q 7 2 T 5 K'''))
         # calculate text_width
-        lines = sorted(help.split('\n'), key=len)
+        lines = sorted(help_text.split('\n'), key=len)
         max_line = lines[-1]
         text_width = get_text_width(max_line,
                                     font=self.app.getFont("canvas_fixed"))
-        return help, text_width
+        return help_text, text_width
 
     def createGame(self, playcards=20):
 
         decks = self.gameinfo.decks
         # create layout
         l, s = Layout(self, TEXT_HEIGHT=40), self.s
-        help, text_width = self._getHelpText()
+        help_text, text_width = self._getHelpText()
         text_width += 2 * l.XM
 
         # set window
@@ -126,7 +126,7 @@ class Calculation(Game):
                                              anchor=ta, font=font)
             x = x + l.XS
         self.texts.help = MfxCanvasText(
-            self.canvas, x + l.XM, l.YM, text=help,
+            self.canvas, x + l.XM, l.YM, text=help_text,
             anchor="nw", font=self.app.getFont("canvas_fixed"))
         x = x0
         y = l.YM + l.YS + l.TEXT_HEIGHT
@@ -180,7 +180,7 @@ class BetsyRoss(Calculation):
     def createGame(self):
         # create layout
         l, s = Layout(self), self.s
-        help, text_width = self._getHelpText()
+        help_text, text_width = self._getHelpText()
         text_width += 2 * l.XM
 
         # set window
@@ -207,7 +207,7 @@ class BetsyRoss(Calculation):
             s.foundations.append(stack)
             x += l.XS
         self.texts.help = MfxCanvasText(self.canvas, x + l.XM, y + l.CH // 2,
-                                        text=help, anchor="w",
+                                        text=help_text, anchor="w",
                                         font=self.app.getFont("canvas_fixed"))
         x = l.XM
         s.talon = WasteTalonStack(x, y, self, max_rounds=3)
@@ -282,7 +282,7 @@ class SeniorWrangler(Calculation):
 
     def createGame(self):
         l, s = Layout(self), self.s
-        help, text_width = self._getHelpText()
+        help_text, text_width = self._getHelpText()
         text_width += 2*l.XM
         self.setSize((l.XM + 9.75 * l.XS) + text_width, l.YM + 3 * l.YS)
 
@@ -298,7 +298,7 @@ class SeniorWrangler(Calculation):
             x = x + l.XS
 
         self.texts.help = MfxCanvasText(
-            self.canvas, x + l.XM, l.YM, text=help,
+            self.canvas, x + l.XM, l.YM, text=help_text,
             anchor="nw", font=self.app.getFont("canvas_fixed"))
 
         x, y = l.XM+1.5*l.XS, l.YM+2*l.YS

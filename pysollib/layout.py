@@ -274,8 +274,8 @@ class Layout:
             stacks = []
             for s in region[0]:
                 mapkey = (s.x, s.y)
-                id = self.game.stackmap[mapkey]
-                stacks.append(self.game.allstacks[id])
+                stack_id = self.game.stackmap[mapkey]
+                stacks.append(self.game.allstacks[stack_id])
             # print stacks, region[1]
             self.game.setRegion(stacks, region[1])
 

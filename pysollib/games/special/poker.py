@@ -191,9 +191,9 @@ One Pair'''))
         score = 0
         count = [0] * 9
         for i in range(10):
-            type, value = self.getHandScore(self.poker_hands[i])
-            if 0 <= type <= 8:
-                count[type] += 1
+            hand_type, value = self.getHandScore(self.poker_hands[i])
+            if 0 <= hand_type <= 8:
+                count[hand_type] += 1
             self.texts.list[i+2].config(text=str(value))
             score += value
         t = '\n'.join(map(str, count))

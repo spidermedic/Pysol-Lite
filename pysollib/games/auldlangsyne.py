@@ -316,8 +316,8 @@ class Interregnum(Game):
     def _restoreGameHook(self, game):
         self.base_cards = [None] * 8
         for i in range(8):
-            id = game.loadinfo.base_card_ids[i]
-            self.base_cards[i] = self.cards[id]
+            card_id = game.loadinfo.base_card_ids[i]
+            self.base_cards[i] = self.cards[card_id]
             self.s.foundations[i].cap.base_rank = \
                 (self.base_cards[i].rank + 1) % 13
 

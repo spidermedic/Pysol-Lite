@@ -172,8 +172,8 @@ class MfxCanvas(tkinter.Canvas):
         else:  # not Image
             stretch = 0
             image = self._bg_img
-        for id in self.__tiles:
-            self.delete(id)
+        for item_id in self.__tiles:
+            self.delete(item_id)
         self.__tiles = []
         # must keep a reference to the image, otherwise Python will
         # garbage collect it...
@@ -184,18 +184,18 @@ class MfxCanvas(tkinter.Canvas):
                 dx, dy = 0, 0
             else:
                 dx, dy = -self.xmargin, -self.ymargin
-            id = self._x_create("image", dx, dy, image=image, anchor="nw")
-            self.tag_lower(id)          # also see tag_lower above
-            self.__tiles.append(id)
+            item_id = self._x_create("image", dx, dy, image=image, anchor="nw")
+            self.tag_lower(item_id)          # also see tag_lower above
+            self.__tiles.append(item_id)
         else:
             iw, ih = image.width(), image.height()
             sw, sh = self._geometry()
             for x in range(-self.xmargin, sw, iw):
                 for y in range(-self.ymargin, sh, ih):
-                    id = self._x_create(
+                    item_id = self._x_create(
                         "image", x, y, image=image, anchor="nw")
-                    self.tag_lower(id)          # also see tag_lower above
-                    self.__tiles.append(id)
+                    self.tag_lower(item_id)          # also see tag_lower above
+                    self.__tiles.append(item_id)
         return 1
 
     def _geometry(self):
@@ -224,10 +224,10 @@ class MfxCanvas(tkinter.Canvas):
 
     def _create(self, itemType, args, kw):
         # print "_create:", itemType, args, kw
-        id = tkinter.Canvas._create(self, itemType, args, kw)
+        item_id = tkinter.Canvas._create(self, itemType, args, kw)
         if self.__tops:
-            self.tk.call(self._w, "lower", id, self.__tops[0])
-        return id
+            self.tk.call(self._w, "lower", item_id, self.__tops[0])
+        return item_id
 
     def tag_raise(self, id, aboveThis=None):
         # print "tag_raise:", id, aboveThis
@@ -265,10 +265,11 @@ class MfxCanvas(tkinter.Canvas):
     # delete all CanvasItems, but keep the background and top tiles
     def deleteAllItems(self):
         self._text_items = []
-        for id in list(self.items.keys()):
-            assert id not in self.__tiles   # because the tile is created by id
-            unbind_destroy(self.items[id])
-            self.items[id].delete()
+        for item_id in list(self.items.keys()):
+            # because the tile is created by id
+            assert item_id not in self.__tiles
+            unbind_destroy(self.items[item_id])
+            self.items[item_id].delete()
         assert self.items == {}
 
     def findCard(self, stack, event):
@@ -329,8 +330,8 @@ class MfxCanvas(tkinter.Canvas):
             self._save_aspect_bg_image = save_aspect
             self.setBackgroundImage()
         else:
-            for id in self.__tiles:
-                self.delete(id)
+            for item_id in self.__tiles:
+                self.delete(item_id)
             self.__tiles = []
             self._bg_img = None
         return 1
@@ -343,8 +344,8 @@ class MfxCanvas(tkinter.Canvas):
             return 0
         if len(self.__tops) == 1 and image is self.__tops[0]:
             return 1
-        for id in self.__tops:
-            self.delete(id)
+        for item_id in self.__tops:
+            self.delete(item_id)
         self.__tops = []
         # must keep a reference to the image, otherwise Python will
         # garbage collect it...
@@ -361,9 +362,9 @@ class MfxCanvas(tkinter.Canvas):
         # print iw, ih, cw, ch
         x = (cw-iw)//2-self.xmargin+self.xview()[0]*int(self.cget('width'))
         y = (ch-ih)//2-self.ymargin+self.yview()[0]*int(self.cget('height'))
-        id = self._x_create("image", x, y, image=image, anchor="nw")
-        self.tk.call(self._w, "raise", id)
-        self.__tops.append(id)
+        item_id = self._x_create("image", x, y, image=image, anchor="nw")
+        self.tk.call(self._w, "raise", item_id)
+        self.__tops.append(item_id)
         return 1
 
     #

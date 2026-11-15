@@ -1090,16 +1090,17 @@ class Game:
         if progress:
             pstep = (100.0 - progress.percent) / gi.ncards
         cards = []
-        id = [0]
+        next_card_id = [0]
         x, y = self.s.talon.x, self.s.talon.y
         for deck in range(gi.decks):
             def _iter_ranks(ranks, suit):
                 for rank in ranks:
-                    card = self._createCard(id[0], deck, suit, rank, x=x, y=y)
+                    card = self._createCard(
+                        next_card_id[0], deck, suit, rank, x=x, y=y)
                     if card is None:
                         continue
                     cards.append(card)
-                    id[0] += 1
+                    next_card_id[0] += 1
                     if progress:
                         progress.update(step=pstep)
             for suit in gi.suits:
@@ -2521,29 +2522,29 @@ class Game:
             if self.demo and status == 2:
                 # timeout in dialog - start another demo
                 demo = self.demo
-                id = self.id
+                game_id = self.id
                 if demo.mixed and DEBUG:
                     # debug - advance game id to make sure we hit all games
                     gl = self.app.gdb.getGamesIdSortedById()
                     # gl = self.app.gdb.getGamesIdSortedByName()
                     gl = list(gl)
                     index = (gl.index(self.id) + 1) % len(gl)
-                    id = gl[index]
+                    game_id = gl[index]
                 elif demo.mixed:
                     # choose a random game
                     gl = self.app.gdb.getGamesIdSortedById()
                     while len(gl) > 1:
-                        id = self.app.getRandomGameId()
-                        if id != self.id:      # force change of game
+                        game_id = self.app.getRandomGameId()
+                        if game_id != self.id:      # force change of game
                             break
-                if self.nextGameFlags(id) == 0:
+                if self.nextGameFlags(game_id) == 0:
                     self.endGame()
                     self.newGame(autoplay=0)
                     self.startDemo(mixed=demo.mixed)
                 else:
                     self.endGame()
                     self.stopDemo()
-                    self.quitGame(id, startdemo=1)
+                    self.quitGame(game_id, startdemo=1)
             else:
                 self.stopDemo()
         else:
@@ -2993,10 +2994,10 @@ class Game:
         game_version = pload(int)
         validate(game_version > 0, err_txt)
         #
-        id = pload(int)
-        validate(id > 0, err_txt)
-        if id not in GI.PROTECTED_GAMES:
-            game = app.constructGame(id)
+        game_id = pload(int)
+        validate(game_id > 0, err_txt)
+        if game_id not in GI.PROTECTED_GAMES:
+            game = app.constructGame(game_id)
             if game:
                 if not game.canLoadGame(version_tuple, game_version):
                     destruct(game)

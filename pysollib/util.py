@@ -149,8 +149,8 @@ class DataLoader:
             subdirs = ("",)
         elif isinstance(subdirs, str):
             subdirs = (subdirs,)
-        for dir in subdirs:
-            f = os.path.join(self.dir, dir, filename)
+        for subdir in subdirs:
+            f = os.path.join(self.dir, subdir, filename)
             f = os.path.normpath(f)
             if func(f):
                 return f

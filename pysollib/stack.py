@@ -162,13 +162,13 @@ class Stack:
         #
         if cap is None:
             cap = {}
-        id = len(game.allstacks)
+        stack_id = len(game.allstacks)
         game.allstacks.append(self)
         x = int(round(x))
         y = int(round(y))
         mapkey = (x, y)
         # assert not game.stackmap.has_key(mapkey) ## can happen in PyJonngg
-        game.stackmap[mapkey] = id
+        game.stackmap[mapkey] = stack_id
 
         #
         # setup our pseudo MVC scheme
@@ -178,7 +178,7 @@ class Stack:
         #
         # model
         #
-        model.id = id
+        model.id = stack_id
         model.game = game
         model.cards = []
         #
@@ -514,10 +514,10 @@ class Stack:
             cards = self.cards[-2:]
         if len(cards) < 2:
             return 0
-        dir = (cards[-1].rank - cards[-2].rank) % self.cap.mod
-        if dir > self.cap.mod // 2:
-            return dir - self.cap.mod
-        return dir
+        direction = (cards[-1].rank - cards[-2].rank) % self.cap.mod
+        if direction > self.cap.mod // 2:
+            return direction - self.cap.mod
+        return direction
 
     #
     # Basic capabilities {model}
@@ -786,15 +786,15 @@ class Stack:
         if self.game.preview > 1 or self.texts.ncards is None:
             return
         t = ""
-        format = "%d"
+        fmt = "%d"
         if self.texts.ncards.text_format is not None:
-            format = self.texts.ncards.text_format
-            if format == "%D":
-                format = ""
+            fmt = self.texts.ncards.text_format
+            if fmt == "%D":
+                fmt = ""
                 if self.cards:
-                    format = "%d"
-        if format:
-            t = format % len(self.cards)
+                    fmt = "%d"
+        if fmt:
+            t = fmt % len(self.cards)
             # if 0:
             #     visible = 0
             #     for c in self.cards:
@@ -1244,11 +1244,11 @@ class Stack:
                     self.current_cursor = CURSOR_DOWN_ARROW
                     self.cursor_changed = True
         else:
-            help = self.getHelp()
+            help_text = self.getHelp()
             if DEBUG:
-                help = repr(self)
+                help_text = repr(self)
             after_idle(self.canvas, self.game.showHelp,
-                       'help', help,
+                       'help', help_text,
                        'info', self.getNumCards())
         return EVENT_HANDLED
 

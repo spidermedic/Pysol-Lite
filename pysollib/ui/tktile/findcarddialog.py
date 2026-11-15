@@ -83,7 +83,7 @@ class FindCardDialog(tkinter.Toplevel):
 
     def createCardLabel(self, suit, rank, x0, y0):
         dx, dy = self.label_width, self.label_height
-        dir = self.images_dir
+        images_dir = self.images_dir
         canvas = self.canvas
         group = MfxCanvasGroup(canvas)
         #
@@ -95,7 +95,7 @@ class FindCardDialog(tkinter.Toplevel):
                 s = suitletters[suit]
             else:
                 s = "z"
-            fn = os.path.join(dir, r+s+'.png')
+            fn = os.path.join(images_dir, r+s+'.png')
             im = makeImage(file=fn)
             FindCardDialog.CARD_IMAGES[(self.cardsettype, rank, suit)] = im
         cim = MfxCanvasImage(canvas, x0, y0, image=im, anchor='nw')

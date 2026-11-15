@@ -170,10 +170,10 @@ class DerKleineNapoleon(Game):
         f = self.s.foundations[0]
         if f.cards:
             t = RANKS[f.cards[0].rank]
-            dir = self.getFoundationDir()
-            if dir == 1:
+            direction = self.getFoundationDir()
+            if direction == 1:
                 t = t + " Ascending"
-            elif dir == -1:
+            elif direction == -1:
                 t = t + " Descending"
         self.texts.info.config(text=t)
 

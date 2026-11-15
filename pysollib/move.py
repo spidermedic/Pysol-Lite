@@ -457,9 +457,9 @@ class AShuffleStackMove(AtomicMove):
         stack = game.allstacks[self.stack_id]
         # restore cards
         cards = []
-        for id in self.card_ids:
-            c = game.cards[id]
-            assert c.id == id
+        for card_id in self.card_ids:
+            c = game.cards[card_id]
+            assert c.id == card_id
             cards.append(c)
         stack.cards = cards
         # restore the state

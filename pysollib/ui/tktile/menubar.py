@@ -723,8 +723,8 @@ class PysolMenubarTkCommon:
         gameids = self.app.opt.favorite_gameid
         menu, index, submenu = self.menupath[".menubar.games.favoritegames"]
         games = []
-        for id in gameids:
-            gi = self.app.getGameInfo(id)
+        for game_id in gameids:
+            gi = self.app.getGameInfo(game_id)
             if gi:
                 games.append(gi)
 
@@ -750,8 +750,8 @@ class PysolMenubarTkCommon:
     def updateRecentGamesMenu(self, gameids):
         submenu = self.menupath[".menubar.games.recentgames"][2]
         games = []
-        for id in gameids:
-            gi = self.app.getGameInfo(id)
+        for game_id in gameids:
+            gi = self.app.getGameInfo(game_id)
             if gi:
                 games.append(gi)
         self.updateGamesMenu(submenu, games)
@@ -1140,8 +1140,8 @@ class PysolMenubarTkCommon:
             return
         self.app.opt.toolbar_size = size
         self.tkopt.toolbar_size.set(size)                # update radiobutton
-        dir = self.app.getToolbarImagesDir()
-        if self.app.toolbar.updateImages(dir, size):
+        images_dir = self.app.getToolbarImagesDir()
+        if self.app.toolbar.updateImages(images_dir, size):
             self.top.update_idletasks()
 
     def setToolbarCompound(self, compound):

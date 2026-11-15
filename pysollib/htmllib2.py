@@ -411,7 +411,7 @@ class HTMLParser(html_parser.HTMLParser):
     def start_a(self, attrs):
         href = ''
         name = ''
-        type = ''
+        link_type = ''
         for attrname, value in attrs:
             value = value.strip()
             if attrname == 'href':
@@ -419,8 +419,8 @@ class HTMLParser(html_parser.HTMLParser):
             if attrname == 'name':
                 name = value
             if attrname == 'type':
-                type = value.lower()
-        self.anchor_bgn(href, name, type)
+                link_type = value.lower()
+        self.anchor_bgn(href, name, link_type)
 
     def end_a(self):
         self.anchor_end()

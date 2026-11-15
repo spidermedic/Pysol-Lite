@@ -751,14 +751,14 @@ class GameManager:
     def getGamesIdSortedByName(self):
         if self.__games_by_name is None:
             l1, l2, l3 = [], [], []
-            for id, gi in self.__games.items():
-                l1.append((getNaturalSortKey(gi.name), id))
+            for game_id, gi in self.__games.items():
+                l1.append((getNaturalSortKey(gi.name), game_id))
                 if gi.name != gi.short_name:
-                    l2.append((getNaturalSortKey(gi.short_name), id))
+                    l2.append((getNaturalSortKey(gi.short_name), game_id))
                 else:
-                    l2.append((getNaturalSortKey(gi.name), id))
+                    l2.append((getNaturalSortKey(gi.name), game_id))
                 for n in gi.altnames:
-                    l3.append((getNaturalSortKey(n), id, n))
+                    l3.append((getNaturalSortKey(n), game_id, n))
             l1.sort(key=lambda x: x[0])
             l2.sort(key=lambda x: x[0])
             l3.sort(key=lambda x: x[0])

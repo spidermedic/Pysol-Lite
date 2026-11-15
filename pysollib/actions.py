@@ -232,16 +232,16 @@ class PysolMenubar(PysolMenubarTk):
     def _mSelectNextGameFromList(self, gl, step):
         if self._cancelDrag():
             return
-        id = self.game.id
+        game_id = self.game.id
         gl = list(gl)
-        if len(gl) < 2 or (id not in gl):
+        if len(gl) < 2 or (game_id not in gl):
             return
         if self.changed():
             if not self.game.areYouSure(
                     "Select next game",
                     "Discard this game and start another?"):
                 return
-        index = (gl.index(id) + step) % len(gl)
+        index = (gl.index(game_id) + step) % len(gl)
         self.game.endGame()
         self.game.quitGame(gl[index])
 
@@ -435,8 +435,9 @@ class PysolMenubar(PysolMenubarTk):
             return
         if not self.menustate.rules:
             return
-        dir = os.path.join("html", "rules")
-        help_html(self.app, self.app.getGameRulesFilename(self.game.id), dir)
+        rules_dir = os.path.join("html", "rules")
+        help_html(self.app, self.app.getGameRulesFilename(self.game.id),
+                  rules_dir)
 
     def mHelpLicense(self, *args):
         if self._cancelDrag(break_pause=False):

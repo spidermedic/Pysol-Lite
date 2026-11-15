@@ -228,8 +228,8 @@ class Abacus_Foundation(SS_FoundationStack):
 
 class Abacus_RowStack(Yukon_SS_RowStack):
     def _isYukonSequence(self, c1, c2):
-        dir, mod = -(c1.suit + 1), 13
-        return c1.suit == c2.suit and (c1.rank + dir) % mod == c2.rank
+        direction, mod = -(c1.suit + 1), 13
+        return c1.suit == c2.suit and (c1.rank + direction) % mod == c2.rank
 
 
 class Abacus(Rushdike):
@@ -238,14 +238,14 @@ class Abacus(Rushdike):
 
     def createGame(self):
         layout = Rushdike.createGame(self)
-        help = (('''\
+        help_text = (('''\
 Club:    A 2 3 4 5 6 7 8 9 T J Q K
 Spade:   2 4 6 8 T Q A 3 5 7 9 J K
 Heart:   3 6 9 Q 2 5 8 J A 4 7 T K
 Diamond: 4 8 Q 3 7 J 2 6 T A 5 9 K'''))
         self.texts.help = MfxCanvasText(self.canvas,
                                         layout.XM, self.height - layout.YM,
-                                        text=help,
+                                        text=help_text,
                                         anchor="sw",
                                         font=self.app.getFont("canvas_fixed"))
 
@@ -263,10 +263,10 @@ Diamond: 4 8 Q 3 7 J 2 6 T A 5 9 K'''))
         self.s.talon.dealRow(reverse=reverse)
 
     def shallHighlightMatch(self, stack1, card1, stack2, card2):
-        dir, mod = -(card1.suit + 1), 13
+        direction, mod = -(card1.suit + 1), 13
         return (card1.suit == card2.suit and
-                ((card1.rank + dir) % mod == card2.rank or
-                 (card2.rank + dir) % mod == card1.rank))
+                ((card1.rank + direction) % mod == card2.rank or
+                 (card2.rank + direction) % mod == card1.rank))
 
 
 # ************************************************************************

@@ -133,22 +133,22 @@ class ResourceManager:
         if env:
             for d in os.environ.get(env, "").split(os.pathsep):
                 self._addDir(result, d.strip())
-        for dir in (app.dataloader.dir, app.dn.maint, app.dn.config):
-            if not dir:
+        for directory in (app.dataloader.dir, app.dn.maint, app.dn.config):
+            if not directory:
                 continue
-            dir = os.path.normpath(dir)
-            if not dir or not os.path.isdir(dir):
+            directory = os.path.normpath(directory)
+            if not directory or not os.path.isdir(directory):
                 continue
             for s in search:
                 try:
                     if s[-2:] == "-*":
-                        d = os.path.normpath(os.path.join(dir, s[:-2]))
+                        d = os.path.normpath(os.path.join(directory, s[:-2]))
                         self._addDir(result, d)
                         globdirs = sorted(glob.glob(d + "-*"))
                         for d in globdirs:
                             self._addDir(result, d)
                     else:
-                        self._addDir(result, os.path.join(dir, s))
+                        self._addDir(result, os.path.join(directory, s))
                 except EnvironmentError:
                     traceback.print_exc()
         if DEBUG >= 6:
