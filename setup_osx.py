@@ -61,7 +61,7 @@ PLIST = dict(
     )
 APP = ['pysol.py']
 ICON_FILE = 'data/PySol.icns'
-DATA_FILES = ['data', 'LICENSE.md', 'README.md']
+DATA_FILES = ['data', 'LICENSE.md', 'THIRD-PARTY-LICENSES.md', 'README.md']
 RESOURCES = []
 FRAMEWORKS = [SHARPYUV_LIB_PATH] if SHARPYUV_LIB_PATH else []
 # with argv_emulation=True, the app window is not shown when launched

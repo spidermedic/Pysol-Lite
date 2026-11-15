@@ -46,6 +46,7 @@ files = [
     ('index.html', 'PySol Lite - a Solitaire Game Collection'),
     ('intro.html', 'PySol Lite - Introduction'),
     ('license.html', 'GNU General Public License'),
+    ('third_party_licenses.html', 'PySol Lite - Third-party licenses'),
     # ('rules_alternate.html', 'PySol Lite - a Solitaire Game Collection'),
     # ('rules.html', 'PySol Lite - a Solitaire Game Collection'),
     ('settings.html', 'PySol Lite - Settings'),
@@ -123,11 +124,20 @@ def _get_game_rules_filename(n):
 
 def _read_page(infile):
     """The body of a page.  The license page is built from LICENSE.md (the
-    FSF's own Markdown text of the GPL), so the text exists only once."""
+    FSF's own Markdown text of the GPL), so the text exists only once; the
+    third-party licenses page is built from THIRD-PARTY-LICENSES.md the same
+    way."""
     if infile == 'license.html':
         import markdown
         with open(os.path.join('..', 'LICENSE.md'), encoding='utf-8') as f:
             return markdown.markdown(f.read())
+    if infile == 'third_party_licenses.html':
+        # the licenses of the software and data inside the app, built from
+        # THIRD-PARTY-LICENSES.md; it has tables
+        import markdown
+        with open(os.path.join('..', 'THIRD-PARTY-LICENSES.md'),
+                  encoding='utf-8') as f:
+            return markdown.markdown(f.read(), extensions=['tables'])
     with open(infile, 'r', encoding='utf-8') as file:
         return file.read()
 

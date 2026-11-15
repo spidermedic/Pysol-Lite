@@ -4,7 +4,7 @@
 ## code
 ##
 include pysol.py setup.py setup_osx.py setup.cfg MANIFEST.in Makefile
-include LICENSE.md README.md AUTHORS.md
+include LICENSE.md THIRD-PARTY-LICENSES.md README.md AUTHORS.md
 #recursive-include pysollib *.py
 include pysollib/*.py
 include pysollib/winsystems/*.py

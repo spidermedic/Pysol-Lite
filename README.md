@@ -11,7 +11,9 @@ the year and month (for example 26.11).
 
 PySol Lite is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
 edition and [PySolFC](https://github.com/shlomif/PySolFC), and is licensed
-under the GNU General Public License, version 3 (see `LICENSE.md`).
+under the GNU General Public License, version 3 (see `LICENSE.md`). The
+software and data it includes keep their own licenses, which are listed in
+`THIRD-PARTY-LICENSES.md` (also in the app's help).
 `PROGRESS-NOTES.md` is the working log of what has changed and why.
 
 ## What it has
@@ -33,7 +35,8 @@ under the GNU General Public License, version 3 (see `LICENSE.md`).
 - Pillow, `attrs`, `configobj` and `pysol-cards`.
 - Optional: `pygame-ce` for sound, `accessible-output2` for screen readers.
 - To build the macOS app: `py2app`, `setuptools` and `markdown`
-  (the License page of the help is built from `LICENSE.md`), and the
+  (the License and Third-party licenses pages of the help are built from
+  `LICENSE.md` and `THIRD-PARTY-LICENSES.md`), and the
   python.org Python 3.14.10 or later installer (Tk 9: it has the fix for
   dialogs opened from menus freezing on macOS 27, and it redraws the canvas
   about 25 times faster than Tk 8.6).
