@@ -32,7 +32,7 @@ under the GNU General Public License, version 3 (see `LICENSE.md`).
 - Python 3.10 or later, with Tkinter (Tcl/Tk 8.6 or later).
 - Pillow, `attrs`, `configobj` and `pysol-cards`.
 - Optional: `pygame-ce` for sound, `accessible-output2` for screen readers.
-- To build the macOS app: `py2app`, `setuptools`, `pycotap` and `markdown`
+- To build the macOS app: `py2app`, `setuptools` and `markdown`
   (the License page of the help is built from `LICENSE.md`), and the
   python.org Python 3.13.17 or later installer (its Tk has the fix for
   dialogs opened from menus freezing on macOS 27).
@@ -49,7 +49,7 @@ below).
    ```
    python3 -m venv .build-venv
    .build-venv/bin/pip install py2app setuptools attrs configobj pillow \
-       pycotap pygame-ce pysol-cards accessible-output2 markdown
+       pygame-ce pysol-cards accessible-output2 markdown
    ```
 
 2. Get the cardsets. They are a separate download and are not in git. Download

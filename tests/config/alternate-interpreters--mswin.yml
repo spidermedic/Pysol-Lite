@@ -1,7 +1,0 @@
----
-- cmd: python3
-  pattern: \.py(?:\.t)?\z
-  type: regex
-- cmd: unity
-  pattern: \.exe\z
-  type: regex

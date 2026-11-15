@@ -22,13 +22,13 @@ Games contributors
 ==================
 
 * Mark Andrews
-* Galen Brooks <galen@nine.com>
-* Andrew Csillag <drew@thecsillags.com>
+* Galen Brooks
+* Andrew Csillag
 * Michael Foord
-* Matthew Hohlfeld <hohlfeld@cs.ucsd.edu>
+* Matthew Hohlfeld
 * Nicola Larosa
-* John Stoneham <obijohn99@aol.com>
-* David Svoboda <svoboda@users.sourceforge.net>
+* John Stoneham
+* David Svoboda
 
 
 Enhancements
@@ -41,5 +41,5 @@ Enhancements
 Translations
 ============
 
-* Holger Schäkel <Holger@Schaekel-row.de> (de)
-* Jerzy Trzeciak <artusek@wp.pl> (pl)
+* Holger Schäkel (de)
+* Jerzy Trzeciak (pl)

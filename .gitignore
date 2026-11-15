@@ -1,5 +1,4 @@
 *.pyc
-/.tidyall.d/
 /MANIFEST
 /_Inline/
 /build/*
@@ -10,8 +9,6 @@
 /html
 /html-src/html/*
 /images
-/tests/individually-importing/*.py
-/tests/unit-generated/*.py
 PySolFC-Cardsets--Minimal-2.0.*
 PySolFC-Cardsets--Minimal-2.0/
 PySolFC-Cardsets-2.0.*
