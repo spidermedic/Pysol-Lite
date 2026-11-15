@@ -324,7 +324,7 @@ class SelectGameDialog(MfxDialog):
         n = len(matched)
         self.count_label.config(
             text="No games found" if n == 0 else
-            "1 game" if n == 1 else "%d games" % n)
+            "1 game" if n == 1 else f"{n} games")
 
     def advancedSearch(self):
         d = SelectGameAdvancedSearch(self.top, "Advanced search",

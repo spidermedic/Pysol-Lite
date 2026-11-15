@@ -461,7 +461,7 @@ class PysolMenubar(PysolMenubarTk):
         f = os.path.join(f, self.app.getGameSaveName(self.game.id))
         i = 1
         while 1:
-            fn = "%s-%d.ppm" % (f, i)
+            fn = f"{f}-{i}.ppm"
             if not os.path.exists(fn):
                 break
             i = i + 1

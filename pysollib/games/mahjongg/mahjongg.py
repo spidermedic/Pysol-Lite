@@ -1082,7 +1082,7 @@ a solvable configuration.'''),
     def parseStackInfo(self, stack):
         if not hasattr(stack, 'blockmap'):
             return ""
-        return "Layer: %d" % (stack.blockmap.level + 1)
+        return f"Layer: {stack.blockmap.level + 1}"
 
     def parseGameInfo(self):
         return self.getText()

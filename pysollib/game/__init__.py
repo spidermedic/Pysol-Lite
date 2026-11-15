@@ -1963,7 +1963,7 @@ class Game:
             text = "Finished the Game!"
             if self.stats.hints > 0 and not self.app.opt.free_hint:
                 n = self.stats.hints
-                hintsused = "You needed %d hint%s" % (n, "" if n == 1 else "s")
+                hintsused = f"You needed {n} hint{'' if n == 1 else 's'}"
             else:
                 hintsused = "You used the demo"
             d = MfxMessageDialog(
@@ -2504,8 +2504,8 @@ class Game:
                 s = "&OK"
                 text = "\nGame finished\n"
                 if DEBUG:
-                    text += "\nplayer_moves: %d\ndemo_moves: %d\n" % \
-                        (self.stats.player_moves, self.stats.demo_moves)
+                    text += (f"\nplayer_moves: {self.stats.player_moves}"
+                             f"\ndemo_moves: {self.stats.demo_moves}\n")
                 d = MfxMessageDialog(self.top,
                                      title=f"{TITLE} Autopilot",
                                      text=text, bitmap=bitmap, strings=(s,),

@@ -103,7 +103,7 @@ top = os.getcwd()
 if "py2app" in sys.argv:
     _pygame_dir = os.path.join(
         top, 'dist', f'{BUNDLE}.app', 'Contents', 'Resources', 'lib',
-        'python%d.%d' % sys.version_info[:2], 'pygame')
+        f'python{sys.version_info[0]}.{sys.version_info[1]}', 'pygame')
     for _name in ('docs', 'tests', 'examples'):
         shutil.rmtree(os.path.join(_pygame_dir, _name), ignore_errors=True)
 # Point libwebp at the bundled libsharpyuv instead of its broken

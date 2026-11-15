@@ -79,5 +79,5 @@ def prune(data_dir):
 
 if __name__ == '__main__':
     data = sys.argv[1] if len(sys.argv) > 1 else 'data'
-    print('removed %d cardsets' % prune_cardsets(data))
-    print('removed %d card back files' % prune(data))
+    print(f'removed {prune_cardsets(data)} cardsets')
+    print(f'removed {prune(data)} card back files')

@@ -354,7 +354,7 @@ class Clock(Game):
             if c.face_up and c.rank == KING:
                 numKings += 1
 
-        return "Kings: %d" % numKings
+        return f"Kings: {numKings}"
 
 
 # register the game

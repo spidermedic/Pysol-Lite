@@ -77,8 +77,7 @@ class AbstractCard:
 
     def __str__(self):
         # Return a string for debug print statements.
-        return "Card(%d, %d, %d, %d)" % \
-               (self.id, self.deck, self.suit, self.rank)
+        return f"Card({self.id}, {self.deck}, {self.suit}, {self.rank})"
 
     def isHidden(self):
         return self.hide_stack is not None

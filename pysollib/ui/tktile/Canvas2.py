@@ -18,7 +18,7 @@ class CanvasItem:
         return str(self.id)
 
     def __repr__(self):
-        return '<%s, id=%d>' % (self.__class__.__name__, self.id)
+        return f'<{self.__class__.__name__}, id={self.id}>'
 
     def delete(self):
         del self.canvas.items[self.id]
@@ -161,7 +161,7 @@ class Window(CanvasItem):
 class Group:
     def __init__(self, canvas, tag=None):
         if not tag:
-            tag = 'Group%d' % id(self)
+            tag = f'Group{id(self)}'
         self.tag = self.id = tag
         self.canvas = canvas
         self.canvas.dtag(self.tag)

@@ -95,7 +95,7 @@ class Images:
         else:
             if ((check_w and w != self.CARDW) or
                     (check_h and h != self.CARDH)):
-                raise ValueError("Invalid size %dx%d of image %s" % (w, h, f))
+                raise ValueError(f"Invalid size {w}x{h} of image {f}")
         return img
 
     def __loadBottom(self, filename, check_w=1, check_h=1, color='white'):
@@ -198,14 +198,14 @@ class Images:
 
         # load bottoms
         for i in range(self.cs.nbottoms):
-            name = "bottom%02d" % (i + 1)
+            name = f"bottom{i + 1:02d}"
             bottom = self.__loadBottom(name, color='black')
             if bottom is not None:
                 self._bottom_positive.append(bottom)
             if progress:
                 progress.update(step=pstep)
             # load negative bottoms
-            name = "bottom%02d-n" % (i + 1)
+            name = f"bottom{i + 1:02d}-n"
             bottom = self.__loadBottom(name, color='white')
             if bottom is not None:
                 self._bottom_negative.append(bottom)
@@ -213,14 +213,14 @@ class Images:
                 progress.update(step=pstep)
         # load letters
         for rank in range(self.cs.nletters):
-            name = "l%02d" % (rank + 1)
+            name = f"l{rank + 1:02d}"
             bottom = self.__loadBottom(name, color='black')
             if bottom is not None:
                 self._letter_positive.append(bottom)
             if progress:
                 progress.update(step=pstep)
             # load negative letters
-            name = "l%02d-n" % (rank + 1)
+            name = f"l{rank + 1:02d}-n"
             bottom = self.__loadBottom(name, color='white')
             if bottom is not None:
                 self._letter_negative.append(bottom)
@@ -230,11 +230,11 @@ class Images:
         # shadow
         if not USE_PIL:
             for i in range(self.cs.nshadows):
-                name = "shadow%02d.%s" % (i, ext)
+                name = f"shadow{i:02d}.{ext}"
                 im = self.__loadCard(name, check_w=0, check_h=0)
                 self._shadow.append(im)
                 if i > 0:  # skip 0
-                    name = "xshadow%02d.%s" % (i, ext)
+                    name = f"xshadow{i:02d}.{ext}"
                     im = self.__loadCard(name, check_w=0, check_h=0)
                     self._xshadow.append(im)
                 if progress:

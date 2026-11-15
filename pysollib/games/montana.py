@@ -250,7 +250,7 @@ class Montana(Game):
             return ""
         row = (stack.id // self.RSTEP) + 1
         column = (stack.id % self.RSTEP) + 1
-        return "Row: %d, Column: %d" % (row, column)
+        return f"Row: {row}, Column: {column}"
 
 
 # ************************************************************************

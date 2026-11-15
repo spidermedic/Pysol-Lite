@@ -150,7 +150,7 @@ class LarasGame_Talon(WasteTalonStack):
         WasteTalonStack.updateText(self, update_rounds=0)
         if not self.max_rounds - 1:
             return
-        t = "Round %d" % self.round
+        t = f"Round {self.round}"
         self.texts.rounds.config(text=t)
 
     def getActiveRow(self):

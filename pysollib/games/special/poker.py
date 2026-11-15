@@ -202,13 +202,13 @@ One Pair'''))
         if score >= self.WIN_SCORE:
             t = "WON\n\n"
         if not self.isBoardFull():
-            t += "Points: %d" % score
+            t += f"Points: {score}"
         else:
-            t += "Total: %d" % score
+            t += f"Total: {score}"
         self.texts.score.config(text=t)
 
     def parseGameInfo(self):
-        return "Points: %d" % self.getGameScore()
+        return f"Points: {self.getGameScore()}"
 
     def parseStackInfo(self, stack):
         if stack not in self.s.rows:
@@ -219,9 +219,9 @@ One Pair'''))
                 stackhands.append(hand)
         row = (stack.id % 5) + 1
         column = (stack.id // 5) + 1
-        return ("Row: %d, Score %d, Column: %d, Score %d" %
-                (row, self.getHandScore(stackhands[0])[1], column,
-                 self.getHandScore(stackhands[1])[1]))
+        return (f"Row: {row}, Score {self.getHandScore(stackhands[0])[1]}, "
+                f"Column: {column}, "
+                f"Score {self.getHandScore(stackhands[1])[1]}")
 
     def getGameScore(self):
         score = 0
@@ -375,9 +375,8 @@ class Maverick(PokerShuffle):
                 stackhand = hand
         row = (stack.id % 5) + 1
         column = (stack.id // 5) + 1
-        return ("Row: %d, Column: %d, Current hand: %s" %
-                (row, column,
-                 self.getNameByScore(self.getHandScore(stackhand)[1])))
+        hand_name = self.getNameByScore(self.getHandScore(stackhand)[1])
+        return f"Row: {row}, Column: {column}, Current hand: {hand_name}"
 
     def isGameWon(self):
         for i in range(5):

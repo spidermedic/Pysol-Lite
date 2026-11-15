@@ -398,9 +398,9 @@ class AbstractShisenGame(AbstractMahjonggGame):
                 f = 'No Free\nMatching\nPairs'
             else:
                 if f == 1:
-                    f = '%d Free\nMatching\nPair' % f
+                    f = f'{f} Free\nMatching\nPair'
                 else:
-                    f = '%d Free\nMatching\nPairs' % f
+                    f = f'{f} Free\nMatching\nPairs'
         else:
             f = ''
 
@@ -428,7 +428,7 @@ class AbstractShisenGame(AbstractMahjonggGame):
             return ""
         row = (stack.id % self.L[1]) + 1
         column = (self.L[0] - 1 - (stack.id // self.L[1])) + 1
-        return "Row: %d, Column: %d" % (row, column)
+        return f"Row: {row}, Column: {column}"
 
 
 class Shisen_18x8(AbstractShisenGame):

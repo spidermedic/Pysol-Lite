@@ -88,7 +88,7 @@ class FindCardDialog(tkinter.Toplevel):
         #
         im = FindCardDialog.CARD_IMAGES.get((self.cardsettype, rank, suit))
         if im is None:
-            r = '%02d' % (rank+1)
+            r = f'{rank+1:02d}'
             suitletters = CSI.TYPE_SUITS[self.cardsettype]
             if suit < len(suitletters):
                 s = suitletters[suit]
@@ -354,7 +354,7 @@ def place_beside(dialog, parent):
     else:
         x = px + pw - dw - gap
     y = max(0, min(py, sh - dh - 40))
-    dialog.wm_geometry("+%d+%d" % (x, y))
+    dialog.wm_geometry(f"+{x}+{y}")
 
 
 find_card_dialog = None

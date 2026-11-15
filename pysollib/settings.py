@@ -30,8 +30,8 @@ PACKAGE = 'PySolFC'
 # VERSION_TUPLE is (YY, MM) for a monthly release and (YY, MM, DD) for an
 # interim update in the same month.
 VERSION_TUPLE = (26, 11)
-VERSION = '.'.join(['%d' % VERSION_TUPLE[0]] +
-                   ['%02d' % x for x in VERSION_TUPLE[1:]])
+VERSION = '.'.join([f'{VERSION_TUPLE[0]}'] +
+                   [f'{x:02d}' for x in VERSION_TUPLE[1:]])
 # Class name for the Tk windows and the X11 resource database (no year).
 TITLE_CLASS = 'PySol'
 TITLE = 'PySol Lite'

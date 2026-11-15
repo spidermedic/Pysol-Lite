@@ -606,7 +606,7 @@ class Stack:
 
     def __repr__(self):
         # Return a string for debug print statements.
-        return "%s(%d)" % (self.__class__.__name__, self.id)
+        return f"{self.__class__.__name__}({self.id})"
 
     #
     # Atomic move actions {model -> view}
@@ -1820,7 +1820,7 @@ class TalonStack(Stack,
         Stack.updateText(self)
         if update_rounds and self.game.preview <= 1:
             if self.texts.rounds is not None:
-                t = "Round %d" % self.round
+                t = f"Round {self.round}"
                 self.texts.rounds.config(text=t)
         if update_redeal:
             deal = self.canDealCards() != 0

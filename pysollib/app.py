@@ -550,10 +550,8 @@ class Application:
         while not foundall:
             count += 1
             try:
-                self.gimages.pause.append(self.dataloader.findImage("pause" +
-                                                                    ("%02d" %
-                                                                     (count,)),
-                                                                    dirname))
+                self.gimages.pause.append(self.dataloader.findImage(
+                    f"pause{count:02d}", dirname))
             except OSError:
                 foundall = True
         # dirname = os.path.join("images", "stats")
@@ -916,7 +914,7 @@ Please select a {t[0]} {subcategoryLabel}type cardset.
     def constructGame(self, game_id):
         gi = self.gdb.get(game_id)
         if gi is None:
-            raise Exception("Unknown game (id %d)" % game_id)
+            raise Exception(f"Unknown game (id {game_id})")
         return gi.gameclass(gi)
 
     def getGamesIdSortedById(self):

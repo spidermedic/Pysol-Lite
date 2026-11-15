@@ -367,9 +367,9 @@ class Cardset(Resource):
         names = []
         for suit in self.suits:
             for rank in self.ranks:
-                names.append("%02d%s" % (rank + 1, suit))
+                names.append(f"{rank + 1:02d}{suit}")
         for trump in self.trumps:
-            names.append("%02d%s" % (trump + 1, "z"))
+            names.append(f"{trump + 1:02d}z")
         assert len(names) == self.ncards
         return names
 

@@ -26,10 +26,10 @@ from pysollib.resource import Cardset, CardsetConfig
 
 def _perr(line_no, field=None, msg=''):
     if field:
-        print_err('cannot parse cardset config: line #%d, field #%d: %s'
-                  % (line_no, field, msg))
+        print_err(f'cannot parse cardset config: line #{line_no}, '
+                  f'field #{field}: {msg}')
     else:
-        print_err('cannot parse cardset config: line #%d: %s' % (line_no, msg))
+        print_err(f'cannot parse cardset config: line #{line_no}: {msg}')
 
 
 def read_cardset_config(dirname, filename):
