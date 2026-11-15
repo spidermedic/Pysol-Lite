@@ -716,6 +716,7 @@ class YukonType_Hint(CautiousDefaultHint):
             p = p[1:]       # note: we need a fresh shallow copy
         return piles
 
+
 class Yukon_Hint(YukonType_Hint):
     BONUS_FLIP_CARD = 9000
     BONUS_CREATE_EMPTY_ROW = 100
@@ -852,6 +853,7 @@ class Base_Solver_Hint:
             # Linux and Windows return codes for "command not found" error
             raise RuntimeError('Solver exited with {}'.format(p.returncode))
         return BytesIO(pout), BytesIO(perr)
+
 
 use_fc_solve_lib = False
 

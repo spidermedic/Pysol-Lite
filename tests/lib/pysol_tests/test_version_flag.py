@@ -8,7 +8,12 @@
 import os
 import re
 import subprocess
+import sys
 import unittest
+
+# the repository root: tests/lib/pysol_tests/ is three levels below it
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)))))
 
 
 class CliFlagsTests(unittest.TestCase):
@@ -16,7 +21,14 @@ class CliFlagsTests(unittest.TestCase):
         if os.name == 'nt':
             self.assertTrue(True)
             return
-        o = subprocess.check_output(["./pysol.py", "--version", ])
+        # Run it with the interpreter running the tests, not whatever
+        # "python" is on the PATH (there may be none), and from the root.
+        env = dict(os.environ, PYTHONPATH=ROOT)
+        o = subprocess.check_output(
+            [sys.executable, os.path.join(ROOT, "pysol.py"), "--version"],
+            cwd=ROOT, env=env, stderr=subprocess.DEVNULL)
         assert o
         string = o.decode('utf-8')
-        self.assertTrue(re.match("\\APySol [0-9]+ version [0-9]+\\.", string))
+        self.assertTrue(
+            re.match("\\APySol Lite version [0-9]+\\.[0-9]+", string),
+            string)

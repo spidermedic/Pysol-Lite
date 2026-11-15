@@ -24,6 +24,7 @@
 import pysollib.formatter
 import pysollib.htmllib2 as htmllib
 
+
 class AccessibleOutput:
     try:
         import accessible_output3.outputs.auto as accessible_output

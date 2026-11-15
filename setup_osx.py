@@ -14,7 +14,7 @@ from pysollib.settings import TITLE, VERSION
 # only the display name carries the year.
 BUNDLE = 'PySol Lite'
 
-from setuptools import setup
+from setuptools import setup  # noqa: E402
 
 
 # build the rule pages

@@ -125,8 +125,8 @@ To run the tests:
 PYTHONPATH=$PWD .build-venv/bin/python -m unittest discover -s . -p 'test*.py'
 ```
 
-`test_version_flag` fails unless a `python` command is on your PATH; the
-others pass.
+All 13 tests pass (`test_version_flag` runs `pysol.py --version` with the
+same Python that runs the tests).
 
 ## Windows and Linux (untested)
 

@@ -580,7 +580,6 @@ class SearchCriteria:
                               "Other number of redeals": 4}
 
 
-
 class SelectGameAdvancedSearch(MfxDialog):
     def __init__(self, parent, title, criteria, **kw):
         kw = self.initKw(kw)

@@ -2290,6 +2290,7 @@ class AbstractFoundationStack(OpenStack):
                 return base_card.rank == cards[0].rank
         return True                     # all foundations is empty
 
+
 # A SameSuit_FoundationStack is the typical Foundation stack.
 # It builds up in rank and suit.
 class SS_FoundationStack(AbstractFoundationStack):
@@ -2519,6 +2520,7 @@ class SequenceRowStack(SequenceStack_StackMethods, BasicRowStack):
 # Implementation of common row stacks follows here.
 #
 
+
 # An AlternateColor_RowStack builds down by rank and alternate color.
 # e.g. Klondike
 class AC_RowStack(SequenceRowStack):
@@ -2709,6 +2711,7 @@ class Yukon_AC_RowStack(BasicRowStack):
                     'can move any face-up cards regardless of sequence.')
         return ('Tableau. Build by same rank, can move '
                 'any face-up cards regardless of sequence.')
+
 
 # A Yukon_SameSuit_RowStack builds down by rank and suit,
 # but can move any face-up cards regardless of sequence.

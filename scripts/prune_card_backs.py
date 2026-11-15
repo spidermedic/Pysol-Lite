@@ -5,8 +5,9 @@ Only the cardsets named in KEEP_CARDSETS are kept (one per family of
 games); the other cardset folders are deleted.
 
 Every cardset keeps only its default back (line 5 of config.txt), except
-the ones listed in KEEP below, which also keep the backs named there. Backs that are dropped are removed from the list on line 6 of
-config.txt and their image files are deleted. Safe to run repeatedly.
+the ones listed in KEEP below, which also keep the backs named there. Backs
+that are dropped are removed from the list on line 6 of config.txt and their
+image files are deleted. Safe to run repeatedly.
 
 The cardsets are a separate download and are not in git, so setup_osx.py
 runs this before every build.
