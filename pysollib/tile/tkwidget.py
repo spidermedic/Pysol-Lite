@@ -320,9 +320,18 @@ class PysolAboutDialog(MfxMessageDialog):
         self.button = kw.default
         frame = ttk.Frame(top_frame)
         frame.pack(fill='both', expand=True, padx=kw.padx, pady=kw.pady)
-        msg = ttk.Label(frame, text=kw.text, justify=kw.justify,
-                        width=kw.width)
-        msg.pack(fill='both', expand=True)
+        # The text is a list of (text, justify) blocks when given as
+        # ``parts``; each block is its own label, so some can be left aligned
+        # and the rest centred.
+        parts = getattr(kw, 'parts', None)
+        if parts:
+            for part_text, part_justify in parts:
+                part = ttk.Label(frame, text=part_text, justify=part_justify)
+                part.pack()
+        else:
+            msg = ttk.Label(frame, text=kw.text, justify=kw.justify,
+                            width=kw.width)
+            msg.pack(fill='both', expand=True)
 
         # font_name = msg.lookup('TLabel', 'font')
         font_name = 'TkDefaultFont'
