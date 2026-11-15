@@ -86,6 +86,16 @@ setup(
 
 #
 top = os.getcwd()
+
+# Drop the parts of the pygame package that nothing imports (docs, tests
+# and examples, about 15 MB); the app only uses pygame.mixer. This runs
+# before the bundle is signed below.
+if "py2app" in sys.argv:
+    _pygame_dir = os.path.join(
+        top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Resources', 'lib',
+        'python%d.%d' % sys.version_info[:2], 'pygame')
+    for _name in ('docs', 'tests', 'examples'):
+        shutil.rmtree(os.path.join(_pygame_dir, _name), ignore_errors=True)
 # Point libwebp at the bundled libsharpyuv instead of its broken
 # original rpath.
 if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
