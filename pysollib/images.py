@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 #  Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -192,9 +191,8 @@ class Images:
                 if im:
                     self.__addBack(im, name)
                 else:
-                    print_err('in {cs_dir}/config.txt: card back "{fname}" '
-                              'does not exist'.format(
-                                  cs_dir=self.cs.dir, fname=name))
+                    print_err(f'in {self.cs.dir}/config.txt: '
+                              f'card back "{name}" does not exist')
         if progress:
             progress.update(step=1)
 

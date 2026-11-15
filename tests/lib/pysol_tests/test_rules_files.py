@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Ensure every registered game has a rules HTML source file.
 # Mirrors the lookup used by html-src/gen-html.py.

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 # Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -122,7 +121,7 @@ class ResourceManager:
                 if (directory and os.path.isdir(directory)
                         and directory not in result):
                     result.append(directory)
-        except EnvironmentError:
+        except OSError:
             pass
 
     def getSearchDirs(self, app, search, env=None):
@@ -150,7 +149,7 @@ class ResourceManager:
                             self._addDir(result, d)
                     else:
                         self._addDir(result, os.path.join(directory, s))
-                except EnvironmentError:
+                except OSError:
                     traceback.print_exc()
         if DEBUG >= 6:
             print("getSearchDirs", env, search, "->", result)

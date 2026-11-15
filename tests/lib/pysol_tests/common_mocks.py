@@ -1,5 +1,4 @@
 #! /usr/bin/env python MockItem
-# -*- coding: utf-8 -*-
 # vim:fenc=utf-8
 #
 # Copyright © 2018 Shlomi Fish <shlomif@cpan.org>

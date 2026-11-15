@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 #  Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -38,7 +37,7 @@ def read_cardset_config(dirname, filename):
 
     This function returns None if any errors occurred.
     """
-    with open(filename, "rt", encoding="utf-8", errors="replace") as f:
+    with open(filename, encoding="utf-8", errors="replace") as f:
         lines_list = f.readlines()
     lines_list = [line.strip() for line in lines_list]
     if not lines_list[0].startswith("PySol"):

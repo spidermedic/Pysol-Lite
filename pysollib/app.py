@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 #  Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -995,7 +994,7 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
                 subdirs = sorted(os.path.join(dirname, subdir)
                                  for subdir in os.listdir(dirname)
                                  if subdir.startswith('cardset-'))
-            except EnvironmentError:
+            except OSError:
                 traceback.print_exc()
                 continue
             for d in subdirs:
@@ -1061,7 +1060,7 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
                     if key not in t:
                         t.add(key)
                         found.append((n, obj))
-            except EnvironmentError:
+            except OSError:
                 pass
         # register songs
         found.sort()

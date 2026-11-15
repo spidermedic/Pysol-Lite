@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 #  Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -48,8 +47,7 @@ def init():
         print(('PySol debugging: set DEBUG to', pysollib.settings.DEBUG))
 
     if '--version' in sys.argv:
-        print("{} version {}".format(pysollib.settings.TITLE,
-                                     pysollib.settings.VERSION))
+        print(f"{pysollib.settings.TITLE} version {pysollib.settings.VERSION}")
         sys.exit(0)
 
     # init Tk

@@ -81,18 +81,18 @@ class Calculation(Game):
 
     def _getHelpText(self):
         decks = self.gameinfo.decks
-        help_text = (('''\
+        help_text = ('''\
 1: 2 3 4 5 6 7 8 9 T J Q K
 2: 4 6 8 T Q A 3 5 7 9 J K
 3: 6 9 Q 2 5 8 J A 4 7 T K
-4: 8 Q 3 7 J 2 6 T A 5 9 K'''))
+4: 8 Q 3 7 J 2 6 T A 5 9 K''')
         if decks > 1:
-            help_text += (('''\
+            help_text += ('''\
 
 5: T 2 7 Q 4 9 A 6 J 3 8 K
 6: Q 5 J 4 T 3 9 2 8 A 7 K
 7: A 8 2 9 3 T 4 J 5 Q 6 K
-8: 3 J 6 A 9 4 Q 7 2 T 5 K'''))
+8: 3 J 6 A 9 4 Q 7 2 T 5 K''')
         # calculate text_width
         lines = sorted(help_text.split('\n'), key=len)
         max_line = lines[-1]

@@ -1,4 +1,3 @@
-# vim:ts=4:et:nowrap:fileencoding=utf-8
 #
 
 from pysollib.game import Game

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 # Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -337,7 +336,7 @@ class CardsetInfoDialog(MfxDialog):
         text = ''
         fn = os.path.join(cardset.dir, "COPYRIGHT")
         try:
-            with open(fn, "rt", encoding="utf-8", errors="replace") as fh:
+            with open(fn, encoding="utf-8", errors="replace") as fh:
                 text = fh.read()
         except Exception:
             pass

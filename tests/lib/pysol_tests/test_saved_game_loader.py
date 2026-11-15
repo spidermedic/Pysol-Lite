@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Tests for the restricted loader of saved games and the old options file.
 
 import io

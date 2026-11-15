@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 #  Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -82,7 +81,7 @@ def help_html(app, document, dir_, top=None):
         return False
     try:
         doc = app.dataloader.findFile(document, dir_)
-    except EnvironmentError:
+    except OSError:
         MfxMessageDialog(app.top, title="%s HTML Problem" % TITLE,
                          text="Cannot find help document\n%s" % document,
                          bitmap="warning")

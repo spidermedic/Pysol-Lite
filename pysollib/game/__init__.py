@@ -1,5 +1,4 @@
 # !/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------
 #
 # Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -2969,9 +2968,10 @@ class Game:
                 if not isinstance(obj, t):
                     # accept old storage format in case:
                     if t in _Game_LOAD_CLASSES:
-                        assert isinstance(obj, Struct), err_txt
+                        if not isinstance(obj, Struct):
+                            raise SaveFileError(err_txt)
                     else:
-                        assert False, err_txt
+                        raise SaveFileError(err_txt)
             return obj
 
         def validate(v, txt):

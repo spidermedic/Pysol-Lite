@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 # ---------------------------------------------------------------------------##
 #
 # Copyright (C) 1998-2003 Markus Franz Xaver Johannes Oberhumer
@@ -238,11 +237,11 @@ class Abacus(Rushdike):
 
     def createGame(self):
         layout = Rushdike.createGame(self)
-        help_text = (('''\
+        help_text = ('''\
 Club:    A 2 3 4 5 6 7 8 9 T J Q K
 Spade:   2 4 6 8 T Q A 3 5 7 9 J K
 Heart:   3 6 9 Q 2 5 8 J A 4 7 T K
-Diamond: 4 8 Q 3 7 J 2 6 T A 5 9 K'''))
+Diamond: 4 8 Q 3 7 J 2 6 T A 5 9 K''')
         self.texts.help = MfxCanvasText(self.canvas,
                                         layout.XM, self.height - layout.YM,
                                         text=help_text,

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- mode: python; coding: utf-8; -*-
 #
 # Klondike seeds confirmed solvable, used by KlondikeAlwaysSolvable in
 # klondike.py. Made with the seed generator script -- run it again
