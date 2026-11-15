@@ -37,7 +37,8 @@ from pysollib.game.dump import pysolDumpGame
 from pysollib.gamedb import GI
 from pysollib.help import help_about
 from pysollib.hint import DefaultHint
-from pysollib.mfxutil import USE_PIL
+from pysollib.mfxutil import DAMAGED_SAVE_TEXT, USE_PIL, SaveFileError
+from pysollib.mfxutil import load_error_text
 from pysollib.mfxutil import Struct, SubclassResponsibility, destruct
 from pysollib.mfxutil import format_time, print_err
 from pysollib.mfxutil import uclock, usleep
@@ -2904,28 +2905,14 @@ class Game:
         self.disableMenus()
         try:
             game = self._loadGame(filename, self.app)
-        except AssertionError:
+        except Exception as ex:
             self.updateMenus()
             self.setCursor(cursor=self.app.top_cursor)
             MfxMessageDialog(
                 self.top, title="Load game error", bitmap="error",
-                text=(
-                    "Error while loading game.\n\n" +
-                    "It could be a damaged file or a bug."))
-            traceback.print_exc()
-        except UnpicklingError as ex:
-            self.updateMenus()
-            self.setCursor(cursor=self.app.top_cursor)
-            MfxExceptionDialog(self.top, ex, title="Load game error",
-                               text="Error while loading game")
-        except Exception:
-            self.updateMenus()
-            self.setCursor(cursor=self.app.top_cursor)
-            MfxMessageDialog(
-                self.top, title="Load game error",
-                bitmap="error",
-                text="Internal error while loading game.")
-            traceback.print_exc()
+                text=load_error_text(filename, ex))
+            if not isinstance(ex, SaveFileError):
+                traceback.print_exc()
         else:
             if self.pause:
                 # unselect pause-button
@@ -2973,7 +2960,7 @@ class Game:
     def _undumpGame(self, p, app):
         self.updateTime()
         #
-        err_txt = "Invalid or damaged %s save file" % PACKAGE
+        err_txt = DAMAGED_SAVE_TEXT
         #
 
         def pload(t=None, p=p):
@@ -2989,7 +2976,7 @@ class Game:
 
         def validate(v, txt):
             if not v:
-                raise UnpicklingError(txt)
+                raise SaveFileError(txt)
         #
         package = pload(str)
         validate(package == PACKAGE, err_txt)
@@ -2998,9 +2985,8 @@ class Game:
         version_tuple = pload(tuple)
         validate(
             version_tuple >= (1, 0),
-            'Cannot load games saved with\n%(app)s version %(ver)s' % {
-                'app': PACKAGE,
-                'ver': version})
+            'This saved game comes from a version (%s)\n'
+            'that is too old to open.' % version)
         p.set_version(version_tuple)
         game_version = 1
         bookmark = pload(int)
@@ -3018,9 +3004,8 @@ class Game:
                     game = None
         validate(
             game is not None,
-            ('Cannot load this game from version %s\n' +
-             'as the game rules have changed\n' +
-             'in the current implementation.') % version)
+            'This saved game cannot be opened because the rules\n'
+            'of the game have changed since it was saved.')
         game.version = version
         game.version_tuple = version_tuple
         #

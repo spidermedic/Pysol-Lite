@@ -36,7 +36,7 @@ from pysollib.help import help_about
 from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import Struct, destruct
 from pysollib.mfxutil import getprefdir, getusername
-from pysollib.mfxutil import latin1_normalize, print_err
+from pysollib.mfxutil import latin1_normalize, load_error_text, print_err
 from pysollib.pysolaudio import create_audio_client
 from pysollib.mfxutil import unpickle
 from pysollib.options import Options
@@ -260,8 +260,7 @@ class Application:
         self.load_error = None
         MfxMessageDialog(
             self.top, title="Load game error", bitmap="error",
-            text="Cannot open the saved game\n%s\n\n%s" % (
-                os.path.basename(filename), ex))
+            text=load_error_text(filename, ex))
 
     # the PySol mainloop
     def mainloop(self):

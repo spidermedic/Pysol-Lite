@@ -101,6 +101,27 @@ def get_default_resampling():
     return getattr(Image, "LANCZOS", Image.NEAREST)
 
 
+class SaveFileError(UnpicklingError):
+    """A saved game that cannot be opened, with a message fit to show."""
+
+
+DAMAGED_SAVE_TEXT = (
+    "The file is damaged, or it is not a saved game from this program.")
+
+
+def load_error_text(filename, ex):
+    """Text for the dialog shown when a saved game cannot be opened."""
+    if isinstance(ex, SaveFileError):
+        reason = str(ex)
+    elif isinstance(ex, OSError):
+        reason = "The file could not be read (%s)." % (
+            ex.strerror or type(ex).__name__)
+    else:
+        reason = DAMAGED_SAVE_TEXT
+    return 'Cannot open the saved game\n%s\n\n%s' % (
+        os.path.basename(filename), reason)
+
+
 def print_err(s, level=1):
     ss = PACKAGE + ': '
     if level == 0:
