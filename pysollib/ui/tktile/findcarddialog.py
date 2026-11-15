@@ -30,11 +30,9 @@ from pysollib.ui.tktile.tkcanvas import MfxCanvas, MfxCanvasGroup
 from pysollib.ui.tktile.tkcanvas import MfxCanvasImage, MfxCanvasRectangle
 from pysollib.ui.tktile.tkutil import after, after_cancel
 from pysollib.ui.tktile.tkutil import bind, makeImage, unbind_destroy
-from pysollib.ui.tktile.tkutil import placeOverParent
 
 
-LARGE_EMBLEMS_SIZE = (38, 34)
-SMALL_EMBLEMS_SIZE = (31, 21)
+EMBLEMS_SIZE = (38, 34)
 
 
 class FindCardDialog(tkinter.Toplevel):
@@ -42,24 +40,19 @@ class FindCardDialog(tkinter.Toplevel):
 
     def __init__(self, parent, game, dir):
         tkinter.Toplevel.__init__(self)
-        title = TITLE + ' - ' + 'Find card'
-        self.title(title)
+        self.title("Find Card")
         self.wm_resizable(False, False)
         self.cardsettype = ''
         self.dir = dir
-        #
-        # self.images_dir = dir
         self.images_dir = ''
-        self.label_width, self.label_height = LARGE_EMBLEMS_SIZE
-        # if size == 'large':
-        #     self.images_dir = os.path.join(dir, 'large', cs_type)
-        #     self.label_width, self.label_height = LARGE_EMBLEMS_SIZE
-        # else:
-        #     self.images_dir = os.path.join(dir, 'small')
-        #     self.label_width, self.label_height = SMALL_EMBLEMS_SIZE
+        self.label_width, self.label_height = EMBLEMS_SIZE
 
+        # the hint is packed first so the canvas cannot squeeze it out
+        self.hint = tkinter.Label(
+            self, text="Point at a card to find it on the table",
+            bg='white', fg='#555555', anchor='center', justify='center')
+        self.hint.pack(side='bottom', fill='x', pady=(0, 4))
         self.canvas = MfxCanvas(self, bg='white')
-        # self.canvas = MfxCanvas(self, bg='black')
         self.canvas.pack(expand=True, fill='both')
         #
         self.groups = []
@@ -70,7 +63,6 @@ class FindCardDialog(tkinter.Toplevel):
         bind(self, "WM_DELETE_WINDOW", self.destroy)
         bind(self, "<Escape>", self.destroy)
         #
-        # self.normal_timeout = 400    # in milliseconds
         self.normal_timeout = int(
             1000*game.app.opt.timeouts['highlight_samerank'])
         self.hidden_timeout = 200
@@ -158,6 +150,7 @@ class FindCardDialog(tkinter.Toplevel):
 
         w, h = dx*j+2, dy*i+2
         self.canvas.config(width=w, height=h)
+        self.hint.config(wraplength=w - 8)
         self.wm_iconname(TITLE + " - " + game.getTitleName())
         self.wm_geometry('')            # cancel user-specified geometry
 
@@ -223,6 +216,26 @@ class FindCardDialog(tkinter.Toplevel):
         tkinter.Toplevel.destroy(self)
 
 
+def place_beside(dialog, parent):
+    """Put the dialog next to the main window (right side, else left side)
+    so it does not cover the cards; fall back to the bottom right corner
+    inside the window when the screen has no room beside it."""
+    dialog.update_idletasks()
+    dw, dh = dialog.winfo_reqwidth(), dialog.winfo_reqheight()
+    px, py = parent.winfo_rootx(), parent.winfo_rooty()
+    pw = parent.winfo_width()
+    sw, sh = dialog.winfo_screenwidth(), dialog.winfo_screenheight()
+    gap = 12
+    if px + pw + gap + dw <= sw:
+        x = px + pw + gap
+    elif px - gap - dw >= 0:
+        x = px - gap - dw
+    else:
+        x = px + pw - dw - gap
+    y = max(0, min(py, sh - dh - 40))
+    dialog.wm_geometry("+%d+%d" % (x, y))
+
+
 find_card_dialog = None
 
 
@@ -234,7 +247,7 @@ def create_find_card_dialog(parent, game, dir):
     except Exception:
         # traceback.print_exc()
         find_card_dialog = FindCardDialog(parent, game, dir)
-        placeOverParent(find_card_dialog, parent)
+        place_beside(find_card_dialog, parent)
 
 
 def connect_game_find_card_dialog(game):
