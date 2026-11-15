@@ -14,7 +14,11 @@ edition and [PySolFC](https://github.com/shlomif/PySolFC), and is licensed
 under the GNU General Public License, version 3 (see `LICENSE.md`). The
 software and data it includes keep their own licenses, which are listed in
 `THIRD-PARTY-LICENSES.md` (also in the app's help).
-`PROGRESS-NOTES.md` is the working log of what has changed and why.
+
+PySol Lite is a modified version of PySolFC 3.7.0 (released 2026-11-02). The
+changes made since 2026-11-07, when this fork's own work began, are described
+in `PROGRESS-NOTES.md` (the working log of what has changed and why) and in
+the git history.
 
 ## What it has
 
@@ -115,6 +119,26 @@ Things that go wrong:
   does.
 
 `PROGRESS-NOTES.md` has the full history and more detail.
+
+## Releasing
+
+The app is covered by the GNU General Public License, so whoever gets the app
+must be able to get its source. For every release:
+
+- Build the app from a commit that carries the release's tag, and push the
+  tag: `git tag -a v26.11 -m "PySol Lite 26.11"`, then
+  `git push origin v26.11`.
+- Attach the download (a zip or dmg of `PySol Lite.app`) to the GitHub release
+  for that tag, so the app and its source are offered from the same place, and
+  say in the release notes that the source is the tagged commit.
+- `THIRD-PARTY-LICENSES.md` (it is also in the app) lists the licenses of
+  everything the app includes. If a library in the app changes, regenerate it:
+  the LGPL libraries (pygame-ce, libsndfile, mpg123, FluidSynth, libxmp) need
+  their version and source address kept right, and the written offer in its
+  section 6 stays valid for three years after each release.
+- When the app is signed with a Developer ID, keep the entitlement
+  `com.apple.security.cs.disable-library-validation` so that the LGPL
+  libraries can still be replaced (also section 6).
 
 ## Run from source
 

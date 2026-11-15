@@ -110,6 +110,15 @@ if "py2app" in sys.argv:
         f'python{sys.version_info[0]}.{sys.version_info[1]}', 'pygame')
     for _name in ('docs', 'tests', 'examples'):
         shutil.rmtree(os.path.join(_pygame_dir, _name), ignore_errors=True)
+    # pygame's default font (GNU FreeFont, 2002): pygame.font is not used, and
+    # leaving the file out leaves one license less to describe
+    _font = os.path.join(_pygame_dir, 'freesansbold.ttf')
+    if os.path.exists(_font):
+        os.remove(_font)
+    # the Tk scripts in data/tcl are loaded only on X11 (winsystems/x11.py)
+    shutil.rmtree(os.path.join(
+        top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Resources', 'data',
+        'tcl'), ignore_errors=True)
 # Point libwebp at the bundled libsharpyuv instead of its broken
 # original rpath.
 if SHARPYUV_LIB_PATH and "py2app" in sys.argv:

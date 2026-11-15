@@ -2,9 +2,9 @@
 
 PySol Lite is free software, licensed under the GNU General Public License version 3 (see `LICENSE.md`). The app is built from, and ships with, the third-party software and data listed here. Each part keeps its own license. This file says what each part is, what PySol Lite uses it for, where its source code can be obtained, which license applies, and then gives the full text of every license (each text once, with the parts that use it).
 
-It describes the macOS app of PySol Lite 26.11 (built with python.org Python 3.14.10 for Apple Silicon). The source code of PySol Lite itself is at <https://github.com/spidermedic/Pysol-Lite>.
+It describes the macOS app of PySol Lite 26.11 (built with python.org Python 3.14.10 for Apple Silicon). The complete source code of PySol Lite is at <https://github.com/spidermedic/Pysol-Lite>; each release of the app is built from a commit of that repository that carries the release's tag (for example `v26.11`).
 
-Contents: 1 Python and Tcl/Tk, 2 Python packages, 3 Libraries inside the pygame package, 4 Libraries in the app's Frameworks folder, 5 Data files and artwork, 6 Notes on the LGPL libraries, 7 Full license texts.
+Contents: 1 Python and Tcl/Tk, 2 Python packages, 3 Libraries inside the pygame package, 4 Libraries in the app's Frameworks folder, 5 Data files and artwork, 6 The LGPL libraries and the written offer of their source code, 7 Full license texts.
 
 ## 1. Python and Tcl/Tk
 
@@ -43,8 +43,6 @@ The pygame-ce package carries these libraries in its `.dylibs` folder (`Contents
 | zlib-ng (libz) | zlib | https://github.com/zlib-ng/zlib-ng |
 | libwebp, libwebpdemux, libsharpyuv | BSD 3-clause | https://chromium.googlesource.com/webm/libwebp |
 | FreeType, HarfBuzz, libpng, libjpeg, libtiff, brotli | see "Pillow" in section 7 | https://freetype.org, https://harfbuzz.github.io, http://www.libpng.org, https://libjpeg-turbo.org, https://libtiff.gitlab.io/libtiff/, https://github.com/google/brotli |
-
-The pygame folder also holds `freesansbold.ttf`, pygame's default font, which comes from the GNU FreeFont project: GNU GPL version 3 or later with the font exception quoted in section 7. PySol Lite does not use it.
 
 ## 4. Libraries in the app's Frameworks folder
 
@@ -96,9 +94,29 @@ The 19 `.wav` files in `data/sound` come from PySol and PySolFC. PySol's author 
 
 The games' rules pages and help text, the pause and redeal images, the card-back and finder images, and the PySol Lite logo and icon are part of PySol Lite, or of PySol and PySolFC, and are distributed under the GNU GPL version 3 (`LICENSE.md`) unless a file says otherwise.
 
-## 6. Notes on the LGPL libraries
+### Tk scripts (in the source repository, not in the macOS app)
 
-pygame-ce, libsndfile, FluidSynth, mpg123 and libxmp are licensed under the GNU Lesser General Public License version 2.1 (or later). They are separate dynamic libraries (`.so` and `.dylib` files in the `pygame` folder of the app), not compiled into PySol Lite, so you can replace any of them with your own build of the same library. The app is signed ad hoc, so after replacing a file, sign the app again with `codesign --force --deep --sign - "PySol Lite.app"`. The source code of each library is available from the project addresses above. PySol Lite does not change any of these libraries.
+The repository contains five Tcl scripts in `data/tcl`. The program loads them only on Linux (X11), never on macOS, and the macOS app does not include them. Their own notices:
+
+- `clrpick8.4.tcl`, `clrpick8.5.tcl`: the Tk color dialog, "Copyright (c) 1996 Sun Microsystems, Inc.", under the Tcl/Tk license (the "license.terms" text in section 7).
+- `fsdialog8.4.tcl`, `fsdialog8.5.tcl`: a Tk file dialog, "Copyright (C) Schelte Bron. Freely redistributable." (<http://wiki.tcl.tk/15897>).
+- `menu8.4.tcl`: marked "this file from tkabber project" (<http://www.jabberstudio.org/projects/tkabber/>); the file does not state a license.
+
+## 6. The LGPL libraries and the written offer of their source code
+
+These libraries are licensed under the GNU Lesser General Public License, version 2.1 (the text is in section 7), in the versions that are in the app:
+
+| Library | Version in the app | License | Source code of that version |
+| --- | --- | --- | --- |
+| pygame-ce | 2.5.8 | LGPL 2.1 | https://github.com/pygame-community/pygame-ce/archive/refs/tags/2.5.8.tar.gz |
+| libsndfile | 1.2.2 | LGPL 2.1 or later | https://github.com/libsndfile/libsndfile/releases/download/1.2.2/libsndfile-1.2.2.tar.xz |
+| mpg123 | 1.33.7 | LGPL 2.1 | https://www.mpg123.de/download/mpg123-1.33.7.tar.bz2 |
+| FluidSynth | 2.5.7 | LGPL 2.1 or later | https://github.com/FluidSynth/fluidsynth/archive/refs/tags/v2.5.7.tar.gz |
+| libxmp | 4.7.2 | LGPL 2.1 or later | https://github.com/libxmp/libxmp/archive/refs/tags/libxmp-4.7.2.tar.gz |
+
+**Written offer.** For at least three years from the date you received this app, PySol Lite will give you, for a charge of no more than the cost of performing the distribution, the complete corresponding machine-readable source code of these libraries in the versions listed above, and the materials you need to change them and use your version in the app. To ask for it, open an issue at <https://github.com/spidermedic/Pysol-Lite/issues>. The source code of the same versions is also available to everyone at the addresses in the table, and PySol Lite does not change any of these libraries.
+
+**Replacing a library.** The libraries are separate dynamic libraries (`.dylib` and `.so` files in the `pygame` folder of the app), not compiled into PySol Lite. You may modify them for your own use and replace them with your own build of the same library. The app is signed ad hoc, so after replacing a file, sign the app again with `codesign --force --deep --sign - "PySol Lite.app"`. If the app is later signed with a Developer ID, it is signed so that libraries can still be replaced (without Apple's library validation).
 
 ## 7. Full license texts
 
@@ -4478,20 +4496,6 @@ Used by: the toolbar and dialog icons
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-
-
-### GNU FreeFont: the font exception
-
-Used by: freesansbold.ttf in the pygame folder (GNU GPL version 3 or later, which is in LICENSE.md, with this exception)
-
-    As a special exception, if you create a document which uses this font, and
-    embed this font or unaltered portions of this font into the document, this
-    font does not by itself cause the resulting document to be covered by the GNU
-    General Public License. This exception does not however invalidate any other
-    reasons why the document might be covered by the GNU General Public License.
-    If you modify this font, you may extend this exception to your version of the
-    font, but you are not obligated to do so. If you do not wish to do so, delete
-    this exception statement from your version.
 
 
 ### Public domain: appscript
