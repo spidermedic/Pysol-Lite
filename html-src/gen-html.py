@@ -45,7 +45,7 @@ files = [
     ('accessibility.html', 'PySol Lite - Accessibility'),
     ('index.html', 'PySol Lite - a Solitaire Game Collection'),
     ('intro.html', 'PySol Lite - Introduction'),
-    ('license.html', 'PySol Software License'),
+    ('license.html', 'GNU General Public License'),
     # ('rules_alternate.html', 'PySol Lite - a Solitaire Game Collection'),
     # ('rules.html', 'PySol Lite - a Solitaire Game Collection'),
     ('settings.html', 'PySol Lite - Settings'),
@@ -121,12 +121,22 @@ def _get_game_rules_filename(n):
     return latin1_normalize(n) + '.html'
 
 
+def _read_page(infile):
+    """The body of a page.  The license page is built from LICENSE.md (the
+    FSF's own Markdown text of the GPL), so the text exists only once."""
+    if infile == 'license.html':
+        import markdown
+        with open(os.path.join('..', 'LICENSE.md'), encoding='utf-8') as f:
+            return markdown.markdown(f.read())
+    with open(infile, 'r', encoding='utf-8') as file:
+        return file.read()
+
+
 def gen_main_html():
     for infile, title in files:
         outfile = open(os.path.join('html', infile), 'w', encoding='utf-8')
         print(_fmt(main_header, {'title': title}), file=outfile)
-        with open(infile, 'r', encoding='utf-8') as file:
-            print(file.read(), file=outfile)
+        print(_read_page(infile), file=outfile)
         s = '<p>\n<a href="index.html">Back to the index</a>'
         if infile == 'index.html':
             s = ''
