@@ -1871,11 +1871,11 @@ class Game:
             if not time_str:
                 time_str = self.getTime()
             if self.moves.index == 1:
-                text = 'Your playing time is %(time)s\nfor %(n)d move.'
+                text = 'Completed in %(time)s & %(n)d move.'
             else:
-                text = 'Your playing time is %(time)s\nfor %(n)d moves.'
+                text = 'Completed in %(time)s & %(n)d moves.'
             text = text % {'time': time_str, 'n': self.moves.index}
-            congrats = 'Congratulations, this\nwas a truly perfect game!'
+            congrats = 'Perfect Game!'
             d = MfxMessageDialog(
                 self.top, title="Game won",
                 text='\n' + congrats + '\n\n' + text + '\n' + top_msg + '\n',
@@ -1886,11 +1886,11 @@ class Game:
             if not time_str:
                 time_str = self.getTime()
             if self.moves.index == 1:
-                text = 'Your playing time is %(time)s\nfor %(n)d move.'
+                text = 'Completed in %(time)s & %(n)d move.'
             else:
-                text = 'Your playing time is %(time)s\nfor %(n)d moves.'
+                text = 'Completed in %(time)s & %(n)d moves.'
             text = text % {'time': time_str, 'n': self.moves.index}
-            congrats = 'Congratulations, you did it!'
+            congrats = 'Winner!'
             d = MfxMessageDialog(
                 self.top, title="Game won",
                 text='\n' + congrats + '\n\n' + text + '\n' + top_msg + '\n',
@@ -1903,18 +1903,12 @@ class Game:
                 text="\nGame finished\n",
                 strings=("&New game", None, None, "&Close"))
         else:
-            text = "Game finished, but not without my help..."
+            text = "Finished the Game!"
             if self.stats.hints > 0 and not self.app.opt.free_hint:
-                if self.stats.demo_moves > 0:
-                    hintsused = ("You used %(h)s hint(s) and the demo " +
-                                 "during this game.") % {
-                        'h': self.stats.hints}
-                else:
-                    hintsused = ("You used %(h)s hint(s) during this " +
-                                 "game.") % {
-                        'h': self.stats.hints}
+                n = self.stats.hints
+                hintsused = "You needed %d hint%s" % (n, "" if n == 1 else "s")
             else:
-                hintsused = "You used the demo during this game."
+                hintsused = "You used the demo"
             d = MfxMessageDialog(
                 self.top, title="Game finished", bitmap="info",
                 text=(text + '\n\n' + hintsused),
@@ -2477,7 +2471,7 @@ class Game:
                 # ??? accelerators
                 d = MfxMessageDialog(self.top,
                                      title="%s Autopilot" % TITLE,
-                                     text="\nThis won't come out...\n",
+                                     text="\nNo more moves.\n",
                                      bitmap=bitmap, strings=(s,),
                                      padx=30, timeout=timeout)
                 status = d.status
@@ -2950,8 +2944,7 @@ class Game:
                 self.top, title="Load game error", bitmap="error",
                 text=(
                     "Error while loading game.\n\n" +
-                    "Probably the game file is damaged,\n" +
-                    "but this could also be a bug you might want to report."))
+                    "It could be a damaged file or a bug."))
             traceback.print_exc()
         except UnpicklingError as ex:
             self.updateMenus()
@@ -2963,9 +2956,8 @@ class Game:
             self.setCursor(cursor=self.app.top_cursor)
             MfxMessageDialog(
                 self.top, title="Load game error",
-                bitmap="error", text=(
-                    """Internal error while loading game.\n\n""" +
-                    "Please report this bug."))
+                bitmap="error",
+                text="Internal error while loading game.")
             traceback.print_exc()
         else:
             if self.pause:
