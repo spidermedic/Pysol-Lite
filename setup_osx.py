@@ -45,9 +45,9 @@ try:
 except (OSError, CalledProcessError):
     pass
 
-GETINFO_STRING = "%s %s, a lighter PySol. \
+GETINFO_STRING = f"{TITLE} {VERSION}, a lighter PySol. \
                 (C) 1998-2003 Markus F.X.J Oberhumer \
-                (C) 2005-2009 Skomoroh" % (TITLE, VERSION)
+                (C) 2005-2009 Skomoroh"
 PLIST = dict(
     CFBundleDevelopmentRegion='en_US',
     CFBundleExecutable=BUNDLE,
@@ -55,8 +55,8 @@ PLIST = dict(
     CFBundleGetInfoString=GETINFO_STRING,
     CFBundleIdentifier='net.sourceforge.pysolfc',
     CFBundleName=BUNDLE,
-    CFBundleVersion='%s' % VERSION,
-    CFBundleShortVersionString='%s' % VERSION,
+    CFBundleVersion=f'{VERSION}',
+    CFBundleShortVersionString=f'{VERSION}',
     NSHumanReadableCopyright="Copyright (C) 1998-2003 Markus F.X.J. Oberhumer",
     )
 APP = ['pysol.py']
@@ -102,7 +102,7 @@ top = os.getcwd()
 # before the bundle is signed below.
 if "py2app" in sys.argv:
     _pygame_dir = os.path.join(
-        top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Resources', 'lib',
+        top, 'dist', f'{BUNDLE}.app', 'Contents', 'Resources', 'lib',
         'python%d.%d' % sys.version_info[:2], 'pygame')
     for _name in ('docs', 'tests', 'examples'):
         shutil.rmtree(os.path.join(_pygame_dir, _name), ignore_errors=True)
@@ -110,7 +110,7 @@ if "py2app" in sys.argv:
 # original rpath.
 if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
     frameworks_dir = os.path.join(
-        top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Frameworks')
+        top, 'dist', f'{BUNDLE}.app', 'Contents', 'Frameworks')
     for name in os.listdir(frameworks_dir):
         if name.startswith('libwebp'):
             call([
@@ -126,7 +126,7 @@ if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
 if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
     call([
         'codesign', '--force', '--deep', '--sign', '-',
-        os.path.join(top, 'dist', '%s.app' % BUNDLE),
+        os.path.join(top, 'dist', f'{BUNDLE}.app'),
         ])
 
 # py2app records the Python it was built with, which puts the build
@@ -136,7 +136,7 @@ if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
 if "py2app" in sys.argv:
     import plistlib
     _plist_path = os.path.join(
-        top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Info.plist')
+        top, 'dist', f'{BUNDLE}.app', 'Contents', 'Info.plist')
     if os.path.exists(_plist_path):
         with open(_plist_path, 'rb') as _f:
             _info = plistlib.load(_f)

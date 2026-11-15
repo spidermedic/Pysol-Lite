@@ -42,7 +42,7 @@ def help_about(app, timeout=0, sound=True):
     strings = ("&Nice", "&Credits")
     if timeout:
         strings = ("&Enjoy",)
-    title_version = "%s v%s" % (TITLE, VERSION)
+    title_version = f"{TITLE} v{VERSION}"
     copyright_lines = """Copyright \u00a9 1998 - 2003 Markus F.X.J. Oberhumer.
 Copyright \u00a9 2003 Mt. Hood Playing Card Co.
 Copyright \u00a9 2005 - 2009 Skomoroh.
@@ -58,7 +58,7 @@ Copyright \u00a9 2026 Doug Martin."""
          "GNU General Public License. It comes with NO WARRANTY.\n\n"
          "For more information about this application visit", "center"),
     )
-    d = PysolAboutDialog(app, app.top, title="About %s" % TITLE,
+    d = PysolAboutDialog(app, app.top, title=f"About {TITLE}",
                          timeout=timeout,
                          text="\n".join(p[0] for p in parts),
                          parts=parts,
@@ -82,8 +82,8 @@ def help_html(app, document, dir_, top=None):
     try:
         doc = app.dataloader.findFile(document, dir_)
     except OSError:
-        MfxMessageDialog(app.top, title="%s HTML Problem" % TITLE,
-                         text="Cannot find help document\n%s" % document,
+        MfxMessageDialog(app.top, title=f"{TITLE} HTML Problem",
+                         text=f"Cannot find help document\n{document}",
                          bitmap="warning")
         return False
     # a file:// URL; as_uri() percent-encodes the space in "PySol Lite.app"

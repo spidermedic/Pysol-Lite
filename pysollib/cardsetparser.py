@@ -44,7 +44,7 @@ def read_cardset_config(dirname, filename):
         return None
     config = parse_cardset_config(lines_list)
     if not config:
-        print_err('invalid cardset: %s' % filename)
+        print_err(f'invalid cardset: {filename}')
         return None
     cs = Cardset()
     cs.dir = dirname

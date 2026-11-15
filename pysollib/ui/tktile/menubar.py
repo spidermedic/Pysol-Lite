@@ -231,7 +231,7 @@ class PysolMenubarTkCommon:
         if WIN_SYSTEM == "aqua":
             applemenu = MfxMenu(self.menubar, "apple")
             applemenu.add_command(
-                label="&About %s" % TITLE, command=self.mHelpAbout)
+                label=f"&About {TITLE}", command=self.mHelpAbout)
             applemenu.add_separator()
             applemenu.add_command(
                 label="&Settings...", command=self.mOptSettings,
@@ -358,7 +358,7 @@ class PysolMenubarTkCommon:
             menu = MfxMenu(self.menubar, label="Help",
                            name=self.help_menu_name, underline=-1)
             menu.add_command(
-                label="%s Help" % TITLE,
+                label=f"{TITLE} Help",
                 command=self.mHelp, accelerator=m+"F1")
         else:
             self.help_menu_name = "help"
@@ -378,7 +378,7 @@ class PysolMenubarTkCommon:
         if WIN_SYSTEM != "aqua":
             menu.add_separator()
             menu.add_command(
-                label="&About %s" % TITLE,
+                label=f"&About {TITLE}",
                 command=self.mHelpAbout)
 
         MfxMenubar.addPath = None
@@ -816,7 +816,7 @@ class PysolMenubarTkCommon:
     #
 
     DEFAULTEXTENSION = ".pso"
-    FILETYPES = (("%s files" % TITLE, "*" + DEFAULTEXTENSION),
+    FILETYPES = ((f"{TITLE} files", "*" + DEFAULTEXTENSION),
                  ("All files", "*"))
 
     def mAddFavor(self, *event):

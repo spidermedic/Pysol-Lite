@@ -176,8 +176,7 @@ def gen_rules_html():
         if rules_fn in rules_ls:
             rules_dir = 'rules'
         else:
-            print('missing rules for %s (file: %s)'
-                  % (gi.name, rules_fn))
+            print(f'missing rules for {gi.name} (file: {rules_fn})')
             continue
 
         # print '>>>', rules_fn
@@ -187,8 +186,7 @@ def gen_rules_html():
             rules_list.append((rules_dir, rules_fn, title, s))
         files_list.append(rules_fn)
         # rules_list.append((rules_fn, gi.name))
-        print('<li><a href="rules/%s">%s</a>'
-              % (rules_fn, gi.name), file=out_rules)
+        print(f'<li><a href="rules/{rules_fn}">{gi.name}</a>', file=out_rules)
         for n in gi.altnames:
             altnames.append((n, rules_fn))
 
@@ -209,8 +207,7 @@ def gen_rules_html():
         print(file.read(), file=out_rules_alt)
     altnames.sort(key=lambda x: x[0].lower())
     for name, fn in altnames:
-        print('<li> <a href="rules/%s">%s</a>'
-              % (fn, name), file=out_rules_alt)
+        print(f'<li> <a href="rules/{fn}">{name}</a>', file=out_rules_alt)
     print('</ul>\n' + _fmt(main_footer,
           {'back_to_index_link':
            '<p>\n<a href="index.html">Back to the index</a>'}),

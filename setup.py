@@ -42,8 +42,8 @@ for d in ddirs:
 
 if os.name == 'posix':
     for size in os.listdir('data/images/icons'):
-        data_files.append(('share/icons/hicolor/%s/apps' % size,
-                           ['data/images/icons/%s/pysol.png' % size]))
+        data_files.append((f'share/icons/hicolor/{size}/apps',
+                           [f'data/images/icons/{size}/pysol.png']))
     data_files.append(('share/applications', ['data/pysol.desktop']))
 
 # from pprint import pprint; pprint(data_files)

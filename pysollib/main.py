@@ -46,14 +46,14 @@ from pysollib.winsystems import init_root_window
 
 def fatal_no_cardsets(app):
     app.wm_withdraw()
-    MfxMessageDialog(app.top, title="%s installation error" % TITLE,
-                     text=('''No cardsets were found.
+    MfxMessageDialog(app.top, title=f"{TITLE} installation error",
+                     text=f'''No cardsets were found.
 
 Main data directory is:
-%(dir)s
+{app.dataloader.dir}
 
-Please check your %(app)s installation.
-''') % {'dir': app.dataloader.dir, 'app': TITLE},
+Please check your {TITLE} installation.
+''',
                      bitmap="error", strings=("&Quit",))
 
 
@@ -72,8 +72,7 @@ def parse_option(argv):
                                        "sound-mod=",
                                        "help"])
     except getopt.GetoptError as err:
-        print_err(str(err) + "\n" + "try %s --help for more information" %
-                  prog_name, 0)
+        print_err(f"{err}\ntry {prog_name} --help for more information", 0)
         return None
     opts = {"help": False,
             "deal": None,
@@ -104,7 +103,7 @@ def parse_option(argv):
             opts["sound-mod"] = i[1]
 
     if opts["help"]:
-        print(("""Usage: %s [OPTIONS] [FILE]
+        print(f"""Usage: {prog_name} [OPTIONS] [FILE]
   -g    --game=GAMENAME        start game GAMENAME
   -i    --gameid=GAMEID        start game with ID GAMEID
         --deal=DEAL            start game deal by number DEAL
@@ -117,19 +116,18 @@ def parse_option(argv):
 
   FILE - file name of a saved game
   MOD - one of following: pss(default), pygame, oss, win
-""") % prog_name)
+""")
         return None
 
     if len(args) > 1:
         print_err(
-            "too many files\ntry %s --help for more information" %
-            prog_name, 0)
+            f"too many files\ntry {prog_name} --help for more information", 0)
         return None
     filename = args and args[0] or None
     if filename and not os.path.isfile(filename):
         print_err(
-            "invalid file name\ntry %s --help for more information" %
-            prog_name, 0)
+            "invalid file name\n"
+            f"try {prog_name} --help for more information", 0)
         return None
     return opts, filename
 
@@ -194,7 +192,7 @@ def pysol_init(app, args):
     app.wm_withdraw()
 
     # create the progress bar
-    title = "Welcome to %s" % TITLE
+    title = f"Welcome to {TITLE}"
     color = app.opt.colors['table']
     if app.tabletile_index > 0:
         color = "#008200"
@@ -224,15 +222,15 @@ def pysol_init(app, args):
     if len(app.gdb.getGamesIdSortedByName()) == 0:
         app.wm_withdraw()
         app.intro.progress.destroy()
-        d = MfxMessageDialog(top, title="%s installation error" % TITLE,
-                             text=('''
+        d = MfxMessageDialog(top, title=f"{TITLE} installation error",
+                             text=f'''
 No games were found.
 
 Main data directory is:
-%(dir)s
+{app.dataloader.dir}
 
-Please check your %(app)s installation.
-''') % {'dir': app.dataloader.dir, 'app': TITLE},
+Please check your {TITLE} installation.
+''',
                              bitmap="error", strings=("&Quit",))
         return 1
 
@@ -264,11 +262,11 @@ ensure that your Cardsets package is up to date.''')
                          bitmap="error")
     if not cardset:
         MfxMessageDialog(top, title="Cardset error",
-                         text=('''
-The cardset "%(cs)s" was not found.
+                         text=f'''
+The cardset "{c[0]}" was not found.
 
 Please check that this cardset is installed.
-''') % {'cs': c[0]},
+''',
                          bitmap="error")
         cardset = app.cardset_manager.getByName("Standard")
         if not cardset:
@@ -300,8 +298,7 @@ Please check that this cardset is installed.
     elif app.commandline.game is not None:
         gameid = app.gdb.getGameByName(app.commandline.game)
         if gameid is None:
-            print_err("can't find game: %(game)s" % {
-                'game': app.commandline.game})
+            print_err(f"can't find game: {app.commandline.game}")
             sys.exit(-1)
         else:
             startgameid = gameid

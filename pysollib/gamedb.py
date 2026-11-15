@@ -683,24 +683,23 @@ class GameManager:
     def _check_game(self, gi):
         # print 'check game:', gi.id, gi.short_name.encode('utf-8')
         if gi.id in self.__all_games:
-            raise GameInfoException("duplicate game ID %s: %s and %s" %
-                                    (gi.id, str(gi.gameclass),
-                                     str(self.__all_games[gi.id].gameclass)))
+            raise GameInfoException(
+                f"duplicate game ID {gi.id}: {gi.gameclass} and "
+                f"{self.__all_games[gi.id].gameclass}")
         if gi.name in self.__all_gamenames:
             gameclass = self.__all_gamenames[gi.name].gameclass
-            raise GameInfoException("duplicate game name %s: %s and %s" %
-                                    (gi.name, str(gi.gameclass),
-                                     str(gameclass)))
+            raise GameInfoException(
+                f"duplicate game name {gi.name}: {gi.gameclass} and "
+                f"{gameclass}")
         if 1:
             for _, game in self.__all_games.items():
                 if gi.gameclass is game.gameclass:
                     raise GameInfoException(
-                        "duplicate game class %s: %s and %s" %
-                        (gi.id, str(gi.gameclass), str(game.gameclass)))
+                        f"duplicate game class {gi.id}: {gi.gameclass} and "
+                        f"{game.gameclass}")
         for n in gi.altnames:
             if n in self.__all_gamenames:
-                raise GameInfoException("duplicate game altname %s: %s" %
-                                        (gi.id, n))
+                raise GameInfoException(f"duplicate game altname {gi.id}: {n}")
 
     def register(self, gi):
         # print gi.id, gi.short_name.encode('utf-8')

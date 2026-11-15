@@ -113,12 +113,12 @@ def load_error_text(filename, ex):
     if isinstance(ex, SaveFileError):
         reason = str(ex)
     elif isinstance(ex, OSError):
-        reason = "The file could not be read (%s)." % (
-            ex.strerror or type(ex).__name__)
+        reason = ("The file could not be read "
+                  f"({ex.strerror or type(ex).__name__}).")
     else:
         reason = DAMAGED_SAVE_TEXT
-    return 'Cannot open the saved game\n%s\n\n%s' % (
-        os.path.basename(filename), reason)
+    return (f'Cannot open the saved game\n{os.path.basename(filename)}\n\n'
+            f'{reason}')
 
 
 def print_err(s, level=1):
@@ -335,8 +335,8 @@ class _OptionsUnpickler(Unpickler):
         if (module, name) in self.ALLOWED:
             return super().find_class(module, name)
         raise UnpicklingError(
-            "the old options file refers to %s.%s, which is not allowed"
-            % (module, name))
+            f"the old options file refers to {module}.{name}, "
+            "which is not allowed")
 
 
 def unpickle(filename):

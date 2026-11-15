@@ -224,8 +224,8 @@ def _safe_getattr(obj, name):
                            or isinstance(obj, random_dummy)):
         return getattr(obj, name)
     raise UnpicklingError(
-        "this saved game uses getattr(%s, %r), which is not allowed"
-        % (type(obj).__name__, name))
+        f"this saved game uses getattr({type(obj).__name__}, {name!r}), "
+        "which is not allowed")
 
 
 def _safe_codecs_encode(data, encoding):
@@ -234,8 +234,8 @@ def _safe_codecs_encode(data, encoding):
     if isinstance(data, str) and encoding == 'latin1':
         return data.encode('latin1')
     raise UnpicklingError(
-        "this saved game uses _codecs.encode(%s, %r), which is not allowed"
-        % (type(data).__name__, encoding))
+        f"this saved game uses _codecs.encode({type(data).__name__}, "
+        f"{encoding!r}), which is not allowed")
 
 
 # the _alt_unpickler loads saved games: it contains a few hacks to ensure
@@ -288,8 +288,7 @@ class _alt_unpickler(Unpickler):
         elif module == '_codecs' and name == 'encode':
             return _safe_codecs_encode
         raise UnpicklingError(
-            "this saved game refers to %s.%s, which is not allowed"
-            % (module, name))
+            f"this saved game refers to {module}.{name}, which is not allowed")
 
 
 @attr.s
@@ -639,8 +638,7 @@ class Game:
                 ncards += stack.cap.max_cards
             if ncards != self.gameinfo.ncards:
                 print_err('invalid sum of foundations.max_cards: '
-                          '%s: %s %s' %
-                          (class_name, ncards, self.gameinfo.ncards),
+                          f'{class_name}: {ncards} {self.gameinfo.ncards}',
                           2)
         if self.s.rows:
             from pysollib.stack import AC_RowStack, UD_AC_RowStack, \
@@ -664,18 +662,18 @@ class Game:
                 if isinstance(r, c):
                     if self.shallHighlightMatch not in f:
                         print_err('shallHighlightMatch is not valid: '
-                                  ' %s, %s' % (class_name, r.__class__), 2)
+                                  f' {class_name}, {r.__class__}', 2)
                     if r.cap.mod == 13 and self.shallHighlightMatch != f[1]:
                         print_err('shallHighlightMatch is not valid (wrap): '
-                                  ' %s, %s' % (class_name, r.__class__), 2)
+                                  f' {class_name}, {r.__class__}', 2)
                     break
         if self.s.talon.max_rounds > 1 and self.s.talon.texts.rounds is None:
             print_err('max_rounds > 1, but talon.texts.rounds is None: '
-                      '%s' % class_name, 2)
+                      f'{class_name}', 2)
         elif (self.s.talon.max_rounds <= 1 and
               self.s.talon.texts.rounds is not None):
             print_err('max_rounds <= 1, but talon.texts.rounds is not None: '
-                      '%s' % class_name, 2)
+                      f'{class_name}', 2)
 
     def _calcMouseBind(self, binding_format):
         """docstring for _calcMouseBind"""
@@ -2393,9 +2391,8 @@ class Game:
         else:
             todesc = self.parseEmptyStack(to_stack)
 
-        self.app.speech.speak("Move %s to %s" %
-                              (self.parseCard(from_stack.cards[-ncards]),
-                               todesc))
+        self.app.speech.speak(
+            f"Move {self.parseCard(from_stack.cards[-ncards])} to {todesc}")
         if info:
             self.app.statusbar.configLabel("info", text="", fg="#000000")
         return h
@@ -2495,7 +2492,7 @@ class Game:
                         1 else '\nGame solved in %d moves.\n')
                 text = text % self.moves.index
                 d = MfxMessageDialog(self.top,
-                                     title="%s Autopilot" % TITLE,
+                                     title=f"{TITLE} Autopilot",
                                      text=text,
                                      image=self.app.gimages.logos[1],
                                      strings=(s,),
@@ -2510,7 +2507,7 @@ class Game:
                     text += "\nplayer_moves: %d\ndemo_moves: %d\n" % \
                         (self.stats.player_moves, self.stats.demo_moves)
                 d = MfxMessageDialog(self.top,
-                                     title="%s Autopilot" % TITLE,
+                                     title=f"{TITLE} Autopilot",
                                      text=text, bitmap=bitmap, strings=(s,),
                                      padx=30, timeout=timeout)
                 status = d.status
@@ -2523,7 +2520,7 @@ class Game:
                         ("&Oh well", "&That's life", "&Hmm"))
                 # ??? accelerators
                 d = MfxMessageDialog(self.top,
-                                     title="%s Autopilot" % TITLE,
+                                     title=f"{TITLE} Autopilot",
                                      text="\nNo more moves.\n",
                                      bitmap=bitmap, strings=(s,),
                                      padx=30, timeout=timeout)
@@ -3011,8 +3008,8 @@ class Game:
         version_tuple = pload(tuple)
         validate(
             version_tuple >= (1, 0),
-            'This saved game comes from a version (%s)\n'
-            'that is too old to open.' % version)
+            f'This saved game comes from a version ({version})\n'
+            'that is too old to open.')
         p.set_version(version_tuple)
         game_version = 1
         bookmark = pload(int)

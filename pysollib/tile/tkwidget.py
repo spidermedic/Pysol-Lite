@@ -295,8 +295,7 @@ class MfxExceptionDialog(MfxMessageDialog):
             text = text + "\n"
         text = text + "\n"
         if isinstance(ex, EnvironmentError) and ex.filename is not None:
-            t = "[Errno %s] %s:\n%s" % \
-                (ex.errno, ex.strerror, repr(ex.filename))
+            t = f"[Errno {ex.errno}] {ex.strerror}:\n{ex.filename!r}"
         else:
             t = str(ex)
         kw.text = text + t

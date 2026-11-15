@@ -56,8 +56,8 @@ def init():
     root.withdraw()
     if tkinter.TkVersion < 8.4:
         # we need unicode support
-        sys.exit("%s needs Tcl/Tk 8.4 or better (you have %s)" %
-                 (pysollib.settings.TITLE, str(tkinter.TkVersion)))
+        sys.exit(f"{pysollib.settings.TITLE} needs Tcl/Tk 8.4 or better "
+                 f"(you have {tkinter.TkVersion})")
     pysollib.settings.WIN_SYSTEM = root.tk.call('tk', 'windowingsystem')
     # "can't invoke event <<ThemeChanged>>: application has been destroyed"
     root.destroy()

@@ -458,7 +458,7 @@ class Options:
         except KeyError:
             val = None
         except Exception:
-            print_err('load option error: %s: %s' % (section, key))
+            print_err(f'load option error: {section}: {key}')
             traceback.print_exc()
             val = None
         return val
@@ -488,8 +488,8 @@ class Options:
 
         # add initial comment
         if not os.path.exists(filename):
-            config.initial_comment = ['-*- coding: %s -*-' %
-                                      self._config_encoding]
+            config.initial_comment = [
+                f'-*- coding: {self._config_encoding} -*-']
             return
 
         # validation

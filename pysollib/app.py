@@ -347,8 +347,7 @@ class Application:
             elif self.commandline.game is not None:
                 gameid = self.gdb.getGameByName(self.commandline.game)
                 if gameid is None:
-                    print_err("can't find game: %(game)s" % {
-                        'game': self.commandline.game})
+                    print_err(f"can't find game: {self.commandline.game}")
                     sys.exit(-1)
                 else:
                     self.nextgame.id = gameid
@@ -700,7 +699,7 @@ class Application:
 
             self.wm_save_state()
             self.wm_withdraw()
-            title = "Loading cardset %s" % cs.name
+            title = f"Loading cardset {cs.name}"
             color = self.opt.colors['table']
             if self.tabletile_index > 0:
                 color = "#008200"
@@ -836,18 +835,17 @@ class Application:
 
         subcategoryLabel = ''
         if self.isSubcategoryRelevant(gi):
-            subcategoryLabel = ("(%s) ") % self.getSubcategoryName(gi)
+            subcategoryLabel = f"({self.getSubcategoryName(gi)}) "
 
         MfxMessageDialog(
             self.top, title="Incompatible cardset",
             bitmap="warning",
-            text=('''The currently selected cardset %(cardset)s
+            text=f'''The currently selected cardset {cardset.name}
 is not compatible with the game
-%(game)s
+{gi.name}
 
-Please select a %(correct_type)s %(subcategory)stype cardset.
-''') % {'cardset': cardset.name, 'game': gi.name,
-                'correct_type': t[0], 'subcategory': subcategoryLabel},
+Please select a {t[0]} {subcategoryLabel}type cardset.
+''',
             strings=("&OK",), default=0)
 
     def isSubcategoryRelevant(self, gi):
@@ -881,7 +879,7 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
 
     def __selectCardsetDialog(self, t):
         cs = self.selectCardset(
-            "Please select a %s type cardset" % t[0],
+            f"Please select a {t[0]} type cardset",
             self.cardset.index)
         return cs
 
@@ -897,7 +895,7 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
                 opt = unpickle(self.fn.opt)
             except Exception as ex:
                 # an unreadable or refused old file is ignored
-                print_err("cannot read the old options file: %s" % ex)
+                print_err(f"cannot read the old options file: {ex}")
                 opt = None
             if opt:
                 self.opt.__dict__.update(opt.__dict__)
@@ -1007,8 +1005,8 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
                     traceback.print_exc()
                     cs = None
                 if not cs:
-                    print_err('failed to parse cardset file: %s'
-                              % config_txt_path)
+                    print_err(
+                        f'failed to parse cardset file: {config_txt_path}')
                     continue
                 back = cs.backnames[cs.backindex]
                 back_im_path = os.path.join(d, back)

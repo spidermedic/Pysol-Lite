@@ -270,7 +270,7 @@ class PysolMenubar(PysolMenubarTk):
         if self._cancelDrag():
             return
         if self.changed():
-            if not self.game.areYouSure("Quit %s" % TITLE,
+            if not self.game.areYouSure(f"Quit {TITLE}",
                                         "Discard this game and quit?"):
                 return
         self.game.endGame()
@@ -419,7 +419,7 @@ class PysolMenubar(PysolMenubarTk):
     #
 
     def mHelpHtml(self, *args):
-        print('mHelpHtml: %s' % str(args))
+        print(f'mHelpHtml: {args}')
         if self._cancelDrag(break_pause=False):
             return
         help_html(self.app, args[0], "html")

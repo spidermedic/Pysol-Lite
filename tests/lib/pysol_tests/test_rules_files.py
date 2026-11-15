@@ -50,7 +50,7 @@ class RulesFilesTests(unittest.TestCase):
             gi = GAME_DB.get(game_id)
             rules_fn = _resolve_rules_filename(gi)
             if rules_fn not in available:
-                missing.append('%s (%s) -> %s' % (game_id, gi.name, rules_fn))
+                missing.append(f'{game_id} ({gi.name}) -> {rules_fn}')
 
         self.assertEqual(
             missing, [],
