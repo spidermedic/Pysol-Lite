@@ -31,7 +31,6 @@ init()
 # IMPORTANT: The set of modules to load depends on the settings
 # and command line options. Therfore import of pysollib.main
 # HAS TO BE after call to init().
-# See docs/README.SOURCE.
 # Flake8 test would complain here E402, so disabled
 from pysollib.main import main  # noqa: E402,I202
 

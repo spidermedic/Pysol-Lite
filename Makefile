@@ -7,7 +7,7 @@ else
 endif
 export PYTHONPATH := $(PYTHONPATH)$(path_sep)$(CURDIR)
 
-.PHONY: all install dist rpm all_games_html rules pretest test runtest
+.PHONY: all install dist rpm rules pretest test runtest
 
 all:
 	@echo "No default target"
@@ -15,22 +15,11 @@ all:
 install:
 	python3 setup.py install
 
-dist: all_games_html rules
+dist: rules
 	python3 setup.py sdist
 
-rpm: all_games_html rules
+rpm: rules
 	python3 setup.py bdist_rpm
-
-DOCS_DIR = docs
-HTML_DIR = data/html
-ALL_GAMES_HTML_BASE = all_games.html
-ALL_GAMES_HTML = $(HTML_DIR)/$(ALL_GAMES_HTML_BASE)
-ALL_GAMES_HTML__FOR_WEBSITE = $(DOCS_DIR)/$(ALL_GAMES_HTML_BASE)
-all_games_html: $(ALL_GAMES_HTML)
-
-$(ALL_GAMES_HTML) $(ALL_GAMES_HTML__FOR_WEBSITE): rules
-	cd $(HTML_DIR) && $(CURDIR)/scripts/all_games.py html id rules > $(ALL_GAMES_HTML_BASE)
-	./scripts/all_games.py html id doc/rules bare > $(ALL_GAMES_HTML__FOR_WEBSITE)
 
 rules:
 	cd html-src && ./gen-html.py

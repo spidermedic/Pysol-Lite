@@ -32,12 +32,6 @@ if not os.path.exists('data/html'):
 # trim the card back choices in the (separately downloaded) cardsets
 call([sys.executable, './scripts/prune_card_backs.py', 'data'])
 
-# build the HTML list of games
-# (run with this interpreter so its packages are available)
-with open('docs/all_games.html', 'w') as _f:
-    call([sys.executable, './scripts/all_games.py'], stdout=_f,
-         env=dict(os.environ, PYTHONPATH=os.getcwd()))
-
 # Use Freecell Solver, if it is installed.
 # http://fc-solve.berlios.de/
 SOLVER_LIB_PATH = "/usr/local/lib/libfreecell-solver.0.dylib"
@@ -75,7 +69,7 @@ PLIST = dict(
     )
 APP = ['pysol.py']
 ICON_FILE = 'data/PySol.icns'
-DATA_FILES = ['docs', 'data', 'COPYING', 'README.md',
+DATA_FILES = ['data', 'COPYING', 'README.md',
               ] + SOLVER
 RESOURCES = []
 FRAMEWORKS = ([SOLVER_LIB_PATH] if SOLVER_LIB_PATH else []) + \
