@@ -46,13 +46,18 @@ except (OSError, CalledProcessError):
     pass
 
 COPYRIGHT = ' '.join(COPYRIGHT_LINES)
+# The app's own identifier (macOS keys the Dock entry, Launch Services, the
+# code signature and notarization to it). It was upstream PySolFC's
+# net.sourceforge.pysolfc. Nothing in the program reads it: the settings
+# folder and the saved games do not depend on it.
+BUNDLE_ID = 'io.github.spidermedic.pysol-lite'
 GETINFO_STRING = f"{TITLE} {VERSION}, a lighter PySol. {COPYRIGHT}"
 PLIST = dict(
     CFBundleDevelopmentRegion='en_US',
     CFBundleExecutable=BUNDLE,
     CFBundleDisplayName=TITLE,
     CFBundleGetInfoString=GETINFO_STRING,
-    CFBundleIdentifier='net.sourceforge.pysolfc',
+    CFBundleIdentifier=BUNDLE_ID,
     CFBundleName=BUNDLE,
     CFBundleVersion=f'{VERSION}',
     CFBundleShortVersionString=f'{VERSION}',
