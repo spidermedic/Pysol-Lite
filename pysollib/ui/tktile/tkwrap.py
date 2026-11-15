@@ -23,8 +23,6 @@
 
 import tkinter
 
-from pysollib.ui.tktile.tkconst import EVENT_PROPAGATE
-
 TclError = tkinter.TclError
 
 
@@ -88,46 +86,11 @@ class MfxRoot(tkinter.Tk):
     #
 
     def sleep(self, seconds):
-        # time.sleep(seconds)
         self.after(int(seconds*1000))
-        return
-        print('sleep', seconds)
-        timeout = int(seconds*1000)
-        self.sleep_var = 0
-        while timeout > 0:
-            self.update()
-            self.update_idletasks()
-            if self.sleep_var:
-                break
-            self.after(100)
-            timeout -= 100
-        print('finish sleep')
-        return
-        if self.after_id:
-            self.after_cancel(self.after_id)
-        self.after_id = self.after(int(seconds*1000), self._sleepEvent)
-        self.sleep_var.set(1)
-        self.update()
-        self.wait_variable(self.sleep_var)
-        if self.after_id:
-            self.after_cancel(self.after_id)
-            self.after_id = None
-        print('finish sleep')
-
-    def _sleepEvent(self, *args):
-        return
-        print('_sleepEvent', args)
-        self.interruptSleep()
-        return EVENT_PROPAGATE
 
     def interruptSleep(self):
-        return
-        print('interruptSleep')
-        self.update()
-        self.update_idletasks()
-        self.sleep_var = 1
-        # self.sleep_var.set(0)
-        # self.after_idle(self.sleep_var.set, 0)
+        # sleep() just waits, so there is nothing to interrupt
+        pass
 
     #
     #

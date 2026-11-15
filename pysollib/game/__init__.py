@@ -57,7 +57,7 @@ from pysollib.pysolrandom import LCRandom31, PysolRandom, construct_random
 from pysollib.pysoltk import CURSOR_WATCH
 from pysollib.pysoltk import Card
 from pysollib.pysoltk import EVENT_HANDLED
-from pysollib.pysoltk import MfxCanvasLine, MfxCanvasRectangle, MfxCanvasText
+from pysollib.pysoltk import MfxCanvasLine, MfxCanvasRectangle
 from pysollib.pysoltk import MfxExceptionDialog, MfxMessageDialog
 from pysollib.pysoltk import after, after_cancel, after_idle
 from pysollib.pysoltk import bind, wm_map
@@ -2395,10 +2395,8 @@ class Game:
             hint=None,
             keypress=None,
             start_demo_moves=self.stats.demo_moves,
-            info_text=None,
         )
         self.hints.list = None
-        self.createDemoInfoText()
         after_idle(self.top, self.demoEvent)  # schedule first move
 
     def stopDemo(self, event=None):
@@ -2566,72 +2564,6 @@ class Game:
             from_stack.moveMove(ncards, to_stack, frames=-1)
             demo.last_deal = []
         return 0
-
-    def createDemoInfoText(self):
-        # TODO - the text placement is not fully ok
-        if DEBUG:
-            self.showHelp('help', self.getDemoInfoText())
-        return
-        if not self.demo or self.demo.info_text or self.preview:
-            return
-        tinfo = [
-            ("sw", 8, self.height - 8),
-            ("se", self.width - 8, self.height - 8),
-            ("nw", 8, 8),
-            ("ne", self.width - 8, 8),
-        ]
-        ta = self.getDemoInfoTextAttr(tinfo)
-        if ta:
-            # font = self.app.getFont("canvas_large")
-            font = self.app.getFont("default")
-            self.demo.info_text = MfxCanvasText(self.canvas, ta[1], ta[2],
-                                                anchor=ta[0], font=font,
-                                                text=self.getDemoInfoText())
-
-    def getDemoInfoText(self):
-        h = 'None' if self.Hint_Class is None else self.Hint_Class.__name__
-        return '%s (%s)' % (self.gameinfo.short_name, h)
-
-    def getDemoInfoTextAttr(self, tinfo):
-        items1, items2 = [], []
-        for s in self.allstacks:
-            if s.is_visible:
-                items1.append(s)
-                items1.extend(list(s.cards))
-                if not s.cards and s.cap.max_accept > 0:
-                    items2.append(s)
-                else:
-                    items2.extend(list(s.cards))
-        ti = self.__checkFreeSpaceForDemoInfoText(items1)
-        if ti < 0:
-            ti = self.__checkFreeSpaceForDemoInfoText(items2)
-        if ti < 0:
-            return None
-        return tinfo[ti]
-
-    def __checkFreeSpaceForDemoInfoText(self, items):
-        CW, CH = self.app.images.CARDW, self.app.images.CARDH
-        # note: these are translated by (-CW/2, -CH/2)
-        x1, x2 = 3*CW//2, self.width - 5*CW//2
-        y1, y2 = CH//2, self.height - 3*CH//2
-        #
-        m = [1, 1, 1, 1]
-        for c in items:
-            cx, cy = c.x, c.y
-            if cy >= y2:
-                if cx <= x1:
-                    m[0] = 0
-                elif cx >= x2:
-                    m[1] = 0
-            elif cy <= y1:
-                if cx <= x1:
-                    m[2] = 0
-                elif cx >= x2:
-                    m[3] = 0
-        for mm in m:
-            if mm:
-                return mm
-        return -1
 
     def _iterMovablePiles(self, stack):
         # Yield every face-up suffix pile the stack may move (longest first).

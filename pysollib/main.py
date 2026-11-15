@@ -154,7 +154,6 @@ def pysol_init(app, args):
     opts = parse_option(args)
     if not opts:
         return 1
-        sys.exit(1)
     opts, filename = opts
     if filename:
         app.commandline.loadgame = filename

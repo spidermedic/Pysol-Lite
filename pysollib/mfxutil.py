@@ -102,6 +102,7 @@ def get_default_resampling():
 
 
 def print_err(s, level=1):
+    ss = PACKAGE + ': '
     if level == 0:
         ss = PACKAGE+': ERROR:'
     elif level == 1:

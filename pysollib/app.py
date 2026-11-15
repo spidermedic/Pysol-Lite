@@ -427,7 +427,6 @@ class Application:
         if self.nextgame.startdemo:
             self.nextgame.startdemo = 0
             self.game.startDemo()
-            self.game.createDemoInfoText()
         elif autoplay:
             self.game.autoPlay()
             self.game.stats.player_moves = 0

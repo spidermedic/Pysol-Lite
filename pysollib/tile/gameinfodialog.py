@@ -27,4 +27,4 @@ from pysollib.tile.basetilemfxdialog import BaseTileMfxDialog
 
 class GameInfoDialog(pysollib.ui.tktile.gameinfodialog.BaseGameInfoDialog,
                      BaseTileMfxDialog):
-    True
+    pass

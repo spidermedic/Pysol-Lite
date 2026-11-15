@@ -267,7 +267,6 @@ class SalicLaw_RowStack(OpenStack):
         if len(self.cards) == 1:
             return True
         return False
-        return OpenStack.acceptsCards(self, from_stack, cards)
 
 
 class SalicLaw_Foundation(RK_FoundationStack):

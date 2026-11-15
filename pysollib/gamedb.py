@@ -597,19 +597,13 @@ class GameInfo(Struct):
         game_type = game_type & 1023
         name = to_unicode(name)
         en_name = name                  # for app.getGameRulesFilename
-        if pysollib.settings.TRANSLATE_GAME_NAMES:
-            name = name
         if not short_name:
             short_name = name
         else:
             short_name = to_unicode(short_name)
-            if pysollib.settings.TRANSLATE_GAME_NAMES:
-                short_name = short_name
         if isinstance(altnames, str):
             altnames = (altnames,)
         altnames = [to_unicode(n) for n in altnames]
-        if pysollib.settings.TRANSLATE_GAME_NAMES:
-            altnames = [n for n in altnames]
         #
         if not (1 <= category <= GI.NUM_CATEGORIES):
             if game_type == GI.GT_MAHJONGG:

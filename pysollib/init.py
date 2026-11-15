@@ -26,11 +26,6 @@ import os
 import subprocess
 import sys
 
-try:
-    import jnius
-except ImportError:
-    jnius = None
-
 import pysollib.settings
 
 # ************************************************************************

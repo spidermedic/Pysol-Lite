@@ -58,7 +58,6 @@ class MfxMenubar(tkinter.Menu):
     def labeltoname(self, label):
         # print label, type(label)
         name = re.sub(r"[^0-9a-zA-Z]", "", label).lower()
-        label = label
         underline = label.find('&')
         if underline >= 0:
             label = label.replace('&', '')
