@@ -32,7 +32,7 @@ def createToolbarMenu(menubar, menu):
         submenu.add_radiobutton(
             label=label, variable=menubar.tkopt.toolbar_compound,
             value=comp, command=menubar.mOptToolbarCompound)
-    menu.add_command(label='Visible buttons',
+    menu.add_command(label='Visible buttons...',
                      command=menubar.mOptToolbarButtons)
     submenu = MfxMenu(menu, label='Position', tearoff=tearoff)
     for label, value in (("Top", 1), ("Bottom", 2),
@@ -233,20 +233,20 @@ class PysolMenubarTkCommon:
                 label="&About %s" % TITLE, command=self.mHelpAbout)
             applemenu.add_separator()
             applemenu.add_command(
-                label="&Settings", command=self.mOptSettings,
+                label="&Settings...", command=self.mOptSettings,
                 accelerator=m+",")
 
         menu = MfxMenu(self.menubar, "&File")
         menu.add_command(
             label="&New game", command=self.mNewGame, accelerator="N")
         menu.add_command(
-            label="&Open",
+            label="&Open...",
             command=self.mOpen, accelerator=m+"O")
         menu.add_separator()
         menu.add_command(
             label="&Save",
             command=self.mSave, accelerator=m+"S")
-        menu.add_command(label="Save &as", command=self.mSaveAs)
+        menu.add_command(label="Save &as...", command=self.mSaveAs)
         menu.add_separator()
         menu.add_command(
             label="&Quit",
@@ -316,7 +316,7 @@ class PysolMenubarTkCommon:
             label="Highlight p&iles",
             command=self.mHighlightPiles, accelerator="I")
         menu.add_command(
-            label="&Find card",
+            label="&Find card...",
             command=self.mFindCard, accelerator="F3")
         menu.add_separator()
         menu.add_command(
@@ -332,7 +332,7 @@ class PysolMenubarTkCommon:
         if WIN_SYSTEM != "aqua":
             menu = MfxMenu(self.menubar, label="&Options")
             menu.add_command(
-                label="&Settings", command=self.mOptSettings,
+                label="&Settings...", command=self.mOptSettings,
                 accelerator=m+",")
         # menu.add_checkbutton(
         #     label=n_("Startup splash sc&reen"),
@@ -508,7 +508,7 @@ class PysolMenubarTkCommon:
         m = "Ctrl-"
         if sys.platform == "darwin":
             m = "Cmd-"
-        menu.add_command(label="All &games", accelerator=m+"V",
+        menu.add_command(label="All &games...", accelerator=m+"V",
                          command=self.mSelectGameDialogWithPreview)
         MfxMenu(menu, label="R&ecent games")
         MfxMenu(menu, label="Fa&vorite games")
