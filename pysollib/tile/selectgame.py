@@ -265,15 +265,6 @@ class SelectGameDialog(MfxDialog):
 
         results = []
         for game in games:
-            if (self.criteria.category != "" and
-                    self.criteria.categoryOptions[self.criteria.category]
-                    != game.category):
-                continue
-            if (self.criteria.subcategory != "" and
-                    self.criteria.
-                    subcategoryOptionsAll[self.criteria.subcategory]
-                    != game.subcategory):
-                continue
             if (self.criteria.type != ""
                     and self.criteria.typeOptions[self.criteria.type]
                     != game.si.game_type):
@@ -295,50 +286,6 @@ class SelectGameDialog(MfxDialog):
                     and game.redeals < 4:
                 continue
 
-            compat_okay = True
-            for name, games in GI.GAMES_BY_COMPATIBILITY:
-                if self.criteria.compat == name:
-                    if game.id not in games:
-                        compat_okay = False
-                        break
-
-            if not compat_okay:
-                continue
-
-            invent_okay = True
-            for name, games in GI.GAMES_BY_INVENTORS:
-                if self.criteria.inventor == name:
-                    if game.id not in games:
-                        invent_okay = False
-                        break
-
-            if not invent_okay:
-                continue
-
-            if self.criteria.version != "":
-                version_okay = False
-                version_found = False
-                for name, games in GI.GAMES_BY_PYSOL_VERSION:
-                    if self.criteria.version == name:
-                        version_found = True
-                        if (game.id in games and
-                                self.criteria.versioncompare != "New since"):
-                            version_okay = True
-                            break
-                    elif ((not version_found and
-                           self.criteria.versioncompare == "Present in")
-                          or (version_found and
-                              (self.criteria.versioncompare
-                               == "New since (inclusive)"
-                               or self.criteria.versioncompare
-                               == "New since"))):
-                        if game.id in games:
-                            version_okay = True
-                            break
-
-                if not version_okay:
-                    continue
-
             if (self.criteria.popular and
                     not (game.si.game_flags & GI.GT_POPULAR)):
                 continue
@@ -357,16 +304,7 @@ class SelectGameDialog(MfxDialog):
             if (self.criteria.stripped and
                     not (game.si.game_flags & GI.GT_STRIPPED)):
                 continue
-            if (self.criteria.separate and
-                    not (game.si.game_flags & GI.GT_SEPARATE_DECKS)):
-                continue
             if (self.criteria.open and not (game.si.game_flags & GI.GT_OPEN)):
-                continue
-            if (self.criteria.relaxed and
-                    not (game.si.game_flags & GI.GT_RELAXED)):
-                continue
-            if (self.criteria.original and
-                    not (game.si.game_flags & GI.GT_ORIGINAL)):
                 continue
 
             if self.app.checkSearchString(self.criteria.name, game.name):
@@ -396,17 +334,9 @@ class SelectGameDialog(MfxDialog):
             self.list_searchtext.insert(0, d.name.get())
 
             self.criteria.usealt = d.usealt.get()
-            self.criteria.category = d.category.get()
-            self.criteria.subcategory = d.subcategory.get()
-            self.criteria.type = d.type.get()
-            self.categoryVar.set(self.criteria.type or ALL_CATEGORIES)
             self.criteria.skill = d.skill.get()
             self.criteria.decks = d.decks.get()
             self.criteria.redeals = d.redeals.get()
-            self.criteria.compat = d.compat.get()
-            self.criteria.inventor = d.inventor.get()
-            self.criteria.versioncompare = d.versioncompare.get()
-            self.criteria.version = d.version.get()
 
             self.criteria.popular = d.popular.get()
             self.criteria.recent = d.recent.get()
@@ -414,10 +344,7 @@ class SelectGameDialog(MfxDialog):
             self.criteria.children = d.children.get()
             self.criteria.scoring = d.scoring.get()
             self.criteria.stripped = d.stripped.get()
-            self.criteria.separate = d.separate.get()
             self.criteria.open = d.open.get()
-            self.criteria.relaxed = d.relaxed.get()
-            self.criteria.original = d.original.get()
             self.performSearch()
 
     def selectSearchResult(self, event):
@@ -603,16 +530,10 @@ class SearchCriteria:
     def __init__(self):
         self.name = ""
         self.usealt = True
-        self.category = ""
-        self.subcategory = ""
         self.type = ""
         self.skill = ""
         self.decks = ""
         self.redeals = ""
-        self.compat = ""
-        self.inventor = ""
-        self.versioncompare = "New in"
-        self.version = ""
 
         self.popular = False
         self.recent = False
@@ -620,22 +541,7 @@ class SearchCriteria:
         self.children = False
         self.scoring = False
         self.stripped = False
-        self.separate = False
         self.open = False
-        self.relaxed = False
-        self.original = False
-
-        categoryOptions = {-1: ""}
-        categoryOptions.update(CSI.TYPE_NAME)
-        self.categoryOptions = dict((v, k) for k, v in categoryOptions.items())
-
-        self.subcategoryOptions = {"": -1}
-
-        subcategoryOptionsAll = {"": -1}
-        for t in CSI.SUBTYPE_NAME.values():
-            subcategoryOptionsAll.update(t)
-        self.subcategoryOptionsAll = dict((v, k) for k, v in
-                                          subcategoryOptionsAll.items())
 
         typeOptions = {-1: ""}
         typeOptions.update(GI.TYPE_NAMES)
@@ -666,12 +572,6 @@ class SearchCriteria:
                               "Variable redeals": -2,
                               "Other number of redeals": 4}
 
-        self.versionCompareOptions = ("New in", "Present in", "New since",
-                                      "New since (inclusive)")
-
-
-def _extract_names(game_info):
-    return [""] + [name for name, _games in game_info]
 
 
 class SelectGameAdvancedSearch(MfxDialog):
@@ -686,26 +586,12 @@ class SelectGameAdvancedSearch(MfxDialog):
         self.name.set(criteria.name)
         self.usealt = tkinter.BooleanVar()
         self.usealt.set(criteria.usealt)
-        self.category = tkinter.StringVar()
-        self.category.set(criteria.category)
-        self.subcategory = tkinter.StringVar()
-        self.subcategory.set(criteria.subcategory)
-        self.type = tkinter.StringVar()
-        self.type.set(criteria.type)
         self.skill = tkinter.StringVar()
         self.skill.set(criteria.skill)
         self.decks = tkinter.StringVar()
         self.decks.set(criteria.decks)
         self.redeals = tkinter.StringVar()
         self.redeals.set(criteria.redeals)
-        self.compat = tkinter.StringVar()
-        self.compat.set(criteria.compat)
-        self.inventor = tkinter.StringVar()
-        self.inventor.set(criteria.inventor)
-        self.versioncompare = tkinter.StringVar()
-        self.versioncompare.set(criteria.versioncompare)
-        self.version = tkinter.StringVar()
-        self.version.set(criteria.version)
 
         self.popular = tkinter.BooleanVar()
         self.popular.set(criteria.popular)
@@ -719,14 +605,8 @@ class SelectGameAdvancedSearch(MfxDialog):
         self.scoring.set(criteria.scoring)
         self.stripped = tkinter.BooleanVar()
         self.stripped.set(criteria.stripped)
-        self.separate = tkinter.BooleanVar()
-        self.separate.set(criteria.separate)
         self.open = tkinter.BooleanVar()
         self.open.set(criteria.open)
-        self.relaxed = tkinter.BooleanVar()
-        self.relaxed.set(criteria.relaxed)
-        self.original = tkinter.BooleanVar()
-        self.original.set(criteria.original)
 
         #
         row = 0
@@ -743,50 +623,6 @@ class SelectGameAdvancedSearch(MfxDialog):
         altCheck = PysolCheckbutton(top_frame, variable=self.usealt,
                                     text="Check alternate names")
         altCheck.grid(row=row, column=1, columnspan=4, sticky='ew',
-                      padx=1, pady=1)
-        row += 1
-
-        categoryValues = sorted(criteria.categoryOptions.keys())
-
-        self.categoryValues = criteria.categoryOptions
-
-        labelCategory = tkinter.Label(top_frame, text="Category:",
-                                      anchor="w")
-        labelCategory.grid(row=row, column=0, columnspan=1, sticky='ew',
-                           padx=1, pady=1)
-        textCategory = PysolCombo(top_frame, values=categoryValues,
-                                  fieldname="Category:",
-                                  textvariable=self.category, state='readonly',
-                                  selectcommand=self.updateSubcategories)
-        textCategory.grid(row=row, column=1, columnspan=4, sticky='ew',
-                          padx=1, pady=1)
-        row += 1
-
-        subcategoryValues = sorted(criteria.subcategoryOptions.keys())
-
-        labelSubcategory = tkinter.Label(top_frame, text="Subcategory:",
-                                         anchor="w")
-        labelSubcategory.grid(row=row, column=0, columnspan=1, sticky='ew',
-                              padx=1, pady=1)
-        textSubcategory = PysolCombo(top_frame, values=subcategoryValues,
-                                     fieldname="Subcategory:",
-                                     textvariable=self.subcategory,
-                                     state='readonly')
-        textSubcategory.grid(row=row, column=1, columnspan=4, sticky='ew',
-                             padx=1, pady=1)
-        self.subcategorySelect = textSubcategory
-        self.updateSubcategories()
-        row += 1
-
-        typeValues = sorted(criteria.typeOptions.keys())
-
-        labelType = tkinter.Label(top_frame, text="Type:", anchor="w")
-        labelType.grid(row=row, column=0, columnspan=1, sticky='ew',
-                       padx=1, pady=1)
-        textType = PysolCombo(top_frame, values=typeValues,
-                              fieldname="Type:",
-                              textvariable=self.type, state='readonly')
-        textType.grid(row=row, column=1, columnspan=4, sticky='ew',
                       padx=1, pady=1)
         row += 1
 
@@ -827,114 +663,15 @@ class SelectGameAdvancedSearch(MfxDialog):
                          padx=1, pady=1)
         row += 1
 
-        labelCompat = tkinter.Label(top_frame, text="Compatibility:",
-                                    anchor="w")
-        labelCompat.grid(row=row, column=0, columnspan=1, sticky='ew',
-                         padx=1, pady=1)
-        textCompat = PysolCombo(top_frame, values=_extract_names(
-                                    GI.GAMES_BY_COMPATIBILITY),
-                                fieldname="Compatibility:",
-                                textvariable=self.compat, state='readonly')
-        textCompat.grid(row=row, column=1, columnspan=4, sticky='ew',
-                        padx=1, pady=1)
-        row += 1
-
-        labelInventor = tkinter.Label(top_frame, text="Inventor:",
-                                      anchor="w")
-        labelInventor.grid(row=row, column=0, columnspan=1, sticky='ew',
-                           padx=1, pady=1)
-        textInventor = PysolCombo(top_frame,
-                                  values=_extract_names(GI.GAMES_BY_INVENTORS),
-                                  fieldname="Inventor:",
-                                  textvariable=self.inventor, state='readonly')
-        textInventor.grid(row=row, column=1, columnspan=4, sticky='ew',
-                          padx=1, pady=1)
-        row += 1
-
-        versionCompareValues = list(criteria.versionCompareOptions)
-
-        labelVersion = tkinter.Label(top_frame, text="PySol version:",
-                                     anchor="w")
-        labelVersion.grid(row=row, column=0, columnspan=1, sticky='ew',
-                          padx=1, pady=1)
-        textVersionCompare = PysolCombo(top_frame, values=versionCompareValues,
-                                        fieldname="PySol version:",
-                                        textvariable=self.versioncompare,
-                                        state='readonly')
-        textVersionCompare.grid(row=row, column=1, columnspan=2, sticky='ew',
-                                padx=1, pady=1)
-
-        textVersion = PysolCombo(top_frame, values=_extract_names(
-                                     GI.GAMES_BY_PYSOL_VERSION),
-                                 fieldname="PySol version:",
-                                 textvariable=self.version, state='readonly')
-        textVersion.grid(row=row, column=3, columnspan=2, sticky='ew',
-                         padx=1, pady=1)
-        row += 1
-
-        col = 0
-        popularCheck = PysolCheckbutton(top_frame, variable=self.popular,
-                                        text="Popular")
-        popularCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                          padx=1, pady=1)
-        col += 2
-
-        recentCheck = PysolCheckbutton(top_frame, variable=self.recent,
-                                       text="Recent")
-        recentCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                         padx=1, pady=1)
-        col += 2
-
-        favoriteCheck = PysolCheckbutton(top_frame, variable=self.favorite,
-                                         text="Favorite")
-        favoriteCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                           padx=1, pady=1)
-
-        row += 1
-        col = 0
-
-        childCheck = PysolCheckbutton(top_frame, variable=self.children,
-                                      text="Children's")
-        childCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                        padx=1, pady=1)
-        col += 2
-
-        scoreCheck = PysolCheckbutton(top_frame, variable=self.scoring,
-                                      text="Scored")
-        scoreCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                        padx=1, pady=1)
-        col += 2
-
-        stripCheck = PysolCheckbutton(top_frame, variable=self.stripped,
-                                      text="Stripped Deck")
-        stripCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                        padx=1, pady=1)
-        row += 1
-        col = 0
-
-        sepCheck = PysolCheckbutton(top_frame, variable=self.separate,
-                                    text="Separate Decks")
-        sepCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                      padx=1, pady=1)
-        col += 2
-
-        openCheck = PysolCheckbutton(top_frame, variable=self.open,
-                                     text="Open")
-        openCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                       padx=1, pady=1)
-        col += 2
-
-        relaxedCheck = PysolCheckbutton(top_frame, variable=self.relaxed,
-                                        text="Relaxed")
-        relaxedCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                          padx=1, pady=1)
-        row += 1
-        col = 0
-
-        originalCheck = PysolCheckbutton(top_frame, variable=self.original,
-                                         text="Original")
-        originalCheck.grid(row=row, column=col, columnspan=1, sticky='ew',
-                           padx=1, pady=1)
+        # check boxes, three to a row
+        checks = ((self.popular, "Popular"), (self.recent, "Recent"),
+                  (self.favorite, "Favorite"), (self.open, "Open"),
+                  (self.scoring, "Scored"), (self.children, "Children's"),
+                  (self.stripped, "Stripped Deck"))
+        for i, (var, label) in enumerate(checks):
+            check = PysolCheckbutton(top_frame, variable=var, text=label)
+            check.grid(row=row + i // 3, column=(i % 3) * 2, columnspan=1,
+                       sticky='ew', padx=1, pady=1)
 
         focus = self.createButtons(bottom_frame, kw)
 
@@ -942,22 +679,6 @@ class SelectGameAdvancedSearch(MfxDialog):
 
         # focus = text_w
         self.mainloop(focus, kw.timeout)
-
-    def updateSubcategories(self, *args):
-        subcategoryOptions = {-1: ""}
-        key = self.categoryValues[self.category.get()]
-        if key in CSI.SUBTYPE_NAME:
-            subcategoryOptions.update(CSI.SUBTYPE_NAME[key])
-            self.subcategorySelect['state'] = 'readonly'
-            subcategoryOptions = dict((v, k) for k, v in
-                                      subcategoryOptions.items())
-            subcategoryOptionsK = sorted(subcategoryOptions.keys())
-            self.subcategorySelect['values'] = subcategoryOptionsK
-            if self.subcategory.get() not in subcategoryOptionsK:
-                self.subcategory.set("")
-        else:
-            self.subcategorySelect['state'] = 'disabled'
-            self.subcategory.set("")
 
     def initKw(self, kw):
         kw = KwStruct(kw,
