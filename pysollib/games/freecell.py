@@ -24,7 +24,7 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.spider import Spider_AC_Foundation
-from pysollib.hint import FreeCellSolverWrapper, FreeCellType_Hint
+from pysollib.hint import FreeCellType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.stack import (
@@ -55,7 +55,6 @@ class FreeCell(Game):
     RowStack_Class = SuperMoveAC_RowStack
     ReserveStack_Class = ReserveStack
     Hint_Class = FreeCellType_Hint
-    Solver_Class = FreeCellSolverWrapper()
 
     #
     # game layout
@@ -101,7 +100,6 @@ class FreeCell(Game):
 
 class ForeCell(FreeCell):
     RowStack_Class = StackWrapper(FreeCell_AC_RowStack, base_rank=KING)
-    Solver_Class = FreeCellSolverWrapper(esf='kings')
 
     def startGame(self):
         self._startDealNumRows(5)
@@ -128,7 +126,6 @@ class Stalactites(FreeCell):
     Foundation_Class = StackWrapper(
         RK_FoundationStack, suit=ANY_SUIT, mod=13, min_cards=1)
     RowStack_Class = StackWrapper(BasicRowStack, max_move=1, max_accept=0)
-    Solver_Class = None
 
     def createGame(self):
         FreeCell.createGame(self, reserves=2)
@@ -149,7 +146,6 @@ class Stalactites(FreeCell):
 # ************************************************************************
 
 class DoubleFreecell(FreeCell):
-    Solver_Class = None
 
     #
     # game layout
@@ -203,7 +199,6 @@ class DoubleFreecell(FreeCell):
 # ************************************************************************
 
 class TripleFreecell(FreeCell):
-    Solver_Class = None
 
     #
     # game layout
@@ -280,7 +275,6 @@ class Spidercells_RowStack(SuperMoveAC_RowStack):
 
 class Spidercells(FreeCell):
 
-    Solver_Class = None
     Foundation_Class = Spider_AC_Foundation
     RowStack_Class = Spidercells_RowStack
 
@@ -309,7 +303,6 @@ class Spidercells(FreeCell):
 
 
 class Bath(FreeCell):
-    Solver_Class = FreeCellSolverWrapper(esf='kings')
     RowStack_Class = StackWrapper(SuperMoveAC_RowStack, base_rank=KING)
 
     def createGame(self):
@@ -328,7 +321,6 @@ class Bath(FreeCell):
 # ************************************************************************
 
 class Repair(FreeCell):
-    Solver_Class = FreeCellSolverWrapper(sm='unlimited')
     RowStack_Class = AC_RowStack
 
     def createGame(self):
@@ -349,7 +341,6 @@ class FourColours_RowStack(AC_RowStack):
 
 
 class FourColours(FreeCell):
-    Solver_Class = None
     RowStack_Class = AC_RowStack
 
     def createGame(self):
@@ -391,7 +382,6 @@ class FourColours(FreeCell):
 # ************************************************************************
 
 class KingCell(FreeCell):
-    Solver_Class = FreeCellSolverWrapper(sbb='rank', esf='kings')
     RowStack_Class = StackWrapper(SuperMoveRK_RowStack, base_rank=KING)
 
     shallHighlightMatch = Game._shallHighlightMatch_RK

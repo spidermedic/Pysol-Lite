@@ -25,7 +25,7 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.freecell import FreeCell
 from pysollib.hint import DefaultHint
-from pysollib.hint import FreeCellSolverWrapper, FreeCellType_Hint
+from pysollib.hint import FreeCellType_Hint
 from pysollib.layout import Layout
 from pysollib.stack import (
     AC_RowStack,
@@ -47,7 +47,6 @@ from pysollib.util import KING
 
 class BakersGame(FreeCell):
     RowStack_Class = SuperMoveSS_RowStack
-    Solver_Class = FreeCellSolverWrapper(sbb='suit')
     shallHighlightMatch = Game._shallHighlightMatch_SS
 
 
@@ -57,7 +56,6 @@ class BakersGame(FreeCell):
 
 class KingOnlyBakersGame(BakersGame):
     RowStack_Class = StackWrapper(FreeCell_SS_RowStack, base_rank=KING)
-    Solver_Class = FreeCellSolverWrapper(sbb='suit', esf='kings')
 
 
 # ************************************************************************
@@ -173,7 +171,6 @@ class Tuxedo(Game):
     ReserveStack_Class = ReserveStack
     Foundation_Class = StackWrapper(SS_FoundationStack, mod=13, max_move=0)
     Hint_Class = FreeCellType_Hint
-    Solver_Class = FreeCellSolverWrapper(sbb='suit', sm='unlimited')
 
     def createGame(self, rows=7, reserves=7):
         # create layout
@@ -219,8 +216,6 @@ class Tuxedo(Game):
 
 class Penguin(Tuxedo):
     GAME_VERSION = 2
-    Solver_Class = FreeCellSolverWrapper(
-        sbb='suit', esf='kings', sm='unlimited')
 
     def _shuffleHook(self, cards):
         # move base cards to top of the Talon (i.e. first cards to be dealt)
@@ -276,7 +271,6 @@ class Flipper(Tuxedo):
     RowStack_Class = Flipper_Row
     Foundation_Class = SS_FoundationStack
     Hint_Class = DefaultHint
-    Solver_Class = None
 
     def fillStack(self, stack):
         i = 0

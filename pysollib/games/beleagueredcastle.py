@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
-from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.pysoltk import MfxCanvasText
@@ -51,7 +50,6 @@ class BeleagueredCastleType_Hint(CautiousDefaultHint):
 
 class StreetsAndAlleys(Game):
     Hint_Class = BeleagueredCastleType_Hint
-    Solver_Class = FreeCellSolverWrapper(preset='streets_and_alleys')
 
     Foundation_Class = SS_FoundationStack
     # RowStack_Class = RK_RowStack

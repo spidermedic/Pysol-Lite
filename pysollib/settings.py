@@ -51,8 +51,6 @@ WIN_SYSTEM = 'x11'                      # win32, x11, aqua, classic
 SOUND_MOD = 'auto'
 
 # freecell-solver
-USE_FREECELL_SOLVER = True
-FCS_COMMAND = 'fc-solve'
 # FCS_HOME = None                         # path to fcs presets files
 
 # data dirs

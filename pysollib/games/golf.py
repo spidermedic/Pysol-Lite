@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import AbstractHint
-from pysollib.hint import BlackHoleSolverWrapper
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.stack import (
@@ -119,8 +118,6 @@ class Golf_RowStack(BasicRowStack):
 # ************************************************************************
 
 class Golf(Game):
-    Solver_Class = BlackHoleSolverWrapper(preset='golf', base_rank=0,
-                                          queens_on_kings=True)
     Talon_Class = Golf_Talon
     Waste_Class = Golf_Waste
     Hint_Class = Golf_Hint
@@ -225,8 +222,6 @@ class Thieves(Golf):
 
 
 class RelaxedGolf(Golf):
-    Solver_Class = BlackHoleSolverWrapper(preset='golf', base_rank=0,
-                                          wrap_ranks=True)
     Waste_Class = StackWrapper(Golf_Waste, mod=13)
 
     shallHighlightMatch = Game._shallHighlightMatch_RKW
@@ -350,7 +345,6 @@ class BlackHole(Game):
     RowStack_Class = StackWrapper(
         BlackHole_RowStack, max_accept=0, max_cards=3)
     Hint_Class = Golf_Hint
-    Solver_Class = BlackHoleSolverWrapper(preset='black_hole')
 
     FOUNDATIONS = 1
 
@@ -427,7 +421,6 @@ class BinaryStar(BlackHole):
     RowStack_Class = StackWrapper(
         ReserveStack, max_accept=0, max_cards=6)
     # TODO: Solver support
-    Solver_Class = BlackHoleSolverWrapper(preset='binary_star')
     FOUNDATIONS = 2
 
     def _shuffleHook(self, cards):
@@ -447,8 +440,6 @@ class BinaryStar(BlackHole):
 # ************************************************************************
 
 class AllInARow(BlackHole):
-
-    Solver_Class = BlackHoleSolverWrapper(preset='all_in_a_row')
 
     def createGame(self):
         # create layout

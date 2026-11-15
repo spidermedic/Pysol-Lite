@@ -32,17 +32,9 @@ if not os.path.exists('data/html'):
 # trim the card back choices in the (separately downloaded) cardsets
 call([sys.executable, './scripts/prune_card_backs.py', 'data'])
 
-# Use Freecell Solver, if it is installed.
-# http://fc-solve.berlios.de/
-SOLVER_LIB_PATH = "/usr/local/lib/libfreecell-solver.0.dylib"
-SOLVER = ["/usr/local/bin/fc-solve"]
-if not os.path.exists(SOLVER_LIB_PATH):
-    SOLVER_LIB_PATH = None
-    SOLVER = []
-
 # libwebp (a Pillow dependency) depends on libsharpyuv via a bare
 # @rpath reference that py2app's dependency walker doesn't follow.
-# Bundle it explicitly, same as the solver lib above.
+# Bundle it explicitly.
 SHARPYUV_LIB_PATH = None
 try:
     _webp_prefix = check_output(
@@ -69,11 +61,9 @@ PLIST = dict(
     )
 APP = ['pysol.py']
 ICON_FILE = 'data/PySol.icns'
-DATA_FILES = ['data', 'COPYING', 'README.md',
-              ] + SOLVER
+DATA_FILES = ['data', 'COPYING', 'README.md']
 RESOURCES = []
-FRAMEWORKS = ([SOLVER_LIB_PATH] if SOLVER_LIB_PATH else []) + \
-             ([SHARPYUV_LIB_PATH] if SHARPYUV_LIB_PATH else [])
+FRAMEWORKS = [SHARPYUV_LIB_PATH] if SHARPYUV_LIB_PATH else []
 # with argv_emulation=True, the app window is not shown when launched
 OPTIONS = dict(argv_emulation=False,
                # off: it starts the login shell in a pseudo-tty at every launch
@@ -96,16 +86,6 @@ setup(
 
 #
 top = os.getcwd()
-# Modify the fc-solve binary with install_name_tool to use the dependent
-# libfreecell-solver dynamic library in the app bundle.
-if SOLVER and "py2app" in sys.argv:
-    os.chdir('dist/%s.app/Contents/Resources' % BUNDLE)
-    call(["install_name_tool", "-change",
-          "/usr/local/lib/libfreecell-solver.0.dylib",
-          "@executable_path/../Frameworks/libfreecell-solver.0.dylib",
-          "fc-solve"])
-    os.chdir(top)
-
 # Point libwebp at the bundled libsharpyuv instead of its broken
 # original rpath.
 if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
@@ -123,7 +103,7 @@ if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
 # install_name_tool invalidates py2app's ad-hoc signature above, and
 # macOS refuses to launch a bundle whose seal doesn't match its
 # contents. Re-sign after any post-processing.
-if (SOLVER or SHARPYUV_LIB_PATH) and "py2app" in sys.argv:
+if SHARPYUV_LIB_PATH and "py2app" in sys.argv:
     call([
         'codesign', '--force', '--deep', '--sign', '-',
         os.path.join(top, 'dist', '%s.app' % BUNDLE),

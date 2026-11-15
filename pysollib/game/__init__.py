@@ -36,7 +36,7 @@ from pysol_cards.random import random__int2str
 from pysollib.game.dump import pysolDumpGame
 from pysollib.gamedb import GI
 from pysollib.help import help_about
-from pysollib.hint import DefaultHint, HINT_LEVEL_SOLVER
+from pysollib.hint import DefaultHint
 from pysollib.mfxutil import USE_PIL
 from pysollib.mfxutil import Struct, SubclassResponsibility, destruct
 from pysollib.mfxutil import format_time, print_err
@@ -715,7 +715,6 @@ class Game:
     def reset(self, restart=0):
         self.filename = ""
         self.demo = None
-        self.solver = None
         self.hints = GameHints()
         self.saveinfo = GameSaveInfo()
         self.loadinfo = GameLoadInfo()
@@ -1812,7 +1811,6 @@ class Game:
 
     # the actual hint class (or None)
     Hint_Class = DefaultHint
-    Solver_Class = None
 
     def getHintClass(self):
         return self.Hint_Class
@@ -2305,10 +2303,6 @@ class Game:
     # compute all hints for the current position
     # this is the only method that actually uses class Hint
     def getHints(self, level, taken_hint=None):
-        if level == HINT_LEVEL_SOLVER:
-            # if self.solver is None:
-            # return None
-            return self.solver.getHints(taken_hint)
         hint_class = self.getHintClass()
         if hint_class is None:
             return None

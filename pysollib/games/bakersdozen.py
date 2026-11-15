@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
-from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.stack import (
@@ -52,7 +51,6 @@ class CastlesInSpain(Game):
     Foundation_Class = SS_FoundationStack
     RowStack_Class = SuperMoveAC_RowStack
     Hint_Class = CautiousDefaultHint
-    Solver_Class = FreeCellSolverWrapper()
 
     GAME_VERSION = 2
 
@@ -99,7 +97,6 @@ class Martha_RowStack(AC_RowStack):
 
 
 class Martha(CastlesInSpain):
-    Solver_Class = None
     RowStack_Class = Martha_RowStack
 
     def createGame(self):
@@ -122,7 +119,6 @@ class Martha(CastlesInSpain):
 class BakersDozen(CastlesInSpain):
     RowStack_Class = StackWrapper(RK_RowStack, max_move=1, max_accept=1,
                                   base_rank=NO_RANK)
-    Solver_Class = FreeCellSolverWrapper(preset='bakers_dozen')
 
     def _shuffleHook(self, cards):
         # move Kings to bottom of each stack
@@ -154,7 +150,6 @@ class BakersDozen(CastlesInSpain):
 
 class SpanishPatience(BakersDozen):
     Foundation_Class = AC_FoundationStack
-    Solver_Class = None
 
 
 # ************************************************************************
@@ -225,9 +220,6 @@ class Cruel(CastlesInSpain):
     RowStack_Class = StackWrapper(SS_RowStack,
                                   max_move=1, max_accept=1, base_rank=NO_RANK)
 
-    # Solver_Class = FreeCellSolverWrapper(preset='cruel')
-    Solver_Class = None
-
     def createGame(self):
         return CastlesInSpain.createGame(self, rows=12)
 
@@ -252,7 +244,6 @@ class Perseverance(Cruel, BakersDozen):
     RowStack_Class = StackWrapper(SS_RowStack, base_rank=NO_RANK, dir=-1,
                                   max_move=UNLIMITED_MOVES,
                                   max_accept=UNLIMITED_ACCEPTS)
-    Solver_Class = None
 
     def createGame(self):
         lay = Cruel.createGame(self)

@@ -23,7 +23,6 @@
 
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
-from pysollib.hint import FreeCellSolverWrapper
 from pysollib.hint import (
     HINT_LEVEL_DEBUG,
     SpiderType_Hint,
@@ -226,7 +225,6 @@ class Spiderette(Spider):
 class SimpleSimon(Spider):
     Talon_Class = InitialDealTalonStack
     RowStack_Class = SuperMoveSpider_RowStack
-    Solver_Class = FreeCellSolverWrapper(preset='simple_simon', base_rank=0)
 
     def createGame(self):
         Spider.createGame(self, rows=10, texts=0)
@@ -238,7 +236,6 @@ class SimpleSimon(Spider):
 
 
 class SimpleSimonII(SimpleSimon):
-    Solver_Class = None
     Foundation_Class = StackWrapper(Spider_SS_Foundation,
                                     base_rank=ANY_RANK, mod=13)
     RowStack_Class = StackWrapper(SuperMoveSpider_RowStack, mod=13)

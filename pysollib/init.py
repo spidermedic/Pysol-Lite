@@ -23,8 +23,6 @@
 
 import locale
 import os
-import shutil
-import subprocess
 import sys
 
 import pysollib.settings
@@ -66,49 +64,6 @@ def init():
     # "can't invoke event <<ThemeChanged>>: application has been destroyed"
     root.destroy()
     tkinter._default_root = None
-
-    # check FreeCell-Solver
-    pysollib.settings.USE_FREECELL_SOLVER = False
-    if os.name == 'nt':
-        if sys.path[0] and not os.path.isdir(sys.path[0]):  # i.e. library.zip
-            d = os.path.dirname(sys.path[0])
-            os.chdir(d)                 # for read presets
-            fcs_command = os.path.join(
-                'freecell-solver', 'bin', 'fc-solve.exe')
-            pysollib.settings.FCS_COMMAND = fcs_command
-            f = os.path.join('freecell-solver', 'presetrc')
-            os.environ['FREECELL_SOLVER_PRESETRC'] = f
-    if os.name in ('posix', 'nt'):
-        try:
-            try:
-                import freecell_solver
-                fc_solve_lib_obj = freecell_solver.FreecellSolver()
-                assert fc_solve_lib_obj
-                pysollib.settings.USE_FREECELL_SOLVER = True
-            except Exception:
-                pass
-            # run the solver (no shell) only if it is installed
-            fcs_path = shutil.which(pysollib.settings.FCS_COMMAND)
-            if not pysollib.settings.USE_FREECELL_SOLVER and fcs_path:
-                kw = {'stdout': subprocess.PIPE,
-                      'stderr': subprocess.PIPE,
-                      'stdin': subprocess.PIPE, }
-                if os.name != 'nt':
-                    kw['close_fds'] = True
-                p = subprocess.Popen([fcs_path, '--help'], **kw)
-                p.stdin.close()
-                line = p.stdout.readline()
-                p.stdout.close()
-                p.stderr.close()
-                line = line.decode("utf-8")
-                if line.startswith('fc-solve'):
-                    pysollib.settings.USE_FREECELL_SOLVER = True
-                if os.name == 'posix':
-                    p.wait()                # reap the child
-        except Exception:
-            # traceback.print_exc()
-            pass
-    os.environ['FREECELL_SOLVER_QUIET'] = '1'
 
     # run app without games menus (more fast start)
     if '--no-games-menu' in sys.argv:

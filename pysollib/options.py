@@ -95,11 +95,6 @@ visible_buttons = string_list
 known_buttons = string_list
 visible_status = string_list
 translate_game_names = boolean
-solver_presets = string_list
-solver_show_progress = boolean
-solver_max_iterations = integer
-solver_iterations_output_step = integer
-solver_preset = string
 display_win_message = boolean
 table_zoom = list
 
@@ -181,11 +176,6 @@ class Options:
         ('tabletile_name', 'str'),
         ('tabletile_scale_method', 'int'),
         ('translate_game_names', 'bool'),
-        ('solver_presets', 'list'),
-        ('solver_show_progress', 'bool'),
-        ('solver_max_iterations', 'int'),
-        ('solver_iterations_output_step', 'int'),
-        ('solver_preset', 'string'),
         ('mouse_button1', 'int'),
         ('mouse_button2', 'int'),
         ('mouse_button3', 'int'),
@@ -335,32 +325,6 @@ class Options:
         if USE_PIL:
             self.resampling = int(get_default_resampling())
 
-        # solver
-        self.solver_presets = [
-            'none',
-            'abra-kadabra',
-            'blue-yonder',
-            'conspiracy-theory',
-            'cookie-monster',
-            'cool-jives',
-            'crooked-nose',
-            'fools-gold',
-            'good-intentions',
-            'hello-world',
-            'john-galt-line',
-            'looking-glass',
-            'one-big-family',
-            'rin-tin-tin',
-            'slick-rock',
-            'the-last-mohican',
-            'video-editing',
-            'yellow-brick-road',
-            ]
-        self.solver_show_progress = True
-        self.solver_max_iterations = 100000
-        self.solver_iterations_output_step = 100
-        self.solver_preset = 'video-editing'
-
     def setDefaults(self, top=None):
         WIN_SYSTEM = pysollib.settings.WIN_SYSTEM
         # fonts: the system UI font and the system monospace font
@@ -452,8 +416,6 @@ class Options:
         # remember which buttons existed, so that a button added by a later
         # version shows up instead of being treated as hidden
         config['general']['known_buttons'] = list(TOOLBAR_BUTTONS)
-        if 'none' in config['general']['solver_presets']:
-            config['general']['solver_presets'].remove('none')
 
         # colors: only the background color can be changed
         config['colors'] = {'table': self.colors['table']}
@@ -598,13 +560,6 @@ class Options:
                     self.toolbar_vars[key] = (key in visible_buttons)
                 else:
                     self.toolbar_vars[key] = True
-
-        # solver
-        solver_presets = self._getOption('general', 'solver_presets', 'list')
-        if solver_presets is not None:
-            if 'none' not in solver_presets:
-                solver_presets.insert(0, 'none')
-            self.solver_presets = solver_presets
 
         # colors: only the background color is saved
         for key in ('table',):

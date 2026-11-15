@@ -931,9 +931,6 @@ class Application:
     def getRandomGameId(self):
         return self._choice(self.gdb.getGamesIdSortedById())
 
-    def getGamesForSolver(self):
-        return self.gdb.getGamesForSolver()
-
     #
     # plugins
     #

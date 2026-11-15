@@ -25,7 +25,6 @@ from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.games.canfield import CanfieldRush_Talon
 from pysollib.hint import CautiousDefaultHint
-from pysollib.hint import FreeCellSolverWrapper
 from pysollib.hint import KlondikeType_Hint
 from pysollib.layout import Layout
 from pysollib.mfxutil import Struct, kwdefault
@@ -227,7 +226,6 @@ class Somerset(Klondike):
     Talon_Class = InitialDealTalonStack
     RowStack_Class = SuperMoveAC_RowStack
     Hint_Class = CautiousDefaultHint
-    Solver_Class = FreeCellSolverWrapper()
 
     def createGame(self):
         Klondike.createGame(self, max_rounds=1, rows=10, waste=0, texts=0)
@@ -249,7 +247,6 @@ class Somerset(Klondike):
 class AmericanCanister(Klondike):
     Talon_Class = InitialDealTalonStack
     RowStack_Class = AC_RowStack
-    Solver_Class = FreeCellSolverWrapper(sm='unlimited')
 
     def createGame(self):
         Klondike.createGame(self, max_rounds=1, rows=8, waste=0, texts=0)
@@ -262,7 +259,6 @@ class AmericanCanister(Klondike):
 
 class Canister(AmericanCanister):
     RowStack_Class = RK_RowStack
-    Solver_Class = FreeCellSolverWrapper(sbb='rank', sm='unlimited')
     shallHighlightMatch = Game._shallHighlightMatch_RK
 
 

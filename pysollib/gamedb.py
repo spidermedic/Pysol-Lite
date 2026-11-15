@@ -661,7 +661,6 @@ class GameManager:
         self.__games_by_altname = None
         self.__all_games = {}           # includes hidden games
         self.__all_gamenames = {}       # includes hidden games
-        self.__games_for_solver = []
         self.check_game = True
         self.current_filename = None
         self.registered_game_types = {}
@@ -734,9 +733,6 @@ class GameManager:
 #                      if gi.id in k: break
 #                  else:
 #                      print gi.id
-            if hasattr(gi.gameclass, 'Solver_Class') and \
-               gi.gameclass.Solver_Class is not None:
-                self.__games_for_solver.append(gi.id)
         if self.current_filename is not None:
             gi.gameclass.MODULE_FILENAME = self.current_filename
 
@@ -788,9 +784,6 @@ class GameManager:
         if gi:
             return gi.id
         return None
-
-    def getGamesForSolver(self):
-        return self.__games_for_solver
 
 
 # ************************************************************************

@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint, FreeCellType_Hint
-from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
 from pysollib.stack import \
     AC_RowStack, \
@@ -63,7 +62,6 @@ class DerKatzenschwanz_Hint(FreeCellType_Hint):
 class DerKatzenschwanz(Game):
     RowStack_Class = StackWrapper(AC_RowStack, base_rank=NO_RANK)
     Hint_Class = DerKatzenschwanz_Hint
-    Solver_Class = FreeCellSolverWrapper(esf='none', sm='unlimited')
 
     #
     # game layout
@@ -150,7 +148,6 @@ class DerKatzenschwanz(Game):
 class DieSchlange(DerKatzenschwanz):
 
     RowStack_Class = StackWrapper(FreeCell_AC_RowStack, base_rank=NO_RANK)
-    Solver_Class = FreeCellSolverWrapper(esf='none')
 
     def createGame(self):
         DerKatzenschwanz.createGame(self, rows=9, reserves=7)
@@ -178,7 +175,6 @@ class DieSchlange(DerKatzenschwanz):
 class Kings(DerKatzenschwanz):
 
     RowStack_Class = StackWrapper(AC_RowStack, base_rank=NO_RANK)
-    Solver_Class = FreeCellSolverWrapper(esf='none', sm='unlimited')
 
     def createGame(self):
         return DerKatzenschwanz.createGame(self, rows=8, reserves=8)
@@ -199,7 +195,6 @@ class Kings(DerKatzenschwanz):
 class Retinue(DieSchlange, Kings):
 
     RowStack_Class = StackWrapper(FreeCell_AC_RowStack, base_rank=NO_RANK)
-    Solver_Class = FreeCellSolverWrapper(esf='none')
 
     def createGame(self):
         return DerKatzenschwanz.createGame(self, rows=8, reserves=8)
@@ -282,7 +277,6 @@ class SalicLaw_Foundation(RK_FoundationStack):
 class SalicLaw(DerKatzenschwanz):
 
     Hint_Class = SalicLaw_Hint
-    Solver_Class = None
 
     Talon_Class = SalicLaw_Talon
     Foundation_Classes = [

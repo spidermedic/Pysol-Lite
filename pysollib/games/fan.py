@@ -24,7 +24,6 @@
 from pysollib.game import Game
 from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
-from pysollib.hint import FreeCellSolverWrapper
 from pysollib.layout import Layout
 from pysollib.pysoltk import MfxCanvasText
 from pysollib.stack import \
@@ -132,7 +131,7 @@ class Fan(Game):
 
 
 class FanGame(Fan):
-    Solver_Class = FreeCellSolverWrapper(preset='fan')
+    pass
 
 
 # ************************************************************************
@@ -540,7 +539,6 @@ class CloverLeaf(Game):
 
 class FreeFan(Fan):
     RowStack_Class = FullStackWrapper(SuperMoveSS_RowStack, base_rank=KING)
-    Solver_Class = FreeCellSolverWrapper(esf='kings', sbb='suit')
 
     def createGame(self):
         Fan.createGame(self, reserves=2, playcards=8)
@@ -553,7 +551,6 @@ class FreeFan(Fan):
 class BoxFan(Fan):
 
     RowStack_Class = KingAC_RowStack
-    Solver_Class = FreeCellSolverWrapper(esf='kings')
 
     def createGame(self):
         Fan.createGame(self, rows=(4, 4, 4, 4))
