@@ -37,9 +37,9 @@ from pysollib.images import Images, SubsampledImages
 from pysollib.mfxutil import Struct, destruct
 from pysollib.mfxutil import getprefdir, getusername
 from pysollib.mfxutil import latin1_normalize, load_error_text, print_err
-from pysollib.pysolaudio import create_audio_client
 from pysollib.mfxutil import unpickle
 from pysollib.options import Options
+from pysollib.pysolaudio import create_audio_client
 from pysollib.pysolrandom import PysolRandom, construct_random
 from pysollib.pysoltk import MfxDialog, MfxExceptionDialog, MfxMessageDialog
 from pysollib.pysoltk import MfxScrolledCanvas, TclError

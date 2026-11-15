@@ -37,10 +37,9 @@ from pysollib.game.dump import pysolDumpGame
 from pysollib.gamedb import GI
 from pysollib.help import help_about
 from pysollib.hint import DefaultHint
-from pysollib.mfxutil import DAMAGED_SAVE_TEXT, USE_PIL, SaveFileError
-from pysollib.mfxutil import load_error_text
+from pysollib.mfxutil import DAMAGED_SAVE_TEXT, SaveFileError, USE_PIL
 from pysollib.mfxutil import Struct, SubclassResponsibility, destruct
-from pysollib.mfxutil import format_time, print_err
+from pysollib.mfxutil import format_time, load_error_text, print_err
 from pysollib.mfxutil import uclock, usleep
 from pysollib.move import AFlipAllMove
 from pysollib.move import AFlipAndMoveMove

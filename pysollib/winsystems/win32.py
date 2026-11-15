@@ -21,9 +21,9 @@
 #
 # ---------------------------------------------------------------------------
 
-from pysollib.winsystems.common import BaseTkSettings, base_init_root_window
-
 import tkinter.ttk as ttk
+
+from pysollib.winsystems.common import BaseTkSettings, base_init_root_window
 
 
 def init_root_window(root, app):

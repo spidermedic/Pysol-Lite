@@ -21,14 +21,13 @@
 #
 # ---------------------------------------------------------------------------
 
+import tkinter.ttk as ttk
 import traceback
 
 from pysollib.mfxutil import print_err
 from pysollib.settings import DEBUG
 from pysollib.settings import TITLE
-
 from pysollib.ui.tktile.tkutil import loadImage, restore_window_geometry
-import tkinter.ttk as ttk
 
 
 def set_theme(app, top, theme):

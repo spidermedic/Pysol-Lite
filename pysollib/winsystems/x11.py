@@ -22,6 +22,7 @@
 # ---------------------------------------------------------------------------
 
 import os
+import tkinter.ttk as ttk
 import traceback
 
 from pysollib.settings import TITLE_CLASS
@@ -29,8 +30,6 @@ from pysollib.winsystems.common import \
         BaseTkSettings, \
         base_init_root_window, \
         get_font_name
-
-import tkinter.ttk as ttk
 
 
 # ************************************************************************

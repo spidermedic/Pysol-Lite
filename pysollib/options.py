@@ -27,13 +27,13 @@ import traceback
 
 import configobj
 
+import validate
+
 import pysollib.settings
 from pysollib.mfxutil import USE_PIL, \
     get_default_resampling, print_err
 from pysollib.pysoltk import TOOLBAR_BUTTONS
 from pysollib.resource import CSI
-
-import validate
 
 # ************************************************************************
 # * Options
