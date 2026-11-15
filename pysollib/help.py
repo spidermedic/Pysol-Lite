@@ -44,20 +44,19 @@ def help_about(app, timeout=0, sound=True):
     if timeout:
         strings = ("&Enjoy",)
     title_version = "%s v%s" % (TITLE, VERSION)
-    copyright_lines = """Copyright (C) 1998 - 2003 Markus F.X.J. Oberhumer.
-Copyright (C) 2003 Mt. Hood Playing Card Co.
-Copyright (C) 2005 - 2009 Skomoroh.
-Copyright (C) 2020 - 2026 PySolFC contributors.
-Copyright (C) 2026 Doug Martin (and Claude)."""
+    copyright_lines = """Copyright \u00a9 1998 - 2003 Markus F.X.J. Oberhumer.
+Copyright \u00a9 2003 Mt. Hood Playing Card Co.
+Copyright \u00a9 2005 - 2009 Skomoroh.
+Copyright \u00a9 2020 - 2026 PySolFC contributors.
+Copyright \u00a9 2026 Doug Martin."""
     # (text, justify) blocks: the copyright lines are left aligned, the rest
     # is centred
     parts = (
         (title_version + "\n\n"
          "Based on PySol, PySol Fan Club edition and PySolFC.", "center"),
         (copyright_lines, "left"),
-        ("All Rights Reserved.\n\n"
-         "PySol is free software distributed under the terms\n"
-         "of the GNU General Public License.\n\n"
+        ("\nPySol Lite is free software, distributed under the terms of the\n"
+         "GNU General Public License. It comes with NO WARRANTY.\n\n"
          "For more information about this application visit", "center"),
     )
     d = PysolAboutDialog(app, app.top, title="About %s" % TITLE,
