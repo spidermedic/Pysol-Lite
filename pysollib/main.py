@@ -347,7 +347,6 @@ Cardsets package is up to date.
     app.audio.updateSettings()
     # prepare other images
     app.loadImages2()
-    app.loadImages3()
     app.loadImages4()
 
     startgameid = app.opt.last_gameid

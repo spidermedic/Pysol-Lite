@@ -25,10 +25,11 @@
 # imports
 
 # PySol imports
-from pysollib.pysoltk import HTMLViewer
+import pathlib
+
+from pysollib.mfxutil import openURL
 from pysollib.pysoltk import MfxMessageDialog
 from pysollib.pysoltk import PysolAboutDialog
-from pysollib.pysoltk import make_help_toplevel
 from pysollib.settings import PACKAGE_URL, TITLE, VERSION
 
 
@@ -69,8 +70,7 @@ For more information about this application visit''') %
                          strings=strings, default=0,
                          separator=True)
     if d.status == 0 and d.button == 1:
-        viewer = help_html(app, "credits.html", "html")
-        viewer.parent.after(2, viewer.parent.focus_force)
+        help_html(app, "credits.html", "html")
     return d.status
 
 
@@ -78,80 +78,16 @@ For more information about this application visit''') %
 # *
 # ************************************************************************
 
-help_html_viewer = None
-help_html_index = None
-
-
 def help_html(app, document, dir_, top=None):
-    global help_html_viewer, help_html_index
+    """Open a help page in the default web browser."""
     if not document:
-        return None
-    if top is None:
-        top = app.top
-    parent = top
+        return False
     try:
         doc = app.dataloader.findFile(document, dir_)
-        if help_html_index is None:
-            document, dir_ = "index.html", "html"
-            help_html_index = app.dataloader.findFile(document, dir_)
     except EnvironmentError:
         MfxMessageDialog(app.top, title="%s HTML Problem" % TITLE,
                          text="Cannot find help document\n%s" % document,
                          bitmap="warning")
-        return None
-    # print doc, help_html_index
-    try:
-        viewer = help_html_viewer
-        # if viewer.parent.winfo_parent() != top._w:
-        #    viewer.destroy()
-        #    viewer = None
-        viewer.updateHistoryXYView()
-        viewer.display(doc, relpath=0)
-    except Exception:
-        # traceback.print_exc()
-        top = make_help_toplevel(app, title="%s Help" % TITLE)
-
-        sw = top.winfo_screenwidth()
-        sh = top.winfo_screenheight()
-
-        h = int(sh * .8)
-        w = min(650, int(sw * .8))
-        from pysollib.ui.tktile.tkutil import placeOverParent
-        top.wm_minsize(w, min(200, h))
-        top.geometry("%dx%d" % (w, h))
-        # center over the main window, not the primary screen
-        placeOverParent(top, parent, rely=0.5, w_width=w, w_height=h)
-
-        viewer = HTMLViewer(top, app, help_html_index)
-        viewer.display(doc)
-    # wm_map(top, maximized=maximized)
-    viewer.parent.wm_deiconify()
-    viewer.parent.tkraise()
-    help_html_viewer = viewer
-    raise_help_html(app.game)
-    return viewer
-
-
-def raise_help_html(game):
-    try:
-        if game.app.opt.topmost_dialogs:
-            help_html_viewer.parent.tkraise()
-            help_html_viewer.parent.attributes("-topmost", True)
-        else:
-            help_html_viewer.parent.attributes("-topmost", False)
-    except Exception:
-        pass
-
-
-def unraise_help_html():
-    try:
-        help_html_viewer.parent.attributes("-topmost", False)
-    except Exception:
-        pass
-
-
-def destroy_help_html():
-    try:
-        help_html_viewer.destroy()
-    except Exception:
-        pass
+        return False
+    # a file:// URL; as_uri() percent-encodes the space in "PySol Lite.app"
+    return openURL(pathlib.Path(doc).resolve().as_uri())

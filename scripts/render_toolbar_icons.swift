@@ -44,7 +44,7 @@ let src = CommandLine.arguments[1]
 let out = CommandLine.arguments[2]
 
 func render(_ file: String, px: Int, white: Bool, color: NSColor? = nil,
-            badge: Bool = false, glyph size: CGFloat = 0.92) -> Data? {
+            badge: Bool = false) -> Data? {
     guard let svg = NSImage(contentsOfFile: file) else { return nil }
     let scale = 2   // draw at 2x, then let the PNG carry px x px pixels
     let rep = NSBitmapImageRep(
@@ -79,7 +79,7 @@ func render(_ file: String, px: Int, white: Bool, color: NSColor? = nil,
         glyph.unlockFocus()
         glyph.draw(in: NSRect(x: 0, y: 0, width: side, height: side))
     } else {
-        let box = side * size
+        let box = side * 0.92
         svg.draw(in: NSRect(x: (side - box) / 2, y: (side - box) / 2,
                             width: box, height: box))
         (color ?? (white ? NSColor.white : NSColor.black)).set()
@@ -121,8 +121,6 @@ for white in [false, true] {
 let imagesRoot = URL(fileURLWithPath: out).deletingLastPathComponent()
     .deletingLastPathComponent().path
 let others: [(String, Int, [(String, String, NSColor)])] = [
-    // The list bullet in the help viewer.
-    ("htmlviewer", 13, [("disk", "circle-fill", hex(0x000000))]),
     // Drawn on the table over the Talon: redeal arrows and "no more redeals".
     ("redealicons/modern", 48, [
         ("redeal", "arrows-clockwise", hex(0x2F7DE1)),
@@ -140,8 +138,7 @@ for (subdir, px, items) in others {
     try! fm.createDirectory(atPath: dir, withIntermediateDirectories: true)
     for (name, file, color) in items {
         guard let data = render("\(src)/\(file).svg", px: px, white: false,
-                                color: color, badge: subdir.hasPrefix("redealicons"),
-                                glyph: subdir == "htmlviewer" ? 0.55 : 0.92)
+                                color: color, badge: subdir.hasPrefix("redealicons"))
         else { print("cannot render", file); exit(1) }
         try! data.write(to: URL(fileURLWithPath: "\(dir)/\(name).png"))
     }

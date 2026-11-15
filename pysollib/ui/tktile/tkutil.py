@@ -28,7 +28,7 @@ import tkinter.font
 
 from pysollib.mfxutil import Image, ImageDraw, ImageOps, ImageTk, \
     get_default_resampling
-from pysollib.settings import TITLE_CLASS, WIN_SYSTEM
+from pysollib.settings import WIN_SYSTEM
 
 
 # ************************************************************************
@@ -134,15 +134,6 @@ def makeToplevel(parent, title=None):
     if title:
         window.wm_title(title)
         window.wm_iconname(title)
-    return window
-
-
-def make_help_toplevel(app, title=None):
-    # Create an independent Toplevel window.
-    from pysollib.winsystems import init_root_window
-    window = tkinter.Toplevel(class_=TITLE_CLASS)
-    init_root_window(window, app)
-    window.tkraise()
     return window
 
 

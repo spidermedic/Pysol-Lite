@@ -1,0 +1,60 @@
+/* PySol Lite help pages. Light and dark follow the system setting. */
+:root {
+  --bg: #f7f3ff;
+  --fg: #1c1b22;
+  --muted: #5b5870;
+  --link: #1a4fd6;
+  --visited: #6a3d9a;
+  --rule: #cfc8e6;
+  --panel: #ece6fa;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1d1b26;
+    --fg: #e9e6f5;
+    --muted: #aaa6c0;
+    --link: #8fb0ff;
+    --visited: #c0a0f0;
+    --rule: #3b3850;
+    --panel: #2a2738;
+  }
+}
+/* The logo has a transparent background and dark text: give it a light
+   card in dark mode so it stays readable. */
+@media (prefers-color-scheme: dark) {
+  body > img:first-child {
+    background: #f7f3ff; padding: .5rem .9rem; border-radius: 10px;
+  }
+}
+html { background: var(--bg); }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.55 -apple-system, "Segoe UI", system-ui, Helvetica, Arial, sans-serif;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
+img { max-width: 100%; height: auto; }
+h1 { font-size: 1.8rem; line-height: 1.2; margin: 1rem 0 .6rem; }
+h2 { font-size: 1.25rem; margin: 1.6rem 0 .4rem;
+     border-bottom: 1px solid var(--rule); padding-bottom: .2rem; }
+h3 { font-size: 1.05rem; margin: 1.2rem 0 .3rem; }
+p { margin: .6rem 0; }
+ul, ol { margin: .5rem 0 .8rem; padding-left: 1.5rem; }
+li { margin: .2rem 0; }
+a { color: var(--link); }
+a:visited { color: var(--visited); }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 1.6rem 0 .8rem; }
+i { color: inherit; }
+table { border-collapse: collapse; margin: .8rem 0; }
+td, th { border: 1px solid var(--rule); padding: .3rem .6rem; }
+tt, code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+                font-size: .92em; background: var(--panel);
+                border-radius: 3px; }
+tt, code { padding: 0 .25em; }
+pre { padding: .6rem .8rem; overflow-x: auto; }
+@media print {
+  html, body { background: #fff; color: #000; }
+  a { color: #000; }
+}

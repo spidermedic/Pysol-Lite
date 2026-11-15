@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import shutil
 import sys
 
 from pysollib.gamedb import GAME_DB
@@ -65,17 +66,17 @@ def _fmt(fmt, params):
                                       'logo_alt': "PySol Lite Logo"})
 
 
-main_header = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+main_header = '''<!DOCTYPE html>
 <html>
 <head>
 <title>%(title)s</title>
 <meta name="license" content="GNU General Public License">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
 </head>
-<body text="#000000" bgcolor="#F7F3FF" link="#0000FF" vlink="#660099"
-alink="#FF0000">
-<img src="%(logo_url)s" alt="%(logo_alt)s">
-<br>
+<body>
+<img src="%(logo_url)s" alt="%(logo_alt)s" width="320">
 '''
 main_footer = '''
 <p>
@@ -85,17 +86,17 @@ main_footer = '''
 </body>
 </html>'''
 
-rules_header = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+rules_header = '''<!DOCTYPE html>
 <html>
 <head>
 <title>%(title)s</title>
 <meta name="license" content="GNU General Public License">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../style.css">
 </head>
-<body text="#000000" bgcolor="#F7F3FF" link="#0000FF" vlink="#660099"
-alink="#FF0000">
-<img src="../%(logo_url)s" alt="%(logo_alt)s">
-<br>
+<body>
+<img src="../%(logo_url)s" alt="%(logo_alt)s" width="320">
 '''
 rules_footer = '''
 <p>
@@ -216,5 +217,6 @@ def gen_rules_html():
         outfile.close()
 
 
+shutil.copy('style.css', os.path.join('html', 'style.css'))
 gen_main_html()
 gen_rules_html()
