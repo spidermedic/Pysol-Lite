@@ -67,7 +67,7 @@ def _fmt(fmt, params):
 
 
 main_header = '''<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <title>%(title)s</title>
 <meta name="license" content="GNU General Public License">
@@ -79,7 +79,6 @@ main_header = '''<!DOCTYPE html>
 <img src="%(logo_url)s" alt="%(logo_alt)s" width="320">
 '''
 main_footer = '''
-<p>
 %(back_to_index_link)s
 <hr>
 <i>PySol Lite Documentation - version ''' + VERSION + '''</i>
@@ -87,7 +86,7 @@ main_footer = '''
 </html>'''
 
 rules_header = '''<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <title>%(title)s</title>
 <meta name="license" content="GNU General Public License">
@@ -128,7 +127,7 @@ def gen_main_html():
         print(_fmt(main_header, {'title': title}), file=outfile)
         with open(infile, 'r', encoding='utf-8') as file:
             print(file.read(), file=outfile)
-        s = '<a href="index.html">Back to the index</a>'
+        s = '<p>\n<a href="index.html">Back to the index</a>'
         if infile == 'index.html':
             s = ''
         print(_fmt(main_footer, {'back_to_index_link': s}), file=outfile)
@@ -184,7 +183,7 @@ def gen_rules_html():
 
     print('</ul>\n' + _fmt(main_footer,
           {'back_to_index_link':
-           '<a href="index.html">Back to the index</a>'}),
+           '<p>\n<a href="index.html">Back to the index</a>'}),
           file=out_rules)
 
     out_rules.close()
@@ -202,7 +201,7 @@ def gen_rules_html():
               % (fn, name), file=out_rules_alt)
     print('</ul>\n' + _fmt(main_footer,
           {'back_to_index_link':
-           '<a href="index.html">Back to the index</a>'}),
+           '<p>\n<a href="index.html">Back to the index</a>'}),
           file=out_rules_alt)
     out_rules_alt.close()
 
