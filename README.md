@@ -136,8 +136,8 @@ to try, install Python, Tkinter and the packages above, put the cardsets in
 `~/.pysol/cardsets`, generate the help pages with `make rules`, and run
 `python pysol.py`. The upstream
 [PySolFC](https://github.com/shlomif/PySolFC) README has install instructions
-for those platforms; `scripts/linux-install.py` and
-`contrib/install-pysolfc.sh` come from there and have not been tested here.
+for those platforms; `contrib/install-pysolfc.sh` comes from there and has
+not been tested here.
 
 ## Credits
 

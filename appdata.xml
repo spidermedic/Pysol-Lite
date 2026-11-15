@@ -56,7 +56,6 @@
   <url type="bugtracker">https://github.com/shlomif/PySolFC/issues</url>
   <url type="help">https://pysolfc.sourceforge.io/doc/index.html</url>
   <url type="vcs-browser">https://github.com/shlomif/PySolFC</url>
-  <url type="contribute">https://github.com/shlomif/PySolFC/blob/master/CONTRIBUTING.md</url>
   <provides>
     <binary>pysol.py</binary>
     <python3>pysollib</python3>

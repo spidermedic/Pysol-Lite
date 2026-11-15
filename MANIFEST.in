@@ -5,7 +5,6 @@
 ##
 include pysol.py setup.py setup_osx.py setup.cfg MANIFEST.in Makefile
 include COPYING README.md AUTHORS.md
-include NEWS.asciidoc
 #recursive-include pysollib *.py
 include pysollib/*.py
 include pysollib/winsystems/*.py
@@ -17,9 +16,7 @@ include pysollib/games/solvable_seeds/*.py
 include data/tcl/*.tcl
 include data/pysol.desktop
 include data/pysolfc.glade
-include scripts/create_iss.py scripts/mahjongg_utils.py
-include scripts/all_games.py scripts/cardset_viewer.py
-include scripts/cardconv
+include scripts/all_games.py
 include scripts/gen_individual_importing_tests.py
 include scripts/prune_card_backs.py
 
@@ -28,7 +25,6 @@ exclude tests/individually-importing/*
 include tests/individually-importing/PLACEHOLDER
 
 
-include .tidyallrc
 ##
 ## data - docs
 ##
