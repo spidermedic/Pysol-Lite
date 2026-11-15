@@ -307,7 +307,7 @@ class PysolMenubarTkCommon:
             command=self.mPause, accelerator="P")
         menu.add_command(
             label="&Restart",
-            command=self.mRestart, accelerator=m+"G")
+            command=self.mRestart, accelerator=m+"R")
         menu.add_separator()
         menu.add_command(
             label="&Hint",
@@ -399,7 +399,7 @@ class PysolMenubarTkCommon:
         self._bindKey("",   "BackSpace", self.mUndo)    # undocumented
         self._bindKey("",   "KP_Enter", self.mUndo)     # undocumented
         self._bindKey("",   "r", self.mRedo)
-        self._bindKey(ctrl, "g", self.mRestart)
+        self._bindKey(ctrl, "r", self.mRestart)
         self._bindKey("",   "space", self.mDeal)        # undocumented
         self._bindKey("",   "h", self.mHint)
         self._bindKey(ctrl, "h", self.mHint1)           # undocumented
