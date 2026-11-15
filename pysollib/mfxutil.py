@@ -27,7 +27,7 @@ import re
 import sys
 import time
 import webbrowser
-from pickle import Pickler, Unpickler
+from pickle import Pickler, Unpickler, UnpicklingError
 
 from pysollib.settings import PACKAGE
 
@@ -299,11 +299,31 @@ def pickle(obj, filename, protocol=0):
         pass
 
 
+class _OptionsUnpickler(Unpickler):
+    """Reads the old pickled options file: only the Options class and
+    plain containers may be loaded, nothing that can run code."""
+
+    ALLOWED = {
+        ('pysollib.options', 'Options'),
+        ('copyreg', '_reconstructor'),
+        ('copy_reg', '_reconstructor'),
+        ('builtins', 'object'),
+        ('__builtin__', 'object'),
+    }
+
+    def find_class(self, module, name):
+        if (module, name) in self.ALLOWED:
+            return super().find_class(module, name)
+        raise UnpicklingError(
+            "the old options file refers to %s.%s, which is not allowed"
+            % (module, name))
+
+
 def unpickle(filename):
     obj = None
     try:
         with open(filename, "rb") as fh:
-            x = Unpickler(fh).load()
+            x = _OptionsUnpickler(fh).load()
         obj = x
         # print "Unpickled", filename
     finally:

@@ -217,9 +217,25 @@ class random_dummy:
     seed = {}
 
 
-# the _alt_unpickler is an unpickler that contains a few hacks
-# to ensure backward compatibility of saves.
+def _safe_getattr(obj, name):
+    # The random generator of a saved game is rebuilt with
+    # getattr(generator, 'seed'); nothing else may use getattr here, since
+    # a crafted file could walk from there to any function.
+    if name == 'seed' and (type(obj).__module__ == 'pysol_cards.random'
+                           or isinstance(obj, random_dummy)):
+        return getattr(obj, name)
+    raise UnpicklingError(
+        "this saved game uses getattr(%s, %r), which is not allowed"
+        % (type(obj).__name__, name))
+
+
+# the _alt_unpickler loads saved games: it contains a few hacks to ensure
+# backward compatibility of saves, and refuses everything else
 class _alt_unpickler(Unpickler):
+    """Loads a saved game.  A saved game is plain data plus a few known
+    classes, so only those may be loaded: a crafted file could otherwise
+    run any code (pickle can call any function it can name)."""
+
     version = 0
 
     def set_version(self, version_tuple):
@@ -227,9 +243,33 @@ class _alt_unpickler(Unpickler):
             self.version = 1
 
     def find_class(self, module, name):
-        if self.version == 1 and module == 'pysol_cards.random':
-            return random_dummy
-        return super().find_class(module, name)
+        if module == 'pysol_cards.random':
+            # the random generator of the game
+            if self.version == 1:
+                return random_dummy
+            cls = super().find_class(module, name)
+            if isinstance(cls, type):
+                return cls
+        elif module == 'pysollib.game':
+            # the classes in _Game_LOAD_CLASSES
+            for cls in _Game_LOAD_CLASSES:
+                if cls.__name__ == name:
+                    return cls
+        elif module == 'pysollib.mfxutil' and name == 'Struct':
+            # a plain attribute container, used by a few games
+            return Struct
+        elif module == 'pysollib.move':
+            # the moves of the undo history
+            import pysollib.move
+            cls = getattr(pysollib.move, name, None)
+            if (isinstance(cls, type)
+                    and issubclass(cls, pysollib.move.AtomicMove)):
+                return cls
+        elif module == 'builtins' and name == 'getattr':
+            return _safe_getattr
+        raise UnpicklingError(
+            "this saved game refers to %s.%s, which is not allowed"
+            % (module, name))
 
 
 @attr.s

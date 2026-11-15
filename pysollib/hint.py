@@ -24,6 +24,7 @@
 
 import os
 import re
+import shlex
 import subprocess
 import time
 from io import BytesIO
@@ -840,13 +841,18 @@ class Base_Solver_Hint:
     def run_solver(self, command, board):
         if DEBUG:
             print(command)
-        kw = {'shell': True,
-              'stdin': subprocess.PIPE,
+        # no shell: the command is split into words, so nothing in it (such
+        # as a preset name from the settings) can be run as a shell command
+        kw = {'stdin': subprocess.PIPE,
               'stdout': subprocess.PIPE,
               'stderr': subprocess.PIPE}
         if os.name != 'nt':
             kw['close_fds'] = True
-        p = subprocess.Popen(command, **kw)
+        try:
+            p = subprocess.Popen(
+                shlex.split(command, posix=(os.name != 'nt')), **kw)
+        except FileNotFoundError:
+            raise RuntimeError('Solver exited with 127')
         bytes_board = bytes(board, 'utf-8')
         pout, perr = p.communicate(bytes_board)
         if p.returncode in (127, 1):

@@ -128,3 +128,18 @@ if (SOLVER or SHARPYUV_LIB_PATH) and "py2app" in sys.argv:
         'codesign', '--force', '--deep', '--sign', '-',
         os.path.join(top, 'dist', '%s.app' % BUNDLE),
         ])
+
+# py2app records the Python it was built with, which puts the build
+# machine's path (and user name) into Info.plist. Nothing reads it at run
+# time. Editing Info.plist breaks py2app's ad-hoc signature, so the build
+# steps in the README sign the bundle again afterwards.
+if "py2app" in sys.argv:
+    import plistlib
+    _plist_path = os.path.join(
+        top, 'dist', '%s.app' % BUNDLE, 'Contents', 'Info.plist')
+    if os.path.exists(_plist_path):
+        with open(_plist_path, 'rb') as _f:
+            _info = plistlib.load(_f)
+        if _info.get('PythonInfoDict', {}).pop('PythonExecutable', None):
+            with open(_plist_path, 'wb') as _f:
+                plistlib.dump(_info, _f)

@@ -77,7 +77,7 @@ The user says they are recreating and expanding this project. Their expansion go
 
 ## 8. Related notes
 
-- Memory note: `/Users/doug/.claude/projects/-Users-doug/memory/pysolfc_macos27_tk_hang.md`, indexed in `MEMORY.md` (keyed to the `/Users/doug` project folder; sessions started in `~/Documents/Claude/pysol` do not load it automatically).
+- Memory note: `~/.claude/projects/<home project>/memory/pysolfc_macos27_tk_hang.md`, indexed in `MEMORY.md` (keyed to the home-folder project; sessions started in `~/Documents/Claude/pysol` do not load it automatically).
 - Shorter summary: `~/pysolfc-venv/README-setup.md`.
 
 ## 9. Sources

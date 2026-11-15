@@ -23,6 +23,7 @@
 
 import locale
 import os
+import shutil
 import subprocess
 import sys
 
@@ -86,15 +87,15 @@ def init():
                 pysollib.settings.USE_FREECELL_SOLVER = True
             except Exception:
                 pass
-            if not pysollib.settings.USE_FREECELL_SOLVER:
-                kw = {'shell': True,
-                      'stdout': subprocess.PIPE,
+            # run the solver (no shell) only if it is installed
+            fcs_path = shutil.which(pysollib.settings.FCS_COMMAND)
+            if not pysollib.settings.USE_FREECELL_SOLVER and fcs_path:
+                kw = {'stdout': subprocess.PIPE,
                       'stderr': subprocess.PIPE,
                       'stdin': subprocess.PIPE, }
                 if os.name != 'nt':
                     kw['close_fds'] = True
-                p = subprocess.Popen(
-                    pysollib.settings.FCS_COMMAND+' --help', **kw)
+                p = subprocess.Popen([fcs_path, '--help'], **kw)
                 p.stdin.close()
                 line = p.stdout.readline()
                 p.stdout.close()

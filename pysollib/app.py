@@ -854,7 +854,12 @@ class Application:
         self.opt.setDefaults(self.top)
         if os.path.exists(self.fn.opt):
             # for backwards compatibility
-            opt = unpickle(self.fn.opt)
+            try:
+                opt = unpickle(self.fn.opt)
+            except Exception as ex:
+                # an unreadable or refused old file is ignored
+                print_err("cannot read the old options file: %s" % ex)
+                opt = None
             if opt:
                 self.opt.__dict__.update(opt.__dict__)
             try:
