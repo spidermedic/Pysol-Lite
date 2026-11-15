@@ -43,7 +43,8 @@ let sizes: [(String, Int)] = [("small", 24), ("large", 32), ("xlarge", 48)]
 let src = CommandLine.arguments[1]
 let out = CommandLine.arguments[2]
 
-func render(_ file: String, px: Int, white: Bool, color: NSColor? = nil) -> Data? {
+func render(_ file: String, px: Int, white: Bool, color: NSColor? = nil,
+            badge: Bool = false, glyph size: CGFloat = 0.92) -> Data? {
     guard let svg = NSImage(contentsOfFile: file) else { return nil }
     let scale = 2   // draw at 2x, then let the PNG carry px x px pixels
     let rep = NSBitmapImageRep(
@@ -54,11 +55,36 @@ func render(_ file: String, px: Int, white: Bool, color: NSColor? = nil) -> Data
     NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
     NSGraphicsContext.current?.imageInterpolation = .high
     let side = CGFloat(px * scale)
-    let box = side * 0.92
-    svg.draw(in: NSRect(x: (side - box) / 2, y: (side - box) / 2,
-                        width: box, height: box))
-    (color ?? (white ? NSColor.white : NSColor.black)).set()
-    NSRect(x: 0, y: 0, width: side, height: side).fill(using: .sourceAtop)
+    if badge {
+        // White disc with a thin grey rim, so the icon stays visible on any
+        // table colour (the glyph is blue or red, like the table background).
+        let d = side * 0.96
+        let disc = NSBezierPath(ovalIn: NSRect(x: (side - d) / 2, y: (side - d) / 2,
+                                               width: d, height: d))
+        NSColor(deviceWhite: 1, alpha: 0.94).setFill()
+        disc.fill()
+        NSColor(deviceWhite: 0.35, alpha: 0.9).setStroke()
+        disc.lineWidth = side * 0.03
+        disc.stroke()
+    }
+    if badge {
+        // Draw the glyph on its own layer and tint only that, not the badge.
+        let box = side * 0.66
+        let glyph = NSImage(size: NSSize(width: side, height: side))
+        glyph.lockFocus()
+        svg.draw(in: NSRect(x: (side - box) / 2, y: (side - box) / 2,
+                            width: box, height: box))
+        (color ?? NSColor.black).set()
+        NSRect(x: 0, y: 0, width: side, height: side).fill(using: .sourceAtop)
+        glyph.unlockFocus()
+        glyph.draw(in: NSRect(x: 0, y: 0, width: side, height: side))
+    } else {
+        let box = side * size
+        svg.draw(in: NSRect(x: (side - box) / 2, y: (side - box) / 2,
+                            width: box, height: box))
+        (color ?? (white ? NSColor.white : NSColor.black)).set()
+        NSRect(x: 0, y: 0, width: side, height: side).fill(using: .sourceAtop)
+    }
     NSGraphicsContext.restoreGraphicsState()
     // scale down to the final size with good quality
     let final = NSBitmapImageRep(
@@ -95,6 +121,13 @@ for white in [false, true] {
 let imagesRoot = URL(fileURLWithPath: out).deletingLastPathComponent()
     .deletingLastPathComponent().path
 let others: [(String, Int, [(String, String, NSColor)])] = [
+    // The list bullet in the help viewer.
+    ("htmlviewer", 13, [("disk", "circle-fill", hex(0x000000))]),
+    // Drawn on the table over the Talon: redeal arrows and "no more redeals".
+    ("redealicons/modern", 48, [
+        ("redeal", "arrows-clockwise", hex(0x2F7DE1)),
+        ("stopsign", "x-circle", hex(0xE0343B)),
+    ]),
     ("dialog/phosphor", 48, [
         ("error", "x-circle-fill", hex(0xE0343B)),
         ("info", "info-fill", hex(0x2F7DE1)),
@@ -107,7 +140,8 @@ for (subdir, px, items) in others {
     try! fm.createDirectory(atPath: dir, withIntermediateDirectories: true)
     for (name, file, color) in items {
         guard let data = render("\(src)/\(file).svg", px: px, white: false,
-                                color: color)
+                                color: color, badge: subdir.hasPrefix("redealicons"),
+                                glyph: subdir == "htmlviewer" ? 0.55 : 0.92)
         else { print("cannot render", file); exit(1) }
         try! data.write(to: URL(fileURLWithPath: "\(dir)/\(name).png"))
     }

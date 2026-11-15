@@ -58,6 +58,11 @@ def prune(data_dir):
         listed = [b.strip() for b in lines[5].strip().split(';') if b.strip()]
         keep = [b for b in listed if b == default or b in KEEP.get(name, [])]
         drop = [b for b in listed if b not in keep]
+        # oldback192.gif is an unlisted, never-offered back
+        stray = os.path.join(data_dir, name, 'oldback192.gif')
+        if os.path.exists(stray):
+            os.remove(stray)
+            removed += 1
         if not drop:
             continue
         lines[5] = ';'.join(keep) + cr

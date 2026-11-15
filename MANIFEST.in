@@ -15,7 +15,6 @@ include pysollib/games/mahjongg/*.py
 include pysollib/games/solvable_seeds/*.py
 include data/tcl/*.tcl
 include data/pysol.desktop
-include data/pysolfc.glade
 include scripts/all_games.py
 include scripts/gen_individual_importing_tests.py
 include scripts/prune_card_backs.py

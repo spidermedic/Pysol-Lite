@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=PySol Lite
-Comment=More than 1200 solitaire card games
+Comment=276 solitaire card games
 Exec=pysol.py
 StartupWMClass=Pysol
 Terminal=false
