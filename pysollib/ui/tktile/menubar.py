@@ -389,7 +389,6 @@ class PysolMenubarTkCommon:
         if sys.platform == "darwin":
             ctrl = "Command-"
         self._bindKey("",   "n", self.mNewGame)
-        self._bindKey(ctrl, "w", self.mSelectGameDialog)
         self._bindKey(ctrl, "v", self.mSelectGameDialogWithPreview)
         self._bindKey(ctrl, "o", self.mOpen)
         self._bindKey(ctrl, "comma", self.mOptSettings)
@@ -699,38 +698,19 @@ class PysolMenubarTkCommon:
         if d.status == 0 and d.button == 0 and d.gameid != self.game.id:
             self.tkopt.gameid.set(d.gameid)
             self.tkopt.gameid_popular.set(d.gameid)
-            if 0:
-                self._mSelectGame(d.gameid, random=d.random)
-            else:
-                # don't ask areYouSure()
-                self._cancelDrag()
-                self.game.endGame()
-                self.game.quitGame(d.gameid, random=d.random)
+            # don't ask areYouSure()
+            self._cancelDrag()
+            self.game.endGame()
+            self.game.quitGame(d.gameid, random=d.random)
         return EVENT_HANDLED
 
     def __restoreCursor(self, *event):
         self.game.setCursor(cursor=self.app.top_cursor)
 
-    def mSelectGameDialog(self, *event):
-        if self._cancelDrag(break_pause=False):
-            return
-        self.game.setCursor(cursor=CURSOR_WATCH)
-        after_idle(self.top, self.__restoreCursor)
-        d = self._calcSelectGameDialog()(
-            self.top, title="Select game",
-            app=self.app, gameid=self.game.id)
-        return self._mSelectGameDialog(d)
-
     def mSelectGameDialogWithPreview(self, *event):
         if self._cancelDrag(break_pause=False):
             return
         self.game.setCursor(cursor=CURSOR_WATCH)
-        bookmark = None
-        if 0:
-            # use a bookmark for our preview game
-            if self.game.setBookmark(-2, confirm=0):
-                bookmark = self.game.gsaveinfo.bookmarks[-2][0]
-                del self.game.gsaveinfo.bookmarks[-2]
         after_idle(self.top, self.__restoreCursor)
         self.wasPaused = False
         if not self.game.pause:
@@ -738,8 +718,7 @@ class PysolMenubarTkCommon:
             self.wasPaused = True
         d = self._calcSelectGameDialog()(
             self.top, title="Select game",
-            app=self.app, gameid=self.game.id,
-            bookmark=bookmark)
+            app=self.app, gameid=self.game.id)
         return self._mSelectGameDialog(d)
 
     #

@@ -42,7 +42,7 @@ ALL_CATEGORIES = "All categories"
 
 
 class SelectGameDialog(MfxDialog):
-    def __init__(self, parent, title, app, gameid, bookmark=None, **kw):
+    def __init__(self, parent, title, app, gameid, **kw):
         kw = self.initKw(kw)
         MfxDialog.__init__(self, parent, title, kw.resizable, kw.default)
         top_frame, bottom_frame = self.createFrames(kw)
@@ -51,7 +51,6 @@ class SelectGameDialog(MfxDialog):
         #
         self.app = app
         self.gameid = gameid
-        self.bookmark = bookmark
         self.criteria = SearchCriteria()
         self.cardset = self.app.cardset.copy()
         self.cardset_cache = {}
@@ -84,6 +83,9 @@ class SelectGameDialog(MfxDialog):
         paned_window.add(left_frame)
         paned_window.add(right_frame)
 
+        self.count_label = ttk.Label(left_frame, anchor='w')
+        self.count_label.pack(side="bottom", fill='x', padx=padx)
+
         search_frame = ttk.Frame(left_frame)
         search_frame.pack(expand=True, fill='both')
 
@@ -98,10 +100,8 @@ class SelectGameDialog(MfxDialog):
                                           fieldname="Search:",
                                           textvariable=searchText)
 
-        self.advSearch = PysolButton(searchrow, text='...',
-                                     prefixtext="Advanced Search",
-                                     command=self.advancedSearch,
-                                     width=2)
+        self.advSearch = PysolButton(searchrow, text='Advanced...',
+                                     command=self.advancedSearch)
         self.advSearch.pack(side="right", padx=padx, pady=pady)
 
         self.list_searchtext.pack(side="left", fill='x', expand=True,
@@ -209,7 +209,6 @@ class SelectGameDialog(MfxDialog):
             dir = os.path.join("html", "rules")
             from pysollib.help import help_html
             help_html(self.app, doc, dir, self.top)
-            self.top.grab_release()  # Don't want the help window appear frozen
             return
         MfxDialog.mDone(self, button)
 
@@ -264,6 +263,7 @@ class SelectGameDialog(MfxDialog):
         games = self.app.gdb.getAllGames()
 
         results = []
+        matched = set()
         for game in games:
             if (self.criteria.type != ""
                     and self.criteria.typeOptions[self.criteria.type]
@@ -309,15 +309,23 @@ class SelectGameDialog(MfxDialog):
 
             if self.app.checkSearchString(self.criteria.name, game.name):
                 results.append(game.name)
-            if self.criteria.usealt:
+                matched.add(game.id)
+            # alternate names are listed only while searching, so the plain
+            # list holds each game once
+            if self.criteria.usealt and self.criteria.name:
                 for altname in game.altnames:
                     if self.app.checkSearchString(self.criteria.name, altname):
                         results.append(altname)
+                        matched.add(game.id)
         results.sort(key=getNaturalSortKey)
         pos = 0
         for result in results:
             self.list.insert(pos, result)
             pos += 1
+        n = len(matched)
+        self.count_label.config(
+            text="No games found" if n == 0 else
+            "1 game" if n == 1 else "%d games" % n)
 
     def advancedSearch(self):
         d = SelectGameAdvancedSearch(self.top, "Advanced search",
@@ -455,10 +463,7 @@ class SelectGameDialog(MfxDialog):
         random = None
         if gameid == self.gameid:
             random = self.app.game.random.copy()
-        if gameid == self.gameid and self.bookmark:
-            self.preview_game.restoreGameFromBookmark(self.bookmark)
-        else:
-            self.preview_game.newGame(random=random, autoplay=1)
+        self.preview_game.newGame(random=random, autoplay=1)
         canvas.config(scrollregion=(0, 0, 0, 0))
         #
         self.preview_app.audio = self.app.audio
@@ -509,6 +514,8 @@ class SelectGameDialog(MfxDialog):
             redeals = 'Variable'
         elif gi.redeals == -1:
             redeals = 'Unlimited'
+        elif gi.redeals == 0:
+            redeals = 'None'
         else:
             redeals = str(gi.redeals)
         for n, t in (
