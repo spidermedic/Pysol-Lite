@@ -25,7 +25,6 @@
 # imports
 import os
 import traceback
-from threading import Thread
 
 try:
     import pysolsoundserver
@@ -259,124 +258,6 @@ class Win32AudioClient(AbstractAudioClient):
 
 
 # ************************************************************************
-# * OSS audio
-# ************************************************************************
-
-class OSSAudioServer:
-
-    def __init__(self, pipe):
-        self.pipe = pipe
-        # import ossaudiodev
-        # self.audiodev = ossaudiodev.open('w')
-        self.sound_priority = -1
-        self._busy = False
-
-    def mainLoop(self):
-        while True:
-            s = os.read(self.pipe, 256)
-            ss = s.split(b'\0')
-            if not ss[0]:
-                os._exit(0)
-            if ss[0] == b'break':
-                self._play_loop = False
-                continue
-            filename, priority, loop = ss[0].decode(), int(ss[1]), int(ss[2])
-            if loop:
-                self._play_loop = True
-                th = Thread(target=self.playLoop, args=(filename,))
-                th.start()
-            else:
-                if not self._busy:
-                    self.play(filename, priority)
-
-    def _getParameters(self, filename):
-        import ossaudiodev
-        import wave
-        w = wave.open(filename)
-        fmt = ossaudiodev.AFMT_U8
-        nch = w.getnchannels()
-        rate = w.getframerate()
-        frames = w.readframes(w.getnframes())
-        return (frames, fmt, nch, rate)
-
-    def playLoop(self, filename, priority=None):
-        # print '_playLoop:', filename
-        import ossaudiodev
-        try:
-            # audiodev = self.audiodev
-            audiodev = ossaudiodev.open('w')
-            # audiodev.nonblock()
-            frames, fmt, nch, rate = self._getParameters(filename)
-            audiodev.setparameters(fmt, nch, rate)
-            while self._play_loop:
-                audiodev.write(frames)
-            audiodev.reset()
-            # audiodev.close()
-            # self.audiodev = ossaudiodev.open('w')
-            return 1
-        except Exception:
-            if traceback:
-                traceback.print_exc()
-            return 0
-
-    def play(self, filename, priority):
-        # print '_play:', filename
-        import ossaudiodev
-        try:
-            self._busy = True
-            # audiodev = self.audiodev
-            audiodev = ossaudiodev.open('w')
-            # audiodev.nonblock()
-            frames, fmt, nch, rate = self._getParameters(filename)
-            audiodev.setparameters(fmt, nch, rate)
-            audiodev.write(frames)
-            # audiodev.close()
-            # self.audiodev = ossaudiodev.open('w')
-            self.sound_priority = priority
-            self._busy = False
-            return 1
-        except Exception:
-            if traceback:
-                traceback.print_exc()
-            self._busy = False
-            return 0
-
-
-class OSSAudioClient(AbstractAudioClient):
-
-    CAN_PLAY_SOUND = True
-
-    def __init__(self):
-        AbstractAudioClient.__init__(self)
-        import ossaudiodev
-        if not os.path.exists('/dev/dsp'):
-            raise RuntimeError('OSS interface not available')
-        self.audiodev = ossaudiodev
-
-    def startServer(self):
-        pin, pout = os.pipe()
-        self.pout = pout
-        server = OSSAudioServer(pin)
-        pid = os.fork()
-        if pid == 0:
-            server.mainLoop()
-
-    def _playSample(self, filename, priority, loop, volume):
-        # print '_playSample:', filename, loop
-        os.write(self.pout, b'%s\0%s\0%s\0' %
-                 (filename.encode(),
-                  str(priority).encode(),
-                  str(loop).encode()))
-        return 1
-
-    def _stopSamples(self):
-        os.write(self.pout, b'break\0\0\0')
-
-    def _destroy(self):
-        os.write(self.pout, b'\0\0\0')
-
-
-# ************************************************************************
 # * PyGame
 # ************************************************************************
 
@@ -456,7 +337,6 @@ def create_audio_client(app, nosound=False, sound_mod=None):
     from pysollib.settings import SOUND_MOD
     sounds = {'pss': PysolSoundServerModuleClient,
               'pygame': PyGameAudioClient,
-              'oss': OSSAudioClient,
               'win': Win32AudioClient}
     if nosound or SOUND_MOD == 'none':
         return AbstractAudioClient()
@@ -466,7 +346,7 @@ def create_audio_client(app, nosound=False, sound_mod=None):
         candidates = [PyGameAudioClient]
         if pysolsoundserver:
             candidates.append(PysolSoundServerModuleClient)
-        candidates += [OSSAudioClient, Win32AudioClient, AbstractAudioClient]
+        candidates += [Win32AudioClient, AbstractAudioClient]
         for c in candidates:
             try:
                 client = c()

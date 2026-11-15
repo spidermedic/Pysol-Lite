@@ -45,7 +45,6 @@ WIN_SYSTEM = 'x11'                      # win32, x11, aqua, classic
 # available values:
 #   'pss' - PySol-Sound-Server (all)
 #   'pygame' - PyGame (all)
-#   'oss' (*nix)
 #   'win' (windows)
 #   'none' - disable
 SOUND_MOD = 'auto'
