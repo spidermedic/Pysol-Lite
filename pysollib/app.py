@@ -299,7 +299,7 @@ class Application:
                 # load new cardset
                 if self.nextgame.cardset is not self.cardset:
                     self.loadCardset(
-                        self.nextgame.cardset, id=self.nextgame.id,
+                        self.nextgame.cardset, game_id=self.nextgame.id,
                         update=7+256)
                 else:
                     self.requestCompatibleCardsetType(self.nextgame.id)
@@ -383,7 +383,7 @@ class Application:
         self.setTile(self.tabletile_index, force=True)
         # create the toolbar
         dirname = self.getToolbarImagesDir()
-        self.toolbar = PysolToolbar(self.top, self.menubar, dir=dirname,
+        self.toolbar = PysolToolbar(self.top, self.menubar, images_dir=dirname,
                                     size=self.opt.toolbar_size,
                                     relief=self.opt.toolbar_relief,
                                     compound=self.opt.toolbar_compound)
@@ -636,7 +636,7 @@ class Application:
     # cardset
     #
 
-    def updateCardset(self, id=0, update=7):
+    def updateCardset(self, game_id=0, update=7):
         cs = self.images.cs
         self.cardset = cs
         self.nextgame.cardset = cs
@@ -650,7 +650,7 @@ class Application:
         if update & 2:
             self.opt.cardset[cs.si.type][cs.si.subtype] = (cs.name,
                                                            cs.backname)
-        gi = self.getGameInfo(id)
+        gi = self.getGameInfo(game_id)
         if gi:
             if update & 256:
                 try:
@@ -667,7 +667,7 @@ class Application:
                         (cs.name, cs.backname)
         # from pprint import pprint; pprint(self.opt.cardset)
 
-    def loadCardset(self, cs, id=0, update=7, progress=None,
+    def loadCardset(self, cs, game_id=0, update=7, progress=None,
                     tocache=False, noprogress=False):
         # print 'loadCardset', cs.ident
         r = 0
@@ -675,7 +675,7 @@ class Application:
             return 0
         if cs is self.cardset:
             if not tocache:
-                self.updateCardset(id, update=update)
+                self.updateCardset(game_id, update=update)
             return 1
         # cache carsets
         # self.cardsets_cache:
@@ -688,7 +688,7 @@ class Application:
                 # print 'load from cache', c
                 self.images, self.subsampled_images = c2[1], c2[2]
                 if not tocache:
-                    self.updateCardset(id, update=update)
+                    self.updateCardset(game_id, update=update)
                     if self.menubar is not None:
                         self.menubar.updateBackgroundImagesMenu()
                 return 1
@@ -743,7 +743,7 @@ class Application:
                 # update
                 self.images = images
                 self.subsampled_images = simages
-                self.updateCardset(id, update=update)
+                self.updateCardset(game_id, update=update)
             r = 1
         except (Exception, TclError, UnpicklingError) as ex:
             traceback.print_exc()
@@ -815,8 +815,8 @@ class Application:
         # ask
         return None, 0, t
 
-    def requestCompatibleCardsetType(self, id, progress=None):
-        gi = self.getGameInfo(id)
+    def requestCompatibleCardsetType(self, game_id, progress=None):
+        gi = self.getGameInfo(game_id)
         #
         cs, _, t = self.getCompatibleCardset(gi, self.cardset)
         if cs is self.cardset:
@@ -830,7 +830,7 @@ class Application:
         cs = self.__selectCardsetDialog(t)
         if cs is None:
             return -1
-        self.loadCardset(cs, id=id, progress=progress)
+        self.loadCardset(cs, game_id=game_id, progress=progress)
         return 1
 
     def requestCompatibleCardsetTypeDialog(self, cardset, gi, t):
@@ -916,10 +916,10 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
     # access games database
     #
 
-    def constructGame(self, id):
-        gi = self.gdb.get(id)
+    def constructGame(self, game_id):
+        gi = self.gdb.get(game_id)
         if gi is None:
-            raise Exception("Unknown game (id %d)" % id)
+            raise Exception("Unknown game (id %d)" % game_id)
         return gi.gameclass(gi)
 
     def getGamesIdSortedById(self):
@@ -929,23 +929,23 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
         return self.gdb.getGamesIdSortedByName()
 
     ##
-    def getGameInfo(self, id):
-        return self.gdb.get(id)
+    def getGameInfo(self, game_id):
+        return self.gdb.get(game_id)
 
-    def getGameClass(self, id):
-        gi = self.gdb.get(id)
+    def getGameClass(self, game_id):
+        gi = self.gdb.get(game_id)
         if gi is None:
             return None
         return gi.gameclass
 
-    def getGameTitleName(self, id):
-        gi = self.gdb.get(id)
+    def getGameTitleName(self, game_id):
+        gi = self.gdb.get(game_id)
         if gi is None:
             return None
         return gi.name
 
-    def getGameRulesFilename(self, id):
-        gi = self.gdb.get(id)
+    def getGameRulesFilename(self, game_id):
+        gi = self.gdb.get(game_id)
         if gi is None:
             return None
         if gi.rules_filename is not None:
@@ -957,10 +957,10 @@ Please select a %(correct_type)s %(subcategory)stype cardset.
         gi.rules_filename = n    # cache the filename for next use
         return n
 
-    def getGameSaveName(self, id):
+    def getGameSaveName(self, game_id):
         if os.path.supports_unicode_filenames:
-            return self.getGameTitleName(id)
-        n = self.gdb.get(id).en_name                  # english name
+            return self.getGameTitleName(game_id)
+        n = self.gdb.get(game_id).en_name                  # english name
         if not n:
             return None
         return re.sub(r"[\s]", "_", latin1_normalize(n))

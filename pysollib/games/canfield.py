@@ -80,7 +80,7 @@ class Canfield(Game):
     #
 
     def createGame(self, rows=4, max_rounds=-1, num_deal=3,
-                   text=True, round_text=False, dir=-1):
+                   text=True, round_text=False, direction=-1):
         # create layout
         lay, s = Layout(self), self.s
         decks = self.gameinfo.decks
@@ -152,7 +152,7 @@ class Canfield(Game):
         if text:
             y += lay.TEXT_HEIGHT
         for i in range(rows):
-            s.rows.append(self.RowStack_Class(x, y, self, dir=dir))
+            s.rows.append(self.RowStack_Class(x, y, self, dir=direction))
             x += lay.XS
 
         # define stack-groups

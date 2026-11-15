@@ -155,10 +155,11 @@ class PictureGallery_Foundation(RK_FoundationStack):
 class PictureGallery_TableauStack(SS_RowStack):
     max_accept = 1
 
-    def __init__(self, x, y, game, base_rank, yoffset, dir=3, max_cards=4):
+    def __init__(self, x, y, game, base_rank, yoffset, direction=3,
+                 max_cards=4):
         SS_RowStack.__init__(
             self, x, y, game,
-            base_rank=base_rank, dir=dir, max_cards=max_cards,
+            base_rank=base_rank, dir=direction, max_cards=max_cards,
             max_accept=self.max_accept)
         self.CARD_YOFFSET = yoffset
 
@@ -195,11 +196,14 @@ class PictureGallery(Game):
     Foundation_Class = PictureGallery_Foundation
     TableauStack_Classes = [
         StackWrapper(
-            PictureGallery_TableauStack, base_rank=3, max_cards=4, dir=3),
+            PictureGallery_TableauStack, base_rank=3, max_cards=4,
+            direction=3),
         StackWrapper(
-            PictureGallery_TableauStack, base_rank=2, max_cards=4, dir=3),
+            PictureGallery_TableauStack, base_rank=2, max_cards=4,
+            direction=3),
         StackWrapper(
-            PictureGallery_TableauStack, base_rank=1, max_cards=4, dir=3),
+            PictureGallery_TableauStack, base_rank=1, max_cards=4,
+            direction=3),
         ]
     RowStack_Class = StackWrapper(PictureGallery_RowStack, max_accept=1)
     Talon_Class = DealRowTalonStack
@@ -340,9 +344,11 @@ class GreatWheel(PictureGallery):
     Foundation_Class = GreatWheel_Foundation
     TableauStack_Classes = [
         StackWrapper(
-            PictureGallery_TableauStack, base_rank=2, max_cards=5, dir=2),
+            PictureGallery_TableauStack, base_rank=2, max_cards=5,
+            direction=2),
         StackWrapper(
-            PictureGallery_TableauStack, base_rank=1, max_cards=6, dir=2),
+            PictureGallery_TableauStack, base_rank=1, max_cards=6,
+            direction=2),
         ]
     RowStack_Class = StackWrapper(GreatWheel_RowStack, max_accept=1)
     Talon_Class = StackWrapper(WasteTalonStack, max_rounds=1)
@@ -499,11 +505,11 @@ class RoyalParade(PictureGallery):
     Talon_Class = DealRowTalonStack
     TableauStack_Classes = [
         StackWrapper(RoyalParade_TableauStack,
-                     base_rank=1, max_cards=4, dir=3),
+                     base_rank=1, max_cards=4, direction=3),
         StackWrapper(RoyalParade_TableauStack,
-                     base_rank=2, max_cards=4, dir=3),
+                     base_rank=2, max_cards=4, direction=3),
         StackWrapper(RoyalParade_TableauStack,
-                     base_rank=3, max_cards=4, dir=3),
+                     base_rank=3, max_cards=4, direction=3),
         ]
     RowStack_Class = StackWrapper(BasicRowStack, max_accept=0)
 

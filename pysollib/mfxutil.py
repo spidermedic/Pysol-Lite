@@ -243,11 +243,11 @@ class Struct:
                 raise AttributeError(key)
         self.__dict__.update(kw)
 
-    def update(self, dict):
-        for key in dict.keys():
+    def update(self, other):
+        for key in other.keys():
             if key not in self.__dict__:
                 raise AttributeError(key)
-        self.__dict__.update(dict)
+        self.__dict__.update(other)
 
     def clear(self):
         for key in self.__dict__:

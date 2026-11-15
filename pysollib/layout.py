@@ -43,13 +43,13 @@ class _LayoutStack:
         self.text_args = {}
         self.text_format = "%d"
 
-    def setText(self, x, y, anchor="center", format=None, **kw):
+    def setText(self, x, y, anchor="center", fmt=None, **kw):
         self.text_args["x"] = x
         self.text_args["y"] = y
         self.text_args["anchor"] = anchor
         self.text_args.update(kw)
-        if format is not None:
-            self.text_format = format
+        if fmt is not None:
+            self.text_format = fmt
 
 
 class Layout:

@@ -315,13 +315,14 @@ Please check that this cardset is installed.
         success = app.requestCompatibleCardsetType(startgameid,
                                                    progress=progress)
     else:
-        success = app.loadCardset(cardset, progress=progress, id=startgameid)
+        success = app.loadCardset(
+            cardset, progress=progress, game_id=startgameid)
     if not success and not cardset:
         for cardset in app.cardset_manager.getAll():
             progress.reset()
 
             if app.loadCardset(cardset, progress=progress,
-                               id=startgameid):
+                               game_id=startgameid):
                 break
         else:
             fatal_no_cardsets(app)

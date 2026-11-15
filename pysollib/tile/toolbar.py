@@ -153,7 +153,7 @@ class ToolbarLabel(tkinter.Message):
 
 class PysolToolbarTk:
 
-    def __init__(self, top, menubar, dir,
+    def __init__(self, top, menubar, images_dir,
                  size=0, relief='flat', compound='none'):
         from pysollib.options import calcCustomMouseButtonsBinding
         self.top = top
@@ -162,7 +162,7 @@ class PysolToolbarTk:
         self._tooltips = []
         self._widgets = []
         self._toggled = {}
-        self.dir = dir
+        self.dir = images_dir
         self.size = size
         self.compound = compound
         self.orient = 'horizontal'
@@ -401,12 +401,12 @@ class PysolToolbarTk:
             self.frame.config(cursor=cursor)
             self.frame.update_idletasks()
 
-    def updateImages(self, dir, size):
-        if dir == self.dir and size == self.size:
+    def updateImages(self, images_dir, size):
+        if images_dir == self.dir and size == self.size:
             return 0
-        if not os.path.isdir(dir):
+        if not os.path.isdir(images_dir):
             return 0
-        self.dir, self.size = dir, size
+        self.dir, self.size = images_dir, size
         data = []
         for w in self._widgets:
             if not isinstance(w, (ToolbarButton, ToolbarCheckbutton)):

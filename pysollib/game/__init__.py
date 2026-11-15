@@ -731,9 +731,9 @@ class Game:
     def getTitleName(self):
         return self.app.getGameTitleName(self.id)
 
-    def getGameNumber(self, format):
+    def getGameNumber(self, fmt):
         s = self.random.getSeedAsStr()
-        if format:
+        if fmt:
             return "#" + s
         return s
 
@@ -874,9 +874,9 @@ class Game:
                 if t:
                     t.config(text="")
 
-    def nextGameFlags(self, id, random=None):
+    def nextGameFlags(self, game_id, random=None):
         f = 0
-        if id != self.id:
+        if game_id != self.id:
             f |= 1
         if self.app.nextgame.cardset is not self.app.cardset:
             f |= 2
@@ -888,17 +888,17 @@ class Game:
 
     # quit to outer mainloop in class App, possibly restarting
     # with another game from there
-    def quitGame(self, id=0, random=None, loadedgame=None,
+    def quitGame(self, game_id=0, random=None, loadedgame=None,
                  startdemo=0, bookmark=0):
         self.updateTime()
         if bookmark:
-            id, random = self.id, self.random
+            game_id, random = self.id, self.random
             f = BytesIO()
             self._dumpGame(Pickler(f, 1), bookmark=1)
             self.app.nextgame.bookmark = f.getvalue()
-        if id > 0:
+        if game_id > 0:
             self.setCursor(cursor=CURSOR_WATCH)
-        self.app.nextgame.id = id
+        self.app.nextgame.id = game_id
         self.app.nextgame.random = random
         self.app.nextgame.loadedgame = loadedgame
         self.app.nextgame.startdemo = startdemo
@@ -1111,8 +1111,8 @@ class Game:
         assert len(cards) == gi.ncards
         return cards
 
-    def _createCard(self, id, deck, suit, rank, x, y):
-        return Card(id, deck, suit, rank, game=self, x=x, y=y)
+    def _createCard(self, card_id, deck, suit, rank, x, y):
+        return Card(card_id, deck, suit, rank, game=self, x=x, y=y)
 
     # shuffle cards
     def shuffle(self):
@@ -1196,7 +1196,7 @@ class Game:
         # Overridden for certain games
         pass
 
-    def keyboardSelectNextType(self, dir=1):
+    def keyboardSelectNextType(self, direction=1):
         if self.pause:
             self.app.speech.speak("Paused")
             return
@@ -1214,7 +1214,7 @@ class Game:
             stacktype = 4
         stack = None
         while stack is None:
-            stacktype += dir
+            stacktype += direction
             if stacktype > 4:
                 stacktype = 0
             if stacktype < 0:
@@ -1282,7 +1282,7 @@ class Game:
         else:
             self.playSample("edge", priority=200)
 
-    def keyboardAction(self, type=1):
+    def keyboardAction(self, action=1):
         if self.pause:
             self.app.speech.speak("Paused")
             return
@@ -1294,10 +1294,10 @@ class Game:
             card = stack.cards[-1 * self.keyboard_select_count]
             event = FauxEvent(card.x + 1, card.y + 1)
             index = (-1 * self.keyboard_select_count) + len(stack.cards)
-            self.keyboard_selected_stack.keyboardAction(index, event, type)
+            self.keyboard_selected_stack.keyboardAction(index, event, action)
         else:
             self.keyboard_selected_stack.keyboardAction(-1, FauxEvent(0, 0),
-                                                        type)
+                                                        action)
         self._updateKeyboardSelector()
 
     def _updateKeyboardSelector(self):

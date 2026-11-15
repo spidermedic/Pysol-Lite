@@ -191,7 +191,7 @@ class Maze(Game):
             if r1.cards[-1].rank != ACE or r2.cards[-1].rank != QUEEN:
                 return False
             pile = getPileFromStacks(rows[j:j+12])
-            if not pile or not isSameSuitSequence(pile, dir=1):
+            if not pile or not isSameSuitSequence(pile, direction=1):
                 return False
         return True
 

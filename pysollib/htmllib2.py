@@ -109,7 +109,7 @@ class HTMLParser(html_parser.HTMLParser):
 
     # --- Hooks for anchors; should probably be overridden
 
-    def anchor_bgn(self, href, name, type):
+    def anchor_bgn(self, href, name, link_type):
         """This method is called at the start of an anchor region.
 
         The arguments correspond to the attributes of the <A> tag with

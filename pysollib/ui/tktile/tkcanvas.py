@@ -229,19 +229,19 @@ class MfxCanvas(tkinter.Canvas):
             self.tk.call(self._w, "lower", item_id, self.__tops[0])
         return item_id
 
-    def tag_raise(self, id, aboveThis=None):
+    def tag_raise(self, item_id, aboveThis=None):
         # print "tag_raise:", id, aboveThis
         if aboveThis is None and self.__tops:
-            self.tk.call(self._w, "lower", id, self.__tops[0])
+            self.tk.call(self._w, "lower", item_id, self.__tops[0])
         else:
-            self.tk.call(self._w, "raise", id, aboveThis)
+            self.tk.call(self._w, "raise", item_id, aboveThis)
 
-    def tag_lower(self, id, belowThis=None):
+    def tag_lower(self, item_id, belowThis=None):
         # print "tag_lower:", id, belowThis
         if belowThis is None and self.__tiles:
-            self.tk.call(self._w, "raise", id, self.__tiles[-1])
+            self.tk.call(self._w, "raise", item_id, self.__tiles[-1])
         else:
-            self.tk.call(self._w, "lower", id, belowThis)
+            self.tk.call(self._w, "lower", item_id, belowThis)
 
     def setInitialSize(self, width, height, margins=True, scrollregion=True):
         # print 'Canvas.setInitialSize:', width, height, scrollregion

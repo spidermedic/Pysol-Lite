@@ -63,60 +63,60 @@ def cardsFaceDown(cards):
 
 
 # check that cards are face-up and build down by rank
-def isRankSequence(cards, mod=8192, dir=-1):
+def isRankSequence(cards, mod=8192, direction=-1):
     if not cardsFaceUp(cards):
         return False
     c1 = cards[0]
     for c2 in cards[1:]:
-        if (c1.rank + dir) % mod != c2.rank:
+        if (c1.rank + direction) % mod != c2.rank:
             return False
         c1 = c2
     return True
 
 
 # check that cards are face-up and build down by alternate color
-def isAlternateColorSequence(cards, mod=8192, dir=-1):
+def isAlternateColorSequence(cards, mod=8192, direction=-1):
     if not cardsFaceUp(cards):
         return False
     c1 = cards[0]
     for c2 in cards[1:]:
-        if (c1.rank + dir) % mod != c2.rank or c1.color == c2.color:
+        if (c1.rank + direction) % mod != c2.rank or c1.color == c2.color:
             return False
         c1 = c2
     return True
 
 
 # check that cards are face-up and build down by same color
-def isSameColorSequence(cards, mod=8192, dir=-1):
+def isSameColorSequence(cards, mod=8192, direction=-1):
     if not cardsFaceUp(cards):
         return False
     c1 = cards[0]
     for c2 in cards[1:]:
-        if (c1.rank + dir) % mod != c2.rank or c1.color != c2.color:
+        if (c1.rank + direction) % mod != c2.rank or c1.color != c2.color:
             return False
         c1 = c2
     return True
 
 
 # check that cards are face-up and build down by same suit
-def isSameSuitSequence(cards, mod=8192, dir=-1):
+def isSameSuitSequence(cards, mod=8192, direction=-1):
     if not cardsFaceUp(cards):
         return False
     c1 = cards[0]
     for c2 in cards[1:]:
-        if (c1.rank + dir) % mod != c2.rank or c1.suit != c2.suit:
+        if (c1.rank + direction) % mod != c2.rank or c1.suit != c2.suit:
             return False
         c1 = c2
     return True
 
 
 # check that cards are face-up and build down by any suit but own
-def isAnySuitButOwnSequence(cards, mod=8192, dir=-1):
+def isAnySuitButOwnSequence(cards, mod=8192, direction=-1):
     if not cardsFaceUp(cards):
         return False
     c1 = cards[0]
     for c2 in cards[1:]:
-        if (c1.rank + dir) % mod != c2.rank or c1.suit == c2.suit:
+        if (c1.rank + direction) % mod != c2.rank or c1.suit == c2.suit:
             return False
         c1 = c2
     return True
@@ -1160,10 +1160,10 @@ class Stack:
             handler(event)
         return EVENT_HANDLED
 
-    def keyboardAction(self, card, event, type=1):
+    def keyboardAction(self, card, event, action=1):
         self.keyboard_movement = True
         self.keyboard_card = card
-        if type == 1:
+        if action == 1:
             self.__clickEventHandler(event)
         else:
             self.__rightclickEventHandler(event)

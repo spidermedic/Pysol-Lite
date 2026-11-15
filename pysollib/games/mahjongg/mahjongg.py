@@ -232,10 +232,10 @@ class Mahjongg_RowStack(OpenStack):
         # bind(group, "<Enter>", self._Stack__enterEventHandler)
         # bind(group, "<Leave>", self._Stack__leaveEventHandler)
 
-    def keyboardAction(self, card, event, type=1):
+    def keyboardAction(self, card, event, action=1):
         self.keyboard_movement = True
         self.keyboard_card = card
-        if type == 1:
+        if action == 1:
             self.__clickEventHandler(event)
         else:
             self.__rightclickEventHandler(event)
@@ -539,20 +539,20 @@ class AbstractMahjonggGame(Game):
         if currentstack is not None:
             self.keyboard_selected_stack = currentstack
 
-    def keyboardSelectNextType(self, dir=1):
+    def keyboardSelectNextType(self, direction=1):
         oldstack = self.keyboard_selected_stack
         rows = self.s.rows
 
         try:
             index = rows.index(oldstack)
         except ValueError:
-            if dir > 0:
+            if direction > 0:
                 index = -1
             else:
                 index = 0
 
         for n in range(1, len(rows) + 1):
-            try_index = (index + (dir * n)) % len(rows)
+            try_index = (index + (direction * n)) % len(rows)
             if not rows[try_index].basicIsBlocked():
                 self.keyboard_selected_stack = rows[try_index]
                 break
@@ -1156,11 +1156,11 @@ a solvable configuration.'''),
         # game start.
         return self.getCardFaceImage(deck, suit, rank)
 
-    def _createCard(self, id, deck, suit, rank, x, y):
+    def _createCard(self, card_id, deck, suit, rank, x, y):
         # if deck >= 1 and suit == 3 and rank >= 4:
         if deck % 4 and suit == 3 and rank >= 4:
             return None
-        return Game._createCard(self, id, deck, suit, rank, x, y)
+        return Game._createCard(self, card_id, deck, suit, rank, x, y)
 
     def _getClosestStack(self, cx, cy, stacks, dragstack):
         closest, cdist = None, 999999999
@@ -1215,7 +1215,7 @@ def comp_cardset(ncards):
 # ************************************************************************
 
 
-def r(id, short_name, name=None, ncards=144, layout=None):
+def r(game_id, short_name, name=None, ncards=144, layout=None):
     assert layout
     if not name:
         name = "Mahjongg " + short_name
@@ -1225,7 +1225,7 @@ def r(id, short_name, name=None, ncards=144, layout=None):
     gameclass.L = layout
     gameclass.NCARDS = ncards
     decks, ranks, trumps = comp_cardset(ncards)
-    gi = GameInfo(id, gameclass, name,
+    gi = GameInfo(game_id, gameclass, name,
                   GI.GT_MAHJONGG, 4*decks, 0,  # GI.SL_MOSTLY_SKILL,
                   category=GI.GC_MAHJONGG, short_name=short_name,
                   suits=list(range(3)), ranks=list(range(ranks)),

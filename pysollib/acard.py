@@ -59,11 +59,11 @@ class AbstractCard:
     # x, y -- the position of the card's top left corner
     #
 
-    def __init__(self, id, deck, suit, rank, game, x=0, y=0):
+    def __init__(self, card_id, deck, suit, rank, game, x=0, y=0):
         # The card is created at position (x, y), with its face down.
         # Adding it to a stack will position it according to that
         # stack's rules.
-        self.id = id
+        self.id = card_id
         self.deck = deck
         self.suit = suit
         self.color = suit // 2

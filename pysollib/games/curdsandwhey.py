@@ -53,7 +53,7 @@ class CurdsAndWhey_RowStack(BasicRowStack):
         return False
 
     def canMoveCards(self, cards):
-        return isSameSuitSequence(cards) or isRankSequence(cards, dir=0)
+        return isSameSuitSequence(cards) or isRankSequence(cards, direction=0)
 
     def getHelp(self):
         return 'Tableau. Build down by suit or of the same rank.'

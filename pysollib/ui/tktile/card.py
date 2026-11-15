@@ -57,8 +57,8 @@ class _HideableCard(AbstractCard):
 # ************************************************************************
 
 class _OneImageCard(_HideableCard):
-    def __init__(self, id, deck, suit, rank, game, x=0, y=0):
-        _HideableCard.__init__(self, id, deck, suit, rank, game, x=x, y=y)
+    def __init__(self, card_id, deck, suit, rank, game, x=0, y=0):
+        _HideableCard.__init__(self, card_id, deck, suit, rank, game, x=x, y=y)
         self._face_image = game.getCardFaceImage(deck, suit, rank)
         self._back_image = game.getCardBackImage(deck, suit, rank)
         self._shade_image = game.getCardShadeImage()
@@ -102,7 +102,7 @@ class _OneImageCard(_HideableCard):
         item.canvas.tk.call(item.canvas._w, "move", item.id, dx, dy)
 
     # for resize
-    def update(self, id, deck, suit, rank, game):
+    def update(self, card_id, deck, suit, rank, game):
         self._face_image = game.getCardFaceImage(deck, suit, rank)
         self._back_image = game.getCardBackImage(deck, suit, rank)
         self._shade_image = game.getCardShadeImage()
@@ -172,8 +172,8 @@ class _OneImageCardWithHideByConfig(_OneImageCard):
 class _TwoImageCard(_HideableCard):
     # Private instance variables:
     #   __face, __back -- the canvas items making up the card
-    def __init__(self, id, deck, suit, rank, game, x=0, y=0):
-        _HideableCard.__init__(self, id, deck, suit, rank, game, x=x, y=y)
+    def __init__(self, card_id, deck, suit, rank, game, x=0, y=0):
+        _HideableCard.__init__(self, card_id, deck, suit, rank, game, x=x, y=y)
         self.item = MfxCanvasGroup(game.canvas)
         self.__face = MfxCanvasImage(
             game.canvas, self.x, self.y, image=game.getCardFaceImage(
@@ -211,8 +211,8 @@ class _TwoImageCard(_HideableCard):
 class _TwoImageCardWithHideItem(_HideableCard):
     # Private instance variables:
     #   __face, __back -- the canvas items making up the card
-    def __init__(self, id, deck, suit, rank, game, x=0, y=0):
-        _HideableCard.__init__(self, id, deck, suit, rank, game, x=x, y=y)
+    def __init__(self, card_id, deck, suit, rank, game, x=0, y=0):
+        _HideableCard.__init__(self, card_id, deck, suit, rank, game, x=x, y=y)
         self.item = MfxCanvasGroup(game.canvas)
         self.__face = MfxCanvasImage(
             game.canvas, self.x, self.y + 11000, image=game.getCardFaceImage(

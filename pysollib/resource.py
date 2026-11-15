@@ -115,12 +115,13 @@ class ResourceManager:
     # static methods
     #
 
-    def _addDir(self, result, dir):
+    def _addDir(self, result, directory):
         try:
-            if dir:
-                dir = os.path.normpath(dir)
-                if dir and os.path.isdir(dir) and dir not in result:
-                    result.append(dir)
+            if directory:
+                directory = os.path.normpath(directory)
+                if (directory and os.path.isdir(directory)
+                        and directory not in result):
+                    result.append(directory)
         except EnvironmentError:
             pass
 

@@ -450,9 +450,9 @@ class Shisen_24x12(AbstractShisenGame):
 # * register a Shisen-Sho type game
 # ************************************************************************
 
-def r(id, gameclass, name):
+def r(game_id, gameclass, name):
     decks, ranks, trumps = comp_cardset(gameclass.NCARDS)
-    gi = GameInfo(id, gameclass, name,
+    gi = GameInfo(game_id, gameclass, name,
                   GI.GT_MAHJONGG, 4*decks, 0, GI.SL_MOSTLY_SKILL,
                   category=GI.GC_MAHJONGG, short_name=name,
                   suits=list(range(3)), ranks=list(range(ranks)),

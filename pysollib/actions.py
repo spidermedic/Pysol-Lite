@@ -217,17 +217,17 @@ class PysolMenubar(PysolMenubarTk):
             self.game.endGame()
             self.game.quitGame(self.game.id)
 
-    def _mSelectGame(self, id, random=None, force=False):
+    def _mSelectGame(self, game_id, random=None, force=False):
         if self._cancelDrag():
             return
-        if not force and self.game.id == id:
+        if not force and self.game.id == game_id:
             return
         if self.changed():
             if not self.game.areYouSure(
                     "Select game", "Discard this game and start another?"):
                 return
         self.game.endGame()
-        self.game.quitGame(id, random=random)
+        self.game.quitGame(game_id, random=random)
 
     def _mSelectNextGameFromList(self, gl, step):
         if self._cancelDrag():
@@ -498,14 +498,14 @@ class PysolMenubar(PysolMenubarTk):
         return "break"
 
     def mKeyboardSelectPrevType(self, *args):
-        self.game.keyboardSelectNextType(dir=-1)
+        self.game.keyboardSelectNextType(direction=-1)
         return "break"
 
     def mKeyboardAction(self, *args):
         self.game.keyboardAction()
 
     def mKeyboardAction2(self, *args):
-        self.game.keyboardAction(type=2)
+        self.game.keyboardAction(action=2)
 
     def mKeyboardGameInfo(self, *args):
         self.game.speakGameInfo()

@@ -69,7 +69,7 @@ class NullFormatter:
 
     def add_hor_rule(self, *args, **kw): pass
 
-    def add_label_data(self, format, counter, blankline=None): pass
+    def add_label_data(self, fmt, counter, blankline=None): pass
 
     def add_flowing_data(self, data): pass
 
@@ -152,21 +152,21 @@ class AbstractFormatter:
         self.hard_break = self.nospace = 1
         self.have_label = self.para_end = self.softspace = self.parskip = 0
 
-    def add_label_data(self, format, counter, blankline=None):
+    def add_label_data(self, fmt, counter, blankline=None):
         if self.have_label or not self.hard_break:
             self.writer.send_line_break()
         if not self.para_end:
             self.writer.send_paragraph((blankline and 1) or 0)
-        if isinstance(format, str):
-            self.writer.send_label_data(self.format_counter(format, counter))
+        if isinstance(fmt, str):
+            self.writer.send_label_data(self.format_counter(fmt, counter))
         else:
-            self.writer.send_label_data(format)
+            self.writer.send_label_data(fmt)
         self.nospace = self.have_label = self.hard_break = self.para_end = 1
         self.softspace = self.parskip = 0
 
-    def format_counter(self, format, counter):
+    def format_counter(self, fmt, counter):
         label = ''
-        for c in format:
+        for c in fmt:
             if c == '1':
                 label = label + ('%d' % counter)
             elif c in 'aA':

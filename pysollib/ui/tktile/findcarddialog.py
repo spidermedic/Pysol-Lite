@@ -41,12 +41,12 @@ class FindCardDialog(tkinter.Toplevel):
     HINT = ("Point at a card, or use the arrow keys, to find it on the "
             "table. Click or press Enter to keep it marked.")
 
-    def __init__(self, parent, game, dir):
+    def __init__(self, parent, game, directory):
         tkinter.Toplevel.__init__(self)
         self.title("Find Card")
         self.wm_resizable(False, False)
         self.cardsettype = ''
-        self.dir = dir
+        self.dir = directory
         self.images_dir = ''
         self.label_width, self.label_height = EMBLEMS_SIZE
 
@@ -361,7 +361,7 @@ def place_beside(dialog, parent):
 find_card_dialog = None
 
 
-def create_find_card_dialog(parent, game, dir):
+def create_find_card_dialog(parent, game, directory):
     global find_card_dialog
     try:
         find_card_dialog.wm_deiconify()
@@ -369,7 +369,7 @@ def create_find_card_dialog(parent, game, dir):
         find_card_dialog.focus_set()
     except Exception:
         # traceback.print_exc()
-        find_card_dialog = FindCardDialog(parent, game, dir)
+        find_card_dialog = FindCardDialog(parent, game, directory)
         place_beside(find_card_dialog, parent)
 
 

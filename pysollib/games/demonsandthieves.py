@@ -41,7 +41,7 @@ class DemonsAndThieves_SS_RowStack(DemonsAndThieves_StackMethods, SS_RowStack):
 class DemonsAndThieves(Game):
 
     def createGame(self, max_rounds=3, num_deal=1,
-                   text=True, round_text=True, dir=-1):
+                   text=True, round_text=True, direction=-1):
         # create layout
         lay, s = Layout(self), self.s
         decks = self.gameinfo.decks
@@ -101,13 +101,13 @@ class DemonsAndThieves(Game):
         for i in range(4):
             s.rows.append(DemonsAndThieves_AC_RowStack(x, y, self,
                                                        base_rank=ANY_RANK,
-                                                       dir=dir))
+                                                       dir=direction))
             x += lay.XS
         x += (lay.XS * .5)
         for i in range(5):
             s.rows.append(DemonsAndThieves_SS_RowStack(x, y, self,
                                                        base_rank=ANY_RANK,
-                                                       dir=dir))
+                                                       dir=direction))
             x += lay.XS
 
         # define stack-groups

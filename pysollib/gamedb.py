@@ -563,7 +563,7 @@ class GameInfoException(Exception):
 
 
 class GameInfo(Struct):
-    def __init__(self, id, gameclass, name,
+    def __init__(self, game_id, gameclass, name,
                  game_type, decks, redeals,
                  skill_level=None,
                  # keyword arguments:
@@ -609,27 +609,27 @@ class GameInfo(Struct):
             else:
                 category = GI.GC_FRENCH
         #
-        if not (1 <= id <= 999999):
-            raise GameInfoException(name+": invalid game ID "+str(id))
+        if not (1 <= game_id <= 999999):
+            raise GameInfoException(name+": invalid game ID "+str(game_id))
         if category == GI.GC_MAHJONGG:
             if decks % 4:
                 raise GameInfoException(name+": invalid number of decks " +
-                                        str(id))
+                                        str(game_id))
         else:
             if not (1 <= decks <= 4):
                 raise GameInfoException(
-                    name+": invalid number of decks "+str(id))
+                    name+": invalid number of decks "+str(game_id))
         if not name:
             raise GameInfoException(name+": invalid game name")
-        if GI.PROTECTED_GAMES.get(id):
-            raise GameInfoException(name+": protected game ID "+str(id))
+        if GI.PROTECTED_GAMES.get(game_id):
+            raise GameInfoException(name+": protected game ID "+str(game_id))
         #
         for f, l in ((GI.GT_CHILDREN, GI._CHILDREN_GAMES),
                      (GI.GT_OPEN, GI._OPEN_GAMES),
                      (GI.GT_POPULAR, GI._POPULAR_GAMES)):
-            if (game_flags & f) and (id not in l):
-                l.append(id)
-            elif not (game_flags & f) and (id in l):
+            if (game_flags & f) and (game_id not in l):
+                l.append(game_id)
+            elif not (game_flags & f) and (game_id in l):
                 game_flags = game_flags | f
         # si is the SelectionInfo struct that will be queried by
         # the "select game" dialogs. It can be freely modified.
@@ -637,7 +637,7 @@ class GameInfo(Struct):
                        decks=decks, redeals=redeals, ncards=ncards)
         gi_si.update(si)
         #
-        Struct.__init__(self, id=id, gameclass=gameclass,
+        Struct.__init__(self, id=game_id, gameclass=gameclass,
                         name=name, short_name=short_name,
                         altnames=tuple(altnames), en_name=en_name,
                         decks=decks, redeals=redeals, ncards=ncards,

@@ -47,7 +47,7 @@ class DaddyLonglegs(Game):
         if self.s.talon.cards:
             return 0
         for row in self.s.rows:
-            if not isSameSuitSequence(row.cards, dir=1):
+            if not isSameSuitSequence(row.cards, direction=1):
                 return 0
         return 1
 
