@@ -1323,3 +1323,9 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - The commit `2cced39a` is tagged `v26.11` (annotated tag, pushed). The user created the GitHub release for it in the browser (`gh` is not installed on this Mac) and attached `PySol-Lite-26.11.dmg`.
 - **Verified by the user:** the dmg downloads from the release page and runs on other systems with no Gatekeeper warning, so the signing, notarization and stapling work for a quarantined download. This closes the "test on another Mac" item from sections 107 and 108.
 - **Open items now:** sound-effect origin (the 19 `.wav` files have no recorded source); the Windows and Linux code paths (parked). Left alone on purpose: the compiled pygame modules, the 9 import-order findings, the move counter `%d/%d` and the Tk command template.
+
+## 110. Next up (2026-11-15)
+
+- **To do next:** (1) install a higher-resolution cardset (check its license first, as with every bundled asset; the license file and help page must name it); (2) a more modern app icon that matches the new look and feel (the current icon is upstream's PySol club; the new PySol Lite logo is the user's own work).
+- **Still open:** sound-effect origin (19 `.wav` files); the Windows and Linux code paths (parked). Left alone on purpose: the compiled pygame modules, the 9 import-order findings, the move counter `%d/%d` and the Tk command template.
+- Release v26.11 is published and verified (section 109); nothing is uncommitted.
