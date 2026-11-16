@@ -1317,3 +1317,9 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 
 - `scripts/make_dmg.sh` builds `dist/PySol-Lite-26.11.dmg` (41 MB, UDZO) holding the notarized app and an Applications shortcut, signs it with the Developer ID, submits it to Apple (Accepted), staples the ticket and checks it with `spctl` ("Notarized Developer ID"). The app inside the mounted dmg also passes `spctl` and `stapler validate`. README build step 7 describes it.
 - **Not done:** a test on another Mac with a downloaded (quarantined) copy; the release tag and GitHub release (`git tag -a v26.11`, attach the dmg).
+
+## 109. Update: release v26.11 published (2026-11-15)
+
+- The commit `2cced39a` is tagged `v26.11` (annotated tag, pushed). The user created the GitHub release for it in the browser (`gh` is not installed on this Mac) and attached `PySol-Lite-26.11.dmg`.
+- **Verified by the user:** the dmg downloads from the release page and runs on other systems with no Gatekeeper warning, so the signing, notarization and stapling work for a quarantined download. This closes the "test on another Mac" item from sections 107 and 108.
+- **Open items now:** sound-effect origin (the 19 `.wav` files have no recorded source); the Windows and Linux code paths (parked). Left alone on purpose: the compiled pygame modules, the 9 import-order findings, the move counter `%d/%d` and the Tk command template.
