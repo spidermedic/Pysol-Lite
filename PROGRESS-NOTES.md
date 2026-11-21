@@ -1408,3 +1408,9 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - **Build gotcha:** build from a copy on the WSL filesystem (`~/pysol-build`), not `/mnt/c`: the Tcl debug-symbol step (`eu-strip`) fails on the Windows drive. The script's own flatpak-builder run was not redone end to end after adding the `build-update-repo` line.
 - **Unchanged warnings:** "legacy windowing system" (`--socket=x11`; Tk is X11-only) and "can access data" (`--filesystem=xdg-documents`; narrowing it to a subfolder would change where saves go).
 - **Open:** screenshots in the metainfo (needs hosted image URLs); rerun `scripts/build_flatpak.sh` once to confirm the script alone produces the bundle.
+
+## 121. Update: Linux release files, screenshots added (2026-11-21)
+
+- **Release:** the AppImage and Flatpak are not in git (`dist/` is ignored); they are attached to the GitHub release page (as with the Windows installer) after copying them out of WSL (`\wsl$\Ubuntu-22.04\home\doug\pysol-lite\dist`). `gh` is not installed, so the upload is done in the browser.
+- **Screenshots:** `screenshots/screenshot1.png` and `screenshot2.png` are tracked. The Flatpak metainfo can reference them by raw GitHub URL (`https://raw.githubusercontent.com/spidermedic/Pysol-Lite/master/screenshots/...`) to close the open "screenshots in the metainfo" item from section 120; that edit is not done yet.
+- **Pushed:** sections 119-121 and the Flatpak AppStream fix (`6deb07db`) are on `origin/master`.
