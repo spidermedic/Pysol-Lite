@@ -20,6 +20,7 @@
 #
 # ---------------------------------------------------------------------------
 
+import sys
 import tkinter.ttk as ttk
 import traceback
 
@@ -65,7 +66,10 @@ def base_init_root_window(root, app):
     root.wm_title(TITLE)
     root.wm_iconname(TITLE)
 
-    icons = sorted(
+    # On macOS, wm iconphoto replaces the Dock icon at runtime with the raw
+    # PNG, bypassing the system's icon shaping, so the icon visibly changes
+    # after launch.  The bundle's .icns already provides the right icon.
+    icons = [] if sys.platform == 'darwin' else sorted(
         (loadImage(img) for img in app.dataloader.findAllIconSizes()),
         reverse=True, key=lambda img: img.width())
     if icons:
