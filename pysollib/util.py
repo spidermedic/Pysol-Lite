@@ -112,6 +112,10 @@ class DataLoader:
         # dir where placed pysol package
         path.append(os.path.join(sys.path[0], "data"))
         path.append(os.path.join(sys.path[0], "pysollib", "data"))
+        # PyInstaller (Windows) bundle: data is unpacked next to the modules
+        _meipass = getattr(sys, '_MEIPASS', None)
+        if _meipass:
+            path.append(os.path.join(_meipass, "data"))
         # from settings.py
         path.extend(DATA_DIRS)
         # py2app compatibility, see
