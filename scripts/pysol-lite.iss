@@ -18,7 +18,7 @@ LicenseFile=..\LICENSE.md
 SetupIconFile=..\data\pysol.ico
 UninstallDisplayIcon={app}\PySol Lite.exe
 OutputDir=..\dist
-OutputBaseFilename=PySol-Lite-{#AppVersion}-setup
+OutputBaseFilename=Pysol-Lite-{#AppVersion}-Windows-setup
 Compression=lzma2
 SolidCompression=yes
 ; per-user install by default; the user can choose all users in the dialog

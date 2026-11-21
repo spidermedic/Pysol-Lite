@@ -206,7 +206,7 @@ powershell -ExecutionPolicy Bypass -File scripts\build_windows.ps1
 This runs PyInstaller with `pysol.spec` and writes the app to
 `dist\PySol Lite\` (run `PySol Lite.exe`; it needs the `_internal` folder
 beside it). If Inno Setup 6 is installed (`winget install
-JRSoftware.InnoSetup`), it then builds `dist\PySol-Lite-<version>-setup.exe`
+JRSoftware.InnoSetup`), it then builds `dist\Pysol-Lite-<version>-Windows-setup.exe`
 from `scripts\pysol-lite.iss`. The installer is per-user by default, adds a
 Start menu entry and an uninstaller, and is not code-signed, so Windows
 SmartScreen warns when it runs. Setting `PYSOL_CONSOLE=1` before the build

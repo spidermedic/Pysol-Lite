@@ -31,4 +31,4 @@ if (-not $iscc) {
 $version = & $py -c "from pysollib.settings import VERSION; print(VERSION)"
 & $iscc "/DAppVersion=$version" scripts\pysol-lite.iss
 if ($LASTEXITCODE -ne 0) { throw 'Inno Setup failed' }
-Write-Host "Built dist\PySol-Lite-$version-setup.exe"
+Write-Host "Built dist\Pysol-Lite-$version-Windows-setup.exe"
