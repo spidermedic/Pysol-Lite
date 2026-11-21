@@ -1419,3 +1419,9 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 
 - `scripts/flatpak/io.github.spidermedic.PySolLite.metainfo.xml` now lists `screenshots/screenshot1.png` (default; a Klondike game with the toolbar) and `screenshot2.png` (About dialog) by raw GitHub URL on `master`, with captions and their pixel sizes (1705x1173, 1708x1173). The file parses as valid XML and the first URL returns 200. This closes the "screenshots in the metainfo" item from sections 120 and 121.
 - **Not done:** the `.flatpak` bundle on disk was built before this change and does not contain the screenshots; rebuild with `scripts/build_flatpak.sh` (from a copy on the WSL filesystem, see section 120). That script has still not been run end to end since the AppStream fix. The URLs track `master`; a Flathub submission should pin them to a tag or commit.
+
+## 123. Update: Flatpak rebuilt with screenshots (2026-11-21)
+
+- `scripts/build_flatpak.sh` was run end to end (in `/home/doug/pysol-lite` on the WSL filesystem) and succeeded on its own, which closes the "not run end to end since the AppStream fix" item from section 122. Output: `dist/PySol-Lite-26.11-x86_64.flatpak` (64.3 MB, not in git).
+- **Verified:** the bundle repo has the `appstream` and `appstream2` branches; the installed app's metadata (flatpak-builder moves it to `/app/share/appdata/io.github.spidermedic.PySolLite.appdata.xml`, not `/app/share/metainfo`) lists both screenshot URLs; the installed Flatpak launches and opens "PySol Lite - Klondike".
+- **Still open:** the file has to be copied out of WSL and attached to the GitHub release (replacing the earlier Flatpak, which has no screenshots); not checked in a graphical software center; the screenshot URLs track `master` (pin them for Flathub).
