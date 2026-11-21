@@ -7,6 +7,8 @@ runtime: org.freedesktop.Platform
 runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
 command: pysol-lite
+# the 25.08 SDK here has no appstream-compose; install the metainfo as written
+appstream-compose: false
 
 finish-args:
   - --share=ipc
@@ -30,6 +32,7 @@ modules:
       - make install
       - make install-private-headers
       - ln -sf tclsh8.6 /app/bin/tclsh
+      - chmod -R u+w /app/lib /app/bin   # stripping needs writable libs
     sources:
       - type: archive
         url: https://downloads.sourceforge.net/tcl/tcl8.6.16-src.tar.gz
@@ -43,6 +46,7 @@ modules:
       - make -j$FLATPAK_BUILDER_N_JOBS
       - make install
       - make install-private-headers
+      - chmod -R u+w /app/lib /app/bin
     sources:
       - type: archive
         url: https://downloads.sourceforge.net/tcl/tk8.6.16-src.tar.gz
