@@ -1414,3 +1414,8 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - **Release:** the AppImage and Flatpak are not in git (`dist/` is ignored); they are attached to the GitHub release page (as with the Windows installer) after copying them out of WSL (`\wsl$\Ubuntu-22.04\home\doug\pysol-lite\dist`). `gh` is not installed, so the upload is done in the browser.
 - **Screenshots:** `screenshots/screenshot1.png` and `screenshot2.png` are tracked. The Flatpak metainfo can reference them by raw GitHub URL (`https://raw.githubusercontent.com/spidermedic/Pysol-Lite/master/screenshots/...`) to close the open "screenshots in the metainfo" item from section 120; that edit is not done yet.
 - **Pushed:** sections 119-121 and the Flatpak AppStream fix (`6deb07db`) are on `origin/master`.
+
+## 122. Update: screenshots in the Flatpak metainfo (2026-11-21)
+
+- `scripts/flatpak/io.github.spidermedic.PySolLite.metainfo.xml` now lists `screenshots/screenshot1.png` (default; a Klondike game with the toolbar) and `screenshot2.png` (About dialog) by raw GitHub URL on `master`, with captions and their pixel sizes (1705x1173, 1708x1173). The file parses as valid XML and the first URL returns 200. This closes the "screenshots in the metainfo" item from sections 120 and 121.
+- **Not done:** the `.flatpak` bundle on disk was built before this change and does not contain the screenshots; rebuild with `scripts/build_flatpak.sh` (from a copy on the WSL filesystem, see section 120). That script has still not been run end to end since the AppStream fix. The URLs track `master`; a Flathub submission should pin them to a tag or commit.
