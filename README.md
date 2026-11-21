@@ -60,12 +60,12 @@ below).
        pygame-ce pysol-cards accessible-output2 markdown
    ```
 
-2. Get the cardsets. They are a separate download and are not in git. Download
-   `PySolFC-Cardsets--Minimal-3.1.0.tar.xz` from the
-   [PySolFC cardsets page](https://sourceforge.net/projects/pysolfc/files/PySolFC-Cardsets/minimal/),
-   extract it into its own empty folder, and copy `cardset-standard` and
-   `cardset-uni-mahjongg` into `data/`. The build removes every other cardset
-   and trims the card backs (`scripts/prune_card_backs.py`).
+2. The cardsets are in git: `data/cardset-standard` (GPL 2 or later) and
+   `data/cardset-uni-mahjongg` (CC0); see `THIRD-PARTY-LICENSES.md`. Nothing to
+   download. The build removes any other cardset from `data/` and trims the
+   card backs (`scripts/prune_card_backs.py`). Other PySolFC cardsets are a
+   separate download from the
+   [PySolFC cardsets page](https://sourceforge.net/projects/pysolfc/files/PySolFC-Cardsets/minimal/).
 
 3. Generate the help pages with the build environment's Python (the system
    Python lacks the `attr` module and `make` then fails without saying so):

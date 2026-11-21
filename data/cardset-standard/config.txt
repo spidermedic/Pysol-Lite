@@ -1,0 +1,6 @@
+PySolFC solitaire cardset;7;.gif;1;54;7;0;1;0
+0010;Standard
+71 96 8
+14 18 7 7
+back111.gif
+back101.gif;back102.gif;back111.gif;back121.gif;back122.gif;back191.gif;back192.gif

@@ -3,6 +3,8 @@
 /_Inline/
 /build/*
 /data/cardset-*/
+!/data/cardset-standard/
+!/data/cardset-uni-mahjongg/
 /data/html/*
 /data/html [0-9]*/
 /dist/*
