@@ -20,6 +20,8 @@ VERSION=$($PY -c "from pysollib.settings import VERSION; print(VERSION)")
 flatpak-builder --force-clean --user --disable-rofiles-fuse \
     --repo=build/flatpak-repo build/flatpak-build \
     scripts/flatpak/$APP.yml
+# writes the appstream branch the bundle needs for license/version/rating
+flatpak build-update-repo build/flatpak-repo
 mkdir -p dist
 flatpak build-bundle build/flatpak-repo \
     "dist/PySol-Lite-$VERSION-x86_64.flatpak" $APP

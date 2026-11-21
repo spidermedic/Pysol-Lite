@@ -7,7 +7,11 @@ runtime: org.freedesktop.Platform
 runtime-version: '25.08'
 sdk: org.freedesktop.Sdk
 command: pysol-lite
-# the 25.08 SDK here has no appstream-compose; install the metainfo as written
+# flatpak-builder 1.2.x calls an `appstream-compose` binary the 25.08 SDK no
+# longer ships, so composing is done by hand in the last module with
+# `appstreamcli compose`. The catalog it writes to /app/share/app-info is what
+# gets exported into the repo/bundle; without it software centers show no
+# license, age rating, version or description.
 appstream-compose: false
 
 finish-args:
@@ -82,6 +86,9 @@ modules:
       - install -Dm644 scripts/flatpak/io.github.spidermedic.PySolLite.desktop /app/share/applications/io.github.spidermedic.PySolLite.desktop
       - install -Dm644 scripts/flatpak/io.github.spidermedic.PySolLite.metainfo.xml /app/share/metainfo/io.github.spidermedic.PySolLite.metainfo.xml
       - for s in 16 32 48 128 512; do install -Dm644 data/images/icons/${s}x${s}/pysol.png /app/share/icons/hicolor/${s}x${s}/apps/io.github.spidermedic.PySolLite.png; done
+      - install -d /app/share/app-info/xmls /app/share/app-info/icons/flatpak
+      - appstreamcli compose --prefix=/ --origin=flatpak --components=io.github.spidermedic.PySolLite --result-root=/run/build/pysol-lite/as-out --data-dir=/app/share/app-info/xmls --icons-dir=/app/share/app-info/icons/flatpak --hints-dir=/run/build/pysol-lite/as-hints /app
+      - mv /app/share/app-info/xmls/flatpak.xml.gz /app/share/app-info/xmls/io.github.spidermedic.PySolLite.xml.gz
     sources:
       - type: dir
         path: ../..

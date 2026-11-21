@@ -25,8 +25,24 @@
     <keyword>klondike</keyword>
     <keyword>cards</keyword>
   </keywords>
+  <developer id="io.github.spidermedic">
+    <name>spidermedic</name>
+  </developer>
+  <url type="vcs-browser">https://github.com/spidermedic/Pysol-Lite</url>
+  <provides>
+    <binary>pysol-lite</binary>
+  </provides>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
   <content_rating type="oars-1.1"/>
   <releases>
-    <release version="26.11" date="2026-11-15"/>
+    <release version="26.11" date="2026-11-15">
+      <description>
+        <p>Current release of PySol Lite.</p>
+      </description>
+    </release>
   </releases>
 </component>
