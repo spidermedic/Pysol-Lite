@@ -167,6 +167,14 @@ def getprefdir(package):
 
     if os.name == "nt":
         return win32_getprefdir(package)
+    if os.environ.get("FLATPAK_ID"):
+        # Flatpak sandbox: the real $HOME is not writable, but
+        # XDG_CONFIG_HOME is (~/.var/app/<id>/config)
+        cfg = os.environ.get("XDG_CONFIG_HOME", "").strip()
+        if cfg:
+            path = os.path.join(cfg, "pysol")
+            os.makedirs(path, exist_ok=True)
+            return path
     home = os.environ.get("HOME", "").strip()
     if not home or not os.path.isdir(home):
         home = os.curdir

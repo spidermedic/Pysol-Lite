@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.spidermedic.PySolLite</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>PySol Lite</name>
+  <summary>276 solitaire and patience card games</summary>
+  <description>
+    <p>PySol Lite is a lighter PySol: 276 solitaire and patience games,
+      including Klondike, FreeCell, Spider, Yukon, Forty Thieves, Mahjongg,
+      Cribbage and Poker, each with its own rules page in the built-in help.</p>
+    <p>It has a Select game dialog with a live preview, unlimited undo and
+      redo, hints, favorites and bookmarks, and screen reader support.</p>
+  </description>
+  <launchable type="desktop-id">io.github.spidermedic.PySolLite.desktop</launchable>
+  <url type="homepage">https://github.com/spidermedic/Pysol-Lite</url>
+  <url type="bugtracker">https://github.com/spidermedic/Pysol-Lite/issues</url>
+  <categories>
+    <category>Game</category>
+    <category>CardGame</category>
+  </categories>
+  <keywords>
+    <keyword>solitaire</keyword>
+    <keyword>patience</keyword>
+    <keyword>klondike</keyword>
+    <keyword>cards</keyword>
+  </keywords>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="26.11" date="2026-11-15"/>
+  </releases>
+</component>

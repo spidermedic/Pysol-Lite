@@ -1365,3 +1365,25 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - **Done:** WSL 3.0.5 installed (needed an elevated prompt). Ubuntu 22.04 is **not** installed yet: Windows says the change needs a reboot first.
 - **Next (after reboot):** `wsl --install -d Ubuntu-22.04` (asks for a Linux username and password), install Python, Tkinter and the packages, run `python pysol.py` under WSLg, then write the Flatpak manifest and AppImage build.
 - **Risk:** this PC looks like a Proxmox VM (Standard PC Q35). WSL2 needs nested virtualization (CPU type `host` on the Proxmox VM). If WSL fails with a virtualization error, fix that on the host or use a normal Linux VM instead.
+
+## 116. Update: Ubuntu 22.04 in WSL2, Linux run from source (2026-11-21)
+
+- **Done:** after the reboot, `wsl --install -d Ubuntu-22.04 --no-launch` installed Ubuntu 22.04.5 (WSL2 works, so nested virtualization is fine on this Proxmox VM). It runs as root (no Linux user created). Installed `python3 python3-venv python3-pip python3-tk make git x11-apps` (Python 3.10.12, Tk 8.6).
+- **Setup:** the repo was copied (without `.venv`, `dist`, `build`, `.git`) to `/root/pysol-lite` inside WSL, with a venv holding `attrs configobj pillow pygame-ce pysol-cards markdown`. `pysol.py --version` prints 26.11; `data/html` came along from the Windows copy.
+- **Run:** `python pysol.py` under WSLg (DISPLAY=:0) ran for 20 s with no stderr output until killed by `timeout`. Not yet confirmed visually (window, toolbar, deal), and sound, Help, saving and other games are untested on Linux.
+- **Next:** check the window on screen, then write the Flatpak manifest and the AppImage build (Ubuntu 22.04 base). Note Tk 8.6 here vs Tk 9 on the other platforms.
+
+## 117. Update: Linux AppImage built in WSL2 (2026-11-21)
+
+- **Setup:** the game now lives in `/home/doug/pysol-lite` in the Ubuntu 22.04 WSL2 distro (user `doug`, own `.venv`); the Windows repo stays the master, files are copied across.
+- **New:** `scripts/build_appimage.sh` (runs PyInstaller with `pysol.spec`, builds an AppDir with `AppRun`, a `.desktop` file and the 512px icon, then `appimagetool`). `appimagetool` is pinned to 1.9.1 and checked against its SHA256 before it runs (an unpinned download of the `continuous` release was refused as unsafe). `pysol.spec` now serves Windows and Linux: the `.ico` is only applied on Windows.
+- **Fixed:** the first frozen build crashed with `No module named 'PIL._tkinter_finder'` (Pillow loads it dynamically); `pysol.spec` now lists it as a hidden import (harmless on Windows, but the Windows build has not been redone with it).
+- **Result:** `dist/PySol-Lite-26.11-x86_64.AppImage` (27 MB) built on Ubuntu 22.04. Launched under WSLg it stays up with no errors and the X window list shows "PySol Lite - Klondike", so it starts and deals. A screenshot could not be taken (WSLg root grab failed), so the look is unconfirmed.
+- **Untested on Linux:** sound, Help in the browser, saving settings/games, the other 275 games, other distros (Fedora, Arch, a real desktop with a different theme), the desktop-menu integration, and running without `APPIMAGE_EXTRACT_AND_RUN` (FUSE is missing in WSL). The bundled Tk is the Ubuntu 22.04 Tk 8.6, not Tk 9. Not committed yet.
+- **Next:** Flatpak manifest; optionally test the AppImage on a real Linux desktop.
+
+## 118. Update: Flatpak files written, build not yet verified (2026-11-21)
+
+- **Added:** `scripts/build_flatpak.sh` and `scripts/flatpak/` (manifest `io.github.spidermedic.PySolLite.yml`, launcher, `.desktop`, metainfo). The manifest builds Tcl/Tk 8.6.16 and Python 3.14.10 from source (SHA256-pinned) on the Freedesktop 25.08 runtime (24.08 is end-of-life), then pip-installs the game's dependencies (needs network; a Flathub submission would need offline pinned sources and screenshots in the metainfo). Sandbox: X11, PulseAudio, IPC, `xdg-documents`.
+- **Code change:** `getprefdir` in `pysollib/mfxutil.py` uses `$XDG_CONFIG_HOME/pysol` when `FLATPAK_ID` is set (the real `$HOME` is read-only in the sandbox); other platforms are unchanged.
+- **Status:** committed before the first build finished, so nothing here has been built or run yet. The old `appdata.xml` still carries upstream's ID and text; the Flatpak uses its own metainfo.
