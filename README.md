@@ -5,9 +5,9 @@
 # PySol Lite
 
 A lighter PySol: 276 solitaire and patience games, written in Python with
-Tkinter. This fork focuses on macOS on Apple Silicon. The Windows and Linux
-code is kept but has not been run since the clean-up. The version number is
-the year and month (for example 26.11).
+Tkinter. This fork focuses on macOS on Apple Silicon and also builds for
+Windows (see below). The Linux code is kept but has not been run since the
+clean-up. The version number is the year and month (for example 26.11).
 
 PySol Lite is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
 edition and [PySolFC](https://github.com/shlomif/PySolFC), and is licensed
@@ -175,16 +175,53 @@ PYTHONPATH=$PWD .build-venv/bin/python -m unittest discover -s . -p 'test*.py'
 All 13 tests pass (`test_version_flag` runs `pysol.py --version` with the
 same Python that runs the tests).
 
-## Windows and Linux (untested)
+## Windows
 
-The Windows and Linux code is still in the tree, but nothing has been run
-there since the clean-up, and this fork provides no installers. If you want
-to try, install Python, Tkinter and the packages above, put the cardsets in
-`~/.pysol/cardsets`, generate the help pages with `make rules`, and run
-`python pysol.py`. The upstream
+PySol Lite builds and runs on Windows 11 (tested with Python 3.14.10 from
+python.org, which includes Tcl/Tk 9). The frozen app launches and deals a game.
+Not yet tested on Windows: sound, Help in the browser, saving settings and
+games, and most of the 276 games.
+
+Run from source (PowerShell, in the repository folder):
+
+```
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install attrs configobj pillow pygame-ce pysol-cards markdown pyinstaller
+$env:PYTHONPATH = $PWD
+.\.venv\Scripts\python.exe pysol.py
+```
+
+The help pages in `data/html` are generated and not in git. `make` is not
+needed; `scripts\build_windows.ps1` creates them when they are missing (the
+steps are the `rules` target in the `Makefile`), so run it once before the
+first run from source, or the game stops with "DataLoader could not find
+html\license.html".
+
+Build the app and the installer:
+
+```
+powershell -ExecutionPolicy Bypass -File scripts\build_windows.ps1
+```
+
+This runs PyInstaller with `pysol.spec` and writes the app to
+`dist\PySol Lite\` (run `PySol Lite.exe`; it needs the `_internal` folder
+beside it). If Inno Setup 6 is installed (`winget install
+JRSoftware.InnoSetup`), it then builds `dist\PySol-Lite-<version>-setup.exe`
+from `scripts\pysol-lite.iss`. The installer is per-user by default, adds a
+Start menu entry and an uninstaller, and is not code-signed, so Windows
+SmartScreen warns when it runs. Setting `PYSOL_CONSOLE=1` before the build
+makes a console version that prints tracebacks. `setup_osx.py` and the macOS
+scripts are not used on Windows. Settings are kept in `~\.pysol`.
+
+## Linux (untested)
+
+The Linux code is still in the tree, but nothing has been run there since the
+clean-up, and this fork provides no packages. If you want to try, install
+Python, Tkinter and the packages above, generate the help pages with
+`make rules`, and run `python pysol.py`. The upstream
 [PySolFC](https://github.com/shlomif/PySolFC) README has install instructions
-for those platforms; `contrib/install-pysolfc.sh` comes from there and has
-not been tested here.
+for that platform; `contrib/install-pysolfc.sh` comes from there and has not
+been tested here.
 
 ## Credits
 
