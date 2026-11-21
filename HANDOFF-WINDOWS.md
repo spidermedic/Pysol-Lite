@@ -68,13 +68,6 @@ Keep macOS behaviour unchanged: guard Windows-specific changes with
   must collect pygame's DLLs and the Tcl/Tk libraries. Test the frozen app,
   not just the source run (a missing data folder is the usual failure).
 
-## Uncommitted-on-purpose leftovers
-
-The hi-res cardset experiment (`scripts/make_hires_cardsets.py`, edits to
-`.gitignore`, `MANIFEST.in`, `README.md`, `scripts/prune_card_backs.py`) was
-dropped by the user and is not in this commit. Ignore it. The README line
-saying hi-res cardsets are "already in git" is stale.
-
 ## Reporting back
 
 Add a numbered section to `PROGRESS-NOTES.md` (next is 113) for each step:
