@@ -48,6 +48,9 @@ PACKAGE_URL = 'https://github.com/spidermedic/Pysol-Lite'
 # Tk windowing system (auto set up in init.py)
 WIN_SYSTEM = 'x11'                      # win32, x11, aqua, classic
 
+# user interface toolkit: 'tk' or 'kivy' (python pysol.py --kivy, see init.py)
+TOOLKIT = 'tk'
+
 # sound
 # available values:
 #   'pss' - PySol-Sound-Server (all)

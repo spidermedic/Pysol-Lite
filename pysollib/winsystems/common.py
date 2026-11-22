@@ -21,13 +21,16 @@
 # ---------------------------------------------------------------------------
 
 import sys
-import tkinter.ttk as ttk
 import traceback
 
 from pysollib.mfxutil import print_err
 from pysollib.settings import DEBUG
 from pysollib.settings import TITLE
-from pysollib.ui.tktile.tkutil import loadImage, restore_window_geometry
+from pysollib.settings import TOOLKIT
+
+if TOOLKIT == 'tk':
+    import tkinter.ttk as ttk
+    from pysollib.ui.tktile.tkutil import loadImage, restore_window_geometry
 
 
 def set_theme(app, top, theme):
@@ -43,6 +46,9 @@ def set_theme(app, top, theme):
 def get_font_name(font):
     # create font name
     # i.e. "helvetica 12" -> ("helvetica", 12, "roman", "normal")
+
+    if TOOLKIT == 'kivy':
+        return "helvetica 12"
 
     from tkinter.font import Font
     font_name = None
@@ -65,6 +71,10 @@ def base_init_root_window(root, app):
     # root.wm_group(root)
     root.wm_title(TITLE)
     root.wm_iconname(TITLE)
+
+    if TOOLKIT == 'kivy':
+        # the Kivy window has no icons, saved geometry or ttk theme
+        return
 
     # On macOS, wm iconphoto replaces the Dock icon at runtime with the raw
     # PNG, bypassing the system's icon shaping, so the icon visibly changes
@@ -98,3 +108,6 @@ class BaseTkSettings:
     toolbar_label_padding = (4, 4)
     toolbar_relief = 'flat'
     toolbar_borderwidth = 0
+    # used by the Kivy toolbar only
+    toolbar_button_relief = 'flat'
+    toolbar_button_borderwidth = 1

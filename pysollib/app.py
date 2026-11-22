@@ -21,6 +21,7 @@
 # ---------------------------------------------------------------------------##
 
 
+import logging
 import os
 import re
 import signal
@@ -55,6 +56,7 @@ from pysollib.resource import Sample, SampleManager
 from pysollib.resource import TileManager
 from pysollib.settings import DEBUG
 from pysollib.settings import PACKAGE  # , WIN_SYSTEM
+from pysollib.settings import TOOLKIT
 from pysollib.speech import Speech
 from pysollib.util import IMAGE_EXTENSIONS
 from pysollib.winsystems import TkSettings
@@ -106,6 +108,9 @@ def interface_is_dark(root):
     Themes are sampled from the current ttk background. A color that cannot
     be read counts as light.
     """
+    if TOOLKIT == 'kivy':
+        from pysollib.kivy.LApp import LColorToLuminance, MAIN_WINDOW_BG
+        return LColorToLuminance(MAIN_WINDOW_BG) < _DARK_LUMINANCE
     if root is None:
         return False
     color = ''
@@ -264,7 +269,19 @@ class Application:
 
     # the PySol mainloop
     def mainloop(self):
-        self.mainproc()
+        try:
+            approc = self.mainproc()  # setup process
+            approc.send(None)         # and go
+        except StopIteration:
+            pass
+
+    def gameproc(self):
+        # Kivy only: runs the games, driven from _main_loop
+        while True:
+            logging.info('App: gameproc waiting for game to start')
+            (id_, random) = yield
+            logging.info('App: game started %s,%s', id_, random)
+            self.runGame(id_, random)
 
     def _main_loop(self):
         """docstring for _main_loop"""
@@ -275,7 +292,13 @@ class Application:
                 id_, random = self.nextgame.id, self.nextgame.random
                 self.nextgame.id, self.nextgame.random = 0, None
                 try:
-                    self.runGame(id_, random)
+                    if TOOLKIT == 'kivy':
+                        self.gproc.send((id_, random))
+                        logging.info('App: sent for game to start')
+                        yield
+                        logging.info('App: game proc stopped')
+                    else:
+                        self.runGame(id_, random)
                 except Exception:
                     # try Klondike if current game fails
                     if id_ == 2:
@@ -324,6 +347,11 @@ class Application:
                 self.audio.destroy()
             except Exception:
                 traceback.print_exc()
+            if TOOLKIT == 'kivy':
+                self.top.quit()
+                while True:
+                    logging.info('App: mainloop end position')
+                    yield
 
     def mainproc(self):
         # copy startup options
@@ -387,13 +415,17 @@ class Application:
                                     relief=self.opt.toolbar_relief,
                                     compound=self.opt.toolbar_compound)
         self.toolbar.show(self.opt.toolbar)
-        for w, v in self.opt.toolbar_vars.items():
-            self.toolbar.config(w, v)
+        if TOOLKIT == 'tk':
+            for w, v in self.opt.toolbar_vars.items():
+                self.toolbar.config(w, v)
         #
         if self.intro.progress:
             self.intro.progress.update(step=1)
         #
 
+        if TOOLKIT == 'kivy':
+            self.gproc = self.gameproc()
+            self.gproc.send(None)
         return self._main_loop()
 
     def runGame(self, id_, random=None):
@@ -463,22 +495,23 @@ class Application:
         elif autoplay:
             self.game.autoPlay()
             self.game.stats.player_moves = 0
-        # tell the user if the saved game from the command line was refused
-        if self.load_error:
-            self.top.after(300, self._showLoadError)
-        # connect the audio client after the window is up
-        if self.opt.sound:
-            self.top.after(300, self.connectAudio)
-        # SIGTERM (e.g. from a rebuild script): save options, then exit
-        # without a confirmation dialog. The handler only sets a flag; Tk
-        # polls it, because Python signal handlers need the event loop.
-        self._sigterm = False
-        try:
-            signal.signal(signal.SIGTERM,
-                          lambda *a: setattr(self, '_sigterm', True))
-            self.top.after(200, self._pollSigterm)
-        except Exception:
-            pass
+        if TOOLKIT == 'tk':
+            # tell the user if the saved game from the command line was refused
+            if self.load_error:
+                self.top.after(300, self._showLoadError)
+            # connect the audio client after the window is up
+            if self.opt.sound:
+                self.top.after(300, self.connectAudio)
+            # SIGTERM (e.g. from a rebuild script): save options, then exit
+            # without a confirmation dialog. The handler only sets a flag; Tk
+            # polls it, because Python signal handlers need the event loop.
+            self._sigterm = False
+            try:
+                signal.signal(signal.SIGTERM,
+                              lambda *a: setattr(self, '_sigterm', True))
+                self.top.after(200, self._pollSigterm)
+            except Exception:
+                pass
         # enter the Tk mainloop
         self.game.busy = 0
         self.top.mainloop()
@@ -605,6 +638,8 @@ class Application:
         return self._getImagesDir('cards')
 
     def _toolbarIconSizeName(self):
+        if TOOLKIT == 'kivy':
+            return 'xlarge'
         if self.opt.toolbar_size == 2:
             return 'xlarge'
         if self.opt.toolbar_size == 1:

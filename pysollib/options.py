@@ -395,6 +395,53 @@ class Options:
                 CSI.TYPE_FRENCH:    {0: (c, ""), 1: (c, "")},
                 CSI.TYPE_MAHJONGG:  {0: (m, "")},
             }
+        if pysollib.settings.TOOLKIT == 'kivy':
+            self._setKivyDefaults()
+
+    def _setKivyDefaults(self):
+        # Defaults for the Kivy (touch) user interface, as in upstream
+        # PySolFC. The sound and held-game options are not saved by this
+        # fork; the Kivy menus only need them to exist.
+        self.mahjongg_create_solvable = 1
+        self.redeal_animation = False
+        self.win_animation = False
+        self.mouse_type = 'point-n-click'
+        self.favorite_gameid = [2, 7, 8, 19, 140, 116, 152, 176, 181,
+                                194, 207, 706, 721, 756, 903, 5034,
+                                11004, 14405, 14410, 15411, 22225]
+        self.cardset = {
+            0:                  {0: ("Standard", "")},
+            CSI.TYPE_FRENCH:    {0: ("Standard", ""), 1: ("Standard", "")},
+            CSI.TYPE_MAHJONGG:  {0: ("Uni Mahjongg", "")},
+        }
+        self.game_holded = 0
+        self.demo_logo = True
+        self.demo_logo_style = 'komika'
+        self.pause_text_style = 'komika'
+        self.redeal_icon_style = 'modern'
+        self.toolbar_style = 'material'
+        self.dialog_icon_style = 'material'
+        self.tree_icon_style = 'material'
+        self.button_icon_style = 'none'
+        self.flip_animation = True
+        self.fontsizefactor = 1.0
+        self.language = ''
+        self.match_three_cascade = True
+        self.mouse_undo = False
+        self.pegged_auto_remove = True
+        self.stuck_notification = False
+        self.sound_mode = 1
+        self.sound_sample_volume = 75
+        self.sound_music_volume = 100
+        self.music = True
+        self.sound_samples = {
+            name: True for name in (
+                'areyousure', 'autodrop', 'autoflip', 'autopilotlost',
+                'autopilotwon', 'deal', 'dealwaste', 'droppair', 'drop',
+                'edge', 'extra', 'flip', 'move', 'nomove', 'redo',
+                'startdrag', 'turnwaste', 'undo')}
+        for name in ('gamefinished', 'gamelost', 'gameperfect', 'gamewon'):
+            self.sound_samples[name] = False
 
     # not changeable options
     def setConstants(self):

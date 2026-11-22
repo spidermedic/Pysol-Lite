@@ -35,7 +35,7 @@ from pysollib.pysoltk import MfxRoot
 from pysollib.pysoltk import PysolProgressBar
 from pysollib.pysoltk import loadImage
 from pysollib.resource import Tile
-from pysollib.settings import TITLE, TITLE_CLASS
+from pysollib.settings import TITLE, TITLE_CLASS, TOOLKIT
 from pysollib.util import DataLoader
 from pysollib.winsystems import init_root_window
 
@@ -333,11 +333,20 @@ Please check that this cardset is installed.
 # ************************************************************************
 
 
-def main(args=None):
-    # create the application
-    app = Application()
-    r = pysol_init(app, args)
-    if r != 0:
-        return r
-    # let's go - enter the mainloop
-    app.mainloop()
+if TOOLKIT == 'kivy':
+    def main(args=None):
+        import logging
+
+        from pysollib.kivy.LApp import LApp
+        logging.basicConfig(level=logging.INFO)
+        LApp(args).run()
+
+else:
+    def main(args=None):
+        # create the application
+        app = Application()
+        r = pysol_init(app, args)
+        if r != 0:
+            return r
+        # let's go - enter the mainloop
+        app.mainloop()

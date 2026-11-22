@@ -21,14 +21,17 @@
 # ---------------------------------------------------------------------------
 
 import os
-import tkinter.ttk as ttk
 import traceback
 
 from pysollib.settings import TITLE_CLASS
+from pysollib.settings import TOOLKIT
 from pysollib.winsystems.common import \
         BaseTkSettings, \
         base_init_root_window, \
         get_font_name
+
+if TOOLKIT == 'tk':
+    import tkinter.ttk as ttk
 
 
 # ************************************************************************
@@ -38,6 +41,9 @@ from pysollib.winsystems.common import \
 def init_root_window(root, app):
 
     base_init_root_window(root, app)
+
+    if TOOLKIT == 'kivy':
+        return
 
     # root.self.wm_maxsize(9999, 9999) # unlimited
     f = os.path.join(app.dataloader.dir, 'tcl', 'menu8.4.tcl')

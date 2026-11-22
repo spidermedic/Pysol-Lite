@@ -28,6 +28,7 @@ from pysollib.pysoltk import copyImage, createBottom, createImage, \
         createImagePIL, loadImage
 from pysollib.pysoltk import shadowImage
 from pysollib.resource import CSI
+from pysollib.settings import TOOLKIT
 
 # ************************************************************************
 # * Images
@@ -106,7 +107,7 @@ class Images:
             imagedir = self.d.findDir(cs_type, d)
         except Exception:
             pass
-        if (not USE_PIL or self.cardset_bottoms
+        if ((not USE_PIL and TOOLKIT != 'kivy') or self.cardset_bottoms
                 or imagedir is None):
             # load image
             img = self.__loadCard(filename+self.cs.ext, check_w, check_h)
@@ -273,6 +274,8 @@ class Images:
         return self._bottom[0]
 
     def getBlankBottom(self):
+        if TOOLKIT == 'kivy':
+            return self._bottom[0]
         return self._blank_bottom
 
     def getSuitBottom(self, suit=-1):

@@ -20,16 +20,45 @@
 #
 # ---------------------------------------------------------------------------##
 
-from pysollib.ui.tktile.tkconst import *  # noqa: F401,F403
-from pysollib.ui.tktile.tkutil import *  # noqa: F401,F403
-from pysollib.ui.tktile.card import *  # noqa: F401,F403
-from pysollib.ui.tktile.tkcanvas import *  # noqa: F401,F403
-from pysollib.ui.tktile.tkwrap import *  # noqa: F401,F403
-from pysollib.ui.tktile.findcarddialog import *  # noqa: F401,F403
-from pysollib.tile.tkwidget import *  # noqa: F401,F403
-from pysollib.tile.toolbarbuttonsdialog import *  # noqa: F401,F403
-from pysollib.tile.toolbar import *  # noqa: F401,F403
-from pysollib.tile.statusbar import *  # noqa: F401,F403
-from pysollib.tile.progressbar import *  # noqa: F401,F403
-from pysollib.tile.menubar import *  # noqa: F401,F403
-from pysollib.tile.selectcardset import *  # noqa: F401,F403
+from pysollib.settings import TOOLKIT
+
+if TOOLKIT == 'kivy':
+    from pysollib.kivy.tkconst import *  # noqa: F401,F403
+    from pysollib.kivy.tkutil import *  # noqa: F401,F403
+    from pysollib.kivy.card import *  # noqa: F401,F403
+    from pysollib.kivy.tkcanvas import *  # noqa: F401,F403
+    from pysollib.kivy.tkwrap import *  # noqa: F401,F403
+    from pysollib.kivy.findcarddialog import *  # noqa: F401,F403
+    from pysollib.kivy.fullpicturedialog import *  # noqa: F401,F403
+    from pysollib.kivy.tkwidget import *  # noqa: F401,F403
+    from pysollib.kivy.tkhtml import *  # noqa: F401,F403
+    from pysollib.kivy.edittextdialog import *  # noqa: F401,F403
+    from pysollib.kivy.tkstats import *  # noqa: F401,F403
+    from pysollib.kivy.playeroptionsdialog import *  # noqa: F401,F403
+    from pysollib.kivy.timeoutsdialog import *  # noqa: F401,F403
+    from pysollib.kivy.colorsdialog import *  # noqa: F401,F403
+    from pysollib.kivy.fontsdialog import *  # noqa: F401,F403
+    from pysollib.kivy.solverdialog import *  # noqa: F401,F403
+    from pysollib.kivy.gameinfodialog import *  # noqa: F401,F403
+    from pysollib.kivy.toolbarbuttonsdialog import *  # noqa: F401,F403
+    from pysollib.kivy.toolbar import *  # noqa: F401,F403
+    from pysollib.kivy.statusbar import *  # noqa: F401,F403
+    from pysollib.kivy.progressbar import *  # noqa: F401,F403
+    from pysollib.kivy.menubar import *  # noqa: F401,F403
+    from pysollib.kivy.selectcardset import *  # noqa: F401,F403
+    from pysollib.kivy.selecttree import *  # noqa: F401,F403
+
+else:
+    from pysollib.ui.tktile.tkconst import *  # noqa: F401,F403
+    from pysollib.ui.tktile.tkutil import *  # noqa: F401,F403
+    from pysollib.ui.tktile.card import *  # noqa: F401,F403
+    from pysollib.ui.tktile.tkcanvas import *  # noqa: F401,F403
+    from pysollib.ui.tktile.tkwrap import *  # noqa: F401,F403
+    from pysollib.ui.tktile.findcarddialog import *  # noqa: F401,F403
+    from pysollib.tile.tkwidget import *  # noqa: F401,F403
+    from pysollib.tile.toolbarbuttonsdialog import *  # noqa: F401,F403
+    from pysollib.tile.toolbar import *  # noqa: F401,F403
+    from pysollib.tile.statusbar import *  # noqa: F401,F403
+    from pysollib.tile.progressbar import *  # noqa: F401,F403
+    from pysollib.tile.menubar import *  # noqa: F401,F403
+    from pysollib.tile.selectcardset import *  # noqa: F401,F403

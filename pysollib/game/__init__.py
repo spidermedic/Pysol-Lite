@@ -61,7 +61,7 @@ from pysollib.pysoltk import MfxExceptionDialog, MfxMessageDialog
 from pysollib.pysoltk import after, after_cancel, after_idle
 from pysollib.pysoltk import bind, wm_map
 from pysollib.settings import DEBUG
-from pysollib.settings import PACKAGE, TITLE
+from pysollib.settings import PACKAGE, TITLE, TOOLKIT
 from pysollib.settings import VERSION, VERSION_TUPLE
 from pysollib.struct_new import NewStruct
 from pysollib.util import COLORS, RANKS, SUITS_PL
@@ -584,8 +584,9 @@ class Game:
         self.initBindings()
         # self.top.bind('<ButtonPress>', self.top._sleepEvent)
         # self.top.bind('<3>', self.top._sleepEvent)
-        self.top.bind("<FocusOut>", self.top._focusOutEvent)
-        self.top.bind("<FocusIn>", self.top._focusInEvent)
+        if TOOLKIT == 'tk':
+            self.top.bind("<FocusOut>", self.top._focusOutEvent)
+            self.top.bind("<FocusIn>", self.top._focusInEvent)
         # update display properties
         self.canvas.busy = True
         # geometry
@@ -1576,6 +1577,8 @@ class Game:
         self.app.speech.speak("X: " + str(stack.x) + ", Y: " + str(stack.y))
 
     def areYouSure(self, title=None, text=None, confirm=-1, default=0):
+        if TOOLKIT == 'kivy':
+            return True
         if self.preview:
             return True
         if confirm < 0:
@@ -1628,6 +1631,13 @@ class Game:
             # the initial dealing
             # if self.moves.state == self.S_INIT and frames > 4:
             #     frames //= 2
+            return
+        if TOOLKIT == 'kivy':
+            c0 = cards[0]
+            dx, dy = (x - c0.x), (y - c0.y)
+            for card in cards:
+                card.animatedMove(dx, dy, SPF * frames)
+            # the Kivy canvas animates on its own; do not wait here
             return
 
         # Block input while animating: canvas.update() in the loop below
@@ -1844,6 +1854,11 @@ class Game:
     def canLoadGame(self, version_tuple, game_version):
         return self.GAME_VERSION == game_version
 
+    def canShowFullPicture(self):
+        # the "full picture" dialog of upstream PySolFC (puzzle games) is
+        # not part of this fork; the Kivy menus ask for it
+        return False
+
     def canSetBookmark(self):
         return self.canSaveGame()
 
@@ -1909,6 +1924,10 @@ class Game:
             return True
         if self.demo:
             return status
+        if TOOLKIT == 'kivy':
+            if not self.app.opt.display_win_message:
+                return True
+            self.top.waitAnimation()
         top_msg = ''
         time_str = ''
         if status in (1, 2):
@@ -1917,7 +1936,7 @@ class Game:
         self.finished = True
         self.updateMenus()
         # Avoid a modal win dialog while iconified — it can prevent restore.
-        if self._isMainWindowIconic():
+        if TOOLKIT != 'kivy' and self._isMainWindowIconic():
             self._pending_win_status = status
             self._pending_win_top_msg = top_msg
             self._pending_win_time = time_str
@@ -1971,6 +1990,8 @@ class Game:
                 self.top, title="Game finished", bitmap="info",
                 text=(text + '\n\n' + hintsused),
                 strings=("&New game", "&Restart", None, "&Cancel"))
+        if TOOLKIT == 'kivy':
+            return True
         if d.status == 0 and d.button == 0:
             # new game
             self.endGame()
@@ -2191,6 +2212,11 @@ class Game:
         x1, y1 = x+w-width//2-xmargin, y+h-width//2-ymargin
         r = MfxCanvasRectangle(self.canvas, x0, y0, x1, y1,
                                width=width, fill=None, outline=color)
+
+        if TOOLKIT == "kivy":
+            r.canvas.canvas.ask_update()
+            r.delete_deferred(self.app.opt.timeouts['highlight_cards'])
+            return
 
         self.canvas.update_idletasks()
         self.sleep(self.app.opt.timeouts['highlight_cards'])
@@ -2424,6 +2450,9 @@ class Game:
                               arrow="last", arrowshape=(30, 30, 10))
         self.canvas.update_idletasks()
         # wait
+        if TOOLKIT == "kivy":
+            arrow.delete_deferred(sleep)
+            return
         # wait
         self.sleep(sleep)
         # delete the hint

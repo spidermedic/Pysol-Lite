@@ -29,26 +29,27 @@ import time
 import webbrowser
 from pickle import Pickler, Unpickler, UnpicklingError
 
-from pysollib.settings import TITLE
+from pysollib.settings import TITLE, TOOLKIT
 
 Image = ImageTk = ImageOps = ImageDraw = None
-try:  # PIL
-    from PIL import Image
-    from PIL import ImageTk  # noqa: F401
-    from PIL import ImageOps  # noqa: F401
-    from PIL import ImageDraw  # noqa: F401
-except ImportError:
-    Image = None
-else:
-    # for py2exe
-    from PIL import GifImagePlugin  # noqa: F401
-    from PIL import PngImagePlugin  # noqa: F401
-    from PIL import JpegImagePlugin  # noqa: F401
-    from PIL import BmpImagePlugin  # noqa: F401
-    from PIL import PpmImagePlugin  # noqa: F401
-    Image._initialized = 2
+if TOOLKIT == 'tk':
+    try:  # PIL
+        from PIL import Image
+        from PIL import ImageTk  # noqa: F401
+        from PIL import ImageOps  # noqa: F401
+        from PIL import ImageDraw  # noqa: F401
+    except ImportError:
+        Image = None
+    else:
+        # for py2exe
+        from PIL import GifImagePlugin  # noqa: F401
+        from PIL import PngImagePlugin  # noqa: F401
+        from PIL import JpegImagePlugin  # noqa: F401
+        from PIL import BmpImagePlugin  # noqa: F401
+        from PIL import PpmImagePlugin  # noqa: F401
+        Image._initialized = 2
 USE_PIL = False
-if Image:
+if TOOLKIT == 'tk' and Image:
     USE_PIL = True
 
 # debug
@@ -166,6 +167,18 @@ def _adopt_old_prefdir(old, new):
 
 def getprefdir(package):
 
+    if TOOLKIT == 'kivy':
+        from pysollib.kivy.LApp import get_platform
+        if get_platform() == 'android':
+            from android.storage import app_storage_path
+            from android.storage import primary_external_storage_path
+
+            from pysollib.kivy.androidperms import getStoragePerm
+            if getStoragePerm():
+                os.environ['HOME'] = primary_external_storage_path()
+            else:
+                os.environ['HOME'] = app_storage_path()
+
     if os.name == "nt":
         return win32_getprefdir(package)
     if os.environ.get("FLATPAK_ID"):
@@ -222,6 +235,8 @@ def win32_getprefdir(package):
 # ************************************************************************
 
 def destruct(obj):
+    if TOOLKIT == 'kivy':
+        return
 
     # assist in breaking circular references
     if obj is not None:

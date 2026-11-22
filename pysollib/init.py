@@ -50,18 +50,26 @@ def init():
         print(f"{pysollib.settings.TITLE} version {pysollib.settings.VERSION}")
         sys.exit(0)
 
-    # init Tk
-    import tkinter
-    root = tkinter.Tk(className=pysollib.settings.TITLE_CLASS)
-    root.withdraw()
-    if tkinter.TkVersion < 8.4:
-        # we need unicode support
-        sys.exit(f"{pysollib.settings.TITLE} needs Tcl/Tk 8.4 or better "
-                 f"(you have {tkinter.TkVersion})")
-    pysollib.settings.WIN_SYSTEM = root.tk.call('tk', 'windowingsystem')
-    # "can't invoke event <<ThemeChanged>>: application has been destroyed"
-    root.destroy()
-    tkinter._default_root = None
+    # init toolkit
+    if '--kivy' in sys.argv:
+        pysollib.settings.TOOLKIT = 'kivy'
+        pysollib.settings.SELECT_GAME_MENU = False
+        sys.argv.remove('--kivy')
+
+    if pysollib.settings.TOOLKIT == 'tk':
+        # init Tk
+        import tkinter
+        root = tkinter.Tk(className=pysollib.settings.TITLE_CLASS)
+        root.withdraw()
+        if tkinter.TkVersion < 8.4:
+            # we need unicode support
+            sys.exit(f"{pysollib.settings.TITLE} needs Tcl/Tk 8.4 or better "
+                     f"(you have {tkinter.TkVersion})")
+        pysollib.settings.WIN_SYSTEM = root.tk.call('tk', 'windowingsystem')
+        # "can't invoke event <<ThemeChanged>>: application has been
+        # destroyed"
+        root.destroy()
+        tkinter._default_root = None
 
     # run app without games menus (more fast start)
     if '--no-games-menu' in sys.argv:
