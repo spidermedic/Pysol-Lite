@@ -76,6 +76,11 @@ class MfxStatusbar:
         return label
 
     def _createSizegrip(self):
+        # macOS windows resize from their own edges and corners; on
+        # macOS 27 the Tk grip never sees the mouse release and keeps
+        # resizing after the button is let go
+        if self.top_frame.tk.call('tk', 'windowingsystem') == 'aqua':
+            return
         sg = ttk.Sizegrip(self.top_frame)
         sg.pack(side='right', anchor='se')
 
