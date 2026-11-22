@@ -53,6 +53,8 @@ def _mac_tk9_exchange(button):
     button" action) and the middle button did the "right button" actions.
     So that this stays the same, buttons 2 and 3 are exchanged for the card
     piles on a Mac with Tk 9."""
+    if pysollib.settings.TOOLKIT != 'tk':
+        return button
     import tkinter
     if (pysollib.settings.WIN_SYSTEM == 'aqua'
             and tkinter.TkVersion >= 9.0 and button in (2, 3)):

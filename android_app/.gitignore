@@ -1,0 +1,4 @@
+stage/
+.buildozer/
+bin/
+build.log

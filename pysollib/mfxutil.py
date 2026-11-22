@@ -170,14 +170,9 @@ def getprefdir(package):
     if TOOLKIT == 'kivy':
         from pysollib.kivy.LApp import get_platform
         if get_platform() == 'android':
+            # the app's private storage: no storage permission needed
             from android.storage import app_storage_path
-            from android.storage import primary_external_storage_path
-
-            from pysollib.kivy.androidperms import getStoragePerm
-            if getStoragePerm():
-                os.environ['HOME'] = primary_external_storage_path()
-            else:
-                os.environ['HOME'] = app_storage_path()
+            os.environ['HOME'] = app_storage_path()
 
     if os.name == "nt":
         return win32_getprefdir(package)
