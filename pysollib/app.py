@@ -23,6 +23,7 @@
 
 import os
 import re
+import signal
 import sys
 import traceback
 from pickle import UnpicklingError
@@ -468,9 +469,30 @@ class Application:
         # connect the audio client after the window is up
         if self.opt.sound:
             self.top.after(300, self.connectAudio)
+        # SIGTERM (e.g. from a rebuild script): save options, then exit
+        # without a confirmation dialog. The handler only sets a flag; Tk
+        # polls it, because Python signal handlers need the event loop.
+        self._sigterm = False
+        try:
+            signal.signal(signal.SIGTERM,
+                          lambda *a: setattr(self, '_sigterm', True))
+            self.top.after(200, self._pollSigterm)
+        except Exception:
+            pass
         # enter the Tk mainloop
         self.game.busy = 0
         self.top.mainloop()
+
+    def _pollSigterm(self):
+        if self._sigterm:
+            try:
+                self.wm_save_state()
+                self.opt.last_gameid = self.game.id
+                self.saveOptions()
+            except Exception:
+                traceback.print_exc()
+            os._exit(0)
+        self.top.after(200, self._pollSigterm)
 
     # free game
     def freeGame(self):

@@ -839,16 +839,23 @@ class PysolMenubarTkCommon:
             return
         if self._cancelDrag():
             return
+        icon = None
+        tb = getattr(self.app, "toolbar", None)
+        if tb is not None:
+            icon = tb._loadImage("bookmark_on")
+        kw = {"image": icon} if icon else {"bitmap": "question"}
         d = self._calc_MfxMessageDialog()(
             self.top, title="Bookmark",
-            text="This game has a bookmark.\nWhat do you want to do?",
-            bitmap="question",
-            strings=("&Go to bookmark", "C&lear bookmark", "&Cancel"))
+            text="What would you like to do?",
+            strings=("&Go to", "&New", "C&lear", "&Cancel"),
+            **kw)
         if d.status != 0:
             return
         if d.button == 0:
             self.mGotoBookmark(0, confirm=0)
         elif d.button == 1:
+            self.mSetBookmark(0, confirm=0)
+        elif d.button == 2:
             self.game.gsaveinfo.bookmarks.pop(0, None)
             self.game.updateMenus()
 
