@@ -444,6 +444,11 @@ class MfxCanvasImage:
                 self.animations = self.animations[1:]
 
             if self.animation == 0:
+                # Run a raise that was requested but not yet done (quick
+                # successive moves can end an animation before it was
+                # started); dropping it leaves the card behind its neighbour.
+                for pending in self.deferred_raises:
+                    pending()
                 # just for the case, keep in sync:
                 self.deferred_raises = []
                 self.animations = []

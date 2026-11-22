@@ -28,6 +28,7 @@ from pysollib.hint import AbstractHint
 from pysollib.layout import Layout
 from pysollib.mfxutil import kwdefault
 from pysollib.pysoltk import MfxCanvasLine, MfxCanvasText
+from pysollib.settings import TOOLKIT
 from pysollib.stack import \
         AbstractFoundationStack, \
         InitialDealTalonStack
@@ -274,6 +275,9 @@ class Shisen_RowStack(Mahjongg_RowStack):
                                }
                               )
         game.canvas.update_idletasks()
+        if TOOLKIT == "kivy":
+            arrow.delete_deferred(sleep)
+            return
         game.sleep(sleep)
         if arrow is not None:
             arrow.delete()
@@ -354,6 +358,8 @@ class AbstractShisenGame(AbstractMahjonggGame):
         # create other stacks
         y = l.YM + dyy
         ivx = -l.XS-self.canvas.xmargin
+        if TOOLKIT == 'kivy':
+            ivx = -1000
         s.foundations.append(Shisen_Foundation(ivx, y, self))
         self.texts.info = MfxCanvasText(self.canvas,
                                         self.width - l.XM - ti_width, y,

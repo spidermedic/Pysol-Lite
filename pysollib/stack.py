@@ -1055,7 +1055,7 @@ class Stack:
         self.game.sleep(self.game.app.opt.timeouts['raise_card'])
         if peeked:
             self.cards[i].showBack()
-        if positions > 0:
+        if positions > 0 and TOOLKIT == 'tk':
             self.cards[i].item.lower(self.cards[i+1].item)
 
         self.canvas.update_idletasks()
@@ -1078,7 +1078,7 @@ class Stack:
         self.game.sleep(self.game.app.opt.timeouts['raise_card'])
         if not face_up:
             self.cards[i].showBack()
-        if positions > 0:
+        if positions > 0 and TOOLKIT == 'tk':
             self.cards[i].item.lower(self.cards[i+1].item)
         self.canvas.update_idletasks()
         return 1
@@ -1392,7 +1392,8 @@ class Stack:
             cx, cy = c0.x + cw + dx, c0.y + ch + dy
             s = MfxCanvasImage(self.canvas, cx, cy,
                                image=img, anchor=ANCHOR_SE)
-            s.lower(c0.item)
+            if TOOLKIT == 'tk':
+                s.lower(c0.item)
             return (s,)
 
         if ddx == 0:  # vertical
@@ -1496,10 +1497,11 @@ class Stack:
         img = MfxCanvasImage(game.canvas, sx, sy, image=img, anchor=ANCHOR_NW)
         drag.shade_img = img
         # raise/lower the shade image to the correct stacking order
-        if drag.shadows:
-            img.lower(drag.shadows[0])
-        else:
-            img.lower(drag.cards[0].item)
+        if TOOLKIT == 'tk':
+            if drag.shadows:
+                img.lower(drag.shadows[0])
+            else:
+                img.lower(drag.cards[0].item)
 
     # for closeStack
     def _shadeStack(self):

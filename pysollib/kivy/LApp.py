@@ -810,8 +810,8 @@ class LImageItem(BoxLayout, LBase):
                 for stack in self.game.allstacks:
                     for i, cur_card in enumerate(stack.cards):
                         if cur_card == self.card:
-                            print('LCardImage: stack = %s' % stack)
-                            print('LCardImage: touch = %s' % str(touch))
+                            # print('LCardImage: stack = %s' % stack)
+                            # print('LCardImage: touch = %s' % str(touch))
                             ppos, psize = self.game.canvas.KivyToCore(
                                 touch.pos, self.size)
                             event = LEvent()
@@ -821,14 +821,15 @@ class LImageItem(BoxLayout, LBase):
                             event.cardid = i
                             r = self.send_event_pressed(touch, event)
                             if r == EVENT_HANDLED:
+                                self._grabbed = (stack, i)
                                 AndroidScreenRotation.lock(toaster=False)
-                                print('grab')
+                                # print('grab')
                                 touch.grab(self)
                                 return True
                             return False
 
             if self.group is not None:
-                print('LCardImage: self=%s group=%s' % (self, self.group))
+                # print('LCardImage: self=%s group=%s' % (self, self.group))
                 if '<1>' in self.group.bindings:
                     ppos, psize = self.group.canvas.KivyToCore(
                         touch.pos, self.size)
@@ -871,7 +872,7 @@ class LImageItem(BoxLayout, LBase):
                 for stack in self.game.allstacks:
                     for i, cur_card in enumerate(stack.cards):
                         if cur_card == self.card:
-                            print('LCardImage: stack = %s' % stack)
+                            # print('LCardImage: stack = %s' % stack)
                             ppos, psize = self.game.canvas.KivyToCore(
                                 touch.pos, self.size)
                             event = LEvent()
@@ -884,7 +885,7 @@ class LImageItem(BoxLayout, LBase):
                             return False
 
             if self.group is not None:
-                print('LCardImage: self=%s group=%s' % (self, self.group))
+                # print('LCardImage: self=%s group=%s' % (self, self.group))
                 if '<ButtonRelease-1>' in self.group.bindings:
                     ppos, psize = self.group.canvas.KivyToCore(
                         touch.pos, self.size)
@@ -912,12 +913,23 @@ class LImageItem(BoxLayout, LBase):
         if 'pos' not in touch.profile:
             return False
 
-        print('LCardImage: touch_move on %s' % str(touch.pos))
+        # print('LCardImage: touch_move on %s' % str(touch.pos))
+        # PySol Lite: the stack was found at touch-down; do not search
+        # every card of every stack for each finger movement
+        grabbed = getattr(self, '_grabbed', None)
+        if grabbed is not None and self.card in grabbed[0].cards:
+            stack, i = grabbed[0], grabbed[0].cards.index(self.card)
+            ppos, psize = self.game.canvas.KivyToCore(touch.pos, self.size)
+            event = LEvent()
+            event.x = ppos[0]
+            event.y = ppos[1]
+            event.cardid = i
+            stack._motionEventHandler(event)
+            return True
 
         for stack in self.game.allstacks:
             for i, cur_card in enumerate(stack.cards):
                 if cur_card == self.card:
-                    print('LCardImage: stack = %s/%s' % (stack, touch))
                     ppos, psize = self.game.canvas.KivyToCore(
                         touch.pos, self.size)
                     event = LEvent()
@@ -1420,8 +1432,9 @@ class LWorkWindow(Widget):
         self.rect.size = self.size
 
     def on_touch_down(self, touch):
-        print('LWorkWindow: touch_down on %s' % str(touch.pos))
+        # print('LWorkWindow: touch_down on %s' % str(touch.pos))
         # return True
+        pass
 
 # =============================================================================
 # TkBase:

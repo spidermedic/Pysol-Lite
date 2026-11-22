@@ -25,6 +25,7 @@ from pysollib.gamedb import GI, GameInfo, registerGame
 from pysollib.hint import CautiousDefaultHint
 from pysollib.layout import Layout
 from pysollib.pysoltk import MfxCanvasText
+from pysollib.settings import TOOLKIT
 from pysollib.stack import \
     InitialDealTalonStack, \
     InvisibleStack, \
@@ -170,7 +171,10 @@ class Clock_RowStack(RK_RowStack):
 
         for _ in range(ncards):
             game.moveMove(n, other_stack, swap, frames=0)
-        game.moveMove(n, self, other_stack, frames=0)
+        if TOOLKIT == 'kivy':
+            game.moveMove(n, self, other_stack, frames=-1)
+        else:
+            game.moveMove(n, self, other_stack, frames=0)
         if ncards > 0:
             for _ in range(ncards):
                 game.moveMove(n, swap, other_stack, frames=0)

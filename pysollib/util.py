@@ -33,7 +33,7 @@ import sys
 
 # PySol imports
 from pysollib.mfxutil import Image
-from pysollib.settings import DATA_DIRS
+from pysollib.settings import DATA_DIRS, TOOLKIT
 
 # ************************************************************************
 # * constants
@@ -85,6 +85,11 @@ if os.name == "nt":
 
 if Image:
     IMAGE_EXTENSIONS = (".png", ".gif", ".jpg", ".jpeg", ".ppm", ".bmp")
+
+if TOOLKIT == 'kivy':
+    # the Kivy UI does not load GIF images
+    IMAGE_EXTENSIONS = (".png", ".bmp", ".ppm", ".jpg", ".jpeg", ".tif",
+                        ".tiff")
 
 
 # ************************************************************************
