@@ -265,38 +265,20 @@ class MainMenuDialog(LMenuDialog):
         # print('MainMenuDialog starting')
 
     def buildTree(self, tv, node):
-        rg = tv.add_node(
-            LTreeNode(
-                text=_("File"),
-                command=self.auto_close(self.menubar.mFileMenuDialog)))
-        rg = tv.add_node(
-            LTreeNode(
-                text=_("Games"),
-                command=self.auto_close(
-                    self.menubar.mSelectGameDialog)))
-        rg = tv.add_node(
-            LTreeNode(
-                text=_("Tools"),
-                command=self.auto_close(self.menubar.mEditMenuDialog)))
-        rg = tv.add_node(
-            LTreeNode(
-                text=_("Statistics"),
-                command=self.auto_close(self.menubar.mGameMenuDialog)))
-        rg = tv.add_node(
-            LTreeNode(
-                text=_("Assist"),
-                command=self.auto_close(
-                    self.menubar.mAssistMenuDialog)))
-        rg = tv.add_node(
-            LTreeNode(
-                text=_("Options"),
-                command=self.auto_close(
-                    self.menubar.mOptionsMenuDialog)))
-        rg = tv.add_node(
-            LTreeNode(
-                text=_("Help"),
-                command=self.auto_close(self.menubar.mHelpMenuDialog)))
-        del rg
+        mb = self.menubar
+        for text, command in (
+                (_("New game"), self.auto_close(mb.mNewGame)),
+                (_("Select game"), self.auto_close(mb.mSelectGameDialog)),
+                (_("Restart"), self.auto_close(mb.mRestart)),
+                (_("Undo"), self.auto_close(mb.mUndo)),
+                (_("Redo"), self.auto_close(mb.mRedo)),
+                (_("Hint"), self.auto_close(mb.mHint)),
+                (_("Play"), self.auto_close(mb.mEditMenuDialog)),
+                (_("File"), self.auto_close(mb.mFileMenuDialog)),
+                (_("Settings"), self.auto_close(mb.mOptionsMenuDialog)),
+                (_("Help"), self.auto_close(mb.mHelpMenuDialog)),
+                (_("Quit"), self.auto_close(mb.mQuit))):
+            tv.add_node(LTreeNode(text=text, command=command))
 
 # ************************************************************************
 
@@ -356,15 +338,12 @@ class FileMenuDialog(LMenuDialog):
             self.make_favid_list(tv, rg)
 
         tv.add_node(LTreeNode(
-            text=_('Random game'),
-            command=self.make_command(self.menubar.mSelectRandomGame)))
+            text=_('Open...'), command=self.make_command(self.menubar.mOpen)))
         tv.add_node(LTreeNode(
-            text=_('Load'), command=self.make_command(self.menubar.mOpen)))
+            text=_('Save'), command=self.make_command(self.menubar.mSave)))
         tv.add_node(LTreeNode(
-            text=_('Save'), command=self.make_command(self.menubar.mSaveAs)))
-
-        tv.add_node(LTreeNode(
-            text=_('Quit'), command=self.menubar.mHoldAndQuit))
+            text=_('Save as...'),
+            command=self.make_command(self.menubar.mSaveAs)))
 
 # ************************************************************************
 
@@ -378,72 +357,19 @@ class EditMenuDialog(LMenuDialog):  # Tools
 
     def buildTree(self, tv, node):
         self.addBackNode(tv)
-
-        tv.add_node(LTreeNode(
-            text=_('New game'), command=self.menubar.mNewGame))
-        tv.add_node(LTreeNode(
-            text=_('Restart game'), command=self.menubar.mRestart))
-        tv.add_node(LTreeNode(
-            text=_('Replay'), command=self.auto_close(self.menubar.mReplay)))
-
-        tv.add_node(LTreeNode(
-            text=_('Undo'), command=self.menubar.mUndo))
-        tv.add_node(LTreeNode(
-            text=_('Redo'), command=self.menubar.mRedo))
-        tv.add_node(LTreeNode(
-            text=_('Redo all'), command=self.menubar.mRedoAll))
-
-        tv.add_node(LTreeNode(
-            text=_('Auto drop'), command=self.menubar.mDrop))
-        tv.add_node(LTreeNode(
-            text=_('Shuffle tiles'), command=self.menubar.mShuffle))
-        tv.add_node(LTreeNode(
-            text=_('Deal cards'), command=self.menubar.mDeal))
-        tv.add_node(LTreeNode(
-            text=_('Reset zoom'),
-            command=self.auto_close(self.menubar.mResetZoom)))
-
-        self.addCheckNode(tv, None,
-                          _('Pause'),
-                          self.menubar.tkopt.pause,
-                          self.menubar.mPause)
-
-        tv.add_node(LTreeNode(
-            text=_('Load game'), command=self.menubar.mOpen))
-        tv.add_node(LTreeNode(
-            text=_('Save game'), command=self.menubar.mSaveAs))
-
-        tv.add_node(LTreeNode(
-            text=_('Help'), command=self.menubar.mHelpRules))
-
-        # -------------------------------------------
-        # TBD ?
-        '''
-        menu.add_separator()
-        submenu = MfxMenu(menu, label=n_("&Set bookmark"))
-        for i in range(9):
-            label = _("Bookmark %d") % (i + 1)
-            submenu.add_command(
-                label=label, command=lambda i=i: self.mSetBookmark(i))
-        submenu = MfxMenu(menu, label=n_("Go&to bookmark"))
-        for i in range(9):
-            label = _("Bookmark %d") % (i + 1)
-            acc = m + "%d" % (i + 1)
-            submenu.add_command(
-                label=label,
-                command=lambda i=i: self.mGotoBookmark(i),
-                accelerator=acc)
-        menu.add_command(
-            label=n_("&Clear bookmarks"), command=self.mClearBookmarks)
-        menu.add_separator()
-        '''
-        # und solitär wizard (-> custom games).
-        '''
-        tv.add_node(LTreeNode(
-            text='Solitaire &Wizard...', command=self.menubar.mWizard))
-        tv.add_node(LTreeNode(
-                text='Edit current game', command=self.menubar.mWizardEdit))
-        '''
+        mb = self.menubar
+        for text, command in (
+                (_('Deal cards'), mb.mDeal),
+                (_('Auto drop'), mb.mDrop),
+                (_('Shuffle tiles'), mb.mShuffle),
+                (_('Highlight piles'), mb.mHighlightPiles),
+                (_('Find card...'), mb.mFindCard),
+                (_('Demo'), mb.mDemo),
+                (_('Set bookmark'), lambda: mb.mSetBookmark(0)),
+                (_('Go to bookmark'), lambda: mb.mGotoBookmark(0))):
+            tv.add_node(LTreeNode(
+                text=text, command=self.make_command(command)))
+        self.addCheckNode(tv, None, _('Pause'), mb.tkopt.pause, mb.mPause)
 
 # ************************************************************************
 
@@ -1352,6 +1278,44 @@ class LOptionsMenuGenerator(LTreeGenerator):
 # ************************************************************************
 
 
+class LLeanOptionsMenuGenerator(LTreeGenerator):
+    """PySol Lite settings: only what this program has."""
+
+    def buildTree(self, tv, node):
+        mb = self.menubar
+        self.addBackNode(tv)
+
+        rg = tv.add_node(LTreeNode(text=_('Automatic play')))
+        self.addCheckNode(tv, rg, _('Auto face up'),
+                          mb.tkopt.autofaceup, mb.mOptAutoFaceUp)
+        self.addCheckNode(tv, rg, _('Auto drop'),
+                          mb.tkopt.autodrop, mb.mOptAutoDrop)
+        self.addCheckNode(tv, rg, _('Auto deal'),
+                          mb.tkopt.autodeal, mb.mOptAutoDeal)
+        self.addCheckNode(tv, rg, _('Quick play'),
+                          mb.tkopt.quickplay, mb.mOptQuickPlay)
+        yield
+
+        rg = tv.add_node(LTreeNode(text=_('Animations')))
+        for text, value in ((_('Off'), 0), (_('Fast'), 1),
+                            (_('Medium'), 2), (_('Slow'), 3)):
+            self.addRadioNode(tv, rg, text, mb.tkopt.animations, value,
+                              mb.mOptAnimations)
+        yield
+
+        rg = tv.add_node(LTreeNode(text=_('Moving cards')))
+        self.addRadioNode(tv, rg, _('Drag and drop'), mb.tkopt.mouse_type,
+                          'drag-n-drop', None)
+        self.addRadioNode(tv, rg, _('Tap to move'), mb.tkopt.mouse_type,
+                          'point-n-click', None)
+        yield
+
+        tv.add_node(LTreeNode(
+            text=_('Cardset...'),
+            command=self.make_command(mb.mSelectCardsetDialog)))
+        yield
+
+
 class OptionsMenuDialog(LMenuDialog):
 
     def __init__(self, menubar, parent, title, app, **kw):
@@ -1360,8 +1324,8 @@ class OptionsMenuDialog(LMenuDialog):
             menubar, parent, title, app, **kw)
 
     def initTree(self):
-        og = LOptionsMenuGenerator(
-            self.menubar, self.parent, title=_("Options"), app=self.app)
+        og = LLeanOptionsMenuGenerator(
+            self.menubar, self.parent, title=_("Settings"), app=self.app)
         tv = og.generate()
         return tv
 
@@ -1375,37 +1339,14 @@ class HelpMenuDialog(LMenuDialog):
 
     def buildTree(self, tv, node):
         self.addBackNode(tv)
-
-        tv.add_node(
-            LTreeNode(
-                text=_('Contents'),
-                command=self.auto_close(self.menubar.mHelp)))
-        tv.add_node(
-            LTreeNode(
-                text=_('How to use PySol'),
-                command=self.auto_close(self.menubar.mHelpHowToPlay)))
-        tv.add_node(
-            LTreeNode(
-                text=_('Rules for this game'),
-                command=self.auto_close(self.menubar.mHelpRules)))
-        tv.add_node(
-            LTreeNode(
-                text=_('License terms'),
-                command=self.auto_close(self.menubar.mHelpLicense)))
-        tv.add_node(
-            LTreeNode(
-                text=_('About %s...') % TITLE,
-                command=self.auto_close(self.menubar.mHelpAbout)))
-
-        # tv.add_node(LTreeNode(
-        #   text='AboutKivy ...',
-        #   command=self.makeHtmlCommand(self.menubar, "kivy.html")))
-    '''
-    def makeHtmlCommand(self, bar, htmlfile):
-        def htmlCommand():
-            bar.mHelpHtml(htmlfile)
-        return htmlCommand
-    '''
+        mb = self.menubar
+        for text, command in (
+                (_('Contents'), mb.mHelp),
+                (_('Rules for this game'), mb.mHelpRules),
+                (_('License terms'), mb.mHelpLicense),
+                (_('About %s...') % TITLE, mb.mHelpAbout)):
+            tv.add_node(LTreeNode(
+                text=text, command=self.auto_close(command)))
 
 # ************************************************************************
 # *
@@ -1978,7 +1919,7 @@ class PysolMenubarTk:
             return
         self.game.setCursor(cursor=CURSOR_WATCH)
         after_idle(self.top, self.__restoreCursor)
-        EditMenuDialog(self, self.top, title=_("Tools"), app=self.app)
+        EditMenuDialog(self, self.top, title=_("Play"), app=self.app)
         return EVENT_HANDLED
 
     def mGameMenuDialog(self, *event):
@@ -2003,7 +1944,7 @@ class PysolMenubarTk:
         self.game.setCursor(cursor=CURSOR_WATCH)
         after_idle(self.top, self.__restoreCursor)
 
-        OptionsMenuDialog(self, self.top, title=_("Options"), app=self.app)
+        OptionsMenuDialog(self, self.top, title=_("Settings"), app=self.app)
         return EVENT_HANDLED
 
     def mHelpMenuDialog(self, *event):
