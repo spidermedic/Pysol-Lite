@@ -1425,3 +1425,8 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - `scripts/build_flatpak.sh` was run end to end (in `/home/doug/pysol-lite` on the WSL filesystem) and succeeded on its own, which closes the "not run end to end since the AppStream fix" item from section 122. Output: `dist/PySol-Lite-26.11-x86_64.flatpak` (64.3 MB, not in git).
 - **Verified:** the bundle repo has the `appstream` and `appstream2` branches; the installed app's metadata (flatpak-builder moves it to `/app/share/appdata/io.github.spidermedic.PySolLite.appdata.xml`, not `/app/share/metainfo`) lists both screenshot URLs; the installed Flatpak launches and opens "PySol Lite - Klondike".
 - **Still open:** the file has to be copied out of WSL and attached to the GitHub release (replacing the earlier Flatpak, which has no screenshots); not checked in a graphical software center; the screenshot URLs track `master` (pin them for Flathub).
+
+## 124. Update: README Linux section (2026-11-21)
+
+- The README's "Linux (untested)" section is now "Linux": install steps for the Flatpak and the AppImage (including the FUSE 2 / `APPIMAGE_EXTRACT_AND_RUN` note and the glibc 2.35 minimum), where settings are kept, how to build both packages, and how to run from source. The intro no longer says the Linux code has not been run. The tested/untested status is stated (launch and a Klondike window on Ubuntu 22.04 under WSL2; sound, Help, saving, other distros and most games untested).
+- The README says the packages are meant to be downloaded from the GitHub releases page and that until they are attached there they must be built; **remove that wording once the AppImage and Flatpak are uploaded to the release** (still to do, see sections 121 and 123).

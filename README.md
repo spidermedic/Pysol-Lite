@@ -6,8 +6,8 @@
 
 A lighter PySol: 276 solitaire and patience games, written in Python with
 Tkinter. This fork focuses on macOS on Apple Silicon and also builds for
-Windows (see below). The Linux code is kept but has not been run since the
-clean-up. The version number is the year and month (for example 26.11).
+Windows and Linux (see below). The version number is the year and month (for
+example 26.11).
 
 PySol Lite is based on PySol by Markus F.X.J. Oberhumer, the PySol Fan Club
 edition and [PySolFC](https://github.com/shlomif/PySolFC), and is licensed
@@ -213,15 +213,69 @@ SmartScreen warns when it runs. Setting `PYSOL_CONSOLE=1` before the build
 makes a console version that prints tracebacks. `setup_osx.py` and the macOS
 scripts are not used on Windows. Settings are kept in `~\.pysol`.
 
-## Linux (untested)
+## Linux
 
-The Linux code is still in the tree, but nothing has been run there since the
-clean-up, and this fork provides no packages. If you want to try, install
-Python, Tkinter and the packages above, generate the help pages with
-`make rules`, and run `python pysol.py`. The upstream
-[PySolFC](https://github.com/shlomif/PySolFC) README has install instructions
-for that platform; `contrib/install-pysolfc.sh` comes from there and has not
-been tested here.
+Two packages are built from this repository, both for x86_64. They were built
+on Ubuntu 22.04 (under WSL2) and have been started and checked to open a
+game window there. Not yet tested on Linux: sound, Help in the browser,
+saving and loading games, other distributions and desktops, and most of the
+276 games. They bundle their own Python and Tcl/Tk 8.6, so you need no Python
+or Tk packages. They are meant to be downloaded from the GitHub releases
+page; until they are attached there, build them as described below.
+
+**Flatpak** (any distribution with [Flatpak](https://flatpak.org/setup/) and
+the Flathub remote set up; the Freedesktop 25.08 runtime is fetched on first
+install):
+
+```
+flatpak install --user PySol-Lite-26.11-x86_64.flatpak
+flatpak run io.github.spidermedic.PySolLite
+```
+
+The app runs in a sandbox with X11 (Tk has no Wayland support, so it uses
+XWayland), sound and access to your Documents folder. Settings are kept in
+`~/.var/app/io.github.spidermedic.PySolLite/config/pysol`. To remove it:
+`flatpak uninstall io.github.spidermedic.PySolLite`.
+
+**AppImage** (built on Ubuntu 22.04, so it needs glibc 2.35 or newer):
+
+```
+chmod +x PySol-Lite-26.11-x86_64.AppImage
+./PySol-Lite-26.11-x86_64.AppImage
+```
+
+The AppImage needs FUSE 2 to run directly; if it is missing (for example
+`libfuse.so.2` errors on a recent Ubuntu), either install your distribution's
+`libfuse2` package or run it with `APPIMAGE_EXTRACT_AND_RUN=1`. Settings are
+kept in `~/.pysol`.
+
+**Build the packages** (on Linux; both scripts list their prerequisites in
+their header, and both generate the help pages when `data/html` is missing):
+
+```
+scripts/build_appimage.sh    # writes dist/PySol-Lite-<version>-x86_64.AppImage
+scripts/build_flatpak.sh     # writes dist/PySol-Lite-<version>-x86_64.flatpak
+```
+
+Build on the Linux filesystem (not a Windows drive under WSL: the Flatpak
+build fails there). `scripts/build_appimage.sh` uses `pysol.spec` (PyInstaller)
+and a pinned `appimagetool`; `scripts/build_flatpak.sh` builds Tcl/Tk and Python
+from source using the manifest in `scripts/flatpak/` and needs network access
+for `pip`.
+
+**Run from source** (Python 3.10 or later with Tkinter, for example
+`apt install python3-venv python3-tk`):
+
+```
+python3 -m venv .venv
+.venv/bin/pip install attrs configobj pillow pygame-ce pysol-cards markdown
+PYTHONPATH=. .venv/bin/python pysol.py
+```
+
+Generate the help pages first with `make rules` if `data/html` is missing.
+The upstream [PySolFC](https://github.com/shlomif/PySolFC) README has more on
+distribution packages; `contrib/install-pysolfc.sh` comes from there and has
+not been tested here.
 
 ## Credits
 
