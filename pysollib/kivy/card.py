@@ -73,18 +73,10 @@ class _OneImageCard(_HideableCard):
         self._face_image = LImage(texture=fimage.texture)
         self._back_image = LImage(texture=bimage.texture)
 
+        # PySol Lite: one widget per card; flipping swaps the texture
         aimage = LImageItem(
             pos=(x, -y), size=self._face_image.size, game=game, card=self)
-        if self.twoImage:
-            from kivy.uix.relativelayout import RelativeLayout
-
-            imgcontainer = RelativeLayout()
-            imgcontainer.add_widget(self._back_image)
-            imgcontainer.add_widget(self._face_image)
-            aimage.add_widget(imgcontainer)
-            self._face_image.opacity = 0
-        else:
-            aimage.add_widget(self._back_image)
+        aimage.set_texture(self._back_image.texture)
 
         self._active_image = aimage
         self.item = MfxCanvasImage(
@@ -96,21 +88,7 @@ class _OneImageCard(_HideableCard):
         # y = self.yy
 
     def _setImage(self, image):
-        if self.twoImage:
-            from kivy.animation import Animation
-            base = float(self.app.opt.animations)
-            dura = base*base/30.0
-            if base > 0: dura += 0.2  # noqa
-            z = 0
-            t = 'out_quad'
-            if image == self._face_image:
-                z = 1
-                t = 'in_quad'
-            anim = Animation(opacity=z, t=t, d=dura)
-            anim.start(self._face_image)
-        else:
-            self._active_image.clear_widgets()
-            self._active_image.add_widget(image)
+        self._active_image.set_texture(image.texture)
 
     def showFace(self, unhide=1):
         # print ('card: showFace = %s' % self._face_image.source)

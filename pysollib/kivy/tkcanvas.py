@@ -334,8 +334,7 @@ class MfxCanvasImage:
         if "image" in kw:
             # print('is redeal image:',self.redeal)
             if self.redeal:
-                image = self.image.children[0]
-                image.texture = kw["image"].texture
+                self.image.set_texture(kw["image"].texture)
                 # print('redeal texture:',image.texture)
 
     def makeDeferredRaise(self, pos):

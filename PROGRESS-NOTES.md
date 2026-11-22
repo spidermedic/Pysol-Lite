@@ -1555,3 +1555,7 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - **Checks:** all five menu dialogs build on the desktop (harness) and look right in a Kivy screenshot; on the tablet every main menu entry was opened or run without a crash, and Settings > Animations expands with Off selected. The 26 unit tests pass; the Tk app still starts.
 - **Test pitfalls:** tapping by coordinates after changing the menu hit **Quit** (it exits on purpose) and looked like a crash; the adb retry wrapper corrupts binary output, so screenshots must use plain `adb exec-out screencap -p` (check the PNG size afterwards).
 - **Open:** the user's overall verdict on the upstream canvas and animation layer. The option to replace it with a lean one built like the spike (direct widget moves, no animation manager) is not decided; first see how this build feels. Also still untested: Open and Save dialogs, Find card, the Cardset screen from Settings, portrait, sound, Help pages, the hint button.
+
+## 141. Kivy: lean cards (2026-11-22)
+
+- Upstream drew every card as four nested widgets (BoxLayout, RelativeLayout, two images) and flipped with an Animation even at animation speed 0. `LImageItem` is now one plain `Widget` with a single textured rectangle; a flip just swaps the texture (`set_texture`). Animations stay off by default. Built, installed and tapped through on the Samsung tablet without a crash; user to judge the feel.

@@ -56,6 +56,7 @@ from kivy.uix.widget import Widget
 from kivy.utils import platform
 
 from pysollib.kivy.LBase import LBase
+from pysollib.kivy.LImage import LImage
 from pysollib.kivy.LTask import LTask, LTaskQ
 from pysollib.kivy.androidperms import requestStoragePerm
 from pysollib.kivy.androidrot import AndroidScreenRotation
@@ -720,9 +721,33 @@ class LRectangle(Widget, LBase):
 # process events. Should not take more than one child (LImage) at a time.
 
 
-class LImageItem(BoxLayout, LBase):
+class LImageItem(Widget, LBase):
+    """One card (or other picture) on the table.
+
+    PySol Lite: a single plain widget that draws one rectangle with a
+    texture. Upstream nests a BoxLayout, a RelativeLayout and two images
+    per card, which made dragging slow on a tablet."""
+
     def __init__(self, **kw):
+        game = kw.pop('game', None)
+        card = kw.pop('card', None)
+        group = kw.pop('group', None)
+        image_type = kw.pop('image_type', None)
+        kw.setdefault('size_hint', (None, None))
         super().__init__(**kw)
+        with self.canvas:
+            Color(1, 1, 1, 1)
+            self._rect = Rectangle(pos=self.pos, size=self.size)
+        self.bind(pos=self._sync_rect, size=self._sync_rect)
+        kw = {}
+        if game is not None:
+            kw['game'] = game
+        if card is not None:
+            kw['card'] = card
+        if group is not None:
+            kw['group'] = group
+        if image_type is not None:
+            kw['image_type'] = image_type
         self.game = None
         self.card = None
         self.group = None
@@ -743,6 +768,20 @@ class LImageItem(BoxLayout, LBase):
 
     def __str__(self):
         return f'<LImageItem @ {hex(id(self))}>'
+
+    def _sync_rect(self, *a):
+        self._rect.pos = self.pos
+        self._rect.size = self.size
+
+    def set_texture(self, texture):
+        self._rect.texture = texture
+
+    def add_widget(self, widget, *a, **k):
+        # an LImage handed over by the canvas code: take its picture
+        if isinstance(widget, LImage):
+            self._rect.texture = widget.texture
+        else:
+            super().add_widget(widget, *a, **k)
 
     def get_image_type(self):
         return self.image_type
