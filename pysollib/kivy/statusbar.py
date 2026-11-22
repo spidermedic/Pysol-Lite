@@ -55,6 +55,10 @@ class MfxStatusbar:
     def updateText(self, **kw):
         pass
 
+    def configLabel(self, name, **kw):
+        # PySol Lite: the Kivy UI has no status bar labels
+        pass
+
     def config(self, a, b):
         pass
 

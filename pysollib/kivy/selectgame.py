@@ -86,11 +86,12 @@ class SelectGameData(SelectDialogTreeData):
         s_by_type = s_oriental = s_special = None
         s_original = s_contrib = s_mahjongg = None
         g = []
+        # PySol Lite has no oriental, original or contributed game lists
         for data in (GI.SELECT_GAME_BY_TYPE,
-                     GI.SELECT_ORIENTAL_GAME_BY_TYPE,
+                     getattr(GI, 'SELECT_ORIENTAL_GAME_BY_TYPE', ()),
                      GI.SELECT_SPECIAL_GAME_BY_TYPE,
-                     GI.SELECT_ORIGINAL_GAME_BY_TYPE,
-                     GI.SELECT_CONTRIB_GAME_BY_TYPE,
+                     getattr(GI, 'SELECT_ORIGINAL_GAME_BY_TYPE', ()),
+                     getattr(GI, 'SELECT_CONTRIB_GAME_BY_TYPE', ()),
                      ):
             gg = []
             for name, select_func in data:

@@ -865,6 +865,13 @@ class MfxCanvas(LImage):
     #
     # top-image support
     #
+    def tkraise(self, item, aboveThis=None):
+        # PySol Lite: as the Tk canvas method; the game raises its
+        # highlight rectangles and keyboard selector this way
+        widget = getattr(item, 'widget', item)
+        above = getattr(aboveThis, 'widget', aboveThis)
+        self.tag_raise(widget, above)
+
     def tag_raise(self, itm, abitm=None):
         # print('MfxCanvas: tag_raise(%s, %s)' % (itm, abitm))
 

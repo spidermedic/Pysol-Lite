@@ -327,6 +327,17 @@ class PysolToolbarTk(BoxLayout):
             self.menubar.mHoldAndQuit()
         return 1
 
+    # PySol Lite: the Tk toolbar can change its icon set, text and relief
+    # while running; the Kivy toolbar cannot, so these do nothing
+    def updateImages(self, dirname, size):
+        return False
+
+    def setCompound(self, compound):
+        return False
+
+    def setRelief(self, relief):
+        return None
+
     def getSize(self):
         return 0
 
