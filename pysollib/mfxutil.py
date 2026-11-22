@@ -23,6 +23,7 @@
 import locale
 import os
 import re
+import subprocess
 import sys
 import time
 import webbrowser
@@ -365,6 +366,14 @@ def unpickle(filename):
 # ************************************************************************
 
 def openURL(url):
+    if sys.platform == 'darwin':
+        # webbrowser uses AppleScript on macOS, which the hardened runtime
+        # of the notarized app can silently refuse; "open" does not need it
+        try:
+            subprocess.run(['/usr/bin/open', url], check=True, timeout=10)
+            return True
+        except Exception:
+            pass
     try:
         webbrowser.open(url)
     except OSError:                  # raised on windows if link is unreadable
