@@ -1434,3 +1434,10 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 ## 125. Update: toolbar defaults to icons and text (2026-11-21)
 
 - `Options.setDefaults` in `pysollib/options.py` now sets `toolbar_compound = 'top'` (icons with the text below) instead of `'none'` (icons only), so new users see what each button does. Users with an existing `~/.pysol/options.cfg` keep their saved choice (the maintainer's file still says `none`; change it under Options, Toolbar, Button style). Rebuilt, ad-hoc signed and installed; the 26 unit tests pass in the build venv.
+
+## 126. Update: Windows installer rebuilt (2026-11-22)
+
+- **What ran:** pulled `766f57dc` (toolbar defaults to icons and text, section 125), then `scripts\build_windows.ps1` on Windows (Python 3.14.10, PyInstaller via the `.venv`). Output: `dist\PySol Lite\PySol Lite.exe` and `dist\Pysol-Lite-26.11-Windows-setup.exe` (about 24 MB, unsigned, so SmartScreen warns).
+- **What broke:** the first run failed with `did not find executable at '/usr/bin\python.exe'`. The Windows `.venv\pyvenv.cfg` had been overwritten by the WSL venv's file (`home = /usr/bin`, `version = 3.10.12`), probably when files were copied between the two copies. Fixed by rewriting it to `home = C:\Users\admin\AppData\Local\Programs\Python\Python314`, `version = 3.14.10`; the old file is kept as `.venv\pyvenv.cfg.wsl-bak`. The `.venv` is git-ignored, so nothing in the repo changed. If it happens again, do not copy `.venv` between Windows and WSL.
+- **New in this build:** the first Windows build with the `PIL._tkinter_finder` hidden import in `pysol.spec` (section 117 noted it was not yet rebuilt) and with the new toolbar default.
+- **Checked:** the frozen exe launched and opened "PySol Lite - Spider" after 8 seconds; then closed. Not checked: dealing a game, the toolbar showing icons with text, running the installer, sound, Help, saving. The installer on GitHub is still the earlier build until this one is uploaded.
