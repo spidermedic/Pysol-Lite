@@ -246,7 +246,7 @@ class Options:
         # 0 == hide,
         # 1,2,3,4 == top, bottom, left, right
         self.toolbar_relief = 'flat'
-        self.toolbar_compound = 'none'  # icons only
+        self.toolbar_compound = 'top'  # icons and text (text below the icon)
         self.toolbar_size = 0
         self.toolbar_vars = {}
         for w in TOOLBAR_BUTTONS:

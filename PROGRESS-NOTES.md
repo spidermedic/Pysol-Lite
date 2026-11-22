@@ -1430,3 +1430,7 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 
 - The README's "Linux (untested)" section is now "Linux": install steps for the Flatpak and the AppImage (including the FUSE 2 / `APPIMAGE_EXTRACT_AND_RUN` note and the glibc 2.35 minimum), where settings are kept, how to build both packages, and how to run from source. The intro no longer says the Linux code has not been run. The tested/untested status is stated (launch and a Klondike window on Ubuntu 22.04 under WSL2; sound, Help, saving, other distros and most games untested).
 - The README says the packages are meant to be downloaded from the GitHub releases page and that until they are attached there they must be built; **remove that wording once the AppImage and Flatpak are uploaded to the release** (still to do, see sections 121 and 123).
+
+## 125. Update: toolbar defaults to icons and text (2026-11-21)
+
+- `Options.setDefaults` in `pysollib/options.py` now sets `toolbar_compound = 'top'` (icons with the text below) instead of `'none'` (icons only), so new users see what each button does. Users with an existing `~/.pysol/options.cfg` keep their saved choice (the maintainer's file still says `none`; change it under Options, Toolbar, Button style). Rebuilt, ad-hoc signed and installed; the 26 unit tests pass in the build venv.
