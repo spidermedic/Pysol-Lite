@@ -429,8 +429,9 @@ class MfxTooltip:
         after_cancel(self.cancel_timer)
         self.timer = self.cancel_timer = None
         if self.tooltip:
-            self.label.destroy()
-            destruct(self.label)
+            if self.label is not self.tooltip:
+                self.label.destroy()
+                destruct(self.label)
             self.label = None
             self.tooltip.destroy()
             destruct(self.tooltip)
@@ -449,6 +450,9 @@ class MfxTooltip:
         y = self.widget.winfo_rooty() + self.widget.winfo_height()
         x += self.xoffset
         y += self.yoffset
+        if self.widget.tk.call('tk', 'windowingsystem') == 'aqua':
+            self._showTipInWindow(x, y)
+            return
         self.tooltip = tkinter.Toplevel()
         self.tooltip.wm_iconify()
         self.tooltip.wm_overrideredirect(1)
@@ -462,6 +466,32 @@ class MfxTooltip:
         self.cancel_timer = after(
             self.widget, self.cancel_timeout, self._leave)
         # self.tooltip.tkraise()
+
+    def _showTipInWindow(self, x, y):
+        # macOS: a popup window gets the large rounded corners of an
+        # ordinary macOS window, so draw the tip as a label inside the
+        # main window instead (square, like on Windows and Linux).
+        top = self.widget.winfo_toplevel()
+        self.label = tkinter.Label(top, text=self.text, relief=self.relief,
+                                   justify=self.justify, fg=self.fg,
+                                   bg=self.bg, bd=1, takefocus=0)
+        self.tooltip = self.label
+        self.label.update_idletasks()
+        w = self.label.winfo_reqwidth()
+        h = self.label.winfo_reqheight()
+        x -= top.winfo_rootx()
+        y -= top.winfo_rooty()
+        # keep the tip inside the window; show it above the widget if
+        # there is no room below (e.g. the statusbar)
+        if y + h > top.winfo_height():
+            y = (self.widget.winfo_rooty() - top.winfo_rooty()
+                 - h - self.yoffset)
+        x = max(0, min(x, top.winfo_width() - w))
+        y = max(0, y)
+        self.label.place(x=x, y=y)
+        self.label.lift()
+        self.cancel_timer = after(
+            self.widget, self.cancel_timeout, self._leave)
 
 
 # ************************************************************************
