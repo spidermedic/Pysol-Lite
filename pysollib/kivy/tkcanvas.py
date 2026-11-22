@@ -307,6 +307,10 @@ class MfxCanvasImage:
 
         xy = addAnchorOffset(args, self._anchor, size)
 
+        # PySol Lite: what Stack.resize() needs (as in the Tk canvas items)
+        self.init_coord = (args[0], args[1])
+        self._anchor_offset = (xy[0] - args[0], xy[1] - args[1])
+
         aimage.coreSize = (aimage.size[0], aimage.size[1])
         aimage.corePos = (xy[0], xy[1])
 
@@ -374,6 +378,12 @@ class MfxCanvasImage:
     def delete(self):
         # print('MfxCanvasImage: delete()')
         self.canvas.clear_widgets([self.image])
+
+    def moveTo(self, x, y):
+        # absolute position of the anchor point, in core coordinates
+        ox, oy = self._anchor_offset
+        image = self.image
+        self.move(x + ox - image.corePos[0], y + oy - image.corePos[1])
 
     def move(self, dx, dy):
         # print('MfxCanvasImage: move %s, %s' % (dx, dy))
@@ -525,6 +535,23 @@ class MfxCanvasRectangle:
         self.rect = rect
         self.widget = rect
 
+    def coords(self, *pts):
+        # PySol Lite: get/set the corners in core coordinates, as in Tk
+        rect = self.rect
+        if not pts:
+            x, y = rect.corePos
+            w, h = rect.coreSize
+            return [x, y, x + w, y + h]
+        if len(pts) == 1:
+            pts = pts[0]
+        flat = [v for p in pts
+                for v in (p if isinstance(p, (tuple, list)) else (p,))]
+        x1, y1, x2, y2 = flat
+        rect.corePos = (x1, y1)
+        rect.coreSize = (x2 - x1, y2 - y1)
+        rect.pos, rect.size = self.canvas.CoreToKivy(
+            rect.corePos, rect.coreSize)
+
     def delete(self):
         # print('MfxCanvasRectangle: delete()')
         self.canvas.clear_widgets([self.rect])
@@ -575,10 +602,21 @@ class MfxCanvasText:
         self.canvas = canvas
         self.label = label
         self.widget = label
+        self.init_coord = (x, y)
+        self.x, self.y = x, y
         self.canvas.bind(_text_color=self.setColor)
 
     def setColor(self, w, c):
         self.label.label.color = LColorToKivy(c)
+
+    def moveTo(self, x, y):
+        # absolute position, in core coordinates (as in the Tk canvas)
+        dx, dy = x - self.x, y - self.y
+        self.x, self.y = x, y
+        label = self.label
+        label.corePos = (label.corePos[0] + dx, label.corePos[1] + dy)
+        label.pos, label.size = self.canvas.CoreToKivy(
+            label.corePos, label.coreSize)
 
     def config(self, **kw):
         # print('MfxCanvasText: config %s' % kw)
@@ -714,6 +752,23 @@ class MfxCanvas(LImage):
         # print('MfxCanvas: size_update_widget size=(%s, %s)' %
         #       (self.size[0], self.size[1]))
         self.update_widget(posorobj, size)
+        self._schedule_game_resize()
+
+    def _schedule_game_resize(self):
+        # PySol Lite: let the game spread its stacks over the new width
+        Clock.unschedule(self._resize_game)
+        Clock.schedule_once(self._resize_game, 0.3)
+
+    def _resize_game(self, dt):
+        from kivy.app import App
+        lapp = App.get_running_app()
+        app = getattr(lapp, 'app', None)
+        game = getattr(app, 'game', None)
+        if game is None or getattr(game, 'canvas', None) is not self:
+            return
+        if getattr(game, 'preview', 0) or getattr(game, 'busy', 0):
+            return
+        game.resizeGame()
 
     def update_widget(self, posorobj, size):
         def psize(s):
@@ -842,6 +897,7 @@ class MfxCanvas(LImage):
         self.r_width = width
         self.r_height = height
         self.update_widget(self.pos, self.size)
+        self._schedule_game_resize()
 
     # delete all CanvasItems, but keep the background and top tiles
     def deleteAllItems(self):

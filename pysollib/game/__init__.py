@@ -995,14 +995,25 @@ class Game:
     def resizeGame(self, card_size_manually=False):
         # if self.busy:
         # return
-        if not USE_PIL:
-            return
-        xf, yf, xf0, yf0 = \
-            self.resizeImages(manually=card_size_manually)
+        if TOOLKIT == 'kivy':
+            # The Kivy canvas scales the whole table to fit. When the area
+            # is wider than the table, spread the stacks sideways to use it
+            # (as the "spread stacks" option does in the Tk version).
+            iw, ih = self.init_size
+            if not iw or not ih:
+                return
+            self.center_offset = (0, 0)
+            xf = max(1.0, self.canvas.winfo_width() / iw)
+            yf, xf0, yf0 = 1.0, 1.0, 1.0
+        else:
+            if not USE_PIL:
+                return
+            xf, yf, xf0, yf0 = \
+                self.resizeImages(manually=card_size_manually)
         cw, ch = self.center_offset[0], self.center_offset[1]
         for stack in self.allstacks:
 
-            if (self.app.opt.spread_stacks):
+            if self.app.opt.spread_stacks or TOOLKIT == 'kivy':
                 # Do not move Talons
                 # (because one would need to reposition
                 # 'empty cross' and 'redeal' figures)

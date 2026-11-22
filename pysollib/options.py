@@ -407,7 +407,8 @@ class Options:
         self.mahjongg_create_solvable = 1
         self.redeal_animation = False
         self.win_animation = False
-        self.mouse_type = 'point-n-click'
+        self.mouse_type = 'drag-n-drop'
+        self.splashscreen = False
         self.favorite_gameid = [2, 7, 8, 19, 140, 116, 152, 176, 181,
                                 194, 207, 706, 721, 756, 903, 5034,
                                 11004, 14405, 14410, 15411, 22225]

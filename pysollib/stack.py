@@ -899,8 +899,9 @@ class Stack:
             return
         # bottom and shade
         if self.images.bottom:
-            img = self.getBottomImage()
-            self.images.bottom['image'] = img
+            if TOOLKIT != 'kivy':   # Kivy scales the images by itself
+                img = self.getBottomImage()
+                self.images.bottom['image'] = img
             self.images.bottom.moveTo(x, y)
         if self.items.bottom:
             c = self.items.bottom.coords()
@@ -911,7 +912,7 @@ class Stack:
             c = self.cards[-1]
             img = self.game.app.images.getHighlightedCard(
                 c.deck, c.suit, c.rank)
-            if img:
+            if img and TOOLKIT != 'kivy':
                 self.items.shade_item['image'] = img
             self.items.shade_item.moveTo(x, y)
 
