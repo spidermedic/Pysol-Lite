@@ -142,9 +142,8 @@ class LMenuBase:
         return rg1
 
     def addBackNode(self, tv):
-        tv.add_node(LTreeNode(
-            text='[b]' + _('< Back') + '[/b]',
-            command=self.make_command(self.menubar.mMainMenuDialog)))
+        # PySol Lite: the way back is the arrow in the panel header
+        return
 
 # ************************************************************************
 # * Tree Generators
@@ -219,6 +218,8 @@ class LMenuDialog(LMenuBase):
 
         window = LTopLevel(parent, title, **kw)
         window.titleline.bind(on_press=pc)
+        if not isinstance(self, MainMenuDialog):
+            window.set_back(self.make_command(self.menubar.mMainMenuDialog))
         self.parent.pushWork(title, window)
         self.window = window
         self.running = True

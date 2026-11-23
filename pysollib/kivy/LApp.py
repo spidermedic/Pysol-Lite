@@ -22,6 +22,7 @@
 from __future__ import division
 
 import logging
+import os
 import math
 import traceback
 
@@ -290,7 +291,7 @@ def addAnchorOffset(pos, size, anchor):
 
 
 # LMainWindow chrome. Shared so toolbar icons can follow the same background.
-MAIN_WINDOW_BG = (0.15, 0.15, 0.15, 1.0)
+MAIN_WINDOW_BG = (0.133, 0.122, 0.145, 1.0)
 
 
 def LColorToLuminance(color):
@@ -1359,15 +1360,56 @@ class LTopLine(ButtonBehavior, Label, LBase):
 # =============================================================================
 
 
+class LBackButton(ButtonBehavior, Widget, LBase):
+    """The Material navigation icon (arrow) at the left of a panel header."""
+
+    def __init__(self, source, **kw):
+        super().__init__(size_hint=(None, 1), width=dp(64), **kw)
+        from kivy.core.image import Image as CoreImage
+        tex = CoreImage(source).texture
+        with self.canvas:
+            Color(*DLG_TITLE)
+            self._bg = Rectangle(pos=self.pos, size=self.size)
+            Color(*DLG_DIVIDER)
+            self._line = Rectangle(pos=self.pos, size=(self.width, dp(1)))
+            self._c = Color(*DLG_TEXT)
+            self._icon = Rectangle(texture=tex, size=(dp(24), dp(24)))
+        self.bind(pos=self._sync, size=self._sync, state=self._state)
+
+    def _sync(self, *a):
+        self._bg.pos, self._bg.size = self.pos, self.size
+        self._line.pos, self._line.size = self.pos, (self.width, dp(1))
+        self._icon.pos = (self.x + dp(20), self.center_y - dp(12))
+
+    def _state(self, w, state):
+        self._c.rgba = DLG_ACCENT if state == 'down' else DLG_TEXT
+
+
 class LTopLevelBase(BoxLayout, LBase):
     def __init__(self, title='', **kw):
         super().__init__(orientation="vertical", **kw)
         self.title = title
-        self.titleline = LTopLine(text=title, size_hint=(1.0, None),
-                                  height=dp(64))
+        self.titleline = LTopLine(text=title, size_hint=(1.0, 1.0))
+        self.header = BoxLayout(orientation='horizontal', size_hint=(1, None),
+                                height=dp(64))
+        self.header.add_widget(self.titleline)
         self.content = LTopLevelContent(orientation="vertical", **kw)
-        self.add_widget(self.titleline)
+        self.add_widget(self.header)
         self.add_widget(self.content)
+
+    def set_back(self, callback):
+        """Show the back arrow in the header; tapping it calls callback."""
+        if getattr(self, 'backbutton', None) is not None:
+            return
+        from kivy.app import App
+        app = App.get_running_app().app
+        source = os.path.join(app.dataloader.dir, 'images', 'toolbar',
+                              'phosphor', 'light', 'xlarge', 'back.png')
+        self.backbutton = LBackButton(source)
+        self.backbutton.bind(on_release=lambda *a: callback())
+        self.header.add_widget(self.backbutton, index=len(
+            self.header.children))
+        self.titleline.padding = (dp(4), 0)
 
 # =============================================================================
 
@@ -1381,7 +1423,7 @@ class LTopLevel0(LTopLevelBase, LBase):
 
         # PySol Lite: floating dialogs have no title bar; outside taps and
         # their buttons close them. One rounded Material surface.
-        self.remove_widget(self.titleline)
+        self.remove_widget(self.header)
         self.content.canvas.before.clear()
         with self.canvas.before:
             Color(*DLG_HIGH)

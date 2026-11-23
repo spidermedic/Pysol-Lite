@@ -29,6 +29,7 @@ let icons: [(String, String)] = [
     ("favorite", "heart"),
     ("favorite_on", "heart-fill"),
     ("menu", "list"),            // the Android menu button
+    ("back", "arrow-left"),      // the Android menu header
 ]
 // "on" icons are coloured instead of black/white: name -> (light UI, dark UI)
 func hex(_ v: Int) -> NSColor {

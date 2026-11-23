@@ -94,6 +94,8 @@ class SelectGameDialog:
 
         window = self.window = LTopLevel(parent, title)
         window.titleline.bind(on_press=lambda *a: self.close())
+        window.set_back(lambda: (self.close(),
+                                 self.app.menubar.mMainMenuDialog()))
         parent.pushWork(self.key, window)
 
         row = BoxLayout(orientation='horizontal', size_hint_y=None,
