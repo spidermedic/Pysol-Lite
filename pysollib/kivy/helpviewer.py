@@ -171,8 +171,11 @@ class HelpViewer:
     def __init__(self, app, path):
         self.app = app
         self.main = app.top
-        self.root_dir = os.path.dirname(os.path.abspath(path))
-        self.home = os.path.join(self.root_dir, 'index.html')
+        # the index is in data/html; a rules page is one folder below it
+        here = os.path.dirname(os.path.abspath(path))
+        self.home = os.path.join(here, 'index.html')
+        if not os.path.isfile(self.home):
+            self.home = os.path.join(os.path.dirname(here), 'index.html')
         self.history = []
         self.future = []
         self.path = None
@@ -211,6 +214,8 @@ class HelpViewer:
         self.goto(self.home)
 
     def goto(self, path):
+        if not os.path.isfile(path):
+            return
         if self.path:
             self.history.append(self.path)
         self.future = []
