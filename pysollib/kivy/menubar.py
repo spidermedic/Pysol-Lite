@@ -1471,6 +1471,7 @@ class HelpMenuDialog(LMenuDialog):
         mb = self.menubar
         for text, command in (
                 (_('Contents'), mb.mHelp),
+                (_('Rules for this game'), mb.mHelpRules),
                 (_('License terms'), mb.mHelpLicense),
                 (_('About %s...') % TITLE, mb.mHelpAbout)):
             tv.add_node(LTreeNode(

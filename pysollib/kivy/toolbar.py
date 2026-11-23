@@ -319,11 +319,17 @@ class PysolToolbarTk(BoxLayout):
         # PySol Lite: after the Menu button in the top bar, or in a bar of
         # its own below the table (option toolbar_bottom)
         self.orientation = "horizontal"
-        # slightly smaller icons: padding around the buttons
-        self.padding = (dp(8), dp(3))
+        # slightly smaller icons: padding around the buttons; more in
+        # portrait, where the bar is narrow
+        portrait = Window.width < Window.height
+        self.padding = (dp(10), dp(9)) if portrait else (dp(8), dp(3))
+        # a slimmer top bar in portrait
+        self.win.menuArea.size_hint = (1.0, 0.058 if portrait else 0.08)
+        self.spacing = 0
+        self.redraw()
         if self.menubar.tkopt.toolbar_bottom.value:
             self.size_hint = (1.0, None)
-            self.height = dp(52)
+            self.height = dp(44) if portrait else dp(52)
             self.win.setTool(None, 2)
         else:
             self.size_hint = (1.0, 1.0)
@@ -363,9 +369,13 @@ class PysolToolbarTk(BoxLayout):
 
     def redraw(self):
         self.clear_widgets()
+        portrait = Window.width < Window.height
         for b in self.buttons:
             # print(b.name,b.config,b.shown,b.enabled)
+            if portrait and b.name == 'rules':
+                continue        # no room in portrait (it is in the Help menu)
             if b.shown and b.enabled and b.config:
+                b.size_hint = (1, 1)     # equal slots, even spacing
                 self.add_widget(b)
 
     def changed_state(self, instance, value):
