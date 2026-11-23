@@ -2337,8 +2337,8 @@ class PysolMenubarTk:
         window = LTopLevel0(main, title)
         window.overlay_small = True
         window.content.add_widget(FText(
-            text=_("What would you like to do?"), halign='center',
-            font_size=dp(19)))
+            text=_("What would you like to do?"), halign='left',
+            font_size=dp(17)))
 
         def run(action):
             def f():

@@ -137,6 +137,8 @@ class MfxToolTip:
 
 class FLabel(Label):
     def __init__(self, **kw):
+        from pysollib.kivy.LApp import DLG_TEXT_DIM
+        kw.setdefault('color', DLG_TEXT_DIM)
         super().__init__(**kw)
 
         self.bind(size=self.onUpdate)
@@ -167,7 +169,7 @@ class MfxMessageDialog(MfxDialog):
             image = LImage(texture=kw.image.texture, size_hint=(1, 1))
             self.top.add_widget(image)
 
-        label = FText(text=kw.text, halign='center', font_size=dp(19))
+        label = FText(text=kw.text, halign='left', font_size=dp(17))
         self.top.add_widget(label)
 
         # PySol Lite: a plain message gets a small panel and buttons in

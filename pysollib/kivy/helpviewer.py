@@ -20,8 +20,8 @@ from kivy.uix.scrollview import ScrollView
 from pysollib.kivy.LApp import LTopLevel, make_button_row
 from pysollib.kivy.mygettext import _
 
-LINK_COLOR = '66ccb0'
-TEXT = (0.93, 0.94, 0.95, 1)
+LINK_COLOR = '82ccbd'
+TEXT = (0.90, 0.88, 0.91, 1)
 FONT = {'h1': sp(26), 'h2': sp(21), 'h3': sp(18), 'p': sp(16)}
 
 
@@ -201,7 +201,7 @@ class HelpViewer:
             (_('Index'), self.go_home, False),
             (_('Back'), self.back, False),
             (_('Forward'), self.forward, False),
-            (_('Close'), self.close, True)]))
+            (_('Close'), self.close, True)], fill=True))
         Window.bind(size=self._relayout)
         self.show(path)
 

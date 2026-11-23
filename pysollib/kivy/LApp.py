@@ -35,6 +35,8 @@ from kivy.config import Config
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.graphics import Color
+from kivy.graphics import Ellipse
+from kivy.graphics import RoundedRectangle
 from kivy.metrics import dp
 from kivy.graphics import Line
 from kivy.graphics import Rectangle
@@ -46,6 +48,7 @@ from kivy.uix.actionbar import ActionPrevious
 from kivy.uix.actionbar import ActionView
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
@@ -1049,6 +1052,8 @@ class LTreeNode(ButtonBehavior, TreeViewLabel, LBase):
             self.title = kw['text']
 
         super().__init__(markup=True, **kw)
+        self._ind_kind = None
+        self._ind_on = False
 
         if self.variable:
             self.variable.bind(value=self.onVarChange)
@@ -1064,6 +1069,49 @@ class LTreeNode(ButtonBehavior, TreeViewLabel, LBase):
         self.bind(is_selected=self.onSelect)
         self.bind(is_open=self.onOpen)
 
+        # Material list row: 52 dp high, no striping, tonal press state
+        self.even_color = self.odd_color = (0, 0, 0, 0)
+        self.color_selected = (1, 1, 1, 0.10)
+        self.color = DLG_TEXT
+        self.font_size = dp(16)
+        self.padding_y = dp(15)
+        self.padding_x = dp(8)
+        self.bind(pos=self._draw_indicator, size=self._draw_indicator)
+        self._draw_indicator()
+
+    def _draw_indicator(self, *a):
+        # switch (check items) or radio button at the right edge
+        canvas = self.canvas.after
+        canvas.remove_group('ind')
+        if self._ind_kind is None:
+            return
+        right = (self.parent.right if self.parent else self.right) - dp(20)
+        cy = self.center_y
+        on = self._ind_on
+        with canvas:
+            if self._ind_kind == 'check':
+                w, h = dp(52), dp(32)
+                x, y = right - w, cy - h / 2
+                Color(*(DLG_ACCENT if on else DLG_TRACK_OFF), group='ind')
+                RoundedRectangle(pos=(x, y), size=(w, h), radius=[h / 2],
+                                 group='ind')
+                if not on:
+                    Color(*DLG_OUTLINE, group='ind')
+                    Line(rounded_rectangle=(x, y, w, h, h / 2),
+                         width=dp(1.5), group='ind')
+                d = dp(24) if on else dp(16)
+                tx = (x + w - dp(4) - d) if on else (x + dp(8))
+                Color(*(DLG_ON_ACCENT if on else DLG_OUTLINE), group='ind')
+                Ellipse(pos=(tx, cy - d / 2), size=(d, d), group='ind')
+            else:
+                d = dp(20)
+                cx = right - d / 2
+                Color(*(DLG_ACCENT if on else DLG_OUTLINE), group='ind')
+                Line(circle=(cx, cy, d / 2), width=dp(2), group='ind')
+                if on:
+                    Ellipse(pos=(cx - dp(5), cy - dp(5)),
+                            size=(dp(10), dp(10)), group='ind')
+
     def onVarChange(self, instance, value):
         # print('LTreeNode: onVarChange(%s, %s, %s)'
         # % (instance, value, type(value)))
@@ -1077,28 +1125,16 @@ class LTreeNode(ButtonBehavior, TreeViewLabel, LBase):
         #     self.setVal(value)
 
     def setCheck(self, value):
-        # print('LTreeNode: setCheck(%s)' % value)
-        if value:
-            # self.text = '+ '+self.title
-            self.text = '[b]+[/b] ' + self.title
-        else:
-            self.text = '- ' + self.title
+        self.text = self.title
+        self._ind_kind, self._ind_on = 'check', bool(value)
         self.texture_update()
+        self._draw_indicator()
 
     def setVal(self, value):
-        # print('LTreeNode: setVal(%s)' % value)
-        if value == self.value:
-            # fs = str(int(self.font_size+2))
-            # print ('%s.%s' % (self.font_size, fs))
-            # self.text = '[size='+fs+'][b]'+self.title+'[/b][/size]'
-            # self.text = 'o '+self.title
-            self.text = '[b]o[/b] ' + self.title
-            # self.text = u'\u25cf '+self.title  # unicode filled circle
-        else:
-            self.text = self.title
-            self.text = '    ' + self.title
-            # self.text = u'\u25cb  '+self.title # unicode open circle
+        self.text = self.title
+        self._ind_kind, self._ind_on = 'radio', (value == self.value)
         self.texture_update()
+        self._draw_indicator()
 
     # font skalierung.
 
@@ -1187,30 +1223,81 @@ class LTreeNode(ButtonBehavior, TreeViewLabel, LBase):
 # =============================================================================
 
 
-# PySol Lite: one colour scheme and one button style for every dialog
-DLG_PANEL = (0.15, 0.18, 0.22, 1.0)
-DLG_TITLE = (0.09, 0.11, 0.14, 1.0)
-DLG_ACCENT = (0.20, 0.62, 0.50, 1.0)
-DLG_SECONDARY = (0.30, 0.35, 0.42, 1.0)
+# PySol Lite: one look for every dialog and menu, after Material 3 (dark)
+DLG_PANEL = (0.114, 0.106, 0.122, 1.0)       # surface
+DLG_HIGH = (0.169, 0.161, 0.180, 1.0)        # dialog surface
+DLG_TITLE = DLG_PANEL
+DLG_ACCENT = (0.51, 0.80, 0.74, 1.0)         # primary
+DLG_ON_ACCENT = (0.0, 0.21, 0.18, 1.0)
+DLG_SECONDARY = (0.23, 0.28, 0.27, 1.0)      # tonal container
+DLG_TEXT = (0.90, 0.88, 0.91, 1.0)
+DLG_TEXT_DIM = (0.79, 0.77, 0.80, 1.0)
+DLG_OUTLINE = (0.58, 0.56, 0.60, 1.0)
+DLG_DIVIDER = (0.29, 0.27, 0.31, 1.0)
+DLG_TRACK_OFF = (0.23, 0.22, 0.25, 1.0)
+DLG_PRESSED = (1, 1, 1, 0.12)
 
 
-def make_dialog_button(text, on_release, primary=False):
-    from kivy.uix.button import Button
-    b = Button(text=text, background_normal='', background_down='',
-               background_color=DLG_ACCENT if primary else DLG_SECONDARY,
-               color=(1, 1, 1, 1), bold=primary, font_size=dp(16),
-               size_hint=(1, 1))
+class LButton(Button):
+    """Material button: kind is 'text', 'tonal' or 'filled'."""
+
+    def __init__(self, kind='text', primary=False, **kw):
+        super().__init__(background_normal='', background_down='',
+                         background_color=(0, 0, 0, 0), font_size=dp(16),
+                         **kw)
+        self.kind = kind
+        if kind == 'filled':
+            self.color, self.bold = DLG_ON_ACCENT, True
+            self._bg = DLG_ACCENT
+        elif kind == 'tonal':
+            self.color, self.bold = DLG_TEXT, False
+            self._bg = DLG_SECONDARY
+        else:
+            self.color, self.bold = DLG_ACCENT, primary
+            self._bg = None
+        with self.canvas.before:
+            self._c = Color(*(self._bg or (0, 0, 0, 0)))
+            self._r = RoundedRectangle(radius=[dp(20)])
+        self.bind(pos=self._sync, size=self._sync, state=self._state)
+        if kind == 'text':
+            self.size_hint_x = None
+            self.bind(texture_size=lambda w, s: setattr(
+                w, 'width', max(dp(64), s[0] + dp(32))))
+
+    def _sync(self, *a):
+        self._r.pos = self.pos
+        self._r.size = self.size
+
+    def _state(self, w, state):
+        if state == 'down':
+            self._c.rgba = DLG_PRESSED if self._bg is None else (
+                min(1, self._bg[0] + .1), min(1, self._bg[1] + .1),
+                min(1, self._bg[2] + .1), 1)
+        else:
+            self._c.rgba = self._bg or (0, 0, 0, 0)
+
+
+def make_dialog_button(text, on_release, primary=False, fill=False):
+    if fill:
+        b = LButton(kind='filled' if primary else 'tonal', text=text,
+                    size_hint=(1, 1))
+    else:
+        b = LButton(kind='text', primary=primary, text=text,
+                    size_hint_y=1)
     b.bind(on_release=lambda *a: on_release())
     return b
 
 
-def make_button_row(buttons):
-    """buttons: list of (text, callback, primary)"""
+def make_button_row(buttons, fill=False):
+    """buttons: list of (text, callback, primary). Dialogs get right-aligned
+    text buttons; fill=True gives equal, filled buttons (Help viewer)."""
     row = BoxLayout(orientation='horizontal', size_hint=(1, None),
-                    height=dp(80), spacing=dp(10),
-                    padding=(dp(14), dp(12), dp(14), dp(14)))
+                    height=dp(72), spacing=dp(8),
+                    padding=(dp(16), dp(12), dp(16), dp(16)))
+    if not fill:
+        row.add_widget(Widget())
     for text, cb, primary in buttons:
-        row.add_widget(make_dialog_button(text, cb, primary))
+        row.add_widget(make_dialog_button(text, cb, primary, fill))
     return row
 
 
@@ -1243,25 +1330,25 @@ class LTopLine(ButtonBehavior, Label, LBase):
         with self.canvas.before:
             Color(*DLG_TITLE)
             self.rect = Rectangle(pos=self.pos, size=self.size)
-            Color(*DLG_ACCENT)
-            self.line = Rectangle(pos=self.pos, size=(self.width, dp(3)))
+            Color(*DLG_DIVIDER)
+            self.line = Rectangle(pos=self.pos, size=(self.width, dp(1)))
         self.bind(pos=self.update_rect)
         self.bind(size=self.update_rect)
         self.maxlines = 0
         self.halign = 'left'
         self.valign = 'center'
-        self.bold = True
-        self.font_size = dp(19)
-        self.padding = (dp(18), 0)
+        self.color = DLG_TEXT
+        self.font_size = dp(22)
+        self.padding = (dp(24), 0)
 
     def update_rect(self, *args):
         self.rect.pos = self.pos
         self.rect.size = self.size
         self.line.pos = self.pos
-        self.line.size = (self.width, dp(3))
+        self.line.size = (self.width, dp(1))
 
     def on_size(self, o, s):
-        self.text_size = (s[0] - dp(36), s[1])
+        self.text_size = (s[0] - dp(48), s[1])
 
     def on_press(self):
         print('press')
@@ -1277,7 +1364,7 @@ class LTopLevelBase(BoxLayout, LBase):
         super().__init__(orientation="vertical", **kw)
         self.title = title
         self.titleline = LTopLine(text=title, size_hint=(1.0, None),
-                                  height=dp(58))
+                                  height=dp(64))
         self.content = LTopLevelContent(orientation="vertical", **kw)
         self.add_widget(self.titleline)
         self.add_widget(self.content)
@@ -1293,8 +1380,16 @@ class LTopLevel0(LTopLevelBase, LBase):
         self.is_overlay = True
 
         # PySol Lite: floating dialogs have no title bar; outside taps and
-        # their buttons close them
+        # their buttons close them. One rounded Material surface.
         self.remove_widget(self.titleline)
+        self.content.canvas.before.clear()
+        with self.canvas.before:
+            Color(*DLG_HIGH)
+            self._panel = RoundedRectangle(
+                pos=self.pos, size=self.size, radius=[dp(28)])
+        self.bind(pos=lambda w, v: setattr(self._panel, 'pos', v),
+                  size=lambda w, v: setattr(self._panel, 'size', v))
+        self.content.padding = (dp(24), dp(24), dp(24), 0)
         self.titleline.bind(on_press=self.onClick)
         self.main.pushWork(self.title, self)
 
@@ -1379,6 +1474,9 @@ class LMenu(ActionView, LBase):
         kw['with_previous'] = prev
         # PySol Lite: a fixed-width icon, so the menu names follow it on
         # the left instead of being pushed to the right edge
+        # Material top app bar: flat surface, no theme image
+        self.background_image = ''
+        self.background_color = (0.133, 0.122, 0.145, 1)
         self.ap = MyActionPrev(**kw)
         self.ap.size_hint_x = None
         self.ap.width = 0
@@ -1440,6 +1538,10 @@ class LMenuItem(ActionButton, LBase):
 
     def __init__(self, menu, **kw):
         super().__init__(**kw)
+        # flat, like the rest of the Material top app bar
+        self.background_normal = ''
+        self.background_down = ''
+        self.background_color = (0, 0, 0, 0)
         # super(LMenuItem, self).__init__()
         self.bar = None
         self.submenu = None
@@ -1737,7 +1839,7 @@ class LOverlayLayer(FloatLayout):
         self.main = main
         self.size_hint = (None, None)
         with self.canvas.before:
-            Color(0, 0, 0, 0.55)
+            Color(0, 0, 0, 0.40)
             self._scrim = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self._sync, size=self._sync)
         Window.bind(size=lambda w, sz: setattr(self, 'size', sz))
@@ -1931,7 +2033,7 @@ class LMainWindow(BoxLayout, LTkBase):
             if getattr(widget, 'overlay_full', False):
                 widget.size_hint = (1, 1)
             elif small:
-                widget.size_hint = (0.92, 0.26) if portrait else (0.5, 0.34)
+                widget.size_hint = (0.92, 0.22) if portrait else (0.5, 0.32)
             else:
                 widget.size_hint = (0.92, 0.6) if portrait else (0.6, 0.8)
             widget.pos_hint = {'center_x': 0.5, 'center_y': 0.5}

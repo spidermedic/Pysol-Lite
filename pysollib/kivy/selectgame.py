@@ -37,12 +37,13 @@ from kivy.uix.textinput import TextInput
 from kivy.properties import NumericProperty, ObjectProperty
 
 from pysollib.gamedb import GI
-from pysollib.kivy.LApp import DLG_ACCENT, DLG_SECONDARY, LTopLevel
+from pysollib.kivy.LApp import DLG_ACCENT, DLG_SECONDARY, DLG_TEXT
+from pysollib.kivy.LApp import DLG_ON_ACCENT, LTopLevel
 from pysollib.kivy.mygettext import _
 from pysollib.resource import getNaturalSortKey
 
 ALL_CATEGORIES = "All categories"
-ROW_BG = ((0.19, 0.22, 0.27, 1), (0.16, 0.19, 0.23, 1))
+ROW_BG = ((0, 0, 0, 0), (0, 0, 0, 0))
 
 
 class GameRow(RecycleDataViewBehavior, Button):
@@ -58,14 +59,16 @@ class GameRow(RecycleDataViewBehavior, Button):
         self.halign = 'left'
         self.valign = 'middle'
         self.padding_x = dp(14)
-        self.color = (1, 1, 1, 1)
+        self.color = DLG_TEXT
         self.font_size = dp(16)
         self.bind(size=lambda w, s: setattr(w, 'text_size', s))
 
     def refresh_view_attrs(self, rv, index, data):
-        self.bold = bool(data.get('current'))
+        cur = bool(data.get('current'))
+        self.bold = cur
+        self.color = DLG_ON_ACCENT if cur else DLG_TEXT
         self.background_color = (
-            DLG_ACCENT if data.get('current') else ROW_BG[index % 2])
+            DLG_ACCENT if cur else ROW_BG[index % 2])
         return super().refresh_view_attrs(rv, index, data)
 
     def on_release(self):
@@ -100,8 +103,8 @@ class SelectGameDialog:
             hint_text=_('Search'), multiline=False, write_tab=False,
             size_hint_x=0.55, padding=(dp(10), dp(14)), font_size=dp(16),
             background_normal='', background_active='',
-            background_color=(0.10, 0.12, 0.15, 1),
-            foreground_color=(1, 1, 1, 1), cursor_color=(1, 1, 1, 1),
+            background_color=(0.21, 0.20, 0.22, 1),
+            foreground_color=DLG_TEXT, cursor_color=DLG_ACCENT,
             hint_text_color=(0.6, 0.63, 0.68, 1))
         self.search.bind(text=lambda w, v: self.refresh())
         categories = [ALL_CATEGORIES] + sorted(
@@ -109,7 +112,7 @@ class SelectGameDialog:
         self.category = Spinner(
             text=ALL_CATEGORIES, values=categories, size_hint_x=0.45,
             background_normal='', background_color=DLG_SECONDARY,
-            color=(1, 1, 1, 1), font_size=dp(16))
+            color=DLG_TEXT, font_size=dp(16))
         self.category.bind(text=lambda w, v: self.refresh())
         row.add_widget(self.search)
         row.add_widget(self.category)
@@ -123,7 +126,7 @@ class SelectGameDialog:
 
         self.rv = RecycleView(do_scroll_x=False, bar_width=dp(6))
         layout = RecycleBoxLayout(
-            default_size=(None, dp(48)), default_size_hint=(1, None),
+            default_size=(None, dp(56)), default_size_hint=(1, None),
             size_hint_y=None, orientation='vertical')
         layout.bind(minimum_height=layout.setter('height'))
         self.rv.add_widget(layout)

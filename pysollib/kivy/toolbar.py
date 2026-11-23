@@ -167,8 +167,8 @@ class MyToastButton(MyButtonBase):
                     if self.name == "new" else _("Restart this game?"))
         window = LTopLevel0(main, text)
         window.overlay_small = True
-        window.content.add_widget(FText(text=question, halign='center',
-                                              font_size=dp(19)))
+        window.content.add_widget(FText(text=question, halign='left',
+                                              font_size=dp(17)))
 
         def cancel():
             main.popWork(text)
