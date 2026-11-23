@@ -1431,7 +1431,7 @@ class LMenuItem(ActionButton, LBase):
         self.submenu = None
         self.menu = menu
         self.menu.addItem(self)
-        self.minimum_width = '200sp'
+        self.minimum_width = '72sp'
         if 'command' in kw:
             self.setCommand(kw['command'])
         if 'submenu' in kw:
@@ -1543,7 +1543,7 @@ class LTkBase:
         logging.info("LTkBase: wm_title %s", strg)
         if (self.app):
             # self.app.top.topLine.text = strg
-            self.app.top.getMenu().ap.title = strg
+            pass    # PySol Lite: no title in the top bar
 
     def wm_iconname(self, strg):
         self.icontitle = strg
