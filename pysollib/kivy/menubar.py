@@ -25,6 +25,7 @@
 import collections
 import math
 import os
+import time
 import re
 
 from kivy.cache import Cache
@@ -187,6 +188,11 @@ class LMenuDialog(LMenuBase):
 
     def __init__(self, menubar, parent, title, app, **kw):
         super().__init__(menubar, parent, title, app)
+        _t0 = time.time()
+        Clock.schedule_once(
+            lambda dt: logging.info(
+                'MENUTIME %s: first frame after %.0f ms', title,
+                (time.time() - _t0) * 1000), 0)
 
         self.window = None
         self.running = False
@@ -389,10 +395,21 @@ class GamesMenuDialog(LMenuDialog):
                     text=gi.short_name if short_name else gi.name,
                     command=command), parent)
 
+        def add_lazy(text, glist, short_name=False, first=None):
+            # PySol Lite: a category's game entries (a widget each, and
+            # slow on a tablet) are made when it is first opened
+            rg = tv.add_node(LTreeNode(text=text))
+            filler = tv.add_node(LTreeNode(text=' '), rg)
+
+            def opened(node, is_open):
+                if is_open and filler in node.nodes:
+                    tv.remove_node(filler)
+                    add_games(node, glist, short_name, first)
+            rg.bind(is_open=opened)
+
         popular = [g for g in games if g.si.game_flags & GI.GT_POPULAR]
         if popular:
-            rg = tv.add_node(LTreeNode(text=_('Popular games')))
-            add_games(rg, popular)
+            add_lazy(_('Popular games'), popular)
 
         data = [(label.replace('&', ''), func, False) for label, func in
                 tuple(getattr(GI, 'SELECT_GAME_BY_TYPE', ()))
@@ -409,8 +426,7 @@ class GamesMenuDialog(LMenuDialog):
                 glist.sort(key=lambda gi: gi.short_name)
             featured = CATEGORY_FEATURED_GAME.get(label)
             first = [g for g in glist if g.name == featured]
-            rg = tv.add_node(LTreeNode(text=_(label)))
-            add_games(rg, glist, short_name, first)
+            add_lazy(_(label), glist, short_name, first)
 
 # ************************************************************************
 
