@@ -1599,3 +1599,5 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - Settings > Appearance > Cardset now lists cardsets by type with card backs ("Back 1..7"); the desktop cardset dialog is an empty stub with Kivy.
 
 - Toolbar position (Android): Settings > Appearance > "Toolbar at the bottom" (switch, option `toolbar_bottom`, saved with the other options). Off = the toolbar follows the menu button in the top bar; on = a 56 dp bar below the table, the top bar then holds only the menu button. `PysolToolbarTk.show()` picks `toolBarPos` 5 (top bar) or 2 (below the table); `LMainWindow.buildContainer` moves the widget. The desktop ignores the option.
+- Menu headers: the "< Back" list row is replaced by a Material back arrow (Phosphor `arrow-left`, `back.png` in the toolbar icon folders, `LBackButton` / `LTopLevelBase.set_back`) at the left of each submenu header and of the All games list; it returns to the Main Menu. The top bar is one uniform surface colour.
+- Still open: Open/Save, sound, a real win, other games by touch, light/dark following the system, iOS, GPL/App Store.
