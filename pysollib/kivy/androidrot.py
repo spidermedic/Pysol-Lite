@@ -30,11 +30,13 @@ class AndroidRot:
         self.locked = True
 
     def unlock(self, toaster=True):
+        # PySol Lite: always (re)request sensor rotation, not only after
+        # a lock, so the screen rotates from the start
         if jnius is not None:
-            if self.locked:
+            if True:
                 self.currentActivity.setRequestedOrientation(
                     self.ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR)
-                if toaster:
+                if toaster and self.locked:
                     AndroidToaster.toastShort(_("screen rotation enabled"))
         self.locked = False
 

@@ -898,8 +898,9 @@ class LImageItem(Widget, LBase):
     def on_touch_up(self, touch):
         if touch.grab_current is self:
             # ungrab. this stops move events after a drag.
-            print('ungrab')
             touch.ungrab(self)
+            # PySol Lite: rotation was locked for the drag; release it
+            AndroidScreenRotation.unlock(toaster=False)
             return True
 
         if self._is_paused():
