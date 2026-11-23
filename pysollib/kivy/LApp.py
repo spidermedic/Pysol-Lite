@@ -1963,8 +1963,12 @@ class LMainWindow(BoxLayout, LTkBase):
         for w in self.workStack.items:
             if getattr(w[1], 'is_overlay', False):
                 overlays.append(w[1])
-            else:
+            elif w[0] == 'playground':
                 self.workContainer.add_widget(w[1])
+            else:
+                # PySol Lite: menus open on the left of the table
+                self.workContainer.add_widget(
+                    w[1], index=len(self.workContainer.children))
         self._showOverlays(overlays)
 
     def rebuildContainer(self):

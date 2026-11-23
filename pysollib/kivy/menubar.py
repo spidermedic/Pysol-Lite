@@ -1753,8 +1753,10 @@ class PysolMenubarTk:
 
         # PySol Lite: one Menu item (File, Games, Play, Settings, Help
         # inside) on the left of the top bar, the toolbar after it
-        LMenuItem(self.__menubar.menu,
-                  text=_("Menu"), command=self.mMainMenuDialog)
+        icon = os.path.join(self.app.dataloader.dir, 'images', 'toolbar',
+                            'phosphor', 'light', 'xlarge', 'menu.png')
+        LMenuItem(self.__menubar.menu, text='', icon=icon,
+                  command=self.mMainMenuDialog)
 
         MfxMenubar.addPath = None
 
