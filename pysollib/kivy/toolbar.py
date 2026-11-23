@@ -264,7 +264,7 @@ class PysolToolbarTk(BoxLayout):
         bl.append((n_("Autodrop"), self.mDrop,      _("Auto drop cards")))
         bl.append((n_("Shuffle"),  self.mShuffle,   _("Shuffle tiles")))
         bl.append((n_("Hint"),     self.mHint,      _("Hint")))
-        bl.append((n_("Pause"),    self.mPause,     _("Pause game")))
+        bl.append((n_("Bookmark"), self.mBookmark, _("Bookmark")))
         bl.append((n_("Rules"),    self.mHelpRules, _("Rules for this game")))
 
         '''

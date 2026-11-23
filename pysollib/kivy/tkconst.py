@@ -60,7 +60,7 @@ TOOLBAR_BUTTONS = (
     "autodrop",
     "shuffle",
     "hint",
-    "pause",
+    "bookmark",
     # "statistics",
     "rules",
     # "quit",

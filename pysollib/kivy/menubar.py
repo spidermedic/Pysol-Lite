@@ -2180,6 +2180,43 @@ class PysolMenubarTk:
                 toast.show(parent=baseWindow, duration=5.0)
             self.updateMenus()
 
+    def mBookmarkButton(self, *event):
+        """Toolbar bookmark button: set a bookmark, or if one exists, ask
+        whether to go to it, replace it or clear it."""
+        if self.game.gsaveinfo.bookmarks.get(0) is None:
+            self.mSetBookmark(0)
+            return
+        if self._cancelDrag():
+            return
+        from kivy.app import App
+        from pysollib.kivy.LApp import LTopLevel0, make_button_row
+        from pysollib.kivy.tkwidget import FText
+        from kivy.metrics import dp
+        main = App.get_running_app().mainWindow
+        title = _("Bookmark")
+        if main.workStack.peek(title) is not None:
+            return
+        window = LTopLevel0(main, title)
+        window.overlay_small = True
+        window.content.add_widget(FText(
+            text=_("What would you like to do?"), halign='center',
+            font_size=dp(19)))
+
+        def run(action):
+            def f():
+                main.popWork(title)
+                action()
+            return f
+
+        def clear():
+            self.game.gsaveinfo.bookmarks.pop(0, None)
+            self.game.updateMenus()
+        window.content.add_widget(make_button_row([
+            (_("Go to"), run(lambda: self.mGotoBookmark(0, confirm=0)), True),
+            (_("New"), run(lambda: self.mSetBookmark(0, confirm=0)), False),
+            (_("Clear"), run(clear), False),
+            (_("Cancel"), run(lambda: None), False)]))
+
     def mResetZoom(self, *args):
         self.tkopt.table_zoom.value = [1.0, 0.0, 0.0]
 
