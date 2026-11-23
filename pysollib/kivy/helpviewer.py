@@ -198,8 +198,8 @@ class HelpViewer:
         self.scroll.add_widget(self.page)
         window.content.add_widget(self.scroll)
         window.content.add_widget(make_button_row([
-            (_('Back'), self.back, False),
             (_('Index'), self.go_home, False),
+            (_('Back'), self.back, False),
             (_('Forward'), self.forward, False),
             (_('Close'), self.close, True)]))
         Window.bind(size=self._relayout)
