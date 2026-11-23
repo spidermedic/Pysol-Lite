@@ -1254,6 +1254,8 @@ class LTopLevel0(LTopLevelBase, LBase):
 
         self.main = top
         self.is_overlay = True
+        self.titleline.text = title + '   (tap to close)'
+
         self.titleline.bind(on_press=self.onClick)
         self.main.pushWork(self.title, self)
 
@@ -1673,6 +1675,42 @@ class LStack:
 # =============================================================================
 
 
+class LOverlayLayer(FloatLayout):
+    """PySol Lite: floating dialogs over the table. The table is dimmed;
+    a tap outside the dialog (or on its title bar) closes it."""
+
+    def __init__(self, main, **kw):
+        super().__init__(**kw)
+        self.main = main
+        self.size_hint = (None, None)
+        with self.canvas.before:
+            Color(0, 0, 0, 0.55)
+            self._scrim = Rectangle(pos=self.pos, size=self.size)
+        self.bind(pos=self._sync, size=self._sync)
+        Window.bind(size=lambda w, sz: setattr(self, 'size', sz))
+
+    def _sync(self, *a):
+        self._scrim.pos = self.pos
+        self._scrim.size = self.size
+
+    def on_touch_down(self, touch):
+        top = self.children[0] if self.children else None
+        if top is not None and not top.collide_point(*touch.pos):
+            key = getattr(top, 'title', None)
+            self.main.popWork(key)
+            return True
+        super().on_touch_down(touch)
+        return True
+
+    def on_touch_move(self, touch):
+        super().on_touch_move(touch)
+        return True
+
+    def on_touch_up(self, touch):
+        super().on_touch_up(touch)
+        return True
+
+
 class LMainWindow(BoxLayout, LTkBase):
 
     longPress = NumericProperty(0)
@@ -1817,7 +1855,36 @@ class LMainWindow(BoxLayout, LTkBase):
 
     # Workarea:
 
+    def _hideOverlays(self):
+        layer = getattr(self, 'overlayLayer', None)
+        if layer is not None:
+            layer.clear_widgets()
+            if layer.parent is not None:
+                layer.parent.remove_widget(layer)
+
+    def _showOverlays(self, widgets):
+        self._hideOverlays()
+        if not widgets:
+            return
+        layer = getattr(self, 'overlayLayer', None)
+        if layer is None:
+            layer = self.overlayLayer = LOverlayLayer(self)
+        layer.size = Window.size
+        layer.pos = (0, 0)
+        w, h = Window.size
+        portrait = w < h
+        for widget in widgets:
+            small = getattr(widget, 'overlay_small', False)
+            if small:
+                widget.size_hint = (0.92, 0.35) if portrait else (0.55, 0.45)
+            else:
+                widget.size_hint = (0.92, 0.6) if portrait else (0.6, 0.8)
+            widget.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+            layer.add_widget(widget)
+        Window.add_widget(layer)
+
     def removeContainer(self):
+        self._hideOverlays()
         self.workContainer.clear_widgets()
         self.workContainerO.clear_widgets()
         self.workContainer1.clear_widgets()
@@ -1836,8 +1903,13 @@ class LMainWindow(BoxLayout, LTkBase):
         if self.toolBar is not None and self.toolBarPos == 2:
             self.workContainer1.add_widget(self.toolBar)
         # (workcontainer)
+        overlays = []
         for w in self.workStack.items:
-            self.workContainer.add_widget(w[1])
+            if getattr(w[1], 'is_overlay', False):
+                overlays.append(w[1])
+            else:
+                self.workContainer.add_widget(w[1])
+        self._showOverlays(overlays)
 
     def rebuildContainer(self):
         LAfterAnimation(self.removeContainer)

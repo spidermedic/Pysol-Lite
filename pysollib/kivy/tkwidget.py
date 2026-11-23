@@ -67,10 +67,7 @@ class MfxDialog:  # ex. _ToplevelDialog
         self.window = LTopLevel0(parent, title=title)
         self.top = self.window.content
 
-        def setSizeRule(obj, val):
-            self.window.size_hint = get_menu_size_hint()
-        self.parent.bind(size=setSizeRule)
-        setSizeRule(0, 0)
+        # PySol Lite: the size is set by the overlay layer in LApp
 
     def wmDeleteWindow(self, *event):
         self.status = 1
@@ -171,6 +168,14 @@ class MfxMessageDialog(MfxDialog):
 
         label = FText(text=kw.text, halign='center')
         self.top.add_widget(label)
+
+        # PySol Lite: a plain message gets a small panel and a Close button
+        from kivy.uix.button import Button
+        self.window.overlay_small = True
+        close = Button(text=_("Close"), size_hint=(1, None), height=96)
+        main, key = self.window.main, self.window.title
+        close.bind(on_release=lambda *a: main.popWork(key))
+        self.top.add_widget(close)
 
         # LB
         # nicht automatisch ein neues spiel laden.
