@@ -282,6 +282,33 @@ class MainMenuDialog(LMenuDialog):
 # ************************************************************************
 
 
+# The game shown first in each category's menu (as on the desktop).
+CATEGORY_FEATURED_GAME = {
+    "Baker's Dozen": "Baker's Dozen",
+    "Beleaguered Castle": "Beleaguered Castle",
+    "Canfield": "Canfield",
+    "Fan": "Fan",
+    "Forty Thieves": "Forty Thieves",
+    "FreeCell": "FreeCell",
+    "Golf": "Golf",
+    "Gypsy": "Gypsy",
+    "Klondike": "Klondike",
+    "Montana": "Montana",
+    "Napoleon": "Der kleine Napoleon",
+    "Numerica": "Numerica",
+    "Pairing": "Pyramid",
+    "Picture Gallery": "Picture Gallery",
+    "Raglan": "Raglan",
+    "Spider": "Spider",
+    "Terrace": "Terrace",
+    "Yukon": "Yukon",
+    "Miscellaneous": "Aces Up",
+    "Cribbage": "Cribbage Square",
+    "Poker": "Poker Square",
+    "Mahjongg": "Mahjongg Traditional",
+}
+
+
 class GamesMenuDialog(LMenuDialog):
     def make_favid_list(self, tv, rg):
         favids = self.app.opt.favorite_gameid
@@ -296,7 +323,8 @@ class GamesMenuDialog(LMenuDialog):
     def remove_favid_list(self, tv, rg):
         delist = []
         for n in rg.nodes:
-            if n.text not in [_('<Add>'), _('<Remove>')]:
+            if n.text not in [_('Add current game'),
+                              _('Remove current game')]:
                 delist.append(n)
         for m in delist:
             tv.remove_node(m)
@@ -307,6 +335,10 @@ class GamesMenuDialog(LMenuDialog):
             self.remove_favid_list(args[0], args[1])
             self.make_favid_list(args[0], args[1])
         return doit
+
+    def clear_recent(self):
+        gameid = self.app.game.id
+        self.app.opt.recent_gameid = [gameid]
 
     def buildTree(self, tv, node):
         self.addBackNode(tv)
@@ -324,20 +356,61 @@ class GamesMenuDialog(LMenuDialog):
                     rid, self.menubar._mSelectGame)
                 tv.add_node(
                     LTreeNode(text=gi.name, command=command), rg)
+        tv.add_node(LTreeNode(
+            text=_('Clear recent games'),
+            command=self.make_command(self.clear_recent)), rg)
 
         rg = tv.add_node(
             LTreeNode(text=_('Favorite games')))
         if rg:
             tv.add_node(LTreeNode(
-                text=_('<Add>'),
+                text=_('Add current game'),
                 command=self.change_favid_list(
                     self.menubar.mAddFavor, tv, rg)), rg)
             tv.add_node(LTreeNode(
-                text=_('<Remove>'),
+                text=_('Remove current game'),
                 command=self.change_favid_list(
                     self.menubar.mDelFavor, tv, rg)), rg)
 
             self.make_favid_list(tv, rg)
+
+        # the rest of the desktop Games menu: Popular games, then one
+        # entry per category (alphabetical), each with its games
+        gdb = self.app.gdb
+        games = [gdb.get(i) for i in gdb.getGamesIdSortedByName()]
+
+        def add_games(parent, glist, short_name=False, first=None):
+            if first:
+                glist = first + [g for g in glist if g is not first[0]]
+            for gi in glist:
+                command = self.make_game_command(
+                    gi.id, self.menubar._mSelectGame)
+                tv.add_node(LTreeNode(
+                    text=gi.short_name if short_name else gi.name,
+                    command=command), parent)
+
+        popular = [g for g in games if g.si.game_flags & GI.GT_POPULAR]
+        if popular:
+            rg = tv.add_node(LTreeNode(text=_('Popular games')))
+            add_games(rg, popular)
+
+        data = [(label.replace('&', ''), func, False) for label, func in
+                tuple(getattr(GI, 'SELECT_GAME_BY_TYPE', ()))
+                + tuple(getattr(GI, 'SELECT_SPECIAL_GAME_BY_TYPE', ()))
+                if label is not None]
+        data.append(('Mahjongg',
+                     lambda gi: gi.si.game_type == GI.GT_MAHJONGG, True))
+        data.sort(key=lambda d: d[0].lower())
+        for label, func, short_name in data:
+            glist = [g for g in games if func(g)]
+            if not glist:
+                continue
+            if short_name:
+                glist.sort(key=lambda gi: gi.short_name)
+            featured = CATEGORY_FEATURED_GAME.get(label)
+            first = [g for g in glist if g.name == featured]
+            rg = tv.add_node(LTreeNode(text=_(label)))
+            add_games(rg, glist, short_name, first)
 
 # ************************************************************************
 
@@ -352,8 +425,6 @@ class FileMenuDialog(LMenuDialog):
         tv.add_node(LTreeNode(
             text=_('Save as...'),
             command=self.make_command(self.menubar.mSaveAs)))
-        tv.add_node(LTreeNode(
-            text=_('Quit'), command=self.auto_close(self.menubar.mQuit)))
 
 # ************************************************************************
 
