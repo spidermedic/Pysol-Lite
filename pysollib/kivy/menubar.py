@@ -444,7 +444,6 @@ class EditMenuDialog(LMenuDialog):  # Tools
         for text, command in (
                 (_('Deal cards'), mb.mDeal),
                 (_('Highlight piles'), mb.mHighlightPiles),
-                (_('Find card...'), mb.mFindCard),
                 (_('Demo'), mb.mDemo)):
             tv.add_node(LTreeNode(
                 text=text, command=self.make_command(command)))
