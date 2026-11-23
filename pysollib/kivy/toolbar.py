@@ -316,28 +316,10 @@ class PysolToolbarTk(BoxLayout):
         self.show(True)
 
     def show(self, on=0, **kw):
-
-        landscape = Window.width/Window.height > 1.0
-        if landscape:
-            side = self.menubar.tkopt.toolbar_land.value
-        else:
-            side = self.menubar.tkopt.toolbar_port.value
-
-        self.win.setTool(None, side)
-
-        # size_hint dependent on screen orientation:
-        if side in [1, 2]:
-            self.orientation = "horizontal"
-            if landscape:
-                self.size_hint = (1.0, 0.09)
-            else:
-                self.size_hint = (1.0, 0.06)
-        else:
-            self.orientation = "vertical"
-            if landscape:
-                self.size_hint = (0.06, 1.0)
-            else:
-                self.size_hint = (0.09, 1.0)
+        # PySol Lite: always in the top bar, after the Menu item
+        self.win.setTool(None, 5)
+        self.orientation = "horizontal"
+        self.size_hint = (1.0, 1.0)
         return False
 
     def mHoldAndQuit(self, *args):

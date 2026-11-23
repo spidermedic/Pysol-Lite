@@ -141,8 +141,9 @@ class LMenuBase:
         return rg1
 
     def addBackNode(self, tv):
-        # PySol Lite: the menus are on the top bar, no way "back" needed
-        return
+        tv.add_node(LTreeNode(
+            text='[b]' + _('< Back') + '[/b]',
+            command=self.make_command(self.menubar.mMainMenuDialog)))
 
 # ************************************************************************
 # * Tree Generators
@@ -1750,14 +1751,10 @@ class PysolMenubarTk:
         # init keybindings
         bind(self.top, "<KeyPress>", self._keyPressHandler)
 
-        # PySol Lite: the desktop menu names along the top bar
-        for text, command in (
-                (_("File"), self.mFileMenuDialog),
-                (_("Games"), self.mGamesMenuDialog),
-                (_("Play"), self.mEditMenuDialog),
-                (_("Settings"), self.mOptionsMenuDialog),
-                (_("Help"), self.mHelpMenuDialog)):
-            LMenuItem(self.__menubar.menu, text=text, command=command)
+        # PySol Lite: one Menu item (File, Games, Play, Settings, Help
+        # inside) on the left of the top bar, the toolbar after it
+        LMenuItem(self.__menubar.menu,
+                  text=_("Menu"), command=self.mMainMenuDialog)
 
         MfxMenubar.addPath = None
 

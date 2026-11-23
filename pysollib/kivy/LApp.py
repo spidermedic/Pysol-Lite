@@ -1349,9 +1349,18 @@ class LMenuBar(BoxLayout, LBase):
 
         # Neues Menu einfügen
         if (menu is not None):
-            self.add_widget(menu)
+            # PySol Lite: icon + Menu on the left, the toolbar after it
+            menu.size_hint_x = None
+            menu.width = dp(76 + 96)
+            self.add_widget(menu, index=len(self.children))
             self.menu = menu
             menu.setBar(self)
+
+    def setToolbar(self, toolbar):
+        if toolbar.parent is not self:
+            if toolbar.parent is not None:
+                toolbar.parent.remove_widget(toolbar)
+            self.add_widget(toolbar)
 
     def getMenu(self):
         return self.menu
@@ -1934,6 +1943,9 @@ class LMainWindow(BoxLayout, LTkBase):
         self.workContainer1.clear_widgets()
 
     def buildContainer(self):
+        if self.toolBar is not None and self.toolBarPos == 5:
+            # PySol Lite: the toolbar is in the top bar, after the menu
+            self.menuArea.setToolbar(self.toolBar)
         # (hbox)
         if self.toolBar is not None and self.toolBarPos == 3:
             self.workContainerO.add_widget(self.toolBar)

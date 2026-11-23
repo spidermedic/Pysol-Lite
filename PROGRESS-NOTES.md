@@ -1578,3 +1578,8 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - Help did nothing on Android: the desktop hands each page to the browser as a `file://` URL, which Android will not open from app-private storage. `help_html` now calls `pysollib/kivy/helpviewer.py` when `TOOLKIT == 'kivy'`. It turns the pages in `data/html` (headings, paragraphs, lists, links, `<br>`, images, simple tables flattened to rows) into Kivy labels in a full-window panel with Back / Index / Forward / Close. Links between pages and the per-game rules (toolbar Rules button) work; http links go to the browser. Desktop is unchanged.
 - The viewer has its own work-stack key (`HelpViewer`): the Help menu is also titled "Help", and the menu's auto-close popped the viewer.
 - Find card removed from the Play menu (it did not work and the desktop only needs it for big layouts).
+
+## 145. Kivy: top bar = icon, Menu, toolbar (2026-11-22)
+
+- The top bar holds the PySol icon, one "Menu" item (File, Games, Play, Settings, Help inside, with "< Back") left-justified after the icon, and then the toolbar buttons across the rest of the bar (`toolBarPos == 5`). There is no separate side/bottom toolbar any more, so the table uses the whole screen. The title text ("PySol Lite - game") is gone.
+- The icon's fixed width (`ap.size_hint_x = None`) is what stops the menu items from being pushed to the right: Kivy's `ActionPrevious` rule sets `size_hint_x: 1`, which ignores a hint passed as a keyword.
