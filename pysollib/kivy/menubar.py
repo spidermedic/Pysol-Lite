@@ -265,25 +265,24 @@ class MainMenuDialog(LMenuDialog):
         # print('MainMenuDialog starting')
 
     def buildTree(self, tv, node):
+        # PySol Lite: the desktop menu bar (File, Games, Play, Options,
+        # Help) without what the toolbar already has (New game, Undo, Redo,
+        # Restart, Hint, Auto drop, Shuffle, bookmarks, Rules) and without
+        # the View menu (toolbar, status bar and full screen are desktop
+        # window settings)
         mb = self.menubar
         for text, command in (
-                (_("New game"), self.auto_close(mb.mNewGame)),
-                (_("Select game"), self.auto_close(mb.mSelectGameDialog)),
-                (_("Restart"), self.auto_close(mb.mRestart)),
-                (_("Undo"), self.auto_close(mb.mUndo)),
-                (_("Redo"), self.auto_close(mb.mRedo)),
-                (_("Hint"), self.auto_close(mb.mHint)),
-                (_("Play"), self.auto_close(mb.mEditMenuDialog)),
                 (_("File"), self.auto_close(mb.mFileMenuDialog)),
+                (_("Games"), self.auto_close(mb.mGamesMenuDialog)),
+                (_("Play"), self.auto_close(mb.mEditMenuDialog)),
                 (_("Settings"), self.auto_close(mb.mOptionsMenuDialog)),
-                (_("Help"), self.auto_close(mb.mHelpMenuDialog)),
-                (_("Quit"), self.auto_close(mb.mQuit))):
+                (_("Help"), self.auto_close(mb.mHelpMenuDialog))):
             tv.add_node(LTreeNode(text=text, command=command))
 
 # ************************************************************************
 
 
-class FileMenuDialog(LMenuDialog):
+class GamesMenuDialog(LMenuDialog):
     def make_favid_list(self, tv, rg):
         favids = self.app.opt.favorite_gameid
         for fid in favids:
@@ -311,6 +310,9 @@ class FileMenuDialog(LMenuDialog):
 
     def buildTree(self, tv, node):
         self.addBackNode(tv)
+        tv.add_node(LTreeNode(
+            text=_('All games...'),
+            command=self.make_command(self.menubar.mSelectGameDialog)))
 
         rg = tv.add_node(
             LTreeNode(text=_('Recent games')))
@@ -337,6 +339,12 @@ class FileMenuDialog(LMenuDialog):
 
             self.make_favid_list(tv, rg)
 
+# ************************************************************************
+
+
+class FileMenuDialog(LMenuDialog):
+    def buildTree(self, tv, node):
+        self.addBackNode(tv)
         tv.add_node(LTreeNode(
             text=_('Open...'), command=self.make_command(self.menubar.mOpen)))
         tv.add_node(LTreeNode(
@@ -344,6 +352,8 @@ class FileMenuDialog(LMenuDialog):
         tv.add_node(LTreeNode(
             text=_('Save as...'),
             command=self.make_command(self.menubar.mSaveAs)))
+        tv.add_node(LTreeNode(
+            text=_('Quit'), command=self.auto_close(self.menubar.mQuit)))
 
 # ************************************************************************
 
@@ -356,20 +366,17 @@ class EditMenuDialog(LMenuDialog):  # Tools
             menubar, parent, title, app, **kw)
 
     def buildTree(self, tv, node):
+        # desktop Play menu without Auto drop, Shuffle tiles, Restart and
+        # Hint (toolbar buttons) and Pause (not needed on a tablet)
         self.addBackNode(tv)
         mb = self.menubar
         for text, command in (
                 (_('Deal cards'), mb.mDeal),
-                (_('Auto drop'), mb.mDrop),
-                (_('Shuffle tiles'), mb.mShuffle),
                 (_('Highlight piles'), mb.mHighlightPiles),
                 (_('Find card...'), mb.mFindCard),
-                (_('Demo'), mb.mDemo),
-                (_('Set bookmark'), lambda: mb.mSetBookmark(0)),
-                (_('Go to bookmark'), lambda: mb.mGotoBookmark(0))):
+                (_('Demo'), mb.mDemo)):
             tv.add_node(LTreeNode(
                 text=text, command=self.make_command(command)))
-        self.addCheckNode(tv, None, _('Pause'), mb.tkopt.pause, mb.mPause)
 
 # ************************************************************************
 
@@ -1282,11 +1289,25 @@ class LLeanOptionsMenuGenerator(LTreeGenerator):
     """PySol Lite settings: only what this program has."""
 
     def buildTree(self, tv, node):
+        # the pages of the desktop Settings window: General, Assist,
+        # Appearance (the Toolbar page is a desktop window setting)
         mb = self.menubar
         self.addBackNode(tv)
 
-        rg = tv.add_node(LTreeNode(text=_('Automatic play')))
-        self.addCheckNode(tv, rg, _('Auto face up'),
+        rg = tv.add_node(LTreeNode(text=_('General')))
+        self.addRadioNode(tv, rg, _('Drag and drop cards'),
+                          mb.tkopt.mouse_type, 'drag-n-drop', None)
+        self.addRadioNode(tv, rg, _('Click to move cards'),
+                          mb.tkopt.mouse_type, 'point-n-click', None)
+        rg2 = tv.add_node(LTreeNode(text=_('Animation speed')), rg)
+        for text, value in ((_('Off'), 0), (_('Slow'), 3),
+                            (_('Medium'), 2), (_('Fast'), 1)):
+            self.addRadioNode(tv, rg2, text, mb.tkopt.animations, value,
+                              mb.mOptAnimations)
+        yield
+
+        rg = tv.add_node(LTreeNode(text=_('Assist')))
+        self.addCheckNode(tv, rg, _('Auto face-up'),
                           mb.tkopt.autofaceup, mb.mOptAutoFaceUp)
         self.addCheckNode(tv, rg, _('Auto drop'),
                           mb.tkopt.autodrop, mb.mOptAutoDrop)
@@ -1294,25 +1315,25 @@ class LLeanOptionsMenuGenerator(LTreeGenerator):
                           mb.tkopt.autodeal, mb.mOptAutoDeal)
         self.addCheckNode(tv, rg, _('Quick play'),
                           mb.tkopt.quickplay, mb.mOptQuickPlay)
+        self.addCheckNode(tv, rg, _('Shade legal moves'),
+                          mb.tkopt.shade, mb.mOptShade)
+        rg2 = tv.add_node(LTreeNode(text=_('Specific games')), rg)
+        self.addCheckNode(tv, rg2, _('Show hint arrow (in Shisen-Sho games)'),
+                          mb.tkopt.shisen_show_hint, mb.mOptShisenShowHint)
+        self.addCheckNode(tv, rg2,
+                          _('Deal all cards (in Accordion type games)'),
+                          mb.tkopt.accordion_deal_all,
+                          mb.mOptAccordionDealAll)
+        self.addCheckNode(tv, rg2,
+                          _('Show removed tiles (in Mahjongg games)'),
+                          mb.tkopt.mahjongg_show_removed,
+                          mb.mOptMahjonggShowRemoved)
         yield
 
-        rg = tv.add_node(LTreeNode(text=_('Animations')))
-        for text, value in ((_('Off'), 0), (_('Fast'), 1),
-                            (_('Medium'), 2), (_('Slow'), 3)):
-            self.addRadioNode(tv, rg, text, mb.tkopt.animations, value,
-                              mb.mOptAnimations)
-        yield
-
-        rg = tv.add_node(LTreeNode(text=_('Moving cards')))
-        self.addRadioNode(tv, rg, _('Drag and drop'), mb.tkopt.mouse_type,
-                          'drag-n-drop', None)
-        self.addRadioNode(tv, rg, _('Tap to move'), mb.tkopt.mouse_type,
-                          'point-n-click', None)
-        yield
-
+        rg = tv.add_node(LTreeNode(text=_('Appearance')))
         tv.add_node(LTreeNode(
             text=_('Cardset...'),
-            command=self.make_command(mb.mSelectCardsetDialog)))
+            command=self.make_command(mb.mSelectCardsetDialog)), rg)
         yield
 
 
@@ -1342,7 +1363,6 @@ class HelpMenuDialog(LMenuDialog):
         mb = self.menubar
         for text, command in (
                 (_('Contents'), mb.mHelp),
-                (_('Rules for this game'), mb.mHelpRules),
                 (_('License terms'), mb.mHelpLicense),
                 (_('About %s...') % TITLE, mb.mHelpAbout)):
             tv.add_node(LTreeNode(
@@ -1911,7 +1931,13 @@ class PysolMenubarTk:
             return
         self.game.setCursor(cursor=CURSOR_WATCH)
         after_idle(self.top, self.__restoreCursor)
-        FileMenuDialog(self, self.top, title=_("File Menu"), app=self.app)
+        FileMenuDialog(self, self.top, title=_("File"), app=self.app)
+        return EVENT_HANDLED
+
+    def mGamesMenuDialog(self, *event):
+        if self._cancelDrag(break_pause=False):
+            return
+        GamesMenuDialog(self, self.top, title=_("Games"), app=self.app)
         return EVENT_HANDLED
 
     def mEditMenuDialog(self, *event):

@@ -1565,3 +1565,10 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - Rotation: upstream locked it on every touch and unlocked only on a double tap. It is now released after each drag and sensor rotation is requested at start.
 - Dialogs (`LTopLevel0`) float centred over a dimmed table (`LOverlayLayer` in `LApp.py`); tap outside, the title bar, or a button closes them. Message dialogs get buttons from their `strings`.
 - One look: dark slate panel, darker title bar with a teal rule, teal primary / slate secondary buttons (`DLG_*`, `make_button_row`). The toolbar New game / Restart "toast to tap" is now a confirm dialog in the same style.
+
+## 143. Kivy: menus mirror the desktop menu bar (2026-11-22)
+
+- Main menu: File, Games, Play, Settings, Help (desktop order). Edit and View are left out: every Edit item (Undo, Redo, set/go to bookmark) is a toolbar button, and View (toolbar, status bar, full screen) is desktop window setup.
+- File: Open, Save, Save as, Quit. Games: All games, Recent games, Favorite games. Play: Deal cards, Highlight piles, Find card, Demo (Auto drop, Shuffle tiles, Restart, Hint are toolbar buttons; Pause is not offered on Android). Help: Contents, License terms, About (Rules is a toolbar button).
+- Settings follows the desktop Settings window: General (drag or click to move, animation speed in the desktop order), Assist (auto face-up/drop/deal, quick play, shade legal moves, game-specific options), Appearance (cardset). Toolbar page, Sound and Confirm are not offered.
+- Toolbar: pause replaced by a bookmark button whose icon is filled yellow while a bookmark is set.
