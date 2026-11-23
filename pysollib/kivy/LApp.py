@@ -1368,8 +1368,11 @@ class LMenu(ActionView, LBase):
 
         kw['app_icon'] = 'data/images/icons/48x48/pysol.png'
         kw['with_previous'] = prev
-        kw['size_hint'] = (.01, 1)
+        # PySol Lite: a fixed-width icon, so the menu names follow it on
+        # the left instead of being pushed to the right edge
         self.ap = MyActionPrev(**kw)
+        self.ap.size_hint_x = None
+        self.ap.width = dp(76)
         self.add_widget(self.ap)
         self.bar = None
         self.uppermenu = None
