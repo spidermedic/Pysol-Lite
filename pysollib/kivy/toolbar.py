@@ -347,6 +347,15 @@ class PysolToolbarTk(BoxLayout):
 
     # PySol Lite: the Tk toolbar can change its icon set, text and relief
     # while running; the Kivy toolbar cannot, so these do nothing
+    def setBookmarkActive(self, active):
+        # PySol Lite: filled (yellow) icon while a bookmark is set
+        button = self.buttond.get('bookmark')
+        if button is None:
+            return
+        image = self._loadImage('bookmark_on' if active else 'bookmark')
+        if image is not None:
+            button.texture = CoreImage(image.source).texture
+
     def updateImages(self, dirname, size):
         return False
 

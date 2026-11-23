@@ -2035,8 +2035,12 @@ class PysolMenubarTk:
         '''
 
     def updateBookmarkMenuState(self):
-        # LB:
-        # print('updateBookmarkMenuState - fake')
+        # PySol Lite: the toolbar bookmark icon is filled while a
+        # bookmark is set
+        tb = getattr(self.app, 'toolbar', None)
+        if tb is not None and self.game is not None:
+            tb.setBookmarkActive(
+                self.game.gsaveinfo.bookmarks.get(0) is not None)
         return
 
         state = self._getEnabledState
