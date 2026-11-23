@@ -316,10 +316,16 @@ class PysolToolbarTk(BoxLayout):
         self.show(True)
 
     def show(self, on=0, **kw):
-        # PySol Lite: always in the top bar, after the Menu item
-        self.win.setTool(None, 5)
+        # PySol Lite: after the Menu button in the top bar, or in a bar of
+        # its own below the table (option toolbar_bottom)
         self.orientation = "horizontal"
-        self.size_hint = (1.0, 1.0)
+        if self.menubar.tkopt.toolbar_bottom.value:
+            self.size_hint = (1.0, None)
+            self.height = dp(56)
+            self.win.setTool(None, 2)
+        else:
+            self.size_hint = (1.0, 1.0)
+            self.win.setTool(None, 5)
         return False
 
     def mHoldAndQuit(self, *args):

@@ -91,6 +91,7 @@ toolbar_port = integer(0, 4)
 toolbar_relief = string
 toolbar_compound = string
 toolbar_size = integer(0, 2)
+toolbar_bottom = boolean
 statusbar = boolean
 num_recent_games = integer(10, 100)
 last_gameid = integer
@@ -176,6 +177,7 @@ class Options:
         ('toolbar_relief', 'str'),
         ('toolbar_compound', 'str'),
         ('toolbar_size', 'int'),
+        ('toolbar_bottom', 'bool'),
         ('statusbar', 'bool'),
         # ('num_cards', 'bool'),
         # ('helpbar', 'bool'),
@@ -250,6 +252,7 @@ class Options:
         self.toolbar_relief = 'flat'
         self.toolbar_compound = 'top'  # icons and text (text below the icon)
         self.toolbar_size = 0
+        self.toolbar_bottom = False   # Android: toolbar below the table
         self.toolbar_vars = {}
         for w in TOOLBAR_BUTTONS:
             self.toolbar_vars[w] = True  # show all buttons

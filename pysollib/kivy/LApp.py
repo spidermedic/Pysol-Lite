@@ -2089,6 +2089,9 @@ class LMainWindow(BoxLayout, LTkBase):
         self.workContainer1.clear_widgets()
 
     def buildContainer(self):
+        if (self.toolBar is not None and self.toolBarPos != 5
+                and self.toolBar.parent is self.menuArea):
+            self.menuArea.remove_widget(self.toolBar)
         if self.toolBar is not None and self.toolBarPos == 5:
             # PySol Lite: the toolbar is in the top bar, after the menu
             self.menuArea.setToolbar(self.toolBar)

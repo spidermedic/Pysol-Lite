@@ -1418,6 +1418,8 @@ class LLeanOptionsMenuGenerator(LTreeGenerator):
         yield
 
         rg = tv.add_node(LTreeNode(text=_('Appearance')))
+        self.addCheckNode(tv, rg, _('Toolbar at the bottom'),
+                          mb.tkopt.toolbar_bottom, mb.mOptToolbar)
         # the cardsets by type, each with its card backs (the Cardset
         # dialog of the desktop is not used with Kivy)
         from pysollib.resource import CSI, getNaturalSortKey
@@ -1676,6 +1678,7 @@ class PysolMenubarTk:
             toolbar_relief=LStringWrap(opt, "toolbar_relief"),
             toolbar_compound=LStringWrap(opt, "toolbar_compound"),
             toolbar_size=LNumWrap(opt, "toolbar_size"),
+            toolbar_bottom=LBoolWrap(opt, "toolbar_bottom"),
             toolbar_vars={},
             # card dsiplay and text style settings
             demo_logo=LBoolWrap(opt, "demo_logo"),
