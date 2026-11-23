@@ -1914,7 +1914,9 @@ class LMainWindow(BoxLayout, LTkBase):
         portrait = w < h
         for widget in widgets:
             small = getattr(widget, 'overlay_small', False)
-            if small:
+            if getattr(widget, 'overlay_full', False):
+                widget.size_hint = (1, 1)
+            elif small:
                 widget.size_hint = (0.92, 0.26) if portrait else (0.5, 0.34)
             else:
                 widget.size_hint = (0.92, 0.6) if portrait else (0.6, 0.8)

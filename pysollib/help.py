@@ -26,6 +26,8 @@
 # PySol imports
 import pathlib
 
+import pysollib.settings
+
 from pysollib.mfxutil import openURL
 from pysollib.pysoltk import MfxMessageDialog
 from pysollib.pysoltk import PysolAboutDialog
@@ -82,5 +84,9 @@ def help_html(app, document, dir_, top=None):
                          text=f"Cannot find help document\n{document}",
                          bitmap="warning")
         return False
+    if pysollib.settings.TOOLKIT == 'kivy':
+        # Android cannot open our files in a browser: show them in the app
+        from pysollib.kivy.helpviewer import show_help
+        return show_help(app, str(pathlib.Path(doc).resolve()))
     # a file:// URL; as_uri() percent-encodes the space in "PySol Lite.app"
     return openURL(pathlib.Path(doc).resolve().as_uri())

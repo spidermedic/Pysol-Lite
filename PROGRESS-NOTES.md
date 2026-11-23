@@ -1572,3 +1572,9 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 - File: Open, Save, Save as, Quit. Games: All games, Recent games, Favorite games. Play: Deal cards, Highlight piles, Find card, Demo (Auto drop, Shuffle tiles, Restart, Hint are toolbar buttons; Pause is not offered on Android). Help: Contents, License terms, About (Rules is a toolbar button).
 - Settings follows the desktop Settings window: General (drag or click to move, animation speed in the desktop order), Assist (auto face-up/drop/deal, quick play, shade legal moves, game-specific options), Appearance (cardset). Toolbar page, Sound and Confirm are not offered.
 - Toolbar: pause replaced by a bookmark button whose icon is filled yellow while a bookmark is set.
+
+## 144. Kivy: in-app Help (2026-11-22)
+
+- Help did nothing on Android: the desktop hands each page to the browser as a `file://` URL, which Android will not open from app-private storage. `help_html` now calls `pysollib/kivy/helpviewer.py` when `TOOLKIT == 'kivy'`. It turns the pages in `data/html` (headings, paragraphs, lists, links, `<br>`, images, simple tables flattened to rows) into Kivy labels in a full-window panel with Back / Index / Forward / Close. Links between pages and the per-game rules (toolbar Rules button) work; http links go to the browser. Desktop is unchanged.
+- The viewer has its own work-stack key (`HelpViewer`): the Help menu is also titled "Help", and the menu's auto-close popped the viewer.
+- Find card removed from the Play menu (it did not work and the desktop only needs it for big layouts).
