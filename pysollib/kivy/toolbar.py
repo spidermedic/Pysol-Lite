@@ -319,9 +319,11 @@ class PysolToolbarTk(BoxLayout):
         # PySol Lite: after the Menu button in the top bar, or in a bar of
         # its own below the table (option toolbar_bottom)
         self.orientation = "horizontal"
+        # slightly smaller icons: padding around the buttons
+        self.padding = (dp(8), dp(3))
         if self.menubar.tkopt.toolbar_bottom.value:
             self.size_hint = (1.0, None)
-            self.height = dp(56)
+            self.height = dp(52)
             self.win.setTool(None, 2)
         else:
             self.size_hint = (1.0, 1.0)
