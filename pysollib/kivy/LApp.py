@@ -1351,7 +1351,7 @@ class LMenuBar(BoxLayout, LBase):
         if (menu is not None):
             # PySol Lite: icon + Menu on the left, the toolbar after it
             menu.size_hint_x = None
-            menu.width = dp(76 + 96)
+            menu.width = dp(96)
             self.add_widget(menu, index=len(self.children))
             self.menu = menu
             menu.setBar(self)
@@ -1375,13 +1375,15 @@ class LMenu(ActionView, LBase):
         class MyActionPrev(ActionPrevious, LBase):
             pass
 
-        kw['app_icon'] = 'data/images/icons/48x48/pysol.png'
+        kw['app_icon'] = ''      # PySol Lite: no icon in the top bar
         kw['with_previous'] = prev
         # PySol Lite: a fixed-width icon, so the menu names follow it on
         # the left instead of being pushed to the right edge
         self.ap = MyActionPrev(**kw)
         self.ap.size_hint_x = None
-        self.ap.width = dp(76)
+        self.ap.width = 0
+        self.ap.opacity = 0
+        self.ap.disabled = True
         self.add_widget(self.ap)
         self.bar = None
         self.uppermenu = None
