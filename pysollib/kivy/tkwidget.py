@@ -34,6 +34,7 @@ import logging
 from kivy.clock import Clock
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.metrics import dp
 from kivy.uix.label import Label
 
 from pysollib.kivy.LApp import LBoxLayout
@@ -166,7 +167,7 @@ class MfxMessageDialog(MfxDialog):
             image = LImage(texture=kw.image.texture, size_hint=(1, 1))
             self.top.add_widget(image)
 
-        label = FText(text=kw.text, halign='center')
+        label = FText(text=kw.text, halign='center', font_size=dp(19))
         self.top.add_widget(label)
 
         # PySol Lite: a plain message gets a small panel and buttons in

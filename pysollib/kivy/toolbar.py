@@ -32,6 +32,7 @@ from kivy.uix.boxlayout import BoxLayout
 # PySol kivy imports
 from pysollib.kivy.LBase import LBase
 from pysollib.kivy.LImage import LImage
+from kivy.metrics import dp
 from pysollib.kivy.toast import Toast
 
 # PySol imports
@@ -166,7 +167,8 @@ class MyToastButton(MyButtonBase):
                     if self.name == "new" else _("Restart this game?"))
         window = LTopLevel0(main, text)
         window.overlay_small = True
-        window.content.add_widget(FText(text=question, halign='center'))
+        window.content.add_widget(FText(text=question, halign='center',
+                                              font_size=dp(19)))
 
         def cancel():
             main.popWork(text)

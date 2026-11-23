@@ -1217,7 +1217,7 @@ def make_button_row(buttons):
 class LTopLevelContent(BoxLayout, LBase):
     def __init__(self, **kw):
         super().__init__(**kw)
-        self.padding = (dp(8), dp(14), dp(8), 0)
+        self.padding = (dp(8), dp(26), dp(8), 0)
 
         # Macht die Hintergrundfarbe der TopLevel (Dialog-) Fenster.
         with self.canvas.before:
@@ -1292,6 +1292,9 @@ class LTopLevel0(LTopLevelBase, LBase):
         self.main = top
         self.is_overlay = True
 
+        # PySol Lite: floating dialogs have no title bar; outside taps and
+        # their buttons close them
+        self.remove_widget(self.titleline)
         self.titleline.bind(on_press=self.onClick)
         self.main.pushWork(self.title, self)
 
@@ -1912,7 +1915,7 @@ class LMainWindow(BoxLayout, LTkBase):
         for widget in widgets:
             small = getattr(widget, 'overlay_small', False)
             if small:
-                widget.size_hint = (0.92, 0.3) if portrait else (0.5, 0.4)
+                widget.size_hint = (0.92, 0.26) if portrait else (0.5, 0.34)
             else:
                 widget.size_hint = (0.92, 0.6) if portrait else (0.6, 0.8)
             widget.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
