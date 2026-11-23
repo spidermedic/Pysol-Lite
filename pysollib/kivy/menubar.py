@@ -1417,9 +1417,28 @@ class LLeanOptionsMenuGenerator(LTreeGenerator):
         yield
 
         rg = tv.add_node(LTreeNode(text=_('Appearance')))
-        tv.add_node(LTreeNode(
-            text=_('Cardset...'),
-            command=self.make_command(mb.mSelectCardsetDialog)), rg)
+        # the cardsets by type, each with its card backs (the Cardset
+        # dialog of the desktop is not used with Kivy)
+        from pysollib.resource import CSI, getNaturalSortKey
+        rg0 = tv.add_node(LTreeNode(text=_('Cardset')), rg)
+        mb.tkopt.cardset.value = self.app.cardset.index
+        cdict = collections.defaultdict(list)
+        for i, cardset in enumerate(self.app.cardset_manager.getAll()):
+            cdict[cardset.type].append((i, cardset))
+        for k in sorted(cdict.keys()):
+            csl = cdict[k]
+            csl.sort(key=lambda cst: getNaturalSortKey(cst[1].name))
+            rg1 = tv.add_node(LTreeNode(text=CSI.TYPE_NAME[k]), rg0)
+            for i, cs in csl:
+                rg2 = self.addRadioNode(
+                    tv, rg1, cs.name, mb.tkopt.cardset, i, mb.mOptCardset)
+                mb.tkopt.cardbacks[i] = LNumWrap(None)
+                mb.tkopt.cardbacks[i].value = cs.backindex
+                for bi, cb in enumerate(cs.backnames):
+                    self.addRadioNode(
+                        tv, rg2, _('Back %d') % (bi + 1),
+                        mb.tkopt.cardbacks[i], bi,
+                        self.make_vars_command(mb.mOptSetCardback, i))
         yield
 
 
