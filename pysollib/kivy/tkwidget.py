@@ -169,13 +169,21 @@ class MfxMessageDialog(MfxDialog):
         label = FText(text=kw.text, halign='center')
         self.top.add_widget(label)
 
-        # PySol Lite: a plain message gets a small panel and a Close button
-        from kivy.uix.button import Button
+        # PySol Lite: a plain message gets a small panel and buttons in
+        # the common dialog style; any button closes the dialog
+        from pysollib.kivy.LApp import make_button_row
         self.window.overlay_small = True
-        close = Button(text=_("Close"), size_hint=(1, None), height=96)
         main, key = self.window.main, self.window.title
-        close.bind(on_release=lambda *a: main.popWork(key))
-        self.top.add_widget(close)
+        names = [x.replace('&', '') for x in kw.strings]
+
+        def closer(i):
+            def f():
+                self.button = i
+                main.popWork(key)
+            return f
+        self.top.add_widget(make_button_row(
+            [(n, closer(i), i == len(names) - 1)
+             for i, n in enumerate(names)]))
 
         # LB
         # nicht automatisch ein neues spiel laden.

@@ -156,10 +156,26 @@ class MyToastButton(MyButtonBase):
             text = _("New game")
         if self.name == "restart":
             text = _("Restart game")
-        toast = Toast(text=text+" ?")
-        toast.show(parent=Cache.get('LAppCache', 'mainApp').baseWindow,
-                   duration=self.timeout,
-                   hook=self.exec_command)
+        from kivy.app import App
+        from pysollib.kivy.LApp import LTopLevel0, make_button_row
+        from pysollib.kivy.tkwidget import FText
+        main = App.get_running_app().mainWindow
+        if main.workStack.peek(text) is not None:
+            return
+        question = (_("Discard this game and start a new one?")
+                    if self.name == "new" else _("Restart this game?"))
+        window = LTopLevel0(main, text)
+        window.overlay_small = True
+        window.content.add_widget(FText(text=question, halign='center'))
+
+        def cancel():
+            main.popWork(text)
+
+        def ok():
+            main.popWork(text)
+            self.exec_command()
+        window.content.add_widget(make_button_row(
+            [(_("Cancel"), cancel, False), (_("OK"), ok, True)]))
 
     def on_release(self):
         self.fit_mode = "contain"

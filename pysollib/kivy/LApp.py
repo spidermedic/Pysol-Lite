@@ -35,6 +35,7 @@ from kivy.config import Config
 from kivy.core.audio import SoundLoader
 from kivy.core.window import Window
 from kivy.graphics import Color
+from kivy.metrics import dp
 from kivy.graphics import Line
 from kivy.graphics import Rectangle
 from kivy.graphics import Triangle
@@ -1186,13 +1187,41 @@ class LTreeNode(ButtonBehavior, TreeViewLabel, LBase):
 # =============================================================================
 
 
+# PySol Lite: one colour scheme and one button style for every dialog
+DLG_PANEL = (0.15, 0.18, 0.22, 1.0)
+DLG_TITLE = (0.09, 0.11, 0.14, 1.0)
+DLG_ACCENT = (0.20, 0.62, 0.50, 1.0)
+DLG_SECONDARY = (0.30, 0.35, 0.42, 1.0)
+
+
+def make_dialog_button(text, on_release, primary=False):
+    from kivy.uix.button import Button
+    b = Button(text=text, background_normal='', background_down='',
+               background_color=DLG_ACCENT if primary else DLG_SECONDARY,
+               color=(1, 1, 1, 1), bold=primary, font_size=dp(16),
+               size_hint=(1, 1))
+    b.bind(on_release=lambda *a: on_release())
+    return b
+
+
+def make_button_row(buttons):
+    """buttons: list of (text, callback, primary)"""
+    row = BoxLayout(orientation='horizontal', size_hint=(1, None),
+                    height=dp(80), spacing=dp(10),
+                    padding=(dp(14), dp(12), dp(14), dp(14)))
+    for text, cb, primary in buttons:
+        row.add_widget(make_dialog_button(text, cb, primary))
+    return row
+
+
 class LTopLevelContent(BoxLayout, LBase):
     def __init__(self, **kw):
         super().__init__(**kw)
+        self.padding = (dp(8), dp(14), dp(8), 0)
 
         # Macht die Hintergrundfarbe der TopLevel (Dialog-) Fenster.
         with self.canvas.before:
-            Color(0.45, 0.5, 0.5, 1.0)
+            Color(*DLG_PANEL)
             self.rect = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self.update_rect)
         self.bind(size=self.update_rect)
@@ -1212,20 +1241,27 @@ class LTopLine(ButtonBehavior, Label, LBase):
     def __init__(self, **kw):
         super().__init__(**kw)
         with self.canvas.before:
-            Color(0.45, 0.3, 0.3, 1.0)
+            Color(*DLG_TITLE)
             self.rect = Rectangle(pos=self.pos, size=self.size)
+            Color(*DLG_ACCENT)
+            self.line = Rectangle(pos=self.pos, size=(self.width, dp(3)))
         self.bind(pos=self.update_rect)
         self.bind(size=self.update_rect)
         self.maxlines = 0
-        self.halign = 'center'
+        self.halign = 'left'
         self.valign = 'center'
+        self.bold = True
+        self.font_size = dp(19)
+        self.padding = (dp(18), 0)
 
     def update_rect(self, *args):
         self.rect.pos = self.pos
         self.rect.size = self.size
+        self.line.pos = self.pos
+        self.line.size = (self.width, dp(3))
 
     def on_size(self, o, s):
-        self.text_size = s
+        self.text_size = (s[0] - dp(36), s[1])
 
     def on_press(self):
         print('press')
@@ -1240,7 +1276,8 @@ class LTopLevelBase(BoxLayout, LBase):
     def __init__(self, title='', **kw):
         super().__init__(orientation="vertical", **kw)
         self.title = title
-        self.titleline = LTopLine(text=title, size_hint=[1.0, 0.15])
+        self.titleline = LTopLine(text=title, size_hint=(1.0, None),
+                                  height=dp(58))
         self.content = LTopLevelContent(orientation="vertical", **kw)
         self.add_widget(self.titleline)
         self.add_widget(self.content)
@@ -1254,7 +1291,6 @@ class LTopLevel0(LTopLevelBase, LBase):
 
         self.main = top
         self.is_overlay = True
-        self.titleline.text = title + '   (tap to close)'
 
         self.titleline.bind(on_press=self.onClick)
         self.main.pushWork(self.title, self)
@@ -1876,7 +1912,7 @@ class LMainWindow(BoxLayout, LTkBase):
         for widget in widgets:
             small = getattr(widget, 'overlay_small', False)
             if small:
-                widget.size_hint = (0.92, 0.35) if portrait else (0.55, 0.45)
+                widget.size_hint = (0.92, 0.3) if portrait else (0.5, 0.4)
             else:
                 widget.size_hint = (0.92, 0.6) if portrait else (0.6, 0.8)
             widget.pos_hint = {'center_x': 0.5, 'center_y': 0.5}

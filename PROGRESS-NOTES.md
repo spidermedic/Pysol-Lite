@@ -1559,3 +1559,9 @@ Review of the dialog (left: Search box, Advanced button, Category drop-down, gam
 ## 141. Kivy: lean cards (2026-11-22)
 
 - Upstream drew every card as four nested widgets (BoxLayout, RelativeLayout, two images) and flipped with an Animation even at animation speed 0. `LImageItem` is now one plain `Widget` with a single textured rectangle; a flip just swaps the texture (`set_texture`). Animations stay off by default. Built, installed and tapped through on the Samsung tablet without a crash; user to judge the feel.
+
+## 142. Kivy: rotation, floating dialogs, one dialog style (2026-11-22)
+
+- Rotation: upstream locked it on every touch and unlocked only on a double tap. It is now released after each drag and sensor rotation is requested at start.
+- Dialogs (`LTopLevel0`) float centred over a dimmed table (`LOverlayLayer` in `LApp.py`); tap outside, the title bar, or a button closes them. Message dialogs get buttons from their `strings`.
+- One look: dark slate panel, darker title bar with a teal rule, teal primary / slate secondary buttons (`DLG_*`, `make_button_row`). The toolbar New game / Restart "toast to tap" is now a confirm dialog in the same style.
